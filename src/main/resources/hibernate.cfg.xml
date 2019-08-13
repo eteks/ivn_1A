@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+<session-factory>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/global_ivn_1A?createDatabaseIfNotExist=true</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password">root</property>
+    <!--<property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>-->
+    <!--<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>-->
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+    <property name="hibernate.hbm2ddl.auto">update</property>
+    <property name="show_sql">true</property>
+    
+    <mapping class="com.ivn_1A.models.admin.User" />
+    <mapping class="com.ivn_1A.models.pdbowner.Vehicle" />
+    <mapping class="com.ivn_1A.models.pdbowner.Vehiclemodel" /> 
+    <mapping class="com.ivn_1A.models.pdbowner.Domain" /> 
+    <mapping class="com.ivn_1A.models.pdbowner.Features" />  
+    <mapping class="com.ivn_1A.models.pdbowner.Domain_and_Features_Mapping" />
+    <mapping class="com.ivn_1A.models.pdbowner.Pdbversion" />
+    <mapping class="com.ivn_1A.models.pdbowner.Pdbversion_group" />   
+</session-factory>
+</hibernate-configuration>
