@@ -6,5 +6,11 @@
 <struts>
     <constant name="struts.devMode" value="false" /> 
     <package name="default" extends="struts-default" namespace="/">
+        
+    </package>
+    <package name="json" extends="json-default" namespace="/">
+        <action name="createpdbversion" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="CreatePDBVersion">
+            <result type="json" />
+        </action> 
     </package>
 </struts>

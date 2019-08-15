@@ -29,6 +29,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class Pdbversion {
    private int id;
     private float pdb_versionname;
+    private String pdb_manual_comment;
     private boolean status;  
     private boolean flag; 
     private Date modified_date;
@@ -53,6 +54,15 @@ public class Pdbversion {
 
     public void setPdb_versionname(float pdb_versionname) {
             this.pdb_versionname = pdb_versionname;
+    }
+    
+    @Column(name = "pdb_manual_comment", nullable = false, columnDefinition ="Text")
+    public String getPdb_manual_comment() {
+            return pdb_manual_comment;
+    }
+
+    public void setPdb_manual_comment(String pdb_manual_comment) {
+            this.pdb_manual_comment = pdb_manual_comment;
     }
 
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT(1) default 1")
