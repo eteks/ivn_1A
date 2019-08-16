@@ -13,7 +13,7 @@
             <result type="json" />
         </action>
         <action name="createVehicleVersion" class="com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group" method="createVehicleVersion">
-            <result type="json" />
+            <result type="json"></result>
         </action>  
     </package>
 </struts>

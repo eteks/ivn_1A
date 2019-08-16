@@ -11,7 +11,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>IVN</title>
     </head>
-    <body ng-app="myApp" ng-controller="LoginController">
+    <body ng-app="myApp" ng-controller="LoginController" id="body">
         <p>IVN Phase 1A</p>
         <!--        <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('submit')" name="submit">Submit</button>-->
         <button type="submit" class="btn btn-primary" ng-click="createpdbversion('submit')" name="submit">PDB Submit</button>
@@ -22,6 +22,9 @@
         <script>
                     var app = angular.module('myApp', []);
                     app.controller("LoginController", function ($scope, $http, $window) {
+
+                        $scope.text = 'IVN Phase 1A';
+                        $scope.res = 'Result : ';
 //                    alert("entered controller");
                         $scope.createpdbversion = function (event)
                         {
@@ -36,7 +39,7 @@
                                 method: "POST",
                                 data: data,
                             }).then(function (data, status, headers, config) {
-//                                    alert(JSON.stringify(data));
+//                                    $window.alert(JSON.stringify(data));
 //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
 //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
 //            //                        Materialize.toast(data['maps']["status"], 4000);
@@ -49,7 +52,7 @@
                             data['vehicle_version'] = {"vehiclename": "scorpio", "modelname": ["m1", "m2", "m3"]};
                             data['vehicle_list'] = {"vehicle_id": "1", "models": [{"model_id": 1, "model_name": "m1"}, {"model_id": 2, "model_name": "m2"}, {"model_id": 3, "model_name": "m3"}]};
                             data['button_type'] = event;
-                            alert(JSON.stringify(data));
+                            $window.alert(JSON.stringify(data));
                             $http({
                                 url: 'createVehicleVersion',
                                 headers: {
@@ -58,7 +61,9 @@
                                 method: "POST",
                                 data: data
                             }).then(function (data, status, headers, config) {
-//                                    alert(JSON.stringify(data));
+                                $window.alert(JSON.stringify(data.data.vm));
+                                $scope.text = data.data.msgs.status;
+                                $scope.res = JSON.stringify(data.data.vm);
 //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
 //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
 //            //                        Materialize.toast(data['maps']["status"], 4000);
@@ -66,5 +71,8 @@
                         }
                     });
         </script>
+
+        <p id="dt" ng-bind="text"></p>
+        <h3 ng-bind="res"></h3>
     </body>
 </html>

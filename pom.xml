@@ -33,16 +33,18 @@
             <artifactId>struts2-core</artifactId>
             <version>2.5.16</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.struts/struts2-convention -->
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-convention-plugin</artifactId>
             <version>2.5.16</version>
         </dependency>
-        <!--        <dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.struts/struts2-json -->
+        <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-json-plugin</artifactId>
             <version>2.5.16</version>
-        </dependency>-->
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.struts/struts-taglib -->
         <dependency>
             <groupId>org.apache.struts</groupId>
@@ -89,12 +91,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.45</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.struts/struts2-json-plugin -->
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts2-json-plugin</artifactId>
-            <version>2.5.16</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
         <dependency>
