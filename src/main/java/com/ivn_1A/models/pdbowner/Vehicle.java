@@ -4,16 +4,12 @@
  * and open the template in the editor.
  */
 package com.ivn_1A.models.pdbowner;
+
 import com.ivn_1A.models.admin.User;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.UpdateTimestamp;
 
 /**
@@ -22,14 +18,27 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name = "vehicle")
-public class Vehicle implements Serializable{
+public class Vehicle implements Serializable {
+
     private int id;
     private String vehiclename;
-    private boolean status;   
+    private boolean status;
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
-      
+
+    public Vehicle() {
+    }
+
+    public Vehicle(String vehiclename, boolean status, Date modified_date, Date created_date, User created_or_updated_by) {
+
+        this.vehiclename = vehiclename;
+        this.status = status;
+        this.modified_date = modified_date;
+        this.created_date = created_date;
+        this.created_or_updated_by = created_or_updated_by;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -40,14 +49,14 @@ public class Vehicle implements Serializable{
     public void setId(int id) {
         this.id = id;
     }
-    
+
     @Column(name = "vehiclename", length = 100, nullable = false)
     public String getVehiclename() {
-            return vehiclename;
+        return vehiclename;
     }
 
     public void setVehiclename(String vehiclename) {
-            this.vehiclename = vehiclename;
+        this.vehiclename = vehiclename;
     }
 
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT(1) default 1")
@@ -58,7 +67,7 @@ public class Vehicle implements Serializable{
     public void setStatus(boolean status) {
         this.status = status;
     }
-    
+
 //    @Column(name = "modified_date", columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -70,7 +79,7 @@ public class Vehicle implements Serializable{
     public void setModified_date(Date modified_date) {
         this.modified_date = modified_date;
     }
-        
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = false)
@@ -81,14 +90,14 @@ public class Vehicle implements Serializable{
     public void setCreated_date(Date created_date) {
         this.created_date = created_date;
     }
-    
+
     @OneToOne
     @JoinColumn(name = "created_or_updated_by", nullable = false)
     public User getCreated_or_updated_by() {
         return created_or_updated_by;
     }
-    
+
     public void setCreated_or_updated_by(User created_or_updated_by) {
         this.created_or_updated_by = created_or_updated_by;
-    }   
+    }
 }

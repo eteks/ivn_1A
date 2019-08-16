@@ -14,6 +14,16 @@
         </action>
         <action name="createVehicleVersion" class="com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group" method="createVehicleVersion">
             <result type="json" />
-        </action>  
+        </action> 
+        
+         <action name="create_pdb" class="com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group" method="createVehicleVersion">
+            <result type="json" />
+        </action> 
+    </package>
+    <package name="struts" extends="struts-default" namespace="/">
+        <action name="create_pdb" class="" method="">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>pdb_version_create.jsp</result>
+        </action>
     </package>
 </struts>
