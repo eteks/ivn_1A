@@ -1,70 +1,148 @@
-<%-- 
-    Document   : index
-    Created on : 12 Aug, 2019, 1:09:36 PM
-    Author     : ets-poc
---%>
+<%@include file="header.jsp" %>
+<%@include file="sidebar.jsp" %>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>IVN</title>
-    </head>
-    <body ng-app="myApp" ng-controller="LoginController">
-        <p>IVN Phase 1A</p>
-        <!--        <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('submit')" name="submit">Submit</button>-->
-        <button type="submit" class="btn btn-primary" ng-click="createpdbversion('submit')" name="submit">PDB Submit</button>
-        <button type="submit" class="btn btn-primary" ng-click="createVehicleVersion('submit')" name="submit">Vehicle Submit</button>
-        <script src="js/lib/test/jquery.min.js"></script>
-        <script src="js/lib/test/materialize.min.js"></script>
-        <script src="js/lib/test/angular.min.js"></script>
-        <script>
-                    var app = angular.module('myApp', []);
-                    app.controller("LoginController", function ($scope, $http, $window) {
-//                    alert("entered controller");
-                        $scope.createpdbversion = function (event)
-                        {
-                            var status = true;
-                            var data = {};
-                            data['pdbversion'] = {"vehicle_id": "1", "status": true};
-                            data['pdbdata_list'] = [{"model_id": "1", "dfm_id": "1", "status": "y"}, {"model_id": "1", "dfm_id": "2", "status": "n"}, {"model_id": "1", "dfm_id": "3", "status": "o"}, {"model_id": "2", "dfm_id": "1", "status": "o"}, {"model_id": "2", "dfm_id": "2", "status": "n"}, {"model_id": "2", "dfm_id": "3", "status": "y"}, {"model_id": "3", "dfm_id": "1", "status": "y"}, {"model_id": "3", "dfm_id": "2", "status": "n"}, {"model_id": "3", "dfm_id": "3", "status": "o"}];
-                            data['button_type'] = event;
-                            alert(JSON.stringify(data));
-                            $http({
-                                url: 'createpdbversion',
-                                method: "POST",
-                                data: data,
-                            }).then(function (data, status, headers, config) {
-//                                    alert(JSON.stringify(data));
-//                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-//                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
-//            //                        Materialize.toast(data['maps']["status"], 4000);
-                            });
-                        }
-                        $scope.createVehicleVersion = function (event)
-                        {
-                            var status = true;
-                            var data = {};
-                            data['vehicle_version'] = {"vehiclename": "scorpio", "modelname": ["m1", "m2", "m3"]};
-                            data['vehicle_list'] = {"vehicle_id": "1", "models": [{"model_id": 1, "model_name": "m1"}, {"model_id": 2, "model_name": "m2"}, {"model_id": 3, "model_name": "m3"}]};
-                            data['button_type'] = event;
-                            alert(JSON.stringify(data));
-                            $http({
-                                url: 'createVehicleVersion',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                method: "POST",
-                                data: data
-                            }).then(function (data, status, headers, config) {
-//                                    alert(JSON.stringify(data));
-//                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-//                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
-//            //                        Materialize.toast(data['maps']["status"], 4000);
-                            });
-                        }
-                    });
-        </script>
-    </body>
+<div class="pcoded-content" ng-controller="MyCtrl as Demo" ng-init="getAllCount()" ng-app="angularTable">    
+    <div class="pcoded-inner-content">
+        <div class="main-body">
+
+            <div class="page-wrapper">
+                <div class="page-header card">
+                    <div class="row align-items-end">
+                        <div class="col-lg-8">
+                            <div class="page-header-title">
+                                <i class="icofont icofont-car-alt-2 bg-c-red"></i>
+                                <div class="d-inline">
+                                    <h4>IVN Supervisor</h4>
+                                    <span>Vehicle and Models</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="page-header-breadcrumb">
+                                <ul class="breadcrumb-title">
+                                    <li class="breadcrumb-item">
+                                        <a href="index.html"> <i class="icofont icofont-home"></i> </a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="#!">Vehicle</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                               <div class="card-block marketing-card p-t-20 row">
+                                   
+                                   <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">
+                                            <s:url action="vehicleversion_listing.action" var="aURL" />
+                                            <s:a href="%{aURL}">   
+                                                    <div class="card-block">
+                                                        <span>Vehicle Versions</span></br>
+                                                        <span class="count"><s:property value="dashboard_result.vehicleversion_count"/></span>
+                                                        <i class="icofont  icofont-car-alt-1 text-c-red"></i>  
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                            </s:a>   
+                                        </div>
+                                    </div>
+                                   
+                                   <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">
+                                            <s:url action="vehicle_listing.action" var="aURL" />
+                                            <s:a href="%{aURL}">   
+                                                    <div class="card-block">
+                                                        <span>Vehicles</span>
+                                                        <span class="count"><s:property value="dashboard_result.vehiclecount"/></span>
+                                                        <i class="icofont  icofont-car-alt-2 text-c-red"></i>  
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                            </s:a>
+                                            </a>    
+                                        </div>
+                                    </div>
+                                   
+                                   <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">  
+                                            <s:url action="vehiclemodel_listing.action" var="aURL" />
+                                            <s:a href="%{aURL}">     
+                                                    <div class="card-block">
+                                                        <span>Models</span>
+                                                        <span class="count"><s:property value="dashboard_result.modelcount"/></span>
+                                                        <i class="icofont icofont-racings-wheel text-c-red"></i>  
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                            </s:a>   
+                                        </div>
+                                    </div>
+                                   
+                                   <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">
+                                            <s:url action="create_pdb.action" var="aURL" />
+                                            <s:a href="%{aURL}">      
+                                                <div class="card-block">
+                                                    <span>Create_PDB</span>
+                                                    <span class="count"> + </span>
+                                                    <i class="icofont icofont-plus-square text-c-red"></i>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </s:a>    
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">
+                                            <s:url action="model_version.action" var="aURL" />
+                                            <s:a href="%{aURL}">      
+                                                <div class="card-block">
+                                                    <span>Model Config </span>
+                                                    <span class="count"> + </span>
+                                                    <i class="icofont icofont-pixels text-c-red"></i>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </s:a>    
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">
+                                            <s:url action="model_version_listing.action" var="aURL" />
+                                            <s:a href="%{aURL}">   
+                                                    <div class="card-block">
+                                                        <span>Model Config Listing</span></br>
+                                                        <span class="count"><s:property value="dashboard_result.modelversion_count"/></span> 
+                                                        <i class="icofont  icofont-numbered text-c-red"></i>  
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                            </s:a>   
+                                        </div>
+                                    </div>
+                                            
+                                </div>
+                            </div>
+                        </div>
+                            
+
+<%@include file="footer.jsp" %>
+<script>
+//        var app = angular.module('angularTable', []);
+
+        app.controller('MyCtrl',function($scope, $http)
+        {      
+//            alert("MyCtrl");
+//            $scope.getAllCount = function(){
+//                $http.get("dashboarddata.action").then(function(data, status, headers, config){
+//                    var data = JSON.parse("<s:property value="count"/>".replace(/&quot;/g,'"'));
+//                    $scope.vehicleversion_count = data['vehicleversion_count'];
+//                    $scope.vehiclecount = data['vehiclecount'];
+//                    $scope.modelcount = data['modelcount'];
+//                });
+//            }
+        });
+ </script> 
+     
+</body>
+
 </html>
