@@ -30,6 +30,7 @@ public class Pdbversion {
    private int id;
     private float pdb_versionname;
     private String pdb_manual_comment;
+    private float pdb_reference_version;
     private boolean status;  
     private boolean flag; 
     private Date modified_date;
@@ -54,6 +55,15 @@ public class Pdbversion {
 
     public void setPdb_versionname(float pdb_versionname) {
             this.pdb_versionname = pdb_versionname;
+    }
+    
+    @Column(name = "pdb_reference_version", nullable = true, columnDefinition="Float(10,2)")
+    public float getPdb_reference_version() {
+            return pdb_reference_version;
+    }
+
+    public void setPdb_reference_version(float pdb_reference_version) {
+            this.pdb_reference_version = pdb_reference_version;
     }
     
     @Column(name = "pdb_manual_comment", nullable = false, columnDefinition ="Text")
