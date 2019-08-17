@@ -20,16 +20,23 @@ import org.hibernate.query.Query;
 public class PDBOwnerDB  {
    public List<Pdbversion> GetVersionname() {
         try {
+//            Session s = HibernateUtil.getThreadLocalSession();
+//            Transaction tx = s.beginTransaction();
+////            String hql = "FROM Pdbversion p where p.pdb_reference_version IS NULL ORDER BY p.pdb_versionname DESC";
+//            String hql = "FROM pdbversion";
+//            Query pdbversion = s.createQuery(hql);
+////            Query pdbversion = s.createQuery("FROM Pdbversion p order by p.pdb_versionname desc").setParameter("pdb_reference_version", "1.0");
+//            pdbversion.setMaxResults(1);
+////            int result = pdbversion.executeUpdate();
+//            tx.commit();
+//            s.clear();
+//            return pdbversion.list();
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
-//            String hql = "FROM pdbversion p ORDER BY p.pdb_versionname DESC";
-//            Query pdbversion = s.createQuery(hql);
-            Query pdbversion = s.createQuery("FROM Pdbversion p order by p.pdb_versionname desc").setParameter("pdb_reference_version", "1.0");
-            pdbversion.setMaxResults(1);
-//            int result = pdbversion.executeUpdate();
+            List<Pdbversion> getPdbversion = s.createQuery("FROM Pdbversion p WHERE p.pdb_reference_version = 'kalai'").list();
             tx.commit();
             s.clear();
-            return pdbversion.list();
+            return getPdbversion;
         } catch (Exception e) {
             System.err.println("Error in \"GetVersionname\" : " + e.getMessage());
             return null;

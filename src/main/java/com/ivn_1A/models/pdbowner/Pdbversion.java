@@ -6,6 +6,7 @@
 package com.ivn_1A.models.pdbowner;
 
 import com.ivn_1A.models.admin.User;
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name = "pdbversion")
-public class Pdbversion {
+public class Pdbversion implements Serializable{
    private int id;
     private float pdb_versionname;
     private String pdb_manual_comment;
@@ -36,6 +37,21 @@ public class Pdbversion {
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
+    
+    public Pdbversion() {
+    }
+
+    public Pdbversion(float pdb_versionname, String pdb_manual_comment,float pdb_reference_version, boolean status, boolean flag, Date modified_date, Date created_date, User created_or_updated_by) {
+
+        this.pdb_versionname = pdb_versionname;
+        this.pdb_manual_comment = pdb_manual_comment;
+        this.pdb_reference_version = pdb_reference_version;
+        this.status = status;
+        this.flag = flag;
+        this.modified_date = modified_date;
+        this.created_date = created_date;
+        this.created_or_updated_by = created_or_updated_by;
+    }
       
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
