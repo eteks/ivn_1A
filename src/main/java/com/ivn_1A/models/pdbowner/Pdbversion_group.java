@@ -24,7 +24,7 @@ public class Pdbversion_group {
     private int id;
     private Pdbversion pdbversion_id;
     private Vehicle vehicle_id;
-    private Vehiclemodel vechiclemodel_id;
+    private Vehiclemodel vehiclemodel_id;
     private Domain_and_Features_Mapping domain_and_features_mapping_id;
     private String available_status;
       
@@ -60,13 +60,13 @@ public class Pdbversion_group {
     } 
     
     @OneToOne
-    @JoinColumn(name = "vechiclemodel_id", nullable = false)
-    public Vehiclemodel getVechiclemodel_id() {
-        return vechiclemodel_id;
+    @JoinColumn(name = "vehiclemodel_id", nullable = false)
+    public Vehiclemodel getVehiclemodel_id() {
+        return vehiclemodel_id;
     }
     
-    public void setVechiclemodel_id(Vehiclemodel vechiclemodel_id) {
-        this.vechiclemodel_id = vechiclemodel_id;
+    public void setVehiclemodel_id(Vehiclemodel vehiclemodel_id) {
+        this.vehiclemodel_id = vehiclemodel_id;
     } 
     
     @OneToOne
