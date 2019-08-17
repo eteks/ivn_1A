@@ -33,6 +33,7 @@ public class Vehicle_Version_Group {
     public static HttpServletResponse response;
     public static Vehicle_Repository vehicle_Repository = new Vehicle_Repository();
 
+    private List<Vehicle> vehicleversion_result = null;
     private Map<String, String> msgs = new HashMap<String, String>();
     private Vehicle_Model vm;
 
@@ -50,6 +51,41 @@ public class Vehicle_Version_Group {
 
     public void setMsgs(Map<String, String> msgs) {
         this.msgs = msgs;
+    }
+
+    public List<Vehicle> getVehicleversion_result() {
+        return vehicleversion_result;
+    }
+
+    public void setVehicleversion_result(List<Vehicle> vehicleversion_result) {
+        this.vehicleversion_result = vehicleversion_result;
+    }
+
+    public String DisplayCreateVehicleversion() {
+        try {
+            request = ServletActionContext.getRequest();
+            System.out.println("request" + request);
+            vehicleversion_result = vehicle_Repository.LoadVehicleVersion();
+            System.out.println("oject" + vehicleversion_result);
+            return "success";
+        } catch (Exception e) {
+            return "success";
+        }
+    }
+
+    public String LoadPdbversionData() {
+        try {
+
+            final ObjectMapper mapper = new ObjectMapper();
+            request  =  ServletActionContext.getRequest();
+            String filename = IOUtils.toString(request.getInputStream(), "UTF-8");
+            final JsonNode readValue = mapper.readValue(filename, JsonNode.class);
+            int vehver_id = readValue.get("vehicleversion_id").asInt();
+
+            return "success";
+        } catch (Exception e) {
+            return "success";
+        }
     }
 
     public String createVehicleVersion() {

@@ -1,7 +1,7 @@
 <%@include file="header.jsp" %>
 <%@include file="sidebar.jsp" %>
 <!--<base href="/">-->
-<div class="pcoded-content" ng-controller="MyCtrl as Demo">    
+<div class="pcoded-content" ng-controller="MyCtrl as Demo">
     <div class="pcoded-inner-content">
         <div class="main-body">
 
@@ -25,9 +25,9 @@
                                     </li>
                                     <li class="breadcrumb-item">
                                         <s:url action="ivn_supervisor.action" var="aURL" />
-                                        <s:a href="%{aURL}"> 
+                                        <s:a href="%{aURL}">
                                             Back
-                                        </s:a> 
+                                        </s:a>
                                     </li>
                                 </ul>
                             </div>
@@ -47,33 +47,33 @@
                                         <a href="#" ng-click="tabstep2()">PDB</a>
                                     </li>
                                 </ul>
-                                
+
                                 <div class="tab-content m-t-10" style="overflow: hidden">
-                                    
+
                                     <div ng-tab-body="animated " class="tab-pane">
                                         <div class="col-md-6 float-left">
                                                 <div class="card">
                                                    <div class="card-block marketing-card p-t-20">
-                                                        
+
                                                                 <div class="form-group text-right">
 
-                                                                </div>                
+                                                                </div>
                                                                 <div>
                                                                     <div ng-if="Demo.data">
                                                                         <div class="form-group">
                                                                             <label for="vehicle">Select vehicle:</label>
-                                                                            <input type="radio" ng-model="new_vehicle" value="select_vehicle"/>
+                                                                            <input type="radio" id="vehicle" ng-model="new_vehicle" value="select_vehicle"/>
                                                                         </div>
                                                                         <div class="form-group"  ng-if="new_vehicle=='select_vehicle'">
-                                                                            <label for="vehicle">Vehicle:</label>
-                                                                            <select ng-model="data.vehicleversion" ng-change="LoadPreviousVersion()">
-                                                                                <s:iterator value="vehicleversion_result" >
-                                                                                    <option value="<s:property value="id"/>"><s:property value="versionname"/></option>
+                                                                            <label for="vehiclename">Vehicle:</label>
+                                                                            <select id="vehiclename" ng-model="data.vehicleversion" ng-change="LoadPreviousVersion()">
+                                                                                <s:iterator value="vehicleversion_result" var="data" >
+                                                                                    <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
                                                                                 </s:iterator>
                                                                             </select>
-                                                                            <label for="vehicle">Version:</label>
-                                                                            <select ng-model="data.vehicleversion" ng-change="LoadPreviousVersion()">
-                                                                                <s:iterator value="vehicleversion_result" >
+                                                                            <label for="version">Version:</label>
+                                                                            <select id="version" ng-model="data.vehicleversion" ng-change="LoadPreviousVersion()">
+                                                                                <s:iterator value="vehicleversion_results" >
                                                                                     <option value="<s:property value="id"/>"><s:property value="versionname"/></option>
                                                                                 </s:iterator>
                                                                             </select>
@@ -90,8 +90,8 @@
                                                                         <div class="form-group">
                                                                             <label for="model">Model:</label>
                                                                             <tags-input ng-model="data.modelname"  use-strings="true"></tags-input>
-                                                                        </div>                                                    
-                                                                    </div>                                                    
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                     </div>
                                                 </div>
@@ -104,10 +104,10 @@
                                                             <ul>
                                                                 <li ng-repeat="i in data.modelname">
 
-                                                                    <i class="icofont icofont-whisle text-c-red"></i> {{i}} 
+                                                                    <i class="icofont icofont-whisle text-c-red"></i> {{i}}
                                                                 </li>
                                                             </ul>
-                                                        </div> 
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -115,15 +115,15 @@
                                     <div ng-tab-body="animated " class="tab-pane card">
                                             <div class="card-block marketing-card p-t-0">
                                                 <div class="row p-t-30">
-                                                   
+
                                                    <a class=" modal-trigger" href="#modal-feature-list">
                                                        <i class="icofont icofont-ship-wheel text-c-red"></i>
                                                        Feature List
                                                    </a>&nbsp&nbsp
                                                    <a class="feature_add_tip waves-effect waves-light btn modal-trigger btn-floating btn-large red" href="#modal-product-form" ng-click="showCreateForm()">Add Feature</a>
 
-                                               </div>   
-                                           <div class="ng-table-scrollcontainer" style="margin-left:300px;">        
+                                               </div>
+                                           <div class="ng-table-scrollcontainer" style="margin-left:300px;">
                                                <table st-table="rowCollection" class="table table-striped">
                                                        <thead>
                                                        <tr>
@@ -138,19 +138,19 @@
                                                        </thead>
 
                                                        <tbody>
-                                                           
+
                                                            <tr dir-paginate="record in features|orderBy:sortKey:reverse|filter:search|itemsPerPage:20">
 
                                                               <td class="ng-table-fixedcolumn">
-                                                                  <span class="compresslength" style="display:block">{{record.domain}}</span>                                                                           
+                                                                  <span class="compresslength" style="display:block">{{record.domain}}</span>
                                                                </td>
                                                                <td class="ng-table-fixedcolumn" style="left:150px;">
                                                                    <a href="#" class="float-left" ng-click="removeRow(record.fid)"><i class="icofont icofont-ui-close text-c-red"></i></a> <span class="compresslength" style="display:block;padding-left:10px;">{{record.fea}}</span>
                                                                </td>
-                                                               <td class="text-center" ng-repeat="i in records">                                                                             
-                                                                     <label class="custom_radio mytooltip tooltip-effect-8">                                                                                
+                                                               <td class="text-center" ng-repeat="i in records">
+                                                                     <label class="custom_radio mytooltip tooltip-effect-8">
                                                                        <input type="radio" ng-click="radiovalue(record.fid,i.vehicle_model_mapping_id,'y')" name="f{{record.fid}}_{{i.vehicle_model_mapping_id}}" value="y" class="radio_button">
-                                                                       <span class="checkmark c_b_g">                                                                                    
+                                                                       <span class="checkmark c_b_g">
                                                                        </span>
                                                                        <span class="tooltip-content2">yes</span>
                                                                      </label>
@@ -160,27 +160,27 @@
                                                                        <span class="tooltip-content2">no</span>
                                                                      </label>
                                                                      <label class="custom_radio mytooltip tooltip-effect-8">
-                                                                       <input type="radio" ng-click="radiovalue(record.fid,i.vehicle_model_mapping_id,'o')" name="f{{record.fid}}_{{i.vehicle_model_mapping_id}}" value="o" class="radio_button">    
+                                                                       <input type="radio" ng-click="radiovalue(record.fid,i.vehicle_model_mapping_id,'o')" name="f{{record.fid}}_{{i.vehicle_model_mapping_id}}" value="o" class="radio_button">
                                                                        <span class="checkmark c_b_b"></span>
                                                                        <span class="tooltip-content2">optional</span>
                                                                      </label>
                                                                </td>
                                                            </tr>
-                                                       
+
                                                        </tbody>
                                                    </table>
-                                           </div>          
+                                           </div>
                                            <dir-pagination-controls
                                                    max-size="20"
                                                    direction-links="true"
                                                    boundary-links="true" >
-                                           </dir-pagination-controls>                                                        
+                                           </dir-pagination-controls>
                                            </div>
                                            <div class="text-right p-10">
                                                 <a class="modal-trigger float-left text-c-green" style="font-weight:600;padding-left: 10px;" href="#modal-upload" style="text-decoration:underline;" ng-click="assignstart(record.fid)">
                                                    Import
                                                </a>
-                                               
+
                                                <label for="status" style="vertical-align:middle">Status:</label>
                                                <label class="switch m-r-50"  style="vertical-align:middle">
                                                    <input type="checkbox" ng-model="data.status">
@@ -215,15 +215,15 @@
                             </div>
                         </div>
                     </div>
-                       
+
                     <div id="modal-product-form" class="modal">
                     <div class="modal-content">
                         <h5 class="text-c-red m-b-25">Add Feature<a class="modal-action modal-close waves-effect waves-light float-right m-t-5"> <strong><em>Close</em></strong></a></h5>
-                       
+
                             <div class="split1">
                                 <input ng-model="domain" type="text" class="validate col-lg-12" id="form-name" placeholder="Domain"/>
                             </div>
-                            <div class="split2" ng-repeat="data in Demo.data">         
+                            <div class="split2" ng-repeat="data in Demo.data">
                                 <p class="text-right">
                                     <a href="" ng-click="Demo.data.splice($index,1)">
                                         <i class="icofont icofont-ui-close text-c-red "></i>
@@ -232,7 +232,7 @@
                                 <div class="form-group">
                                     <input ng-model="data.feature" type="text" class="validate  col-lg-12" id="form-name" placeholder="Feature"/>
                                 </div>
-                                <div class="form-group">                                                                
+                                <div class="form-group">
                                     <input ng-model="data.type" type="radio" class="validate" placeholder="Electrical" value="electrical"/>
                                     <label for="name">Electrical</label>&nbsp<span>/</span>
                                     <input ng-model="data.type" type="radio" class="validate" placeholder="Non Electrical" value="non_electrical"/>
@@ -248,7 +248,7 @@
                                     <strong>Clone</strong>
                                  </a>
                             </p>
-                            
+
                             <div class="input-field text-center">
                                 <!--<a id="btn-create-product" class="waves-effect waves-light btn margin-bottom-1em float-right" ng-click="createfeature()">Add</a>-->
                                 <button id="btn-create-product" class="waves-effect waves-light btn margin-bottom-1em btn-primary" ng-click="createfeature_and_domain()" ng-mousedown='doSubmit=true' name="add">Save</button>
@@ -257,18 +257,18 @@
                 </div>
                 <!-- floating button for creating product -->
             <!--</form>-->
-            
+
             <div id="modal-feature-list" class="modal modal-feature-list">
                 <div class="modal-content">
                     <h5 class="text-c-red m-b-10">Feature <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
-                    
+
                     <ul>
                         <li ng-repeat="fil in features_list">
                             <a href="#" class="text-c-green" ng-click="add_feature_tab(fil.fid)">
                                 <i class="icofont icofont-ui-add"></i></a>&nbsp;({{fil.domain}})&nbsp;{{fil.fea}}
                         </li>
                     </ul>
-                    
+
                 </div>
             </div>
 <!--<base href="/">-->
@@ -282,7 +282,7 @@
 //        $locationProvider.html5Mode( true );
 //     }]);
     app.controller('MyCtrl',function($scope, $http ,$window, $location)
-    {       
+    {
         this.data = [];
         var notification_to;
             $scope.showSave =true;
@@ -310,7 +310,7 @@
     //        result_data = [{"vehicle_mapping_id":"1,2","vehiclename":"vehicle1","modelname":"v11,v12","model_id":"1,2","versionname":"1.0","vehicle_id":1,"status":true},{"vehicle_mapping_id":"3,4,5","vehiclename":"vehicle2","modelname":"v21,v22,v23","model_id":"3,4,5","versionname":"1.0","vehicle_id":2,"status":true}];
             var array_result = [];
             var status_value = "";
-            for(var i = 0; i < result_data.length; i++) 
+            for(var i = 0; i < result_data.length; i++)
             {
                  var data= result_data[i];
                  array_result.push({
@@ -319,11 +319,11 @@
                      "versionname":data.versionname,
                      "status":data.status
                  });
-                 status_value = data.status;  
+                 status_value = data.status;
              }
              $scope.Demo.data = array_result;
              $scope.data.status = status_value;
-            
+
              if(action == "view"){
                  $scope.showSave =false;
                 $scope.showSubmit =false;
@@ -339,18 +339,18 @@
             }else
                 $scope.submit_vehicleversion(event);
         }*/
-        
+
         $scope.createVehicleVersionAjax = function(event){
             var status = $scope.data.status;
             if(status == undefined || status == false)
                 notification_to = undefined;
-            
+
             var data = {};
             data['vehicle_and_model'] = $scope.Demo.data;
             data['vehicleversion'] = $scope.data;
             data['button_type'] = event;
             data['notification_to'] = notification_to+"";
-             
+
             $http({
                 url : 'createvehicleversion',
                 method : "POST",
@@ -362,17 +362,17 @@
         //                Materialize.toast(data['maps']["status"], 4000);
             });
         }
-        
-        $scope.submit_vehicleversion = function (event){   
+
+        $scope.submit_vehicleversion = function (event){
             var status = $scope.data.status;
             if(status == undefined )
                 status = false;
-            
+
             if (!$scope.doSubmit) {
                 return;
             }
-            $scope.doSubmit = false;         
-            
+            $scope.doSubmit = false;
+
             if($scope.Demo.data.length > 0){
                 if(status && event === "submit"){
                     $(".notifyPopup").click();
@@ -400,15 +400,17 @@
 ////                }
 ////            }
         }
-        $scope.tabstep1 = function() 
+        $scope.tabstep1 = function()
         {
 //            alert('hi');
         }
-        $scope.tabstep2 = function() 
+        $scope.tabstep2 = function()
         {
 //            alert('hi');
         }
-        $scope.LoadPreviousVersion = function() 
+
+        //
+        $scope.LoadPreviousVersion = function()
         {
 //            alert("loadpreviousversion");
 //            alert($scope.data.vehicleversion);
@@ -421,7 +423,7 @@
 //                result_data = JSON.stringify(response.data.vehmod_map_result);
                var array_result = [];
                var status_value = "";
-               for(var i = 0; i < response.data.vehmod_map_result.length; i++) 
+               for(var i = 0; i < response.data.vehmod_map_result.length; i++)
                {
                     var data= response.data.vehmod_map_result[i];
                     array_result.push({
@@ -430,18 +432,18 @@
                         "versionname":data.versionname,
                         "status":data.status
                     });
-                    status_value = data.status;  
+                    status_value = data.status;
                 }
                 $scope.Demo.data = array_result;
                 $scope.data.status = status_value;
 //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
             });
         };
-        
+
     });
 //     var m = angular.module('App',['ngAnimate']);
 </script>
-     
+
 </body>
 
 </html>
