@@ -31,7 +31,7 @@ public class Pdbversion implements Serializable{
    private int id;
     private float pdb_versionname;
     private String pdb_manual_comment;
-    private float pdb_reference_version;
+    private Float pdb_reference_version;
     private boolean status;  
     private boolean flag; 
     private Date modified_date;
@@ -41,7 +41,7 @@ public class Pdbversion implements Serializable{
     public Pdbversion() {
     }
 
-    public Pdbversion(float pdb_versionname, String pdb_manual_comment,float pdb_reference_version, boolean status, boolean flag, Date modified_date, Date created_date, User created_or_updated_by) {
+    public Pdbversion(float pdb_versionname, String pdb_manual_comment,Float pdb_reference_version, boolean status, boolean flag, Date modified_date, Date created_date, User created_or_updated_by) {
 
         this.pdb_versionname = pdb_versionname;
         this.pdb_manual_comment = pdb_manual_comment;
@@ -64,7 +64,7 @@ public class Pdbversion implements Serializable{
         this.id = id;
     }
     
-    @Column(name = "pdb_versionname", nullable = false, columnDefinition="Float(10,2)")
+    @Column(name = "pdb_versionname", nullable = false, columnDefinition="Float(10,1)")
     public float getPdb_versionname() {
             return pdb_versionname;
     }
@@ -73,12 +73,12 @@ public class Pdbversion implements Serializable{
             this.pdb_versionname = pdb_versionname;
     }
     
-    @Column(name = "pdb_reference_version", nullable = true, columnDefinition="Float(10,2)")
-    public float getPdb_reference_version() {
+    @Column(name = "pdb_reference_version", nullable = true, columnDefinition="Float(10,1)")
+    public Float getPdb_reference_version() {
             return pdb_reference_version;
     }
 
-    public void setPdb_reference_version(float pdb_reference_version) {
+    public void setPdb_reference_version(Float pdb_reference_version) {
             this.pdb_reference_version = pdb_reference_version;
     }
     

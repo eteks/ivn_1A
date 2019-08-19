@@ -80,9 +80,9 @@ public class TestInsert {
             
             Pdbversion_group pdbversion_group = new Pdbversion_group();
             pdbversion_group.setAvailable_status("audi available");
-            pdbversion_group.setDomain_and_features_mapping_id(testInsert.getDomain_and_Features_Mapping(1));
+//            pdbversion_group.setDomain_and_features_mapping_id(testInsert.getDomain_and_Features_Mapping(1));
             pdbversion_group.setPdbversion_id(testInsert.getPdbversion(1));
-            pdbversion_group.setVechiclemodel_id(testInsert.getVehiclemodel(1));
+//            pdbversion_group.setVechiclemodel_id(testInsert.getVehiclemodel(1));
             pdbversion_group.setVehicle_id(testInsert.getVehicle(1));
             testInsert.savePdbversion_group(pdbversion_group);
             return "success";

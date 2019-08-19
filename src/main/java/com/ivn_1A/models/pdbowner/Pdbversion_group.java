@@ -26,6 +26,7 @@ public class Pdbversion_group {
     private Vehicle vehicle_id;
     private Vehiclemodel vehiclemodel_id;
     private Domain_and_Features_Mapping domain_and_features_mapping_id;
+//    private Pdb_domain_feature_mapping pdb_dom_fea_mapping_id; 
     private String available_status;
       
     @Id
@@ -78,6 +79,16 @@ public class Pdbversion_group {
     public void setDomain_and_features_mapping_id(Domain_and_Features_Mapping domain_and_features_mapping_id) {
         this.domain_and_features_mapping_id = domain_and_features_mapping_id;
     } 
+    
+//    @OneToOne
+//    @JoinColumn(name = "pdb_dom_fea_mapping_id", nullable = false)
+//    public Pdb_domain_feature_mapping getPdb_domain_feature_mapping() {
+//        return pdb_dom_fea_mapping_id;
+//    }
+//    
+//    public void setPdb_domain_feature_mapping(Pdb_domain_feature_mapping pdb_dom_fea_mapping_id) {
+//        this.pdb_dom_fea_mapping_id = pdb_dom_fea_mapping_id;
+//    } 
     
     @Column(name = "available_status", length = 20, nullable = false)
     public String getAvailable_status() {
