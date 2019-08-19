@@ -3,6 +3,8 @@ https://www.codota.com/code/java/methods/javax.persistence.criteria.CriteriaBuil
 
 https://www.programcreek.com/java-api-examples/?api=javax.persistence.criteria.Join
 
+https://www.initgrep.com/posts/java/jpa/create-programmatic-queries-using-criteria-api
+
 
 {"pdbversion":{"vehicle_id":"1","pdb_manual_comment":"test","status":true,"pdbversion":1},
 "pdbdata_list":

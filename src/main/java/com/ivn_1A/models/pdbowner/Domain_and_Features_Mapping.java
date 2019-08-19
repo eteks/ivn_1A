@@ -6,6 +6,7 @@
 package com.ivn_1A.models.pdbowner;
 
 import com.ivn_1A.models.admin.User;
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,10 +27,19 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name = "domain_and_features_mapping")
-public class Domain_and_Features_Mapping {
+public class Domain_and_Features_Mapping implements Serializable {
     private int id;
     private Domain domain_id;
     private Features feature_id;
+    
+    public Domain_and_Features_Mapping() {
+    }
+
+    public Domain_and_Features_Mapping(Domain domain_id, Features feature_id) {
+
+        this.domain_id = domain_id;
+        this.feature_id = feature_id;
+    }
       
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

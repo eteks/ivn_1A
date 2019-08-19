@@ -62,7 +62,7 @@ public class Pdbversion_Group {
 //            System.out.println("featureslist_result" + featureslist_result_obj);
             PDBOwnerDB pdbownerdb = new PDBOwnerDB();
             List<Domain_and_Features_Mapping> featureslist_result = pdbownerdb.LoadFeaturesList();
-            System.out.println("featureslist_result"+featureslist_result.get(0).getDomain_id());
+            System.out.println("featureslist_result"+featureslist_result);
 //            featureslist_result_obj = new Gson().toJson(featureslist_result);
 //            System.out.println("pdbversion_result" + pdbversion_result);
 //            System.out.println("vehicleversion_result" + vehicleversion_result);

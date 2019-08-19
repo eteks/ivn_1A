@@ -1,0 +1,28 @@
+https://www.codota.com/code/java/methods/javax.persistence.criteria.CriteriaBuilder/isNull
+
+
+https://www.programcreek.com/java-api-examples/?api=javax.persistence.criteria.Join
+
+
+{"pdbversion":{"vehicle_id":"1","pdb_manual_comment":"test","status":true,"pdbversion":1},
+"pdbdata_list":
+[{"model_id":"1","dfm_id":"1","status":"y"},{"model_id":"1","dfm_id":"2","status":"n"},{"model_id":"1","dfm_id":"3","status":"o"},{"model_id":"2","dfm_id":"1","status":"o"},{"model_id":"2","dfm_id":"2","status":"n"},{"model_id":"2","dfm_id":"3","status":"y"},{"model_id":"3","dfm_id":"1","status":"y"},{"model_id":"3","dfm_id":"2","status":"n"},{"model_id":"3","dfm_id":"3","status":"o"}],
+"button_type":"submit"}
+
+
+pvg.setVehicle_id((Pdbversion) session.get(Pdbversion.class, pdbdata.get("model_id")));
+
+
+Uncompilable source code - Erroneous sym type: com.ivn_1A.models.pdbowner.Pdbversion_group.setVehicle_id
+
+Integer.parseInt((String) vehicleversion_value.get("vehicleversion"))
+
+
+CriteriaBuilder builder = s.getCriteriaBuilder();
+CriteriaQuery<Domain_and_Features_Mapping> criteriaQuery = builder.createQuery(Domain_and_Features_Mapping.class);
+Root<Domain_and_Features_Mapping> dfm = criteriaQuery.from(Domain_and_Features_Mapping.class);
+List<Domain_and_Features_Mapping> dfm_result = s.createQuery(criteriaQuery).getResultList();
+
+
+String sql = "SELECT d.domain_name as domain, f.feature_name as fea, CAST(dfm.id as CHAR(100)) as fid from domain_and_features_mapping as dfm INNER JOIN domain AS d ON d.id = dfm.domain_id "
+                    + "INNER JOIN features AS f ON f.id = dfm.feature_id";

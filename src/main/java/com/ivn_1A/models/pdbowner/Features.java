@@ -6,6 +6,7 @@
 package com.ivn_1A.models.pdbowner;
 
 import com.ivn_1A.models.admin.User;
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name = "features")
-public class Features {
+public class Features implements Serializable {
     private int id;
     private String feature_name;
     private String feature_description;
@@ -35,6 +36,20 @@ public class Features {
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
+    
+    public Features() {
+    }
+
+    public Features(String feature_name, String feature_description, String feature_type, boolean status, Date modified_date, Date created_date, User created_or_updated_by) {
+
+        this.feature_name = feature_name;
+        this.feature_description = feature_description;
+        this.feature_type = feature_type;
+        this.status = status;
+        this.modified_date = modified_date;
+        this.created_date = created_date;
+        this.created_or_updated_by = created_or_updated_by;
+    }
       
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -115,4 +130,9 @@ public class Features {
     public void setCreated_or_updated_by(User created_or_updated_by) {
         this.created_or_updated_by = created_or_updated_by;
     }   
+    
+    @Override
+    public String toString() {
+            return String.format("Features[%s]", feature_name);
+    }
 }

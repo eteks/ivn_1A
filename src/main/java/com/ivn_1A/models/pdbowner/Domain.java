@@ -6,6 +6,7 @@
 package com.ivn_1A.models.pdbowner;
 
 import com.ivn_1A.models.admin.User;
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,13 +27,25 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name = "domain")
-public class Domain {
+public class Domain implements Serializable {
     private int id;
     private String domain_name;
     private boolean status;   
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
+    
+    public Domain() {
+    }
+
+    public Domain(String domain_name, boolean status, Date modified_date, Date created_date, User created_or_updated_by) {
+
+        this.domain_name = domain_name;
+        this.status = status;
+        this.modified_date = modified_date;
+        this.created_date = created_date;
+        this.created_or_updated_by = created_or_updated_by;
+    }
       
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -94,5 +107,10 @@ public class Domain {
     
     public void setCreated_or_updated_by(User created_or_updated_by) {
         this.created_or_updated_by = created_or_updated_by;
-    }   
+    }  
+    
+    @Override
+    public String toString() {
+            return String.format("Domain[%s]", domain_name);
+    }
 }
