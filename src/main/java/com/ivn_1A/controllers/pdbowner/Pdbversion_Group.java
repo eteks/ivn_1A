@@ -32,9 +32,11 @@ import org.hibernate.Transaction;
  */
 public class Pdbversion_Group {
     public static PDBOwnerDB pdbownerdb = new PDBOwnerDB();
-    private Map<String, String> maps = new HashMap<String, String>();
+    private Map<String, String> maps_string = new HashMap<String, String>();
+    private Map<String, Object> maps_object = new HashMap<String, Object>();
     Session session = HibernateUtil.getThreadLocalSession();
-//    private List<Map<String, Object>> featureslist_result = new ArrayList<Map<String, Object>>();
+    private List<Map<String, Object>> featureslist_result = new ArrayList<Map<String, Object>>();
+    JSONArray json_result = new JSONArray();
     
     public String PDBAssignPage() {
         System.out.println("Entered");
@@ -61,15 +63,27 @@ public class Pdbversion_Group {
 //            System.out.println("vehicleversion_result" + vehicleversion_result);
 //            System.out.println("featureslist_result" + featureslist_result_obj);
             PDBOwnerDB pdbownerdb = new PDBOwnerDB();
-            List<Domain_and_Features_Mapping> featureslist_result = pdbownerdb.LoadFeaturesList();
-            System.out.println("featureslist_result"+featureslist_result);
+            List<Domain_and_Features_Mapping> featureslist = pdbownerdb.LoadFeaturesList();
+            featureslist_result = new ArrayList<Map<String, Object>>();
+            for (Domain_and_Features_Mapping fea: featureslist) {
+                Map<String, Object> columns = new HashMap<String, Object>();
+                columns.put("fid", fea.getId());
+                columns.put("fea", fea.getDomain_id().getDomain_name());
+                columns.put("domain", fea.getFeature_id().getFeature_name());
+//                System.out.println(fea.getDomain_id().getDomain_name());  
+                featureslist_result.add(columns);
+            }            
+            json_result.addAll(featureslist_result);
+            System.out.println("featureslist_result"+json_result); 
+            maps_object.put("features", json_result);
+//            featureslist_result_obj = new Gson().toJson(featureslist_result);
 //            featureslist_result_obj = new Gson().toJson(featureslist_result);
 //            System.out.println("pdbversion_result" + pdbversion_result);
 //            System.out.println("vehicleversion_result" + vehicleversion_result);
 //            System.out.println("featureslist_result" + featureslist_result_obj);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            maps.put("status", "Some error occurred !!");
+            maps_string.put("status", "Some error occurred !!");
         }
         return "success";
     }
@@ -151,8 +165,16 @@ public class Pdbversion_Group {
         } catch (Exception ex) {
             System.out.println("entered into catch");
             System.out.println(ex.getMessage());
-            maps.put("status", "Some error occurred !!");
+            maps_string.put("status", "Some error occurred !!");
         }
         return "success";
+    }
+    
+    public Map<String, Object> getMaps_object() {
+        return maps_object;
+    }
+
+    public void setMaps_object(Map<String, Object> maps_object) {
+        this.maps_object = maps_object;
     }
 }

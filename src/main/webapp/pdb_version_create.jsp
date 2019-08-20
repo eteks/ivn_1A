@@ -283,6 +283,8 @@
 //     }]);
     app.controller('MyCtrl',function($scope, $http ,$window, $location)
     {
+        
+        
         this.data = [];
         var notification_to;
             $scope.showSave =true;
@@ -292,6 +294,8 @@
                 $scope.createVehicleVersionAjax("submit");
             });
           $scope.data = {};
+          alert("<s:property value="maps_object.features"/>");
+          $scope.features_list = [{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"}];
           if($location.absUrl().includes("?")){
                 var params_array = [];
                 var absUrl = $location.absUrl().split("?")[1].split("&");

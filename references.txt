@@ -28,3 +28,6 @@ List<Domain_and_Features_Mapping> dfm_result = s.createQuery(criteriaQuery).getR
 
 String sql = "SELECT d.domain_name as domain, f.feature_name as fea, CAST(dfm.id as CHAR(100)) as fid from domain_and_features_mapping as dfm INNER JOIN domain AS d ON d.id = dfm.domain_id "
                     + "INNER JOIN features AS f ON f.id = dfm.feature_id";
+
+
+[{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"},{"fid":"3","fea":"Demist Vents on IP","domain":"AIR CONDITIONER"},{"fid":"4","fea":"Glove Box Cooling","domain":"AIR CONDITIONER"},{"fid":"5","fea":"2nd row Foot Duct","domain":"AIR CONDITIONER"},{"fid":"12","fea":"Rear AC Vent","domain":"AIR CONDITIONER"},{"fid":"13","fea":"Rear AC Control Switch","domain":"AIR CONDITIONER"},{"fid":"6","fea":"Demister","domain":"RR DEFOGGER"},{"fid":"7","fea":"Internally Variable Displacement AC Compressor","domain":"IVDC"},{"fid":"8","fea":"Externaly variable compressor","domain":"IVDC"},{"fid":"9","fea":"Paper filter","domain":"Filter"},{"fid":"10","fea":"Carbon filter","domain":"Filter"},{"fid":"11","fea":"PM 2.5 Clean Air Certification","domain":"PM 2.5 Clean Air Certification"}]
