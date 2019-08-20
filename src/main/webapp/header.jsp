@@ -3,7 +3,6 @@
     Created on : Jun 8, 2018, 10:26:28 AM
     Author     : ETS-4
 --%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <!DOCTYPE html>
@@ -197,16 +196,16 @@
                                         <i class="ti-angle-down"></i>
                                     </a>
                                     <ul class="show-notification profile-notification">
-<!--                                        <li>
-                                            <a href="#">
-                                                <i class="ti-settings"></i> Settings
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <i class="ti-email"></i> My Messages
-                                            </a>
-                                        </li>-->
+<!-- <li>
+    <a href="#">
+        <i class="ti-settings"></i> Settings
+    </a>
+</li>
+<li>
+    <a href="#">
+        <i class="ti-email"></i> My Messages
+    </a>
+</li>-->
                                         <li>
                                             <a href="logout">
                                                 <i class="ti-layout-sidebar-left"></i> Logout
