@@ -337,6 +337,27 @@
 //                alert(data);
                 $scope.LoadPDBPreviousVersion(data);
             });
+            $scope.createpdbversion = function (event)
+          {
+            var status = true;
+            var data = {};
+            data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true};
+//            data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true,"pdbversion_id": "1", "pdbversion_name":"1.0"};
+            data['pdbdata_list'] = [{"model_id":"1","dfm_id":"1","status":"y"},{"model_id":"1","dfm_id":"2","status":"n"},{"model_id":"1","dfm_id":"3","status":"o"},{"model_id":"2","dfm_id":"1","status":"o"},{"model_id":"2","dfm_id":"2","status":"n"},{"model_id":"2","dfm_id":"3","status":"y"},{"model_id":"3","dfm_id":"1","status":"y"},{"model_id":"3","dfm_id":"2","status":"n"},{"model_id":"3","dfm_id":"3","status":"o"}];
+            data['button_type'] = event;
+            data['dfm_set'] = ["1","2","3"];
+            alert(JSON.stringify(data));
+            $http({
+                url: 'createpdbversion',
+                method: "POST",
+                data: data,
+            }).then(function (data, status, headers, config) {
+//                                    $window.alert(JSON.stringify(data));
+//                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
+//                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
+//            //                        Materialize.toast(data['maps']["status"], 4000);
+            });
+          }
                              
             $scope.sort = function(keyname)
             {
