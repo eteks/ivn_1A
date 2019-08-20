@@ -74,7 +74,7 @@
                                                                                 </s:iterator>
                                                                             </select>
                                                                             <label for="vehicle">Version:</label>
-                                                                            <select ng-model="data.vehicleversion" ng-change="LoadPreviousVersion()">
+                                                                            <select ng-model="data.pdbversion" ng-change="LoadPreviousVersion()">
                                                                                 <s:iterator value="vehicleversion_result" >
                                                                                     <option value="<s:property value="id"/>"><s:property value="versionname"/></option>
                                                                                 </s:iterator>
@@ -151,18 +151,18 @@
                                                                </td>
                                                                <td class="text-center" ng-repeat="i in records">                                                                             
                                                                      <label class="custom_radio mytooltip tooltip-effect-8">                                                                                
-                                                                       <input type="radio" ng-click="radiovalue(record.fid,i.vehicle_model_mapping_id,'y')" name="f{{record.fid}}_{{i.vehicle_model_mapping_id}}" value="y" class="radio_button">
+                                                                       <input type="radio" ng-click="radiovalue(record.fid,i.model_id,'y')" name="f{{record.fid}}_{{i.model_id}}" value="y" class="radio_button">
                                                                        <span class="checkmark c_b_g">                                                                                    
                                                                        </span>
                                                                        <span class="tooltip-content2">yes</span>
                                                                      </label>
                                                                      <label class="custom_radio mytooltip tooltip-effect-8">
-                                                                       <input type="radio" ng-click="radiovalue(record.fid,i.vehicle_model_mapping_id,'n')" name="f{{record.fid}}_{{i.vehicle_model_mapping_id}}" value="n" class="radio_button">
+                                                                       <input type="radio" ng-click="radiovalue(record.fid,i.model_id,'n')" name="f{{record.fid}}_{{i.model_id}}" value="n" class="radio_button">
                                                                        <span class="checkmark c_b_r"></span>
                                                                        <span class="tooltip-content2">no</span>
                                                                      </label>
                                                                      <label class="custom_radio mytooltip tooltip-effect-8">
-                                                                       <input type="radio" ng-click="radiovalue(record.fid,i.vehicle_model_mapping_id,'o')" name="f{{record.fid}}_{{i.vehicle_model_mapping_id}}" value="o" class="radio_button">    
+                                                                       <input type="radio" ng-click="radiovalue(record.fid,i.model_id,'o')" name="f{{record.fid}}_{{i.model_id}}" value="o" class="radio_button">    
                                                                        <span class="checkmark c_b_b"></span>
                                                                        <span class="tooltip-content2">optional</span>
                                                                      </label>
@@ -312,18 +312,21 @@
             var notification_to;
             $scope.features = [];
             $scope.list = [];
+            $scope.vehicleresults = {};
             
             
             
             $scope.features_list = $scope.features_list = [{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"}];
-            alert($scope.features_list);
+//            alert($scope.features_list);
             $scope.tabstep1 = function() 
             {
     //            alert('hi');
             }
             $scope.tabstep2 = function() 
             {
-    //            alert('hi');
+//                alert('hi');
+                $scope.vehicleresults = {"vehicle_id" :"1", "models":[{"model_id":1,"modelname":"m1"},{"model_id":2,"modelname":"m2"}]};   
+                $scope.records = $scope.vehicleresults.models;
             }
             $scope.showSave =true;
             $scope.showSubmit =true;
@@ -337,26 +340,66 @@
 //                alert(data);
                 $scope.LoadPDBPreviousVersion(data);
             });
+            $scope.createpdbAjax = function (event){
+                var status = $scope.data.status;
+                if(status == undefined || status == false)
+                    notification_to = undefined;
+                var data = {};
+                alert(JSON.stringify($scope.list));
+                $scope.data.vehicle_id = $scope.vehicleresults.vehicle_id;
+                if($scope.data.pdbversion != undefined) 
+                    $scope.data.pdbversion_id = $scope.data.pdbversion;
+                    $scope.data.pdbversion_name = $scope.data.pdbversion;
+//                data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true};
+    //            data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true,"pdbversion_id": "1", "pdbversion_name":"1.0"};
+                data['pdbversion'] = $scope.data;
+//                data['pdbdata_list'] = [{"model_id":"1","dfm_id":"1","status":"y"},{"model_id":"1","dfm_id":"2","status":"n"},{"model_id":"1","dfm_id":"3","status":"o"},{"model_id":"2","dfm_id":"1","status":"o"},{"model_id":"2","dfm_id":"2","status":"n"},{"model_id":"2","dfm_id":"3","status":"y"},{"model_id":"3","dfm_id":"1","status":"y"},{"model_id":"3","dfm_id":"2","status":"n"},{"model_id":"3","dfm_id":"3","status":"o"}];
+                data['pdbdata_list'] = $scope.list;
+                data['button_type'] = event;
+                data['notification_to'] = notification_to+"";
+                data['dfm_set'] = ["1","2","3"];
+                alert(JSON.stringify(data));
+    //            $http({
+    //                url: 'createpdbversion',
+    //                method: "POST",
+    //                data: data,
+    //            }).then(function (data, status, headers, config) {
+    ////                                    $window.alert(JSON.stringify(data));
+    ////                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
+    ////                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
+    ////            //                        Materialize.toast(data['maps']["status"], 4000);
+    //            });
+            }
+            
             $scope.createpdbversion = function (event)
-          {
-            var status = true;
-            var data = {};
-            data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true};
-//            data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true,"pdbversion_id": "1", "pdbversion_name":"1.0"};
-            data['pdbdata_list'] = [{"model_id":"1","dfm_id":"1","status":"y"},{"model_id":"1","dfm_id":"2","status":"n"},{"model_id":"1","dfm_id":"3","status":"o"},{"model_id":"2","dfm_id":"1","status":"o"},{"model_id":"2","dfm_id":"2","status":"n"},{"model_id":"2","dfm_id":"3","status":"y"},{"model_id":"3","dfm_id":"1","status":"y"},{"model_id":"3","dfm_id":"2","status":"n"},{"model_id":"3","dfm_id":"3","status":"o"}];
-            data['button_type'] = event;
-            data['dfm_set'] = ["1","2","3"];
-            alert(JSON.stringify(data));
-            $http({
-                url: 'createpdbversion',
-                method: "POST",
-                data: data,
-            }).then(function (data, status, headers, config) {
-//                                    $window.alert(JSON.stringify(data));
-//                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-//                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
-//            //                        Materialize.toast(data['maps']["status"], 4000);
-            });
+            {
+              alert("createpdbversion");
+//            var status = true;
+            var status = $scope.data.status;
+            if(status == undefined )
+                status = false;
+//            if (!$scope.doSubmit) 
+//            {
+//                return;
+//            }
+//            $scope.doSubmit = false;  
+            alert(JSON.stringify($scope.list));
+//            alert($scope.list.length);
+//            alert($scope.records.length * $scope.features.length);
+            if($scope.list.length > 0){
+                if($scope.list.length === $scope.records.length * $scope.features.length){
+//                    if(status && event === "submit"){
+//                        $(".notifyPopup").click();
+//                    }else
+//                        $scope.createpdbAjax(event);
+                    $scope.createpdbAjax(event);
+                }
+                else
+                    alert("Please fill all the domain and feature status to create PDB version");
+            }
+            else{
+                alert("Please fill the domain and feature status to create PDB version");
+            }        
           }
                              
             $scope.sort = function(keyname)
@@ -457,25 +500,25 @@
 //                    alert(JSON.stringify($scope.model_list));
                 });
             };
-            $scope.LoadVehicleModels= function(selected_vehicleid)
-            {
-                $scope.records = [];
-                $scope.list = [];
-                for(var i = 0; i < $scope.model_list.length; i++) 
-                {
-                   var data = $scope.model_list[i];
-                   if(data.vehicle_id == selected_vehicleid){
-//                       alert(data.vehicle_mapping_id);
-                        angular.forEach(data.mod, function(value, key) {
-                            $scope.records.push({
-                             "modelname":value,
-                             "vehicle_model_mapping_id":data.vehicle_mapping_id[key],
-                            }); 
-                        })
-                   }
-                }
-//                alert(JSON.stringify($scope.records));
-            }
+//            $scope.LoadVehicleModels= function(selected_vehicleid)
+//            {
+//                $scope.records = [];
+//                $scope.list = [];
+//                for(var i = 0; i < $scope.model_list.length; i++) 
+//                {
+//                   var data = $scope.model_list[i];
+//                   if(data.vehicle_id == selected_vehicleid){
+////                       alert(data.vehicle_mapping_id);
+//                        angular.forEach(data.mod, function(value, key) {
+//                            $scope.records.push({
+//                             "modelname":value,
+//                             "vehicle_model_mapping_id":data.vehicle_mapping_id[key],
+//                            }); 
+//                        })
+//                   }
+//                }
+////                alert(JSON.stringify($scope.records));
+//            }
             $scope.createfeature_and_domain = function (event) 
             {        
                 if (!$scope.doSubmit) 
@@ -524,70 +567,48 @@
             }*/
             
             $scope.createpdbAjax = function (event){
+                alert("createpdbAjax");
                 var status = $scope.data.status;
                 if(status == undefined || status == false)
                     notification_to = undefined;
                 var data = {};
-                data['pdbversion'] = $scope.data;
+                alert(JSON.stringify($scope.list));
+                $scope.data.vehicle_id = 
+                data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true};
+    //            data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true,"pdbversion_id": "1", "pdbversion_name":"1.0"};
+    //            
+//                data['pdbdata_list'] = [{"model_id":"1","dfm_id":"1","status":"y"},{"model_id":"1","dfm_id":"2","status":"n"},{"model_id":"1","dfm_id":"3","status":"o"},{"model_id":"2","dfm_id":"1","status":"o"},{"model_id":"2","dfm_id":"2","status":"n"},{"model_id":"2","dfm_id":"3","status":"y"},{"model_id":"3","dfm_id":"1","status":"y"},{"model_id":"3","dfm_id":"2","status":"n"},{"model_id":"3","dfm_id":"3","status":"o"}];
                 data['pdbdata_list'] = $scope.list;
                 data['button_type'] = event;
                 data['notification_to'] = notification_to+"";
-                //alert(notification_to);
-                //console.log(data);
-                $http({
-                        url : 'createpdbversion',
-                        method : "POST",
-                        data : data,
-                        })
-                        .then(function (data, status, headers, config){               
-                              alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-                              $window.open("pdb_listing.action","_self"); //                alert(data.maps);
-    //                        Materialize.toast(data['maps']["status"], 4000);
-                });
+                data['dfm_set'] = ["1","2","3"];
+                alert(JSON.stringify(data));
+    //            $http({
+    //                url: 'createpdbversion',
+    //                method: "POST",
+    //                data: data,
+    //            }).then(function (data, status, headers, config) {
+    ////                                    $window.alert(JSON.stringify(data));
+    ////                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
+    ////                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
+    ////            //                        Materialize.toast(data['maps']["status"], 4000);
+    //            });
             }
             
-            $scope.createpdbversion = function (event) 
-            {           
-                var status = $scope.data.status;
-                if(status == undefined )
-                    status = false;
-
-                if (!$scope.doSubmit) 
-                {
-                    return;
-                }
-                $scope.doSubmit = false;         
-//                alert(event);
-//                $scope.list.push(this.text);
-//                alert(JSON.stringify($scope.list));
-                
-                if($scope.list.length > 0){
-                    if($scope.list.length === $scope.records.length * $scope.features.length){
-                        if(status && event === "submit"){
-                            $(".notifyPopup").click();
-                        }else
-                            $scope.createpdbAjax(event);
-                    }
-                    else
-                        alert("Please fill all the domain and feature status to create PDB version");
-                }
-                else{
-                    alert("Please fill the domain and feature status to create PDB version");
-                }
-            }
-            $scope.radiovalue = function(dfm_id,vmm_id,status)
+            
+            $scope.radiovalue = function(dfm_id,model_id,status)
             {		
 //                alert("enter");
                 if($scope.list.length === 0)
                 {
-                    $scope.list.push({vmm_id:vmm_id,dfm_id:dfm_id,status:status});
+                    $scope.list.push({model_id:model_id,dfm_id:dfm_id,status:status});
                 }
                 else
                 {
                     var temp=0;
                     for(var i=0; i<$scope.list.length; i++)
                     {
-                        if(($scope.list[i].vmm_id === vmm_id) && ($scope.list[i].dfm_id === dfm_id))
+                        if(($scope.list[i].model_id === model_id) && ($scope.list[i].dfm_id === dfm_id))
                         {
                             $scope.list[i].status=status;
                             temp=1;
@@ -596,7 +617,7 @@
                     }
                     if(temp==0)
                     {
-                        $scope.list.push({vmm_id:vmm_id,dfm_id:dfm_id,status:status});
+                        $scope.list.push({model_id:model_id,dfm_id:dfm_id,status:status});
                     }
                 }
 //                alert(JSON.stringify($scope.list))
@@ -663,7 +684,7 @@
                             }
                         }
                         if(data === "edit")
-                            $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].vmm_id,featuredetail_list[i].status);
+                            $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].model_id,featuredetail_list[i].status);
 //                        alert(JSON.stringify($scope.list));  
                     }
                     if(data === "edit"){
@@ -672,10 +693,10 @@
                             angular.forEach(result, function(value) {
                                 var result_name = value.getAttribute("name").substring(1).split("_");
                                 var fid = result_name[0];
-                                var vmm_id = result_name[1];
+                                var model_id = result_name[1];
                                 var status = value.getAttribute("value");  
                                 angular.forEach($scope.list, function(item) {
-                                    if(item.dfm_id == fid && item.vmm_id == vmm_id && item.status == status)
+                                    if(item.dfm_id == fid && item.model_id == model_id && item.status == status)
                                         value.setAttribute("checked","checked");
                                 });    
                             });
@@ -730,7 +751,7 @@
                         }
                     }
 
-                    $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].vmm_id,featuredetail_list[i].status);
+                    $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].model_id,featuredetail_list[i].status);
 //                        alert(JSON.stringify($scope.list));  
                 }
                 angular.element(function () {
@@ -738,10 +759,10 @@
                     angular.forEach(result, function(value) {
                         var result_name = value.getAttribute("name").substring(1).split("_");
                         var fid = result_name[0];
-                        var vmm_id = result_name[1];
+                        var model_id = result_name[1];
                         var status = value.getAttribute("value");  
                         angular.forEach($scope.list, function(item) {
-                            if(item.dfm_id == fid && item.vmm_id == vmm_id && item.status == status)
+                            if(item.dfm_id == fid && item.model_id == model_id && item.status == status)
                                 value.setAttribute("checked","checked");
                         });    
                     });
