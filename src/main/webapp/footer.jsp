@@ -86,7 +86,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.js"></script>    -->
 <script src="js/dirPagination.js"></script>
 <script>
-                var app = angular.module('angularTable', ['angularUtils.directives.dirPagination', 'ngTagsInput','tabs']);
+                    var app = angular.module('angularTable', ['angularUtils.directives.dirPagination', 'ngTagsInput','tabs']);
 //        var app = angular.module('angularTable', ['ui.bootstrap']);
                 app.controller('RecordCtrl', function ($scope, $http,$rootScope)
                 {
