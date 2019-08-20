@@ -22,6 +22,9 @@
     <mapping class="com.ivn_1A.models.pdbowner.Features" />  
     <mapping class="com.ivn_1A.models.pdbowner.Domain_and_Features_Mapping" />
     <mapping class="com.ivn_1A.models.pdbowner.Pdbversion" />
-    <mapping class="com.ivn_1A.models.pdbowner.Pdbversion_group" />   
+    <mapping class="com.ivn_1A.models.pdbowner.Pdbversion_group" /> 
+    <!--<mapping class="com.ivn_1A.models.pdbowner.Pdb_domain_feature_mapping" />--> 
+    <mapping class="com.ivn_1A.models.pdbowner.Pdb_log_for_DomainFeatures" /> 
+    <mapping class="com.ivn_1A.models.pdbowner.Pdb_log_for_vehiclemodel" />  
 </session-factory>
 </hibernate-configuration>

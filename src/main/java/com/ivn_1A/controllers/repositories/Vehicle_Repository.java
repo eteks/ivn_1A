@@ -9,16 +9,17 @@ import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.models.admin.User;
 import com.ivn_1A.models.pdbowner.Vehicle;
 import com.ivn_1A.models.pdbowner.Vehiclemodel;
+
 import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 /**
- *
  * @author ETS-05
  */
 public class Vehicle_Repository {
@@ -137,6 +138,24 @@ public class Vehicle_Repository {
             return vehiclemodel;
         } catch (Exception e) {
             System.out.println("Error in \"Vehicle_Repository\" : " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static List<Vehicle> LoadVehicleVersion() {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            // create Criteria
+            CriteriaQuery<Vehicle> criteriaQuery = s.getCriteriaBuilder().createQuery(Vehicle.class);
+            criteriaQuery.from(Vehicle.class);
+            //create resultset as list
+            List<Vehicle> vehicles = s.createQuery(criteriaQuery).getResultList();
+            System.err.println(vehicles);
+            tx.commit();
+            s.clear();
+            return vehicles;
+        } catch (Exception e) {
             return null;
         }
     }

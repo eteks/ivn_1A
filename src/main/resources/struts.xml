@@ -18,12 +18,31 @@
         
          <action name="create_pdb" class="com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group" method="createVehicleVersion">
             <result type="json" />
-        </action> 
+        </action>
+
+        <action name="loadpdbversion_data" class="com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group" method="LoadPdbversionData">
+            <result type="json" />
+        </action>
+
     </package>
     <package name="struts" extends="struts-default" namespace="/">
-        <action name="create_pdb" class="" method="">
+
+<!--        <action name="create_pdb" class="com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group" method="DisplayCreateVehicleversion">
+            <result name="session">index.jsp</result> 
+            <result name="success">pdb_version_create.jsp</result>
+        </action>-->
+        
+        <action name="create_pdb" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="PDBAssignPage">
             <!--<result name="session">index.jsp</result>--> 
             <result>pdb_version_create.jsp</result>
         </action>
+
+        <!--This is for testing--> 
+        <action name="inserts" class="com.ivn_1A.controllers.repositories.TestInsert" method="execute">
+            <!--<result name="session">index.jsp</result>--> 
+            <result name="success">test.jsp</result>
+            <result name="failed">test.jsp</result>
+        </action>       
+        
     </package>
 </struts>

@@ -7,11 +7,17 @@ package com.ivn_1A.controllers.pdbowner;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.ivn_1A.controllers.repositories.Vehicle_Repository;
+import com.ivn_1A.jsons.Vehicle_Model;
 import com.ivn_1A.models.pdbowner.Vehicle;
 import com.ivn_1A.models.pdbowner.Vehiclemodel;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
@@ -27,59 +33,138 @@ public class Vehicle_Version_Group {
     public static HttpServletResponse response;
     public static Vehicle_Repository vehicle_Repository = new Vehicle_Repository();
 
+    private List<Vehicle> vehicleversion_result = null;
+    private Map<String, String> msgs = new HashMap<String, String>();
+    private Vehicle_Model vm;
+
+    public Vehicle_Model getVm() {
+        return vm;
+    }
+
+    public void setVm(Vehicle_Model vm) {
+        this.vm = vm;
+    }
+
+    public Map<String, String> getMsgs() {
+        return msgs;
+    }
+
+    public void setMsgs(Map<String, String> msgs) {
+        this.msgs = msgs;
+    }
+
+    public List<Vehicle> getVehicleversion_result() {
+        return vehicleversion_result;
+    }
+
+    public void setVehicleversion_result(List<Vehicle> vehicleversion_result) {
+        this.vehicleversion_result = vehicleversion_result;
+    }
+
+    public String DisplayCreateVehicleversion() {
+        try {
+            request = ServletActionContext.getRequest();
+            System.out.println("request" + request);
+            vehicleversion_result = vehicle_Repository.LoadVehicleVersion();
+            System.out.println("oject" + vehicleversion_result);
+            return "success";
+        } catch (Exception e) {
+            return "success";
+        }
+    }
+
+    public String LoadPdbversionData() {
+        try {
+
+            final ObjectMapper mapper = new ObjectMapper();
+            request  =  ServletActionContext.getRequest();
+            String filename = IOUtils.toString(request.getInputStream(), "UTF-8");
+            final JsonNode readValue = mapper.readValue(filename, JsonNode.class);
+            int vehver_id = readValue.get("vehicleversion_id").asInt();
+
+            return "success";
+        } catch (Exception e) {
+            return "success";
+        }
+    }
+
     public String createVehicleVersion() {
         try {
             final ObjectMapper mapper = new ObjectMapper();
-            System.out.println("Hai");
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
             request = ServletActionContext.getRequest();
             response = ServletActionContext.getResponse();
 
+            Vehicle_Model vehicle_Model = new Vehicle_Model();
+            Vehicle v = null;
+            List<Vehiclemodel> vehiclemodels = new ArrayList<>();
             String filename = IOUtils.toString(request.getInputStream(), "UTF-8");
-            System.out.println("jsonData " + filename);
             final JsonNode readValue = mapper.readValue(filename, JsonNode.class);
             String vehicleName = readValue.get("vehicle_version").get("vehiclename").asText();
-            System.out.println(vehicleName + " " + readValue.get("vehicle_version").get("vehiclename").asText());
             final ArrayNode arrayNode = (ArrayNode) readValue.get("vehicle_version").get("modelname");
 
-            boolean a = false, b = false;
             if (vehicle_Repository.getVehicles(vehicleName).isEmpty()) {
-                Vehicle vehicle = new Vehicle();
-                vehicle.setVehiclename(vehicleName);
-                vehicle.setCreated_date(new Date());
-                vehicle.setModified_date(new Date());
-                vehicle.setCreated_or_updated_by(vehicle_Repository.getUser(1));
-                vehicle.setStatus(true);
-                a = vehicle_Repository.saveVehicle(vehicle);
+
+                Vehicle vehicle = new Vehicle(vehicleName, true, new Date(), new Date(), vehicle_Repository.getUser(1));
+                vehicle_Repository.saveVehicle(vehicle);
+                if (vehicle_Repository.saveVehicle(vehicle)) {
+                    v = vehicle_Repository.getVehiclesByName(vehicleName);
+                    vehicle_Model.setVehicle_id(v.getId());
+                    msgs.put("status", "Vehicle Data Inserted");
+                    setMsgs(msgs);
+                } else {
+                    msgs.put("status", "Vehicle Data not Inserted");
+                    setMsgs(msgs);
+                }
             } else {
-                response.setContentType("text/javascript");
-                response.getWriter().println("<script>window.alert('Failed in Insertion of Vehicle'); window.location.href='index.jsp';</script>");
+                v = vehicle_Repository.getVehiclesByName(vehicleName);
+                vehicle_Model.setVehicle_id(v.getId());
+                msgs.put("status", "Vehicle Already Exist");
+                setMsgs(msgs);
             }
             for (int i = 0; i < arrayNode.size(); i++) {
 
                 System.out.println(arrayNode.get(i).asText());
                 if (vehicle_Repository.getVehiclemodels(arrayNode.get(i).asText()).isEmpty()) {
-                    Vehiclemodel vehiclemodel = new Vehiclemodel();
-                    vehiclemodel.setModelname(arrayNode.get(i).asText());
-                    vehiclemodel.setCreated_date(new Date());
-                    vehiclemodel.setModified_date(new Date());
-                    vehiclemodel.setCreated_or_updated_by(vehicle_Repository.getUser(1));
-                    vehiclemodel.setStatus(true);
-                    b = vehicle_Repository.saveModel(vehiclemodel);
+
+                    Vehiclemodel vehiclemodel = new Vehiclemodel(arrayNode.get(i).asText(), true, new Date(), new Date(), vehicle_Repository.getUser(1));
+
+                    if (vehicle_Repository.saveModel(vehiclemodel)) {
+                        vehiclemodels.add(vehicle_Repository.getVehicleModelsByName(arrayNode.get(i).asText()));
+                        msgs.put("status", "Model Data Inserted");
+                        setMsgs(msgs);
+                    } else {
+                        msgs.put("status", "Model Data not Inserted");
+                        setMsgs(msgs);
+                    }
                 } else {
-                    response.setContentType("text/javascript");
-                    response.getWriter().println("<script>window.alert('Failed in Insertion of Model'); window.location.href='index.jsp';</script>");
-                    break;
+                    vehiclemodels.add(vehicle_Repository.getVehicleModelsByName(arrayNode.get(i).asText()));
+                    msgs.put("status", "Model Already Exist");
+                    setMsgs(msgs);
                 }
             }
-            if (a && b) {
-                System.out.println("Done");
-            } else {
-                System.err.println("Error");
+
+            List<HashMap<String, Object>> models = new ArrayList<>();;
+            HashMap<String, Object> nameMap = null;
+
+            for (Vehiclemodel vehiclemodel : vehiclemodels) {
+                
+                nameMap = new HashMap<>();
+                nameMap.put("model_name", vehiclemodel.getModelname());
+                nameMap.put("model_id", vehiclemodel.getId());
+                models.add(nameMap);
             }
+
+            vehicle_Model.setModels(models);
+            setVm(vehicle_Model);
+            System.err.println(ow.writeValueAsString(vehicle_Model));
+
             return "success";
         } catch (Exception e) {
             System.err.println("Error in \"Vehicle_Version_Group\" : " + e.getMessage());
-            return null;
+            msgs.put("status", "Error in \"Vehicle_Version_Group\" : " + e.getMessage());
+            return "success";
         }
     }
 }

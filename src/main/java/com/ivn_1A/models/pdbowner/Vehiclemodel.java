@@ -34,7 +34,19 @@ public class Vehiclemodel implements Serializable {
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
-      
+
+    public Vehiclemodel() {
+    }
+
+    public Vehiclemodel(String modelname, boolean status, Date modified_date, Date created_date, User created_or_updated_by) {
+        this.modelname = modelname;
+        this.status = status;
+        this.modified_date = modified_date;
+        this.created_date = created_date;
+        this.created_or_updated_by = created_or_updated_by;
+    }
+
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
