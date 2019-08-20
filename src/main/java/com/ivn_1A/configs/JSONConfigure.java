@@ -9,26 +9,24 @@ import org.apache.struts2.ServletActionContext;
 
 
 public class JSONConfigure {
-	static HttpServletRequest request ;
-	
-	
-	 public static String getAngularJSONFile()
-	 {
-		 try {
-			 request  =  ServletActionContext.getRequest();
-				String filename = IOUtils.toString(request.getInputStream());
+    static HttpServletRequest request;
+
+
+    public static String getAngularJSONFile() {
+        try {
+            request = ServletActionContext.getRequest();
+            String jsonValues = IOUtils.toString(request.getInputStream(), "UTF-8");
 //				System.out.println("fileee "+filename);
-				
-				return filename;
-				
-				
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return "error";
-			} 
-		
-	 }
+
+            return jsonValues;
+
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return "error";
+        }
+
+    }
 
 }

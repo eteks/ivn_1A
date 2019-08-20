@@ -67,17 +67,15 @@
                                                                             <input type="radio" ng-model="new_vehicle" value="select_vehicle"/>
                                                                         </div>
                                                                         <div class="form-group"  ng-if="new_vehicle=='select_vehicle'">
-                                                                            <label for="vehicle">Vehicle:</label>
-                                                                            <select ng-model="data.vehicleversion" ng-change="LoadPreviousVersion()">
-                                                                                <s:iterator value="vehicleversion_result" >
-                                                                                    <option value="<s:property value="id"/>"><s:property value="versionname"/></option>
+                                                                            <label for="vehiclename">Vehicle:</label>
+                                                                            <select id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()">
+                                                                                <s:iterator value="vehicleversion_result" var="data" >
+                                                                                    <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
                                                                                 </s:iterator>
                                                                             </select>
-                                                                            <label for="vehicle">Version:</label>
-                                                                            <select ng-model="data.pdbversion" ng-change="LoadPreviousVersion()">
-                                                                                <s:iterator value="vehicleversion_result" >
-                                                                                    <option value="<s:property value="id"/>"><s:property value="versionname"/></option>
-                                                                                </s:iterator>
+                                                                            <label for="vehicle">Vehicle:</label>
+                                                                            <select ng-change="LoadVehicleModels(data.vehiclename)" ng-model="data.pdbversion">
+                                                                                <option ng-repeat="veh in vehicle_list" value="{{veh.pdbversion}}" >{{veh.vehiclemodelid}}</option>
                                                                             </select>
                                                                         </div>
                                                                         <div class="form-group">
@@ -672,6 +670,32 @@
                             });
                         });
                     }
+                });
+            };
+            
+            $scope.LoadPreviousVersion = function()
+            {
+                $http({
+                    url : 'loadpdbversion_data',
+                    method : "POST",
+                    data : {"vehicleversion_id":$scope.data.vehicleversion}
+                }).then(function (response, status, headers, config){
+                   result_data = JSON.stringify(response.data.maps_object);
+                    $window.alert(response);
+                   var array_result = [];
+                   var status_value = "";
+                   for(var i = 0; i < response.data.maps_object.count; i++)
+                   {
+                        var data= response.data.maps_object.get("pdbversion");
+                        array_result.push({
+                            "pdbversion":data.pid,
+                            "vehiclemodelid":data.vid
+                        });
+                        status_value = data.status;
+                    }
+                    $scope.Demo.data = array_result;
+                    $scope.data.status = status_value;
+    //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                 });
             };
             
