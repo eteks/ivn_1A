@@ -66,16 +66,15 @@
                                                                         </div>
                                                                         <div class="form-group"  ng-if="new_vehicle=='select_vehicle'">
                                                                             <label for="vehiclename">Vehicle:</label>
-                                                                            <select id="vehiclename" ng-model="data.vehicleversion" ng-change="LoadPreviousVersion()">
+                                                                            <select id="vehiclename" ng-model="data.vehicleid" ng-change="LoadPreviousVersion()">
                                                                                 <s:iterator value="vehicleversion_result" var="data" >
                                                                                     <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
                                                                                 </s:iterator>
                                                                             </select>
-                                                                            <label for="version">Version:</label>
-                                                                            <select id="version" ng-model="data.vehicleversion" ng-change="LoadPreviousVersion()">
-                                                                                <s:iterator value="vehicleversion_results" >
-                                                                                    <option value="<s:property value="id"/>"><s:property value="versionname"/></option>
-                                                                                </s:iterator>
+                                                                            <label for="vehicle">Vehicle:</label>
+                                                                            <select ng-hide="data.vehicleversion"></select>
+                                                                            <select ng-change="LoadVehicleModels(data.vehiclename)" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
+                                                                                <option ng-repeat="veh in vehicle_list" value="{{veh.pdbversion}}" >{{veh.vehiclemodelid}}</option>
                                                                             </select>
                                                                         </div>
                                                                         <div class="form-group">
@@ -283,8 +282,8 @@
 //     }]);
     app.controller('MyCtrl',function($scope, $http ,$window, $location)
     {
-        
-        
+
+
         this.data = [];
         var notification_to;
             $scope.showSave =true;
@@ -294,9 +293,8 @@
                 $scope.createVehicleVersionAjax("submit");
             });
           $scope.data = {};
-          alert("<s:property value="maps_object.features"/>");
           $scope.features_list = [{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"}];
-          
+
           $scope.createpdbversion = function (event)
           {
             var status = true;
@@ -337,7 +335,7 @@
     //        result_data = [{"vehicle_mapping_id":"1,2","vehiclename":"vehicle1","modelname":"v11,v12","model_id":"1,2","versionname":"1.0","vehicle_id":1,"status":true},{"vehicle_mapping_id":"3,4,5","vehiclename":"vehicle2","modelname":"v21,v22,v23","model_id":"3,4,5","versionname":"1.0","vehicle_id":2,"status":true}];
             var array_result = [];
             var status_value = "";
-            for(var i = 0; i < result_data.length; i++)
+            for(var i = 0; i < result_data.length(); i++)
             {
                  var data= result_data[i];
                  array_result.push({
@@ -439,25 +437,22 @@
         //
         $scope.LoadPreviousVersion = function()
         {
-//            alert("loadpreviousversion");
-//            alert($scope.data.vehicleversion);
+            $window.alert($scope.data.vehicleid);
             $http({
-                url : 'loadpreviousvehicleversion_data',
+                url : 'loadpdbversion_data',
                 method : "POST",
-                data : {"vehicleversion_id":$scope.data.vehicleversion}
-            })
-            .then(function (response, status, headers, config){
-//                result_data = JSON.stringify(response.data.vehmod_map_result);
+                data : {"vehicleversion_id" : $scope.data.vehicleid}
+            }).then(function (response, status, headers, config){
+               result_data = JSON.stringify(response);
+                $window.alert(result_data);
                var array_result = [];
                var status_value = "";
-               for(var i = 0; i < response.data.vehmod_map_result.length; i++)
+               for(var i = 0; i < response.data.maps_object.count; i++)
                {
-                    var data= response.data.vehmod_map_result[i];
+                    var data= response.data.maps_object.get("pdbversion");
                     array_result.push({
-                        "vehiclename":data.vehiclename,
-                        "modelname":data.modelname.split(","),
-                        "versionname":data.versionname,
-                        "status":data.status
+                        "pdbversion":data.pid,
+                        "vehiclemodelid":data.vid
                     });
                     status_value = data.status;
                 }

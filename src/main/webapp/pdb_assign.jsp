@@ -126,11 +126,11 @@
                                                                 </tbody>
                                                             </table>
                                                     </div>          
-                                                    <dir-pagination-controls
-                                                            max-size="20"
-                                                            direction-links="true"
-                                                            boundary-links="true" >
-                                                    </dir-pagination-controls>                                                        
+                                                        <dir-pagination-controls
+                                                                max-size="20"
+                                                                direction-links="true"
+                                                                boundary-links="true" >
+                                                        </dir-pagination-controls>                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -139,7 +139,7 @@
                 <!-- modal for for creating new product -->
                 <div id="modal-product-form" class="modal">
                     <div class="modal-content">
-                        <h5 class="text-c-red m-b-25">Add Feature<a class="modal-action modal-close waves-effect waves-light float-right m-t-5"> <strong><em>Close</em></strong></a></h5>
+                        <h5 class="text-c-red m-b-25">Add Feature <a class="modal-action modal-close waves-effect waves-light float-right m-t-5"> <strong><em>Close</em></strong></a></h5>
                        
                             <div class="split1">
                                 <input ng-model="domain" type="text" class="validate col-lg-12" id="form-name" placeholder="Domain"/>
@@ -152,12 +152,6 @@
                                  </p>
                                 <div class="form-group">
                                     <input ng-model="data.feature" type="text" class="validate  col-lg-12" id="form-name" placeholder="Feature"/>
-                                </div>
-                                <div class="form-group">                                                                
-                                    <input ng-model="data.type" type="radio" class="validate" placeholder="Electrical" value="electrical"/>
-                                    <label for="name">Electrical</label>&nbsp<span>/</span>
-                                    <input ng-model="data.type" type="radio" class="validate" placeholder="Non Electrical" value="non_electrical"/>
-                                    <label for="name">Non Electrical</label>
                                 </div>
                                 <div class="form-group">
                                     <textarea ng-model="data.description" type="text" class="validate materialize-textarea  col-lg-12" placeholder="Description"></textarea>

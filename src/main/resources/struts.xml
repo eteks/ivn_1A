@@ -20,7 +20,7 @@
             <result type="json" />
         </action>
 
-        <action name="loadpdbversion_data" class="com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group" method="LoadPdbversionData">
+        <action name="loadpdbversion_data" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="LoadPdbversionData">
             <result type="json" />
         </action>
 
