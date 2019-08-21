@@ -5,6 +5,8 @@
  */
 package com.ivn_1A.models.pdbowner;
 
+import com.ivn_1A.models.admin.User;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,6 +30,18 @@ public class Pdbversion_group {
     private Domain_and_Features_Mapping domain_and_features_mapping_id;
 //    private Pdb_domain_feature_mapping pdb_dom_fea_mapping_id; 
     private String available_status;
+    
+    public Pdbversion_group() {
+    }
+
+    public Pdbversion_group(Pdbversion pdbversion_id, Vehicle vehicle_id, Vehiclemodel vehiclemodel_id, Domain_and_Features_Mapping domain_and_features_mapping_id, String available_status) {
+
+        this.pdbversion_id = pdbversion_id;
+        this.vehicle_id = vehicle_id;
+        this.vehiclemodel_id = vehiclemodel_id;
+        this.domain_and_features_mapping_id = domain_and_features_mapping_id;
+        this.available_status = available_status;
+    }
       
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

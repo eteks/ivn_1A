@@ -91,32 +91,22 @@ public class PDBOwnerDB {
         }
     }
 
-    public List GetPDBPreviousVersion_DomFea(int pdbversion_id) {
+    public List<Pdbversion_group> GetPDBPreviousVersion_DomFea(int pdbversion_id) {
         try {
-//            Query pdbversion = s.createQuery("FROM Pdbversion p order by p.pdb_versionname desc").setParameter("pdb_reference_version", "1.0");
-//            pdbversion.setMaxResults(1);
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
 
-            // create Criteria
-//            CriteriaQuery<Pdbversion> criteriaQuery = s.getCriteriaBuilder().createQuery(Pdbversion.class);           
-//            criteriaQuery.from(Pdbversion.class); 
-
             //Working code
             CriteriaBuilder builder = s.getCriteriaBuilder();
-            CriteriaQuery<Pdbversion> criteriaQuery = builder.createQuery(Pdbversion.class);
-            // The root of our search is sku
+            CriteriaQuery<Pdbversion_group> criteriaQuery = builder.createQuery(Pdbversion_group.class);         
             Root<Pdbversion_group> test = criteriaQuery.from(Pdbversion_group.class);
-            List<Predicate> restrictions = new ArrayList<Predicate>();
-            criteriaQuery.select(test.get("domain_and_features_mapping_id"));
+//            criteriaQuery.select(test.get("domain_and_features_mapping_id"));
             criteriaQuery.where(builder.equal(test.get("pdbversion_id"), pdbversion_id));
             criteriaQuery.groupBy(test.get("domain_and_features_mapping_id"));
-            //create resultset as list
-            List pdbversion = s.createQuery(criteriaQuery).list();
-//            pdbversion.setMaxResults(1);
+            TypedQuery<Pdbversion_group> pdbversion = s.createQuery(criteriaQuery);
             tx.commit();
             s.clear();
-            return pdbversion;
+            return pdbversion.getResultList();
         } catch (Exception e) {
             System.err.println("Error in \"GetVersionname\" : " + e.getMessage());
             return null;
