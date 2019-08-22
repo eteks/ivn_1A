@@ -69,13 +69,15 @@
                                                                         <div class="form-group"  ng-if="new_vehicle=='select_vehicle'">
                                                                             <label for="vehiclename">Vehicle:</label>
                                                                             <select id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()">
+                                                                                <option selected="" disabled="">Select Version</option>
                                                                                 <s:iterator value="vehicleversion_result" var="data" >
                                                                                     <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
                                                                                 </s:iterator>
                                                                             </select>
-                                                                            <label for="vehicle">Vehicle:</label>
-                                                                            <select ng-change="LoadVehicleModels(data.vehiclename)" ng-model="data.pdbversion">
-                                                                                <option ng-repeat="veh in vehicle_list" value="{{veh.pdbversion}}" >{{veh.vehiclemodelid}}</option>
+                                                                            <label for="vehicle">Version:</label>
+                                                                            <select ng-change="LoadVehicleModels()" ng-model="data.pdbversion">
+                                                                                <option selected="" disabled="">Select Version</option>
+                                                                                <option ng-repeat="arr in array_result" value="{{arr.pdbversion}}" >{{arr.pdbversion}}</option>
                                                                             </select>
                                                                         </div>
                                                                         <div class="form-group">
@@ -84,13 +86,13 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="vehicle">Vehicle:</label>
-                                                                            <input type="text" class="form-control" placeholder="Enter vehicle" name="vehicle"  ng-model="data.vehiclename" required>
+                                                                            <input type="text" class="form-control" placeholder="Enter vehicle" name="vehicle"  ng-model="Demo.dt.vehiclename" required>
                                                                             <span ng-show="myForm.vehicle.$touched && myForm.vehicle.$invalid">The name is required.</span>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="model">Model:</label>
-                                                                            <tags-input ng-model="data.modelname"  use-strings="true"></tags-input>
-                                                                        </div>                                                    
+                                                                            <tags-input ng-model="Demo.dt.modelname.split(',')" use-strings="true"></tags-input>
+                                                                        </div>                                                      
                                                                     </div>                                                    
                                                                 </div>
                                                     </div>
@@ -99,12 +101,11 @@
                                             <div class="col-md-6 float-left">
                                                 <div class="card">
                                                     <div class="row card-block marketing-card">
-                                                        <div class="col-md-12 mod_vec_animate" ng-if="Demo.data">
-                                                            <h5 class="m-t-20"><i class="icofont icofont-steering"></i> {{data.vehiclename}}</h5>
+                                                        <div class="col-md-12 mod_vec_animate" ng-if="Demo.dt">
+                                                            <h5 class="m-t-20"><i class="icofont icofont-steering"></i> {{Demo.dt.vehiclename}}</h5>
                                                             <ul>
-                                                                <li ng-repeat="i in data.modelname">
-
-                                                                    <i class="icofont icofont-whisle text-c-red"></i> {{i}} 
+                                                                <li ng-repeat="item in Demo.dt.modelname.split(',')" >
+                                                                    <i class="icofont icofont-whisle text-c-red"></i> {{item}} 
                                                                 </li>
                                                             </ul>
                                                         </div> 
@@ -498,25 +499,57 @@
 //                    alert(JSON.stringify($scope.model_list));
                 });
             };
-//            $scope.LoadVehicleModels= function(selected_vehicleid)
-//            {
-//                $scope.records = [];
-//                $scope.list = [];
-//                for(var i = 0; i < $scope.model_list.length; i++) 
-//                {
-//                   var data = $scope.model_list[i];
-//                   if(data.vehicle_id == selected_vehicleid){
-////                       alert(data.vehicle_mapping_id);
-//                        angular.forEach(data.mod, function(value, key) {
-//                            $scope.records.push({
-//                             "modelname":value,
-//                             "vehicle_model_mapping_id":data.vehicle_mapping_id[key],
-//                            }); 
-//                        })
-//                   }
-//                }
-////                alert(JSON.stringify($scope.records));
-//            }
+            
+            
+            //load vehicle and model name
+            $scope.LoadVehicleModels= function()
+            {
+                $window.alert($scope.data.pdbversion);
+                $http({
+                    url : 'loadvehiclemodelname',
+                    method : "POST",
+                    data : {"pdb_id":$scope.data.pdbversion}
+                }).then(function (response, status, headers, config){
+                    
+                    var vm_result = [];
+                    $scope.status_value = "";
+                    $scope.vehicleresults = "";
+                    
+                   for(var i = 0; i < response.data.maps_object.pdbversion.length; i++)
+                   {
+                       $scope.Demo.dt = response.data.maps_object.pdbversion[i];
+//                        for (var i = 0; i < $scope.Demo.dt.modelname.split(",").length; i++) {
+//                            var arr = $scope.Demo.dt.modelname.split(",");
+//                            $window.alert(arr[i]);
+//                        }
+                        var v = {"vehicle_id" :$scope.Demo.dt.vehicle_id};
+                        var m = [];
+                        var arr = $scope.Demo.dt.modelname.split(",");
+                        var arr1 = $scope.Demo.dt.model_id.split(",");
+                        for (var item in arr) {
+                            m.push({
+                                    "model_id":parseInt(arr1[item]),
+                                    "modelname":arr[item]
+                                });
+                        }
+                        v.models = m;
+                        $scope.vehicleresults = JSON.stringify(v);
+                        $window.alert($scope.vehicleresults);
+//                        var data = response.data.maps_object.pdbversion[i];
+//                        vm_result.push({
+//                            "pdbversion":data.pid,
+//                            "vehicleid":data.vid,
+//                            "vehiclename":data.vname,
+//                            "vehiclemodelid":data.mid,
+//                            "vehiclemodelname":data.mname
+//                        });
+                    }
+    //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
+                });
+//                alert(JSON.stringify($scope.records));
+            }
+                        
+            
             $scope.createfeature_and_domain = function (event) 
             {        
                 if (!$scope.doSubmit) 
@@ -601,6 +634,7 @@
                     $scope.data.pdbversion = "";
                 }
             };
+            
             $scope.LoadPDBPreviousVersion = function(data) 
             {               
 //                $('#edit_version').openModal();
@@ -678,23 +712,20 @@
                 $http({
                     url : 'loadpdbversion_data',
                     method : "POST",
-                    data : {"vehicleversion_id":$scope.data.vehicleversion}
+                    data : {"vehicleversion_id":$scope.data.vehicle}
                 }).then(function (response, status, headers, config){
-                   result_data = JSON.stringify(response.data.maps_object);
-                    $window.alert(response);
-                   var array_result = [];
-                   var status_value = "";
-                   for(var i = 0; i < response.data.maps_object.count; i++)
+                    
+                    $scope.array_result = [];
+                    $scope.status_value = "";
+                    
+                   for(var i = 0; i < response.data.maps_object.pdbversion.length; i++)
                    {
-                        var data= response.data.maps_object.get("pdbversion");
-                        array_result.push({
-                            "pdbversion":data.pid,
-                            "vehiclemodelid":data.vid
+                        var data= response.data.maps_object.pdbversion[i];
+                        $scope.array_result.push({
+                            "pdbversion":data.pid
                         });
-                        status_value = data.status;
                     }
-                    $scope.Demo.data = array_result;
-                    $scope.data.status = status_value;
+//                    $scope.Demo.data = array_result;
     //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                 });
             };

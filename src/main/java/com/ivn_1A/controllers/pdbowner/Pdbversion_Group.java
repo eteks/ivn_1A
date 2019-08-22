@@ -46,6 +46,7 @@ public class Pdbversion_Group {
     Session session = HibernateUtil.getThreadLocalSession();
     private List<Vehicle> vehicleversion_result;
     private List<Pdbversion_group> pdbversion_group_result = new ArrayList<>();
+    private HashMap<String, Object> pdbversion_group_result1 = new HashMap<>(), pdbversion_group_result2 = new HashMap<>();
 
     public String PDBAssignPage() {
         System.out.println("Entered");
@@ -75,7 +76,7 @@ public class Pdbversion_Group {
                 fr.put("domain", fea.getFeature_id().getFeature_name());
                 featureslist_result.add(fr);
             }
-            vehicleversion_result = pdbownerdb.LoadVehicleVersion();
+            vehicleversion_result = pdbownerdb.loadVehicleVersion();
             System.out.println("featureslist_result result" + featureslist_result);
             maps_object.put("features", featureslist_result);
 
@@ -179,19 +180,41 @@ public class Pdbversion_Group {
             int vehver_id = readValue.get("vehicleversion_id").asInt();
             System.out.println(vehver_id);
 
-            pdbversion_group_result = (List<Pdbversion_group>)PDBOwnerDB.LoadPdbversion_groupByVehicleId(vehver_id);
-//            JSONArray pdbvers_group_result = new JSONArray();
-//            for (Pdbversion_group fea : pdbversion_group_result) {
-//                System.err.println(fea.getVehicle_id());
-//                JSONObject fr = new JSONObject();
-//                fr.put("pid", fea.getId());
-//                fr.put("vid", fea.getVehicle_id().getId());
-//                fr.put("mid", fea.getVehiclemodel_id().getId());
-//                pdbvers_group_result.add(fr);
-//                System.out.println(fr);
-//            }
-            mapper.enable(SerializationFeature.INDENT_OUTPUT);
-            String pdbvers_group_result = mapper.writeValueAsString(pdbversion_group_result);
+            List<Integer> pdbversion_group_result = (List<Integer>) PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
+//            pdbversion_group_result = (List<Pdbversion_group>) PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
+            JSONArray pdbvers_group_result = new JSONArray();
+            for (Integer fea : pdbversion_group_result) {
+                System.err.println(fea);
+                JSONObject fr = new JSONObject();
+                fr.put("pid", fea);
+                pdbvers_group_result.add(fr);
+                System.out.println("JSON ARRAY : " + fr);
+            }
+//            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+//            String pdbvers_group_result = mapper.writeValueAsString(pdbversion_group_result);
+            maps_object.put("pdbversion", pdbvers_group_result);
+            System.out.println(pdbvers_group_result);
+        } catch (Exception e) {
+            System.out.println("Error : " + e);
+        }
+        return "success";
+    }
+
+    public String loadVehicleAndModelNames() {
+        try {
+            System.out.println("loadVehicleAndModelNames");
+
+            final ObjectMapper mapper = new ObjectMapper();
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            int vehver_id = readValue.get("pdb_id").asInt();
+            System.out.println(vehver_id);
+            pdbversion_group_result1 = (HashMap<String, Object>) PDBOwnerDB.loadPdbversion_groupByVehicleId2(vehver_id);
+            JSONArray pdbvers_group_result = new JSONArray();
+            JSONObject fr = new JSONObject();
+            fr.putAll(pdbversion_group_result1);
+            pdbvers_group_result.add(fr);
+            System.out.println("JSON ARRAY : " + fr);
             maps_object.put("pdbversion", pdbvers_group_result);
             System.out.println(pdbvers_group_result);
         } catch (Exception e) {

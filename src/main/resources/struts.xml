@@ -24,6 +24,10 @@
             <result type="json" />
         </action>
 
+        <action name="loadvehiclemodelname" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="loadVehicleAndModelNames">
+            <result type="json" />
+        </action>
+
     </package>
     <package name="struts" extends="struts-default" namespace="/">
 
@@ -39,9 +43,8 @@
 
         <!--This is for testing--> 
         <action name="inserts" class="com.ivn_1A.controllers.repositories.TestInsert" method="execute">
-            <!--<result name="session">index.jsp</result>--> 
             <result name="success">test.jsp</result>
-            <result name="failed">test.jsp</result>
+            <result name="failed">test.jsp?failed</result>
         </action>       
         
     </package>
