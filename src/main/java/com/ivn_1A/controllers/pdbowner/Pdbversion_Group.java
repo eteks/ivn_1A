@@ -29,6 +29,7 @@ import com.opensymphony.xwork2.ActionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
@@ -77,6 +78,42 @@ public class Pdbversion_Group {
             }
             vehicleversion_result = pdbownerdb.LoadVehicleVersion();
             System.out.println("featureslist_result result" + featureslist_result);
+            
+            List<Pdbversion_group> pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(1);
+            System.out.println("pdb_previous_data" + pdb_previous_data.get(0).getDomain_and_features_mapping_id().getId());
+            JSONArray dfm_set = new JSONArray();
+            dfm_set.add("1");
+            dfm_set.add("2");
+//            dfm_set.add("3");
+            dfm_set.add("4");
+//            System.out.println("dfm_set"+dfm_set);
+            
+            JSONArray pvg_result = new JSONArray();
+            for (Pdbversion_group pvg : pdb_previous_data) {
+                pvg_result.add(String.valueOf(pvg.getDomain_and_features_mapping_id().getId()));
+            }
+            
+//            System.out.println("pvg_result"+pvg_result);         
+
+            System.out.println("Original dfm_set"+dfm_set);
+            System.out.println("Original pvg_result"+pvg_result);   
+            
+            
+            JSONArray tmp_dfm_set = dfm_set;
+            JSONArray tmp_pvg_result = pvg_result;
+            
+            tmp_dfm_set.removeAll(tmp_pvg_result);
+            tmp_pvg_result.removeAll(tmp_dfm_set);
+
+            System.out.println("Original dfm_set"+dfm_set);
+            System.out.println("Original pvg_result"+pvg_result);   
+            
+            System.out.println("Newly inserted"+tmp_dfm_set);                        
+            System.out.println("Removed"+tmp_pvg_result);
+            
+            
+            
+                
             maps_object.put("features", featureslist_result);
 
         } catch (Exception ex) {
