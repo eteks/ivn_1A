@@ -187,9 +187,18 @@
                                                    <span class="slider round"></span>
                                                 </label>
 
-                                               <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('save')" name="save">Save</button>
-                                               <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('submit')" name="submit">Submit</button>
-
+                                               
+                                               <a class="feature_add_tip modal-trigger btn-floating btn-primary" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
+                                               <div id="modal-comment" class="modal">
+                                                    <div class="modal-content text-left">
+                                                        <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
+                                                        <textarea class="col-md-12 m-b-10"></textarea>
+                                                        <div class="text-right">
+                                                            <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('save')" name="save">Save</button>
+                                                            <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('submit')" name="submit">Submit</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                            </div>
                                     </div><!--tab-body-->
                                 </div>
@@ -272,6 +281,7 @@
                 </div>
             </div>
             
+            
 <!--            <pre>list={{list}}</pre>-->
 <%@include file="footer.jsp" %>
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>-->
@@ -281,31 +291,7 @@
 //        var app = angular.module('angularTable', ['angularUtils.directives.dirPagination']);
         app.controller('RecordCtrl1',function($scope, $http, $window, $location, $element, $rootScope)
         {
-           
          
-         $scope.crate = [{name: "Moroni", age: 50},
-                {name: "Tiancum", age: 43},
-                {name: "Jacob", age: 27},
-                {name: "Nephi", age: 29},
-                {name: "Enos", age: 34},
-                {name: "Tiancum", age: 43},
-                {name: "Jacob", age: 27},
-                {name: "Nephi", age: 29},
-                {name: "Enos", age: 34},
-                {name: "Tiancum", age: 43},
-                {name: "Jacob", age: 27},
-                {name: "Nephi", age: 29},
-                {name: "Enos", age: 34},
-                {name: "Tiancum", age: 43},
-                {name: "Jacob", age: 27},
-                {name: "Nephi", age: 29},
-                {name: "Enos", age: 34}];
-//       $scope.records = [
-//                        { mod: 'm1'},
-//                        { mod: 'm2'},
-//                        { mod: 'm3'},
-//                        { mod: 'm4'}
-//                    ];
             this.data=[];
             var notification_to;
             $scope.features = [];
