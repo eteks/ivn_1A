@@ -79,37 +79,8 @@ public class Pdbversion_Group {
             vehicleversion_result = pdbownerdb.LoadVehicleVersion();
             System.out.println("featureslist_result result" + featureslist_result);
             
-            List<Pdbversion_group> pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(1);
-            System.out.println("pdb_previous_data" + pdb_previous_data.get(0).getDomain_and_features_mapping_id().getId());
-            JSONArray dfm_set = new JSONArray();
-            dfm_set.add("1");
-            dfm_set.add("2");
-//            dfm_set.add("3");
-            dfm_set.add("4");
-//            System.out.println("dfm_set"+dfm_set);
-            
-            JSONArray pvg_result = new JSONArray();
-            for (Pdbversion_group pvg : pdb_previous_data) {
-                pvg_result.add(String.valueOf(pvg.getDomain_and_features_mapping_id().getId()));
-            }
-            
-//            System.out.println("pvg_result"+pvg_result);         
-
-            System.out.println("Original dfm_set"+dfm_set);
-            System.out.println("Original pvg_result"+pvg_result);   
-            
-            
-            JSONArray tmp_dfm_set = dfm_set;
-            JSONArray tmp_pvg_result = pvg_result;
-            
-            tmp_dfm_set.removeAll(tmp_pvg_result);
-            tmp_pvg_result.removeAll(tmp_dfm_set);
-
-            System.out.println("Original dfm_set"+dfm_set);
-            System.out.println("Original pvg_result"+pvg_result);   
-            
-            System.out.println("Newly inserted"+tmp_dfm_set);                        
-            System.out.println("Removed"+tmp_pvg_result);
+            Map<String, Object> pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(1,2);
+            System.out.println("pdb_previous_data result" + pdb_previous_data.get("removed_features"));
             
             
             
@@ -172,8 +143,8 @@ public class Pdbversion_Group {
                 }
                 System.out.println("id" + Integer.parseInt((String) pdbversion_value.get("pdbversion_id")));
                 //To find and store removed id's and new feature'ids 
-                List pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(Integer.parseInt((String) pdbversion_value.get("pdbversion_id")));
-                System.out.println("pdb_previous_data" + pdb_previous_data);
+//                List pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(Integer.parseInt((String) pdbversion_value.get("pdbversion_id")));
+//                System.out.println("pdb_previous_data" + pdb_previous_data);
                 JSONArray dfm_set = (JSONArray) json.get("dfm_set");
 
                 pdbversion.setPdb_versionname(version_name);

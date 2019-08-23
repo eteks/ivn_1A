@@ -4,9 +4,11 @@ import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.models.admin.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -91,24 +93,46 @@ public class PDBOwnerDB {
         }
     }
 
-    public List<Pdbversion_group> GetPDBPreviousVersion_DomFea(int pdbversion_id) {
+    public Map<String, Object> GetPDBPreviousVersion_DomFea(int prevpdb_id, int curpdb_id) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
+            Map<String, Object> results = new HashMap<String, Object>();
 
             //Working code
-            CriteriaBuilder builder = s.getCriteriaBuilder();
-            CriteriaQuery<Pdbversion_group> criteriaQuery = builder.createQuery(Pdbversion_group.class);         
-            Root<Pdbversion_group> test = criteriaQuery.from(Pdbversion_group.class);
-//            criteriaQuery.select(test.get("domain_and_features_mapping_id"));
-            criteriaQuery.where(builder.equal(test.get("pdbversion_id"), pdbversion_id));
-            criteriaQuery.groupBy(test.get("domain_and_features_mapping_id"));
-            TypedQuery<Pdbversion_group> pdbversion = s.createQuery(criteriaQuery);
+//            CriteriaBuilder builder = s.getCriteriaBuilder();
+//            CriteriaQuery<Pdbversion_group> criteriaQuery = builder.createQuery(Pdbversion_group.class);         
+//            Root<Pdbversion_group> test = criteriaQuery.from(Pdbversion_group.class);
+////            criteriaQuery.select(test.get("domain_and_features_mapping_id"));
+//            criteriaQuery.where(builder.equal(test.get("pdbversion_id"), pdbversion_id));
+//            criteriaQuery.groupBy(test.get("domain_and_features_mapping_id"));
+//            TypedQuery<Pdbversion_group> pdbversion = s.createQuery(criteriaQuery);
+            Query removed_features = s.createQuery("SELECT DISTINCT pvg.domain_and_features_mapping_id as dfm_id, CONCAT('(',d.domain_name,')',' ',f.feature_name) as dom_fea \n" +
+                    "FROM Pdbversion_group as pvg \n" +
+                    "INNER JOIN Domain_and_Features_Mapping as dfm ON dfm.id = pvg.domain_and_features_mapping_id \n" +
+                    "INNER JOIN Domain as d ON d.id=dfm.domain_id \n" +
+                    "INNER JOIN Features as f ON f.id=dfm.feature_id\n" +
+                    "WHERE pvg.pdbversion_id="+prevpdb_id+" AND pvg.domain_and_features_mapping_id NOT IN \n" +
+                    "(SELECT DISTINCT domain_and_features_mapping_id FROM Pdbversion_group WHERE pdbversion_id="+curpdb_id+")");
+            results.put("removed_features",removed_features.getResultList());
+//            System.out.println("removed_features"+removed_features);   
+            
+            
+            Query added_features = s.createQuery("SELECT DISTINCT pvg.domain_and_features_mapping_id as dfm_id, CONCAT('(',d.domain_name,')',' ',f.feature_name) as dom_fea \n" +
+                    "FROM Pdbversion_group as pvg \n" +
+                    "INNER JOIN Domain_and_Features_Mapping as dfm ON dfm.id = pvg.domain_and_features_mapping_id \n" +
+                    "INNER JOIN Domain as d ON d.id=dfm.domain_id \n" +
+                    "INNER JOIN Features as f ON f.id=dfm.feature_id\n" +
+                    "WHERE pvg.pdbversion_id="+curpdb_id+" AND pvg.domain_and_features_mapping_id NOT IN \n" +
+                    "(SELECT DISTINCT domain_and_features_mapping_id FROM Pdbversion_group WHERE pdbversion_id="+prevpdb_id+")");
+            results.put("added_features",added_features.getResultList());
+//            System.out.println("added_features"+added_features);    
+            
             tx.commit();
             s.clear();
-            return pdbversion.getResultList();
+            return results;
         } catch (Exception e) {
-            System.err.println("Error in \"GetVersionname\" : " + e.getMessage());
+            System.err.println("Error in \"GetPDBPreviousVersion_DomFea\" : " + e.getMessage());
             return null;
         }
     }
