@@ -25,6 +25,9 @@ import org.hibernate.Transaction;
 public class TestInsert {
 
     public String execute() {
+        
+        
+        System.err.println("Test");
         Date date = new Date();
         TestInsert testInsert = new TestInsert();
         try {
@@ -35,7 +38,7 @@ public class TestInsert {
 //            domain.setModified_date(new Date());
 //            domain.setStatus(false);
 //            new TestInsert().saveDomain(domain);
-
+//
 //            Vehicle vehicle = new Vehicle();
 //            vehicle.setCreated_date(new Date());
 //            vehicle.setCreated_or_updated_by(new TestInsert().getUser(1));
@@ -43,6 +46,7 @@ public class TestInsert {
 //            vehicle.setVehiclename("Audi");
 //            vehicle.setStatus(true);
 //            new TestInsert().saveVehicle(vehicle);
+//            
 //            Vehiclemodel vehiclemodel = new Vehiclemodel();
 //            for (int i = 0; i < 3; i++) {
 //                vehiclemodel.setCreated_date(new Date());
@@ -52,7 +56,7 @@ public class TestInsert {
 //                vehiclemodel.setStatus(false);
 //                new TestInsert().saveVehicleModel(vehiclemodel);
 //            }
-
+//
 //            Features features = new Features();
 //            features.setCreated_date(date);
 //            features.setCreated_or_updated_by(new TestInsert().getUser(1));
@@ -62,12 +66,12 @@ public class TestInsert {
 //            features.setModified_date(date);
 //            features.setStatus(false);
 //            testInsert.saveFeatures(features);
-
+//
 //            Domain_and_Features_Mapping domain_and_Features_Mapping = new Domain_and_Features_Mapping();
 //            domain_and_Features_Mapping.setDomain_id(new TestInsert().getDomain(1));
 //            domain_and_Features_Mapping.setFeature_id(testInsert.getFeatures(1));
 //            testInsert.saveDomain_and_Features_Mapping(domain_and_Features_Mapping);
-            
+//            
 //            Pdbversion pdbversion = new Pdbversion();
 //            pdbversion.setCreated_date(date);
 //            pdbversion.setCreated_or_updated_by(testInsert.getUser(1));
@@ -80,9 +84,9 @@ public class TestInsert {
             
             Pdbversion_group pdbversion_group = new Pdbversion_group();
             pdbversion_group.setAvailable_status("audi available");
-//            pdbversion_group.setDomain_and_features_mapping_id(testInsert.getDomain_and_Features_Mapping(1));
+            pdbversion_group.setDomain_and_features_mapping_id(testInsert.getDomain_and_Features_Mapping(1));
             pdbversion_group.setPdbversion_id(testInsert.getPdbversion(1));
-//            pdbversion_group.setVechiclemodel_id(testInsert.getVehiclemodel(1));
+            pdbversion_group.setVehiclemodel_id(testInsert.getVehiclemodel(3));
             pdbversion_group.setVehicle_id(testInsert.getVehicle(1));
             testInsert.savePdbversion_group(pdbversion_group);
             return "success";

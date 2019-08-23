@@ -23,6 +23,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "pdbversion_group")
 public class Pdbversion_group {
+
     private int id;
     private Pdbversion pdbversion_id;
     private Vehicle vehicle_id;
@@ -42,7 +43,7 @@ public class Pdbversion_group {
         this.domain_and_features_mapping_id = domain_and_features_mapping_id;
         this.available_status = available_status;
     }
-      
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -53,47 +54,47 @@ public class Pdbversion_group {
     public void setId(int id) {
         this.id = id;
     }
-      
+
     @OneToOne
     @JoinColumn(name = "pdbversion_id", nullable = false)
     public Pdbversion getPdbversion_id() {
         return pdbversion_id;
     }
-    
+
     public void setPdbversion_id(Pdbversion pdbversion_id) {
         this.pdbversion_id = pdbversion_id;
     }
-    
+
     @OneToOne
     @JoinColumn(name = "vehicle_id", nullable = false)
     public Vehicle getVehicle_id() {
         return vehicle_id;
     }
-    
+
     public void setVehicle_id(Vehicle vehicle_id) {
         this.vehicle_id = vehicle_id;
-    } 
-    
+    }
+
     @OneToOne
     @JoinColumn(name = "vehiclemodel_id", nullable = false)
     public Vehiclemodel getVehiclemodel_id() {
         return vehiclemodel_id;
     }
-    
+
     public void setVehiclemodel_id(Vehiclemodel vehiclemodel_id) {
         this.vehiclemodel_id = vehiclemodel_id;
-    } 
-    
+    }
+
     @OneToOne
     @JoinColumn(name = "domain_and_features_mapping_id", nullable = false)
     public Domain_and_Features_Mapping getDomain_and_features_mapping_id() {
         return domain_and_features_mapping_id;
     }
-    
+
     public void setDomain_and_features_mapping_id(Domain_and_Features_Mapping domain_and_features_mapping_id) {
         this.domain_and_features_mapping_id = domain_and_features_mapping_id;
-    } 
-    
+    }
+
 //    @OneToOne
 //    @JoinColumn(name = "pdb_dom_fea_mapping_id", nullable = false)
 //    public Pdb_domain_feature_mapping getPdb_domain_feature_mapping() {
@@ -103,13 +104,12 @@ public class Pdbversion_group {
 //    public void setPdb_domain_feature_mapping(Pdb_domain_feature_mapping pdb_dom_fea_mapping_id) {
 //        this.pdb_dom_fea_mapping_id = pdb_dom_fea_mapping_id;
 //    } 
-    
     @Column(name = "available_status", length = 20, nullable = false)
     public String getAvailable_status() {
-            return available_status;
+        return available_status;
     }
 
     public void setAvailable_status(String available_status) {
-            this.available_status = available_status;
+        this.available_status = available_status;
     }
 }
