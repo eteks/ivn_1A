@@ -8,6 +8,7 @@ package com.ivn_1A.controllers.pdbowner;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.configs.JSONConfigure;
 
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import javax.json.JsonArray;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
@@ -48,6 +50,7 @@ public class Pdbversion_Group {
     private List<Vehicle> vehicleversion_result;
     private List<Pdbversion_group> pdbversion_group_result = new ArrayList<>();
     private HashMap<String, Object> pdbversion_group_result1 = new HashMap<>(), pdbversion_group_result2 = new HashMap<>();
+    private List<Map<String, Object>> domainfeatures_result = new ArrayList<Map<String, Object>>();
 
     public String PDBAssignPage() {
         System.out.println("Entered");
@@ -79,13 +82,10 @@ public class Pdbversion_Group {
             }
             vehicleversion_result = pdbownerdb.loadVehicleVersion();
             System.out.println("featureslist_result result" + featureslist_result);
-            
-            Map<String, Object> pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(1,2);
+
+            Map<String, Object> pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(1, 2);
             System.out.println("pdb_previous_data result" + pdb_previous_data.get("removed_features"));
-            
-            
-            
-                
+
             maps_object.put("features", featureslist_result);
 
         } catch (Exception ex) {
@@ -232,6 +232,57 @@ public class Pdbversion_Group {
         return "success";
     }
 
+    public String CreateDomain_and_Features() {
+
+        try {
+
+            System.out.println("CreateDomain_and_Features");
+            final ObjectMapper mapper = new ObjectMapper();
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            boolean status = (boolean) false;
+            int vehicleversion_id = 0;
+            String previousversion_status = null;
+
+            String domain_name = readValue.get("domain_name").asText();
+            ArrayNode features_and_description = (ArrayNode) readValue.get("features_and_description");
+            System.out.println("vehiclename" + domain_name);
+            System.out.println("vehicle_and_model_value" + features_and_description);
+
+            Domain domain = new Domain(domain_name, false, new Date(), new Date(), pdbownerdb.getUser(1));
+            Domain domainId = pdbownerdb.saveDomain(domain);
+            List<Map<String, Object>> row = new ArrayList<Map<String, Object>>();
+
+            //Insert Data in Features table
+            for (Object o : features_and_description) {
+
+                Map<String, Object> columns = new HashMap<String, Object>();
+                JsonNode jn = (JsonNode) o;
+                String feature_name = jn.get("feature").asText();
+                String feature_description = jn.get("description").asText();
+
+                Features features = new Features(feature_name, feature_description, "Electrical", false, new Date(), new Date(), pdbownerdb.getUser(1));
+                Features featureId = pdbownerdb.saveFeatures(features);
+
+                Domain_and_Features_Mapping domain_and_Features_Mapping = new Domain_and_Features_Mapping(domainId, featureId);
+                Domain_and_Features_Mapping domain_and_Features_MappingId = pdbownerdb.saveDomain_and_Features_Mapping(domain_and_Features_Mapping);
+                columns.put("domain", domain_name);
+                columns.put("fid", featureId.getId());
+                columns.put("fea", feature_name);
+                domainfeatures_result.add(columns);
+                row.add(columns);
+                System.out.println("domainfeatures_result" + domainfeatures_result);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error : " + e);
+            maps_object.put("msg", "Error in the Inserion : " + e);
+        }
+        return "success";
+    }
+
     public Map<String, Object> getMaps_object() {
         return maps_object;
     }
@@ -247,4 +298,45 @@ public class Pdbversion_Group {
     public void setVehicleversion_result(List<Vehicle> vehicleversion_result) {
         this.vehicleversion_result = vehicleversion_result;
     }
+
+    public Map<String, String> getMaps_string() {
+        return maps_string;
+    }
+
+    public void setMaps_string(Map<String, String> maps_string) {
+        this.maps_string = maps_string;
+    }
+
+    public List<Pdbversion_group> getPdbversion_group_result() {
+        return pdbversion_group_result;
+    }
+
+    public void setPdbversion_group_result(List<Pdbversion_group> pdbversion_group_result) {
+        this.pdbversion_group_result = pdbversion_group_result;
+    }
+
+    public HashMap<String, Object> getPdbversion_group_result1() {
+        return pdbversion_group_result1;
+    }
+
+    public void setPdbversion_group_result1(HashMap<String, Object> pdbversion_group_result1) {
+        this.pdbversion_group_result1 = pdbversion_group_result1;
+    }
+
+    public HashMap<String, Object> getPdbversion_group_result2() {
+        return pdbversion_group_result2;
+    }
+
+    public void setPdbversion_group_result2(HashMap<String, Object> pdbversion_group_result2) {
+        this.pdbversion_group_result2 = pdbversion_group_result2;
+    }
+
+    public List<Map<String, Object>> getDomainfeatures_result() {
+        return domainfeatures_result;
+    }
+
+    public void setDomainfeatures_result(List<Map<String, Object>> domainfeatures_result) {
+        this.domainfeatures_result = domainfeatures_result;
+    }
+
 }

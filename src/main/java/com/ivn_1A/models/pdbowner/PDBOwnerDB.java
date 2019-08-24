@@ -66,7 +66,7 @@ public class PDBOwnerDB {
         }
     }
 
-    public Pdbversion insertPDBVersion(Pdbversion pdbversion) {
+    public static Pdbversion insertPDBVersion(Pdbversion pdbversion) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
@@ -81,7 +81,7 @@ public class PDBOwnerDB {
         }
     }
 
-    public Pdbversion_group insertPDBVersionGroup(Pdbversion_group pvg) {
+    public static Pdbversion_group insertPDBVersionGroup(Pdbversion_group pvg) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
@@ -96,7 +96,118 @@ public class PDBOwnerDB {
         }
     }
 
-    public Map<String, Object> GetPDBPreviousVersion_DomFea(int prevpdb_id, int curpdb_id) {
+    public static Domain saveDomain(Domain domain) {
+        try {
+            Domain domain1 = getDomainByName(domain.getDomain_name());
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            if (domain1 != null) {
+                s.save(domain);
+            }
+
+            tx.commit();
+            s.clear();
+            return domain1;
+//            return pdbversion.getId();
+        } catch (Exception e) {
+            System.err.println("Error in \"insertPDBVersionGroup\" : " + e.getMessage());
+            return null;
+        }
+    }
+
+    //Domain Data by Name
+    public static Domain getDomainByName(String domainName) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery<Domain> criteriaQuery = criteriaBuilder.createQuery(Domain.class);
+
+            Root<Domain> domainRoot = criteriaQuery.from(Domain.class);
+            criteriaQuery.where(criteriaBuilder.equal(domainRoot.get("domain_name"), domainName)).orderBy(criteriaBuilder.desc(domainRoot.get("id")));
+            TypedQuery<Domain> dfm_result = s.createQuery(criteriaQuery);
+
+            tx.commit();
+            s.clear();
+            return dfm_result.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Error : " + e);
+            return null;
+        }
+    }
+
+    public static Features saveFeatures(Features features) {
+        try {
+            Features features1 = getFeaturesByName(features.getFeature_name());
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            if (features1 != null) {
+                s.save(features);
+            }
+            tx.commit();
+            s.clear();
+            return features1;
+//            return pdbversion.getId();
+        } catch (Exception e) {
+            System.err.println("Error in \"insertPDBVersionGroup\" : " + e.getMessage());
+            return null;
+        }
+    }
+
+    //Domain Data by Name
+    public static Features getFeaturesByName(String featureName) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery<Features> criteriaQuery = criteriaBuilder.createQuery(Features.class);
+
+            Root<Features> featureRoot = criteriaQuery.from(Features.class);
+            criteriaQuery.where(criteriaBuilder.equal(featureRoot.get("feature_name"), featureName)).orderBy(criteriaBuilder.desc(featureRoot.get("id")));
+            TypedQuery<Features> dfm_result = s.createQuery(criteriaQuery);
+
+            tx.commit();
+            s.clear();
+            return dfm_result.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Error : " + e);
+            return null;
+        }
+    }
+
+    public static Domain_and_Features_Mapping saveDomain_and_Features_Mapping(Domain_and_Features_Mapping dfm) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            s.save(dfm);
+            tx.commit();
+            s.clear();
+            return dfm;
+//            return pdbversion.getId();
+        } catch (Exception e) {
+            System.err.println("Error in \"insertPDBVersionGroup\" : " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static User getUser(int id) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            User user = s.get(User.class, id);
+            tx.commit();
+            s.clear();
+            return user;
+        } catch (Exception e) {
+            System.err.println("Error in \"Vehicle_Repository\" : " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static Map<String, Object> GetPDBPreviousVersion_DomFea(int prevpdb_id, int curpdb_id) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
@@ -110,27 +221,26 @@ public class PDBOwnerDB {
 //            criteriaQuery.where(builder.equal(test.get("pdbversion_id"), pdbversion_id));
 //            criteriaQuery.groupBy(test.get("domain_and_features_mapping_id"));
 //            TypedQuery<Pdbversion_group> pdbversion = s.createQuery(criteriaQuery);
-            Query removed_features = s.createQuery("SELECT DISTINCT pvg.domain_and_features_mapping_id as dfm_id, CONCAT('(',d.domain_name,')',' ',f.feature_name) as dom_fea \n" +
-                    "FROM Pdbversion_group as pvg \n" +
-                    "INNER JOIN Domain_and_Features_Mapping as dfm ON dfm.id = pvg.domain_and_features_mapping_id \n" +
-                    "INNER JOIN Domain as d ON d.id=dfm.domain_id \n" +
-                    "INNER JOIN Features as f ON f.id=dfm.feature_id\n" +
-                    "WHERE pvg.pdbversion_id="+prevpdb_id+" AND pvg.domain_and_features_mapping_id NOT IN \n" +
-                    "(SELECT DISTINCT domain_and_features_mapping_id FROM Pdbversion_group WHERE pdbversion_id="+curpdb_id+")");
-            results.put("removed_features",removed_features.getResultList());
+            Query removed_features = s.createQuery("SELECT DISTINCT pvg.domain_and_features_mapping_id as dfm_id, CONCAT('(',d.domain_name,')',' ',f.feature_name) as dom_fea \n"
+                    + "FROM Pdbversion_group as pvg \n"
+                    + "INNER JOIN Domain_and_Features_Mapping as dfm ON dfm.id = pvg.domain_and_features_mapping_id \n"
+                    + "INNER JOIN Domain as d ON d.id=dfm.domain_id \n"
+                    + "INNER JOIN Features as f ON f.id=dfm.feature_id\n"
+                    + "WHERE pvg.pdbversion_id=" + prevpdb_id + " AND pvg.domain_and_features_mapping_id NOT IN \n"
+                    + "(SELECT DISTINCT domain_and_features_mapping_id FROM Pdbversion_group WHERE pdbversion_id=" + curpdb_id + ")");
+            results.put("removed_features", removed_features.getResultList());
 //            System.out.println("removed_features"+removed_features);   
-            
-            
-            Query added_features = s.createQuery("SELECT DISTINCT pvg.domain_and_features_mapping_id as dfm_id, CONCAT('(',d.domain_name,')',' ',f.feature_name) as dom_fea \n" +
-                    "FROM Pdbversion_group as pvg \n" +
-                    "INNER JOIN Domain_and_Features_Mapping as dfm ON dfm.id = pvg.domain_and_features_mapping_id \n" +
-                    "INNER JOIN Domain as d ON d.id=dfm.domain_id \n" +
-                    "INNER JOIN Features as f ON f.id=dfm.feature_id\n" +
-                    "WHERE pvg.pdbversion_id="+curpdb_id+" AND pvg.domain_and_features_mapping_id NOT IN \n" +
-                    "(SELECT DISTINCT domain_and_features_mapping_id FROM Pdbversion_group WHERE pdbversion_id="+prevpdb_id+")");
-            results.put("added_features",added_features.getResultList());
+
+            Query added_features = s.createQuery("SELECT DISTINCT pvg.domain_and_features_mapping_id as dfm_id, CONCAT('(',d.domain_name,')',' ',f.feature_name) as dom_fea \n"
+                    + "FROM Pdbversion_group as pvg \n"
+                    + "INNER JOIN Domain_and_Features_Mapping as dfm ON dfm.id = pvg.domain_and_features_mapping_id \n"
+                    + "INNER JOIN Domain as d ON d.id=dfm.domain_id \n"
+                    + "INNER JOIN Features as f ON f.id=dfm.feature_id\n"
+                    + "WHERE pvg.pdbversion_id=" + curpdb_id + " AND pvg.domain_and_features_mapping_id NOT IN \n"
+                    + "(SELECT DISTINCT domain_and_features_mapping_id FROM Pdbversion_group WHERE pdbversion_id=" + prevpdb_id + ")");
+            results.put("added_features", added_features.getResultList());
 //            System.out.println("added_features"+added_features);    
-            
+
             tx.commit();
             s.clear();
             return results;
@@ -280,24 +390,24 @@ public class PDBOwnerDB {
             List<Object[]> reObjects = s.createQuery(criteriaQuery).getResultList();
             HashMap<String, Object> hashMap = new HashMap<>();
             for (Object[] reObject : reObjects) {
-                
+
                 int vid = (Integer) reObject[1];
                 System.out.println(vid);
                 hashMap.put("vehicle_id", vid);
-                
+
                 String vehicle = (String) reObject[2];
                 System.out.println(vehicle);
                 hashMap.put("vehiclename", vehicle);
-                
-                String vehiclemodel = (String) reObject[3];                
+
+                String vehiclemodel = (String) reObject[3];
                 System.out.println(vehiclemodel);
                 hashMap.put("modelname", vehiclemodel);
-                
+
                 String mid = (String) reObject[4];
                 System.out.println(mid);
                 hashMap.put("model_id", mid);
             }
-            
+
             tx.commit();
             s.clear();
             return hashMap;

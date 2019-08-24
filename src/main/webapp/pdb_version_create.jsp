@@ -13,7 +13,7 @@
                                                 <div class="page-header-title">
                                                     <i class="icofont icofont-mining bg-c-red"></i>
                                                     <div class="d-inline">
-                                                        <h4>PDB Owner</h4>
+                                                        <h4 ng-click="createfeature_and_domain()">PDB Owner</h4>
                                                         <span>PDB Version Creation</span>
                                                     </div>
                                                 </div>
@@ -549,11 +549,13 @@
                 }
                 $scope.doSubmit = false; 
                 var feature_and_domain_data = {};
-                feature_and_domain_data['domain_name'] = $scope.domain;
-                feature_and_domain_data['features_and_description'] = $scope.Demo.data;
+//                feature_and_domain_data['domain_name'] = $scope.domain;
+                feature_and_domain_data['domain_name'] = "car";
+//                feature_and_domain_data['features_and_description'] = $scope.Demo.data;
+                feature_and_domain_data['features_and_description'] = [{"feature":"Colored Seat","description":"Seats are Colored"}];
                 if($scope.Demo.data.length > 0)
                 {
-                //                        alert(JSON.stringify(feature_and_domain_data));
+                // {"vehicle_id" :"1", "models":[{"model_id":1,"modelname":"m1"},{"model_id":2,"modelname":"m2"}]}                        alert(JSON.stringify(feature_and_domain_data));
                        $http({
                        url : 'createfeature_and_domain',
                        method : "POST",

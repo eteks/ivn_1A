@@ -27,7 +27,10 @@
         <action name="loadvehiclemodelname" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="loadVehicleAndModelNames">
             <result type="json" />
         </action>
-
+   
+        <action name="createfeature_and_domain" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="CreateDomain_and_Features">
+            <result type="json" />
+        </action> 
     </package>
     <package name="struts" extends="struts-default" namespace="/">
 
