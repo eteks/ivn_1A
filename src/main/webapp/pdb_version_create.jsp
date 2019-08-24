@@ -299,6 +299,7 @@
             $scope.features = [];
             $scope.list = [];
             $scope.vehicleresults = {};
+            $scope.vercompare_results = {};
             
             
             
@@ -345,16 +346,21 @@
                 data['notification_to'] = notification_to+"";
                 data['dfm_set'] = ["1","2","3"];
                 alert(JSON.stringify(data));
-    //            $http({
-    //                url: 'createpdbversion',
-    //                method: "POST",
-    //                data: data,
-    //            }).then(function (data, status, headers, config) {
-    ////                                    $window.alert(JSON.stringify(data));
-    ////                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-    ////                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
-    ////            //                        Materialize.toast(data['maps']["status"], 4000);
-    //            });
+                $http({
+                    url: 'createpdbversion',
+                    method: "POST",
+                    data: data,
+                }).then(function (data, status, headers, config) {
+                    $scope.vercompare_results = {"removed_features":"(d1) feature3, (d1) feature5", 
+                                                 "added_features":"(d1) feature4", 
+                                                 "removed_models":"m2,m4", "added_models":"m3", 
+                                                 "previous_version":"1.0", "current_version":"1.1"
+                                                };
+    //                                    $window.alert(JSON.stringify(data));
+    //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
+    //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
+    //            //                        Materialize.toast(data['maps']["status"], 4000);
+                });
             }
             
             $scope.createpdbversion = function (event)
