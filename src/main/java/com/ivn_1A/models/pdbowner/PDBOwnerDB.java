@@ -192,16 +192,16 @@ public class PDBOwnerDB {
     }
 
     //Pdbversion group Data
-    public static List<Integer> loadPdbversion_groupByVehicleId(int id) {
+    public static List<Object[]> loadPdbversion_groupByVehicleId(int id) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
 
             final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
-            CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
+            CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
             Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
-            criteriaQuery.select(pdbversion_groupRoot.get("pdbversion_id").get("id")).distinct(true).where(criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
-            List<Integer> res = s.createQuery(criteriaQuery).getResultList();
+            criteriaQuery.multiselect(pdbversion_groupRoot.get("pdbversion_id").get("id"), pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname")).distinct(true).where(criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
+            List<Object[]> res = s.createQuery(criteriaQuery).getResultList();
             tx.commit();
             s.clear();
             return res;
@@ -250,8 +250,9 @@ public class PDBOwnerDB {
             Root<Vehicle> vRoot = criteriaQuery.from(Vehicle.class);
             Root<Vehiclemodel> vmRoot = criteriaQuery.from(Vehiclemodel.class);
 
-            criteriaQuery.multiselect(pRoot, vRoot.get("id"), vRoot.get("vehiclename"), criteriaBuilder.function("group_concat", String.class, vmRoot.get("modelname")), criteriaBuilder.function("group_concat", String.class, vmRoot.get("id"))).distinct(true);
-            criteriaQuery.where(criteriaBuilder.equal(pRoot.get("vehicle_id").get("id"), vRoot.get("id")), criteriaBuilder.equal(pRoot.get("vehiclemodel_id").get("id"), vmRoot.get("id")), criteriaBuilder.equal(pRoot.get("vehicle_id").get("id"), 1));
+            criteriaQuery.multiselect(pRoot, vRoot.get("id"), vRoot.get("vehiclename"), criteriaBuilder.function("group_concat", String.class, vmRoot.get("modelname")), criteriaBuilder.function("group_concat", String.class, vmRoot.get("id"))).distinct(true)
+                    .where(criteriaBuilder.equal(pRoot.get("vehicle_id").get("id"), vRoot.get("id")), criteriaBuilder.equal(pRoot.get("vehiclemodel_id").get("id"), vmRoot.get("id")), criteriaBuilder.equal(pRoot.get("vehicle_id").get("id"), id))
+                    .orderBy(criteriaBuilder.desc(pRoot.get("pdbversion_id").get("id")));
 
             List<Object[]> reObjects = s.createQuery(criteriaQuery).getResultList();
             HashMap<String, Object> hashMap = new HashMap<>();

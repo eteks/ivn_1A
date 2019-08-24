@@ -43,12 +43,12 @@ public class TestInsert {
 //            vehicle.setCreated_date(new Date());
 //            vehicle.setCreated_or_updated_by(new TestInsert().getUser(1));
 //            vehicle.setModified_date(new Date());
-//            vehicle.setVehiclename("Audi");
+//            vehicle.setVehiclename("Benz");
 //            vehicle.setStatus(true);
 //            new TestInsert().saveVehicle(vehicle);
 //            
 //            Vehiclemodel vehiclemodel = new Vehiclemodel();
-//            for (int i = 0; i < 3; i++) {
+//            for (int i = 5; i < 6; i++) {
 //                vehiclemodel.setCreated_date(new Date());
 //                vehiclemodel.setModified_date(new Date());
 //                vehiclemodel.setCreated_or_updated_by(new TestInsert().getUser(1));
@@ -74,7 +74,7 @@ public class TestInsert {
 //            
 //            Pdbversion pdbversion = new Pdbversion();
 //            pdbversion.setCreated_date(date);
-//            pdbversion.setCreated_or_updated_by(testInsert.getUser(1));
+//            pdbversion.setCreated_or_updated_by(testInsert.getUser(2));
 //            pdbversion.setFlag(false);
 //            pdbversion.setModified_date(date);
 //            pdbversion.setPdb_manual_comment("hai");
@@ -85,8 +85,8 @@ public class TestInsert {
             Pdbversion_group pdbversion_group = new Pdbversion_group();
             pdbversion_group.setAvailable_status("audi available");
             pdbversion_group.setDomain_and_features_mapping_id(testInsert.getDomain_and_Features_Mapping(1));
-            pdbversion_group.setPdbversion_id(testInsert.getPdbversion(1));
-            pdbversion_group.setVehiclemodel_id(testInsert.getVehiclemodel(3));
+            pdbversion_group.setPdbversion_id(testInsert.getPdbversion(3));
+            pdbversion_group.setVehiclemodel_id(testInsert.getVehiclemodel(6));
             pdbversion_group.setVehicle_id(testInsert.getVehicle(1));
             testInsert.savePdbversion_group(pdbversion_group);
             return "success";

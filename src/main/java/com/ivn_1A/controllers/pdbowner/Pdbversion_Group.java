@@ -217,13 +217,14 @@ public class Pdbversion_Group {
             int vehver_id = readValue.get("vehicleversion_id").asInt();
             System.out.println(vehver_id);
 
-            List<Integer> pdbversion_group_result = (List<Integer>) PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
+            List<Object[]> pdbversion_group_result = (List<Object[]>) PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
 //            pdbversion_group_result = (List<Pdbversion_group>) PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
             JSONArray pdbvers_group_result = new JSONArray();
-            for (Integer fea : pdbversion_group_result) {
-                System.err.println(fea);
+            for (Object[] fea : pdbversion_group_result) {
+                System.err.println(fea[0] + " " + fea[1]);
                 JSONObject fr = new JSONObject();
-                fr.put("pid", fea);
+                fr.put("pid", fea[0]);
+                fr.put("pversion", fea[1]);
                 pdbvers_group_result.add(fr);
                 System.out.println("JSON ARRAY : " + fr);
             }

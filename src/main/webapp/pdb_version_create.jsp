@@ -75,10 +75,11 @@
                                                                                 </s:iterator>
                                                                             </select>
                                                                             <label for="vehicle">Version:</label>
-                                                                            <select ng-change="LoadVehicleModels()" ng-model="data.pdbversion">
-                                                                                <option selected="" disabled="">Select Version</option>
-                                                                                <option ng-repeat="arr in array_result" value="{{arr.pdbversion}}" >{{arr.pdbversion}}</option>
-                                                                            </select>
+                                                                            <select ng-model="data.pdbversion" ng-options="y.pdbversion for (x, y) in array_result | orderBy:'-'" ng-change="LoadVehicleModels()" ></select>
+                                                                            <!--<select ng-init="arr[arr.length-1]" ng-model="data.pdbversion" ng-options="y.pdbversion for (x, y) in array_result track by arr | orderBy:'-'" ng-change="LoadVehicleModels()" ></select>-->
+<!--                                                                            <select ng-change="LoadVehicleModels()" ng-model="data.pdbversion" id="pdbversion">
+                                                                                <option ng-repeat="arr in array_result | orderBy:'-'" ng-selected="arr.pdbid == data.pdbversion" value="{{arr.pdbid}}" >{{arr.pdbversion}}</option>
+                                                                            </select>-->
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="vehicle">New vehicle:</label>
@@ -490,11 +491,10 @@
             //load vehicle and model name
             $scope.LoadVehicleModels= function()
             {
-                $window.alert($scope.data.pdbversion);
                 $http({
                     url : 'loadvehiclemodelname',
                     method : "POST",
-                    data : {"pdb_id":$scope.data.pdbversion}
+                    data : {"pdb_id":$scope.data.pdbversion.pdbid}
                 }).then(function (response, status, headers, config){
                     
                     var vm_result = [];
@@ -520,7 +520,6 @@
                         }
                         v.models = m;
                         $scope.vehicleresults = v;
-                        $window.alert($scope.vehicleresults);
 //                        var data = response.data.maps_object.pdbversion[i];
 //                        vm_result.push({
 //                            "pdbversion":data.pid,
@@ -693,6 +692,8 @@
                 });
             };
             
+            
+            //getting pdb version and id
             $scope.LoadPreviousVersion = function()
             {
                 $http({
@@ -703,14 +704,16 @@
                     
                     $scope.array_result = [];
                     $scope.status_value = "";
-                    
-                   for(var i = 0; i < response.data.maps_object.pdbversion.length; i++)
+                    var pdbLength = response.data.maps_object.pdbversion.length;
+                   for(var i = 0; i < pdbLength; i++)
                    {
                         var data= response.data.maps_object.pdbversion[i];
                         $scope.array_result.push({
-                            "pdbversion":data.pid
+                            "pdbid":data.pid,
+                            "pdbversion":data.pversion
                         });
                     }
+                    data.pdbversion = "1";
 //                    $scope.Demo.data = array_result;
     //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                 });
