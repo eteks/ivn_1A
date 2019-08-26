@@ -5,6 +5,8 @@ https://www.programcreek.com/java-api-examples/?api=javax.persistence.criteria.J
 
 https://www.initgrep.com/posts/java/jpa/create-programmatic-queries-using-criteria-api
 
+https://www.logicbig.com/tutorials/java-ee-tutorial/jpa/criteria-builder-string-function.html
+
 
 {"pdbversion":{"vehicle_id":"1","pdb_manual_comment":"test","status":true,"pdbversion":1},
 "pdbdata_list":
@@ -61,7 +63,7 @@ System.out.println(diff);
 //
 
 Find Removed versions from previous pdb:
-SELECT DISTINCT pvg.domain_and_features_mapping_id as dfm_id, CONCAT('(',d.domain_name,')',' ',f.feature_name) as dom_fea 
+SELECT GROUP_CONCAT(DISTINCT(pvg.domain_and_features_mapping_id)) as dfm_id, GROUP_CONCAT(DISTINCT(CONCAT('(',d.domain_name,')',' ',f.feature_name))) as dom_fea 
 FROM pdbversion_group as pvg 
 INNER JOIN domain_and_features_mapping as dfm ON dfm.id = pvg.domain_and_features_mapping_id 
 INNER JOIN domain as d ON d.id=dfm.domain_id 
@@ -76,3 +78,26 @@ INNER JOIN domain as d ON d.id=dfm.domain_id
 INNER JOIN features as f ON f.id=dfm.feature_id
 WHERE pdbversion_id=2 AND pvg.domain_and_features_mapping_id NOT IN (SELECT DISTINCT domain_and_features_mapping_id FROM pdbversion_group WHERE pdbversion_id=1)
 
+
+final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
+
+            Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
+            Join<Pdbversion_group, Vehicle> vehicleJoin = pdbversion_groupRoot.join("id", JoinType.INNER);
+            Join<Pdbversion_group, Vehiclemodel> modelJoin = vehicleJoin.join("id", JoinType.INNER);
+            criteriaQuery.select(vehicleJoin.get("vehiclename")).distinct(true);
+            criteriaQuery.select(criteriaBuilder.construct(Pdbversion_group.class, criteriaBuilder.function("group_concat", String.class, modelJoin.get("modelname"))));
+            criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
+            System.err.println(criteriaQuery.toString());
+
+Working code:
+criteriaQuery.select(criteriaBuilder.concat(domJoin.<String>get("domain_name"),feaJoin.<String>get("feature_name")));
+
+{
+"removed_features":"(d1) feature3, (d1) feature5",
+"added_features":"(d1) feature4", 
+"removed_models":"m2,m4", 
+"added_models":"m3", 
+"previous_version":"1.0", 
+"current_version":"1.1"
+}
