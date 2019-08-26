@@ -72,6 +72,7 @@ WHERE pdbversion_id=1 AND pvg.domain_and_features_mapping_id NOT IN
 (SELECT DISTINCT domain_and_features_mapping_id FROM pdbversion_group WHERE pdbversion_id=2)
 
 Find Added versions in Current pdb:
+
 SELECT DISTINCT pvg.domain_and_features_mapping_id as dfm_id, CONCAT('(',d.domain_name,')',' ',f.feature_name) as dom_fea FROM pdbversion_group as pvg 
 INNER JOIN domain_and_features_mapping as dfm ON dfm.id = pvg.domain_and_features_mapping_id 
 INNER JOIN domain as d ON d.id=dfm.domain_id 
@@ -101,3 +102,7 @@ criteriaQuery.select(criteriaBuilder.concat(domJoin.<String>get("domain_name"),f
 "previous_version":"1.0", 
 "current_version":"1.1"
 }
+
+SELECT DISTINCT pvg.vehiclemodel_id as vm_id, vm.modelname as modelname FROM pdbversion_group as pvg 
+INNER JOIN vehiclemodel as vm ON vm.id = pvg.vehiclemodel_id
+WHERE pdbversion_id=1 AND pvg.vehiclemodel_id NOT IN (SELECT DISTINCT vehiclemodel_id FROM pdbversion_group WHERE pdbversion_id=2)

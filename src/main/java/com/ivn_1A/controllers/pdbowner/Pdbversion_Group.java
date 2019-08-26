@@ -28,11 +28,14 @@ import com.ivn_1A.models.pdbowner.*;
 import com.opensymphony.xwork2.ActionContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 import javax.json.JsonArray;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.Session;
@@ -83,10 +86,22 @@ public class Pdbversion_Group {
             vehicleversion_result = pdbownerdb.loadVehicleVersion();
             System.out.println("featureslist_result result" + featureslist_result);
 
-            Map<String, Object> pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(1, 2);
-            System.out.println("pdb_previous_data result" + pdb_previous_data.get("removed_features"));
-
+//            Map<String, Object> pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(1, 2);
+//            System.out.println("pdb_previous_data result" + pdb_previous_data);
+//            
+//            JSONObject pdb_previous_data_result = new JSONObject();
+//            pdb_previous_data_result.put("removed_features", pdb_previous_data.get("removed_features"));
+//            pdb_previous_data_result.put("added_features",pdb_previous_data.get("added_features"));
+//            pdb_previous_data_result.put("removed_models",pdb_previous_data.get("removed_models"));
+//            pdb_previous_data_result.put("added_models",pdb_previous_data.get("added_models"));            
+//            pdb_previous_data_result.put("current_version","1.1");
+//            pdb_previous_data_result.put("previous_models","1.0");
+//            
+//            maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
+            
             maps_object.put("features", featureslist_result);
+            
+//            maps_object.put("removed_features", StringUtils.join(",", pdb_previous_data.get("removed_features")));
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -108,6 +123,7 @@ public class Pdbversion_Group {
 //        String previousversion_status = null;
 //        String previousversion_flag = null;
         boolean flag;
+        int prevpdb_id = 0;
         try {
             Object obj = parser.parse(jsondata);
             JSONObject json = (JSONObject) obj;
@@ -140,6 +156,7 @@ public class Pdbversion_Group {
                     } else {
                         version_name = (float) 0.1 + Float.valueOf((String) pdbversion_value.get("pdbversion_name"));
                         pdbversion.setPdb_reference_version(Float.valueOf((String) pdbversion_value.get("pdbversion_name")));
+                        prevpdb_id = Integer.parseInt((String) pdbversion_value.get("pdbversion_id"));
                     }
                 }
                 System.out.println("id" + Integer.parseInt((String) pdbversion_value.get("pdbversion_id")));
@@ -155,19 +172,33 @@ public class Pdbversion_Group {
                 pdbversion.setCreated_date(new Date());
                 pdbversion.setModified_date(new Date());
                 pdbversion.setCreated_or_updated_by(vehicle_Repository.getUser(1));
-                Pdbversion pdbinserted_id = pdbownerdb.insertPDBVersion(pdbversion);
+                Pdbversion curpdb_id = pdbownerdb.insertPDBVersion(pdbversion);
                 //Insert data into PDB Version Group
                 int i = 0;
                 for (Object o : pdbdata_list) {
                     JSONObject pdbdata = (JSONObject) o;
                     System.out.println("pdbdata" + pdbdata);
                     Pdbversion_group pvg = new Pdbversion_group();
-                    pvg.setPdbversion_id(pdbinserted_id);
+                    pvg.setPdbversion_id(curpdb_id);
                     pvg.setVehicle_id((Vehicle) session.get(Vehicle.class, Integer.parseInt((String) pdbversion_value.get("vehicle_id"))));
                     pvg.setVehiclemodel_id((Vehiclemodel) session.get(Vehiclemodel.class, Integer.parseInt((String) pdbdata.get("model_id"))));
                     pvg.setDomain_and_features_mapping_id((Domain_and_Features_Mapping) session.get(Domain_and_Features_Mapping.class, Integer.parseInt((String) pdbdata.get("dfm_id"))));
                     pvg.setAvailable_status((String) pdbdata.get("status"));
                     Pdbversion_group pvg_id = pdbownerdb.insertPDBVersionGroup(pvg);
+                }
+                if(prevpdb_id != 0){
+                    Map<String, Object> pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(prevpdb_id, curpdb_id.getId());
+                    System.out.println("pdb_previous_data result" + pdb_previous_data);
+
+                    JSONObject pdb_previous_data_result = new JSONObject();
+                    pdb_previous_data_result.put("removed_features", pdb_previous_data.get("removed_features"));
+                    pdb_previous_data_result.put("added_features",pdb_previous_data.get("added_features"));
+                    pdb_previous_data_result.put("removed_models",pdb_previous_data.get("removed_models"));
+                    pdb_previous_data_result.put("added_models",pdb_previous_data.get("added_models"));            
+                    pdb_previous_data_result.put("current_version","1.1");
+                    pdb_previous_data_result.put("previous_models","1.0");
+
+                    maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
             }
         } catch (Exception ex) {
