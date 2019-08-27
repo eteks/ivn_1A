@@ -13,7 +13,7 @@
                                                 <div class="page-header-title">
                                                     <i class="icofont icofont-mining bg-c-red"></i>
                                                     <div class="d-inline">
-                                                        <h4 ng-click="createfeature_and_domain()">PDB Owner</h4>
+                                                        <h4>PDB Owner</h4>
                                                         <span>PDB Version Creation</span>
                                                     </div>
                                                 </div>
@@ -42,11 +42,11 @@
                             <form class=""  name="myForm">
                             <div ng-tabs class="tabbable">
                                 <ul class="nav nav-tabs">
-                                    <li ng-tab-head ="active">
-                                        <a href="#" ng-click="tabstep1()">Vehicle</a>
+                                    <li ng-tab-head ="active" ng-click="tabstep1()">
+                                        <a href="#" >Vehicle</a>
                                     </li>
-                                    <li ng-tab-head>
-                                        <a href="#" ng-click="tabstep2()">PDB</a>
+                                    <li ng-tab-head ng-click="tabstep2()">
+                                        <a href="#" >PDB</a>
                                     </li>
                                 </ul>
                                 
@@ -64,11 +64,11 @@
                                                                     <div ng-if="Demo.data">
                                                                         <div class="form-group">
                                                                             <label for="vehicle">Select vehicle:</label>
-                                                                            <input type="radio" ng-model="new_vehicle" value="select_vehicle"/>
+                                                                            <input type="radio" name="new_vehicle" ng-model="data.new_vehicle" value="select_vehicle" required=""/>
                                                                         </div>
-                                                                        <div class="form-group"  ng-if="new_vehicle=='select_vehicle'">
+                                                                        <div class="form-group"  ng-if="data.new_vehicle=='select_vehicle'">
                                                                             <label for="vehiclename">Vehicle:</label>
-                                                                            <select id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()">
+                                                                            <select id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()" >
                                                                                 <option selected="" disabled="">Select Version</option>
                                                                                 <s:iterator value="vehicleversion_result" var="data" >
                                                                                     <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
@@ -83,16 +83,16 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="vehicle">New vehicle:</label>
-                                                                            <input type="radio" ng-model="new_vehicle" value="new_vehicle"/>
+                                                                            <input type="radio" name="new_vehicle" ng-model="data.new_vehicle" value="new_vehicle" required=""/>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="vehicle">Vehicle:</label>
-                                                                            <input type="text" class="form-control" placeholder="Enter vehicle" name="vehicle"  ng-model="Demo.dt.vehiclename" required>
+                                                                            <input type="text" class="form-control" placeholder="Enter vehicle" name="vehicle" ng-model="Demo.dt.vehiclename" required>
                                                                             <span ng-show="myForm.vehicle.$touched && myForm.vehicle.$invalid">The name is required.</span>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="model">Model:</label>
-                                                                            <tags-input ng-model="Demo.dt.modelname.split(',')" use-strings="true"></tags-input>
+                                                                            <tags-input ng-model="Demo.dt.modelname" use-strings="true"></tags-input>
                                                                         </div>                                                      
                                                                     </div>                                                    
                                                                 </div>
@@ -105,7 +105,7 @@
                                                         <div class="col-md-12 mod_vec_animate" ng-if="Demo.dt">
                                                             <h5 class="m-t-20"><i class="icofont icofont-steering"></i> {{Demo.dt.vehiclename}}</h5>
                                                             <ul>
-                                                                <li ng-repeat="item in Demo.dt.modelname.split(',')" >
+                                                                <li ng-repeat="item in Demo.dt.modelname" >
                                                                     <i class="icofont icofont-whisle text-c-red"></i> {{item}} 
                                                                 </li>
                                                             </ul>
@@ -300,9 +300,6 @@
             $scope.list = [];
             $scope.vehicleresults = {};
             $scope.vercompare_results = {};
-            
-            
-            
             $scope.features_list = $scope.features_list = [{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"}];
 //            alert($scope.features_list);
             $scope.tabstep1 = function() 
@@ -311,10 +308,68 @@
             }
             $scope.tabstep2 = function() 
             {
+                if ($scope.data.new_vehicle=="select_vehicle") {
+                    var vehiclename = $scope.Demo.dt.vehiclename;
+                    var vn = {vehiclename};
+                    var m = [];
+                    var arr = $scope.Demo.dt.modelname;
+                    for (var item in arr) {
+                        m.push({"modelname":arr[item],});    
+                        }
+                    vn.models = m;
+//                    $window.alert(JSON.stringify(vn));
+                    $http({
+                        url: 'checkvehicleandmodel',
+                        method: "POST",
+                        data: vn,
+                    }).then(function (response, status, headers, config){
+                        $scope.records = response.data.domainfeatures_result1.models;
+                        $window.alert("$scope.records "+JSON.stringify($scope.records));
+                    });
+//                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
+                } else if ($scope.data.new_vehicle=="new_vehicle") {
+                    
+                    var vehiclename = $scope.Demo.dt.vehiclename;
+                    var vn = {vehiclename};
+                    var m = [];
+                    var arr = $scope.Demo.dt.modelname;
+                    for (var item in arr) {
+                        m.push({"modelname":arr[item],});    
+                        }
+                    vn.models = m;
+//                    $window.alert(JSON.stringify(vn));
+                    $http({
+                        url: 'checkvehicleandmodel',
+                        method: "POST",
+                        data: vn,
+                    }).then(function (response, status, headers, config){
+                        $scope.records = response.data.domainfeatures_result1.models;
+                        $window.alert("$scope.records "+JSON.stringify($scope.records));
+                    });
+//                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
+//                    alert(JSON.stringify($scope.data));
+                } else {                    
+                    alert("chhose");
+                }
 //                alert('hi');
 //                $scope.vehicleresults = {"vehicle_id" :"1", "models":[{"model_id":1,"modelname":"m1"},{"model_id":2,"modelname":"m2"}]};   
-                $scope.records = $scope.vehicleresults.models;
+//                $scope.records = $scope.vehicleresults;
+//                $window.alert(JSON.stringify($scope.records));
+//                if ($scope.records == null) {
+//                    $scope.records = $scope.Demo.dt.modelname;
+////                    var m = [];
+////                    var arr = $scope.Demo.dt.modelname;
+////                    $window.alert(arr);
+////                    for (var item in arr) {
+////                        m.push({
+////                            "model_id":parseInt(item),
+////                            "modelname":arr[item]
+////                        });
+////                    }
+////                    $scope.records = m;
+//                }
             }
+            
             $scope.showSave =true;
             $scope.showSubmit =true;
             $scope.$on('notifyValue', function (event, args) {
@@ -510,34 +565,10 @@
                    for(var i = 0; i < response.data.maps_object.pdbversion.length; i++)
                    {
                        $scope.Demo.dt = response.data.maps_object.pdbversion[i];
-//                        for (var i = 0; i < $scope.Demo.dt.modelname.split(",").length; i++) {
-//                            var arr = $scope.Demo.dt.modelname.split(",");
-//                            $window.alert(arr[i]);
-//                        }
-                        var v = {"vehicle_id" :$scope.Demo.dt.vehicle_id};
-                        var m = [];
-                        var arr = $scope.Demo.dt.modelname.split(",");
-                        var arr1 = $scope.Demo.dt.model_id.split(",");
-                        for (var item in arr) {
-                            m.push({
-                                    "model_id":parseInt(arr1[item]),
-                                    "modelname":arr[item]
-                                });
-                        }
-                        v.models = m;
-                        $scope.vehicleresults = v;
-//                        var data = response.data.maps_object.pdbversion[i];
-//                        vm_result.push({
-//                            "pdbversion":data.pid,
-//                            "vehicleid":data.vid,
-//                            "vehiclename":data.vname,
-//                            "vehiclemodelid":data.mid,
-//                            "vehiclemodelname":data.mname
-//                        });
+//                       $scope.vehicleresults = response.data.maps_object.pdbversion[i];
+//                       $window.alert(JSON.stringify($scope.Demo.dt));
                     }
-    //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                 });
-//                alert(JSON.stringify($scope.records));
             }
                         
             
@@ -549,21 +580,22 @@
                 }
                 $scope.doSubmit = false; 
                 var feature_and_domain_data = {};
-//                feature_and_domain_data['domain_name'] = $scope.domain;
-                feature_and_domain_data['domain_name'] = "car";
-//                feature_and_domain_data['features_and_description'] = $scope.Demo.data;
-                feature_and_domain_data['features_and_description'] = [{"feature":"Colored Seat","description":"Seats are Colored"}];
+                feature_and_domain_data['domain_name'] = $scope.domain;
+//                feature_and_domain_data['domain_name'] = "car";
+                feature_and_domain_data['features_and_description'] = $scope.Demo.data;
+//                feature_and_domain_data['features_and_description'] = [{"feature":"Colored Seat","description":"Seats are Colored"}];
                 if($scope.Demo.data.length > 0)
                 {
                 // {"vehicle_id" :"1", "models":[{"model_id":1,"modelname":"m1"},{"model_id":2,"modelname":"m2"}]}                        alert(JSON.stringify(feature_and_domain_data));
                        $http({
-                       url : 'createfeature_and_domain',
-                       method : "POST",
-                       data : feature_and_domain_data
+                        url : 'createfeature_and_domain',
+                        method : "POST",
+                        data : feature_and_domain_data
                        })
                        .then(function (data, status, headers, config)
                        {
-                            result_data = data.data.domainFeatures_result;
+                            result_data = data.data.domainfeatures_result;
+                            $window.alert(JSON.stringify(result_data));
                             //result_data =  result_data.slice(1, -1);
                             for(var i = 0; i < result_data.length; i++) 
                             {

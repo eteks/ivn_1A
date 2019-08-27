@@ -43,7 +43,6 @@ import org.hibernate.Transaction;
  */
 public class Pdbversion_Group {
 
-    public static PDBOwnerDB pdbownerdb = new PDBOwnerDB();
     private Map<String, String> maps_string = new HashMap<String, String>();
     private Map<String, Object> maps_object = new HashMap<String, Object>();
     Session session = HibernateUtil.getThreadLocalSession();
@@ -51,6 +50,7 @@ public class Pdbversion_Group {
     private List<Pdbversion_group> pdbversion_group_result = new ArrayList<>();
     private HashMap<String, Object> pdbversion_group_result1 = new HashMap<>(), pdbversion_group_result2 = new HashMap<>();
     private List<Map<String, Object>> domainfeatures_result = new ArrayList<Map<String, Object>>();
+    private HashMap<String, Object> domainfeatures_result1 = new HashMap<>();
 
     public String PDBAssignPage() {
         System.out.println("Entered");
@@ -69,8 +69,7 @@ public class Pdbversion_Group {
 //            System.out.println(ex.getMessage());
 //        }
         try {
-            PDBOwnerDB pdbownerdb = new PDBOwnerDB();
-            List<Domain_and_Features_Mapping> featureslist = pdbownerdb.LoadFeaturesList();
+            List<Domain_and_Features_Mapping> featureslist = PDBOwnerDB.LoadFeaturesList();
 
             JSONArray featureslist_result = new JSONArray();
             for (Domain_and_Features_Mapping fea : featureslist) {
@@ -80,10 +79,10 @@ public class Pdbversion_Group {
                 fr.put("domain", fea.getFeature_id().getFeature_name());
                 featureslist_result.add(fr);
             }
-            vehicleversion_result = pdbownerdb.loadVehicleVersion();
+            vehicleversion_result = PDBOwnerDB.loadVehicleVersion();
             System.out.println("featureslist_result result" + featureslist_result);
 
-            Map<String, Object> pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(1, 2);
+            Map<String, Object> pdb_previous_data = PDBOwnerDB.GetPDBPreviousVersion_DomFea(1, 2);
             System.out.println("pdb_previous_data result" + pdb_previous_data.get("removed_features"));
 
             maps_object.put("features", featureslist_result);
@@ -131,7 +130,7 @@ public class Pdbversion_Group {
             } else {
                 System.out.println("Ready to create");
                 //Create PDB version               
-                List<Pdbversion> version_data = pdbownerdb.GetVersionname();
+                List<Pdbversion> version_data = PDBOwnerDB.GetVersionname();
                 Pdbversion pdbversion = new Pdbversion();
 //                if(!version_data.isEmpty() && !pdbversion_value.containsKey("pdbversion_id")){
                 if (!version_data.isEmpty()) {
@@ -155,7 +154,7 @@ public class Pdbversion_Group {
                 pdbversion.setCreated_date(new Date());
                 pdbversion.setModified_date(new Date());
                 pdbversion.setCreated_or_updated_by(vehicle_Repository.getUser(1));
-                Pdbversion pdbinserted_id = pdbownerdb.insertPDBVersion(pdbversion);
+                Pdbversion pdbinserted_id = PDBOwnerDB.insertPDBVersion(pdbversion);
                 //Insert data into PDB Version Group
                 int i = 0;
                 for (Object o : pdbdata_list) {
@@ -167,7 +166,7 @@ public class Pdbversion_Group {
                     pvg.setVehiclemodel_id((Vehiclemodel) session.get(Vehiclemodel.class, Integer.parseInt((String) pdbdata.get("model_id"))));
                     pvg.setDomain_and_features_mapping_id((Domain_and_Features_Mapping) session.get(Domain_and_Features_Mapping.class, Integer.parseInt((String) pdbdata.get("dfm_id"))));
                     pvg.setAvailable_status((String) pdbdata.get("status"));
-                    Pdbversion_group pvg_id = pdbownerdb.insertPDBVersionGroup(pvg);
+                    Pdbversion_group pvg_id = PDBOwnerDB.insertPDBVersionGroup(pvg);
                 }
             }
         } catch (Exception ex) {
@@ -251,8 +250,8 @@ public class Pdbversion_Group {
             System.out.println("vehiclename" + domain_name);
             System.out.println("vehicle_and_model_value" + features_and_description);
 
-            Domain domain = new Domain(domain_name, false, new Date(), new Date(), pdbownerdb.getUser(1));
-            Domain domainId = pdbownerdb.saveDomain(domain);
+            Domain domain = new Domain(domain_name, false, new Date(), new Date(), PDBOwnerDB.getUser(1));
+            Domain domainId = PDBOwnerDB.saveDomain(domain);
             List<Map<String, Object>> row = new ArrayList<Map<String, Object>>();
 
             //Insert Data in Features table
@@ -263,14 +262,16 @@ public class Pdbversion_Group {
                 String feature_name = jn.get("feature").asText();
                 String feature_description = jn.get("description").asText();
 
-                Features features = new Features(feature_name, feature_description, "Electrical", false, new Date(), new Date(), pdbownerdb.getUser(1));
-                Features featureId = pdbownerdb.saveFeatures(features);
+                Features features = new Features(feature_name, feature_description, "Electrical", false, new Date(), new Date(), PDBOwnerDB.getUser(1));
+                Features featureId = PDBOwnerDB.saveFeatures(features);
 
                 Domain_and_Features_Mapping domain_and_Features_Mapping = new Domain_and_Features_Mapping(domainId, featureId);
-                Domain_and_Features_Mapping domain_and_Features_MappingId = pdbownerdb.saveDomain_and_Features_Mapping(domain_and_Features_Mapping);
-                columns.put("domain", domain_name);
+                Domain_and_Features_Mapping domain_and_Features_MappingId = PDBOwnerDB.saveDomain_and_Features_Mapping(domain_and_Features_Mapping);
+                columns.put("domain", domainId.getDomain_name());
                 columns.put("fid", featureId.getId());
-                columns.put("fea", feature_name);
+                columns.put("fea", featureId.getFeature_name());
+                columns.put("fid", featureId.getId());
+                columns.put("did", domain_and_Features_MappingId.getId());
                 domainfeatures_result.add(columns);
                 row.add(columns);
                 System.out.println("domainfeatures_result" + domainfeatures_result);
@@ -280,6 +281,53 @@ public class Pdbversion_Group {
             System.out.println("Error : " + e);
             maps_object.put("msg", "Error in the Inserion : " + e);
         }
+        return "success";
+    }
+
+    public String checkVehicleAndModel() {
+
+        try {
+
+            System.out.println("checkVehicleAndModel");
+            final ObjectMapper mapper = new ObjectMapper();
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+
+            String vehiclename = readValue.get("vehiclename").asText();
+            ArrayNode models = (ArrayNode) readValue.get("models");
+
+            Vehicle vehicle = new Vehicle(vehiclename, true, new Date(), new Date(), PDBOwnerDB.getUser(1));
+            Vehicle vehicleId = PDBOwnerDB.saveVehicles(vehicle);
+            List<Map<String, Object>> row = new ArrayList<Map<String, Object>>();
+            domainfeatures_result1.put("vehicle_id", vehicleId.getId());
+            domainfeatures_result1.put("vehiclename", vehicleId.getVehiclename());
+            for (Object o : models) {
+
+                Map<String, Object> column = new HashMap<String, Object>();
+                JsonNode jn = (JsonNode) o;
+                String modelString = jn.get("modelname").asText();
+
+                Vehiclemodel vehiclemodel = new Vehiclemodel(modelString, true, new Date(), new Date(), PDBOwnerDB.getUser(1));
+                Vehiclemodel vehiclemodelId = PDBOwnerDB.saveVehicleModel(vehiclemodel);
+
+                column.put("model_id", vehiclemodelId.getId());
+                column.put("modelname", vehiclemodelId.getModelname());
+                column.put("status", vehiclemodelId.getStatus());
+
+//                domainfeatures_result.add(column2);
+                row.add(column);
+
+            }
+            domainfeatures_result1.put("models", row);
+            System.out.println("domainfeatures_result" + domainfeatures_result1);
+        } catch (Exception e) {
+        }
+        return "success";
+    }
+
+    public String GetVehicleModel_Listing() {
+
+        List<Map<String, Object>> list = PDBOwnerDB.GetVehicleModel_Listing();
         return "success";
     }
 
@@ -339,4 +387,13 @@ public class Pdbversion_Group {
         this.domainfeatures_result = domainfeatures_result;
     }
 
+    public HashMap<String, Object> getDomainfeatures_result1() {
+        return domainfeatures_result1;
+    }
+
+    public void setDomainfeatures_result1(HashMap<String, Object> domainfeatures_result1) {
+        this.domainfeatures_result1 = domainfeatures_result1;
+    }
+    
+    
 }
