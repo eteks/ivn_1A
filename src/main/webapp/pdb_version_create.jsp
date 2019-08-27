@@ -194,7 +194,7 @@
                                                <div id="modal-comment" class="modal">
                                                     <div class="modal-content text-left">
                                                         <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
-                                                        <textarea class="col-md-12 m-b-10"></textarea>
+                                                        <textarea class="col-md-12 m-b-10" ng-model="data.pdb_manual_comment"></textarea>
                                                         <div class="text-right">
                                                             <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('save')" name="save">Save</button>
                                                             <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('submit')" name="submit">Submit</button>
@@ -395,10 +395,12 @@
                     notification_to = undefined;
                 var data = {};
                 alert(JSON.stringify($scope.list));
+                alert(JSON.stringify($scope.vehicleresults));
                 $scope.data.vehicle_id = $scope.vehicleresults.vehicle_id;
-                if($scope.data.pdbversion != undefined) 
+                if($scope.data.pdbversion != undefined) {
                     $scope.data.pdbversion_id = $scope.data.pdbversion;
                     $scope.data.pdbversion_name = $scope.data.pdbversion;
+                }
 //                data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true};
     //            data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true,"pdbversion_id": "1", "pdbversion_name":"1.0"};
                 data['pdbversion'] = $scope.data;
