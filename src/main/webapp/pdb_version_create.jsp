@@ -300,6 +300,10 @@
             $scope.list = [];
             $scope.vehicleresults = {};
             $scope.vercompare_results = {};
+//            alert(JSON.parse("<s:property value="maps_object.pdb_previous_data_result"/>".replace(/&quot;/g,'"')));
+//            $scope.vercompare_results = JSON.parse("<s:property value="maps_object.pdb_previous_data_result"/>".replace(/&quot;/g,'"'));
+//            alert(JSON.stringify($scope.vercompare_results));
+
             $scope.features_list = $scope.features_list = [{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"}];
 //            alert($scope.features_list);
             $scope.tabstep1 = function() 
@@ -406,11 +410,13 @@
                     method: "POST",
                     data: data,
                 }).then(function (data, status, headers, config) {
-                    $scope.vercompare_results = {"removed_features":"(d1) feature3, (d1) feature5", 
-                                                 "added_features":"(d1) feature4", 
-                                                 "removed_models":"m2,m4", "added_models":"m3", 
-                                                 "previous_version":"1.0", "current_version":"1.1"
-                                                };
+//                    $scope.vercompare_results = {"removed_features":"(d1) feature3, (d1) feature5", 
+//                                                 "added_features":"(d1) feature4", 
+//                                                 "removed_models":"m2,m4", "added_models":"m3", 
+//                                                 "previous_version":"1.0", "current_version":"1.1"
+//                                                };
+                      $scope.vercompare_results = data.maps_object.pdb_previous_data_result;
+                      alert(JSON.stringify($scope.vercompare_results));                          
     //                                    $window.alert(JSON.stringify(data));
     //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
     //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);

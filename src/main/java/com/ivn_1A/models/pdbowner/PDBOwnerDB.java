@@ -18,6 +18,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
+import org.apache.commons.lang3.StringUtils;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -35,6 +36,107 @@ import org.hibernate.transform.Transformers;
  * @author ets-poc
  */
 public class PDBOwnerDB {
+    public static List<Pdbversion_group> GetComparedFeatures(int prevpdb_id, int curpdb_id, String feature_type){      
+        Session s = HibernateUtil.getThreadLocalSession();
+        Transaction tx = s.beginTransaction();
+        
+        //Working code
+        final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
+        Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
+        Join<Pdbversion_group, Domain_and_Features_Mapping> domfeaJoin = pdbversion_groupRoot.join("domain_and_features_mapping_id", JoinType.INNER);
+        Join<Domain_and_Features_Mapping, Domain> domJoin = domfeaJoin.join("domain_id", JoinType.INNER);
+        Join<Domain_and_Features_Mapping, Features> feaJoin = domfeaJoin.join("feature_id", JoinType.INNER); 
+        criteriaQuery.select(
+                criteriaBuilder.concat(
+                criteriaBuilder.concat(
+                    criteriaBuilder.concat(
+                        "(", domJoin.<String>get("domain_name")
+                    ),
+                        ")"
+                ),
+                    feaJoin.<String>get("feature_name")
+        )).distinct(true);
+
+        Subquery<Pdbversion_group > subquery = criteriaQuery.subquery(Pdbversion_group .class);
+        Root<Pdbversion_group> subQueryRoot = subquery.from(Pdbversion_group.class);
+        subquery.select(subQueryRoot.get("domain_and_features_mapping_id")).distinct(true);
+        if(feature_type.equals("removed")){
+            System.out.println("entered into removed");
+            subquery.where(criteriaBuilder.equal(subQueryRoot.get("pdbversion_id").get("id"), curpdb_id));
+            criteriaQuery.where(
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(
+                                pdbversion_groupRoot.get("pdbversion_id").get("id"),prevpdb_id
+                        ),
+                        criteriaBuilder.not(pdbversion_groupRoot.get("domain_and_features_mapping_id").in(subquery))
+                )
+            ); 
+        }
+        else{
+            subquery.where(criteriaBuilder.equal(subQueryRoot.get("pdbversion_id").get("id"), prevpdb_id));
+            criteriaQuery.where(
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(
+                                pdbversion_groupRoot.get("pdbversion_id").get("id"),curpdb_id
+                        ),
+                        criteriaBuilder.not(pdbversion_groupRoot.get("domain_and_features_mapping_id").in(subquery))
+                )
+            );
+        }
+        
+//            criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"), prevpdb_id)),criteriaBuilder.not(criteriaBuilder.exists(subquery))); 
+        TypedQuery<Pdbversion_group> feature_results = s.createQuery(criteriaQuery);
+        tx.commit();
+        s.clear();
+        return feature_results.getResultList();
+    }
+    
+    public static List<Pdbversion_group> GetComparedVehicleModels(int prevpdb_id, int curpdb_id, String feature_type){      
+        Session s = HibernateUtil.getThreadLocalSession();
+        Transaction tx = s.beginTransaction();
+        
+        //Working code
+        final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
+        Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
+        Join<Pdbversion_group, Vehiclemodel> vehmodJoin = pdbversion_groupRoot.join("vehiclemodel_id", JoinType.INNER); 
+        criteriaQuery.select(vehmodJoin.get("modelname")).distinct(true);
+
+        Subquery<Pdbversion_group > subquery = criteriaQuery.subquery(Pdbversion_group .class);
+        Root<Pdbversion_group> subQueryRoot = subquery.from(Pdbversion_group.class);
+        subquery.select(subQueryRoot.get("vehiclemodel_id")).distinct(true);
+            
+        if(feature_type.equals("removed")){
+            System.out.println("entered into removed");
+            subquery.where(criteriaBuilder.equal(subQueryRoot.get("pdbversion_id").get("id"), curpdb_id));
+            criteriaQuery.where(
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(
+                                pdbversion_groupRoot.get("pdbversion_id").get("id"),prevpdb_id
+                        ),
+                        criteriaBuilder.not(pdbversion_groupRoot.get("vehiclemodel_id").in(subquery))
+                )
+            ); 
+        }
+        else{
+            subquery.where(criteriaBuilder.equal(subQueryRoot.get("pdbversion_id").get("id"), prevpdb_id));
+            criteriaQuery.where(
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(
+                                pdbversion_groupRoot.get("pdbversion_id").get("id"),curpdb_id
+                        ),
+                        criteriaBuilder.not(pdbversion_groupRoot.get("vehiclemodel_id").in(subquery))
+                )
+            );
+        }
+        
+//            criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"), prevpdb_id)),criteriaBuilder.not(criteriaBuilder.exists(subquery))); 
+        TypedQuery<Pdbversion_group> vehmod_results = s.createQuery(criteriaQuery);
+        tx.commit();
+        s.clear();
+        return vehmod_results.getResultList();
+    }
 
     public static List<Pdbversion> GetVersionname() {
         try {
@@ -294,103 +396,31 @@ public class PDBOwnerDB {
     
     public static Map<String, Object> GetPDBPreviousVersion_DomFea(int prevpdb_id, int curpdb_id) {
         try {
-            Session s = HibernateUtil.getThreadLocalSession();
-            Transaction tx = s.beginTransaction();
+//            Session s = HibernateUtil.getThreadLocalSession();
+//            Transaction tx = s.beginTransaction();
             Map<String, Object> results = new HashMap<String, Object>();
-
-//            //Working code
-//            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
-//            CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
-////            Expression<String> exp1 = criteriaQuery.concat(Expression<String> a, String b, Expression<String> c ,Expression<String> d ,String e);
-////            Expression<String> exp1 = criteriaBuilder.concat(Expression<String> a, String b);
-//            Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
-//            Join<Pdbversion_group, Domain_and_Features_Mapping> domfeaJoin = pdbversion_groupRoot.join("domain_and_features_mapping_id", JoinType.INNER);
-//            Join<Domain_and_Features_Mapping, Domain> domJoin = domfeaJoin.join("domain_id", JoinType.INNER);
-//            Join<Domain_and_Features_Mapping, Features> feaJoin = domfeaJoin.join("feature_id", JoinType.INNER); 
-//            criteriaQuery.select(
-//                    criteriaBuilder.function("group_concat", 
-//                    String.class, criteriaBuilder.concat(
-//                    criteriaBuilder.concat(
-//                        criteriaBuilder.concat(
-//                            "(", domJoin.<String>get("domain_name")
-//                        ),
-//                            ")"
-//                    ),
-//                        feaJoin.<String>get("feature_name")
-//            )));
-////            criteriaQuery.select(
-////                    criteriaBuilder.function("group_concat", 
-////                    String.class, criteriaBuilder.concat(
-////                    criteriaBuilder.concat(
-////                        criteriaBuilder.concat(
-////                            "(", domJoin.<String>get("domain_name")
-////                        ),
-////                            ")"
-////                    ),
-////                        feaJoin.<String>get("feature_name")
-////            )));
-//
-//            Subquery<Pdbversion_group > subquery = criteriaQuery.subquery(Pdbversion_group .class);
-//            Root<Pdbversion_group> subQueryRoot = subquery.from(Pdbversion_group.class);
-//            subquery.select(subQueryRoot.get("domain_and_features_mapping_id")).distinct(true);
-//            subquery.where(criteriaBuilder.equal(subQueryRoot.get("pdbversion_id").get("id"), curpdb_id));
-//            
-////            criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"), prevpdb_id)));
-////            criteriaQuery.where(criteriaBuilder.not(criteriaBuilder.exists(subquery))); 
-//            criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"), prevpdb_id)),criteriaBuilder.not(criteriaBuilder.exists(subquery))); 
-////            criteriaQuery.select(criteriaBuilder.construct(Pdbversion_group.class, 
-////                    criteriaBuilder.function("group_concat", 
-////                    String.class, criteriaBuilder.concat(
-////                    criteriaBuilder.concat(
-////                        criteriaBuilder.concat(
-////                            "(", domJoin.<String>get("domain_name")
-////                        ),
-////                            ")"
-////                    ),
-////                        feaJoin.<String>get("feature_name")
-////            ))));
-////            criteriaQuery.select(
-////                    criteriaBuilder.concat(
-////                        criteriaBuilder.concat(
-////                            criteriaBuilder.concat(
-////                                "(", domJoin.<String>get("domain_name")
-////                            ),
-////                                ")"
-////                        ),
-////                            feaJoin.<String>get("feature_name")
-////                        )
-////            );
-////            criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"), prevpdb_id));
-//            
-//
-//            
-//            System.err.println(criteriaQuery.toString());
-//            
-//            TypedQuery<Features> removed_features = s.createQuery(criteriaQuery);
-//            results.put("removed_features", removed_features.getResultList());
             
-            TypedQuery removed_features = s.createQuery("SELECT DISTINCT pvg.domain_and_features_mapping_id as dfm_id, CONCAT('(',d.domain_name,')',' ',f.feature_name) as dom_fea FROM Pdbversion_group as pvg \n" +
-            "INNER JOIN Domain_and_Features_Mapping as dfm ON dfm.id = pvg.domain_and_features_mapping_id \n" +
-            "INNER JOIN Domain as d ON d.id=dfm.domain_id \n" +
-            "INNER JOIN Features as f ON f.id=dfm.feature_id\n" +
-            "WHERE pdbversion_id="+prevpdb_id+" AND pvg.domain_and_features_mapping_id NOT IN (SELECT DISTINCT domain_and_features_mapping_id FROM Pdbversion_group WHERE pdbversion_id="+curpdb_id+")");
-              results.put("removed_features", removed_features.getResultList());
-//            System.out.println("removed_features"+removed_features);   
+            String removed = "removed";
+            String added = "added";
+            
+            List<Pdbversion_group> removed_features = GetComparedFeatures(prevpdb_id, curpdb_id, removed);            
+            results.put("removed_features", StringUtils.join(removed_features, ","));
+            
+            List<Pdbversion_group> added_features = GetComparedFeatures(prevpdb_id, curpdb_id, added);            
+            results.put("added_features", StringUtils.join(added_features, ","));
+       
+            List<Pdbversion_group> removed_models = GetComparedVehicleModels(prevpdb_id, curpdb_id, removed);            
+            results.put("removed_models", StringUtils.join(removed_models, ","));
+            
+            List<Pdbversion_group> added_models = GetComparedVehicleModels(prevpdb_id, curpdb_id, added);            
+            results.put("added_models", StringUtils.join(added_models, ","));
 
-//            Query added_features = s.createQuery("SELECT GROUP_CONCAT(DISTINCT(pvg.domain_and_features_mapping_id)) as dfm_id, \n" +
-//                    "GROUP_CONCAT(DISTINCT(CONCAT('(',d.domain_name,')',' ',f.feature_name))) as \n" +
-//                    "dom_fea  \n"
-//                    + "FROM Pdbversion_group as pvg \n"
-//                    + "INNER JOIN Domain_and_Features_Mapping as dfm ON dfm.id = pvg.domain_and_features_mapping_id \n"
-//                    + "INNER JOIN Domain as d ON d.id=dfm.domain_id \n"
-//                    + "INNER JOIN Features as f ON f.id=dfm.feature_id\n"
-//                    + "WHERE pvg.pdbversion_id=" + curpdb_id + " AND pvg.domain_and_features_mapping_id NOT IN \n"
-//                    + "(SELECT DISTINCT domain_and_features_mapping_id FROM Pdbversion_group WHERE pdbversion_id=" + prevpdb_id + ")");
-//            results.put("added_features", added_features.getResultList());
-//            System.out.println("added_features"+added_features);    
-
-            tx.commit();
-            s.clear();
+            
+            
+          
+//            
+//            tx.commit();
+//            s.clear();
             return results;
         } catch (Exception e) {
             System.err.println("Error in \"GetPDBPreviousVersion_DomFea\" : " + e.getMessage());
@@ -418,8 +448,6 @@ public class PDBOwnerDB {
             System.out.println("resultdata");
             //create resultset as list
             TypedQuery<Domain_and_Features_Mapping> dfm_result = s.createQuery(criteriaQuery);
-//            List<Object[]> list = s.createQuery(query).getResultList();
-//            Query dfm_result = s.createQuery(criteriaQuery);
             System.out.println(dfm_result);
             System.err.println(dfm_result);
             tx.commit();
