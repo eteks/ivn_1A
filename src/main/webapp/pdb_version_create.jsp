@@ -327,6 +327,7 @@
                         method: "POST",
                         data: vn,
                     }).then(function (response, status, headers, config){
+                        $scope.vehicleresults = response.data.domainfeatures_result1;
                         $scope.records = response.data.domainfeatures_result1.models;
                         $window.alert("$scope.records "+JSON.stringify($scope.records));
                     });
@@ -347,6 +348,7 @@
                         method: "POST",
                         data: vn,
                     }).then(function (response, status, headers, config){
+                        $scope.vehicleresults = response.data.domainfeatures_result1;
                         $scope.records = response.data.domainfeatures_result1.models;
                         $window.alert("$scope.records "+JSON.stringify($scope.records));
                     });
