@@ -353,8 +353,9 @@ public class PDBOwnerDB {
             CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
             CriteriaQuery<Domain_and_Features_Mapping> criteriaQuery = criteriaBuilder.createQuery(Domain_and_Features_Mapping.class);
             Root<Domain_and_Features_Mapping> dfm = criteriaQuery.from(Domain_and_Features_Mapping.class);
-            Join<Domain_and_Features_Mapping, Domain> joindomain = dfm.join("domain_id", JoinType.INNER);
-            Join<Domain_and_Features_Mapping, Features> joinfeatures = dfm.join("feature_id", JoinType.INNER);
+//            Join<Domain_and_Features_Mapping, Domain> joindomain = dfm.join("domain_id", JoinType.INNER);
+//            Join<Domain_and_Features_Mapping, Features> joinfeatures = dfm.join("feature_id", JoinType.INNER);
+            
 //            criteriaQuery.multiselect(joindomain.get("domain_id"), joinfeatures.get("feature_id"));
 //            criteriaQuery.select(joindomain.get("domain_name"));
 //            criteriaQuery.select(joinfeatures.get("feature_name"));
