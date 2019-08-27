@@ -304,8 +304,9 @@
 //            $scope.vercompare_results = JSON.parse("<s:property value="maps_object.pdb_previous_data_result"/>".replace(/&quot;/g,'"'));
 //            alert(JSON.stringify($scope.vercompare_results));
 
-            $scope.features_list = $scope.features_list = [{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"}];
+//            $scope.features_list = $scope.features_list = [{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"}];
 //            alert($scope.features_list);
+            $scope.features_list= JSON.parse("<s:property value="maps_object.features"/>".replace(/&quot;/g,'"'));
             $scope.tabstep1 = function() 
             {
     //            alert('hi');
@@ -405,6 +406,7 @@
                 data['pdbdata_list'] = $scope.list;
                 data['button_type'] = event;
                 data['notification_to'] = notification_to+"";
+                alert(JSON.stringify($scope.features));
                 data['dfm_set'] = ["1","2","3"];
                 alert(JSON.stringify(data));
                 $http({
@@ -437,6 +439,7 @@
 //            {
 //                return;
 //            }
+//            alert("before do submit");
 //            $scope.doSubmit = false;  
             alert(JSON.stringify($scope.list));
 //            alert($scope.list.length);
