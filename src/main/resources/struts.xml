@@ -8,10 +8,13 @@
     <package name="default" extends="struts-default" namespace="/">
         
     </package>
+    
     <package name="json" extends="json-default" namespace="/">
+        
         <action name="createpdbversion" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="CreatePDBVersion">
             <result type="json" />
         </action>
+        
         <action name="createVehicleVersion" class="com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group" method="createVehicleVersion">
             <result type="json" />
         </action> 
@@ -31,7 +34,13 @@
         <action name="createfeature_and_domain" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="CreateDomain_and_Features">
             <result type="json" />
         </action> 
+        
+        <action name="checkvehicleandmodel" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="checkVehicleAndModel">
+            <result type="json" />
+        </action>
+        
     </package>
+    
     <package name="struts" extends="struts-default" namespace="/">
 
 <!--        <action name="create_pdb" class="com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group" method="DisplayCreateVehicleversion">
@@ -49,6 +58,12 @@
             <result name="success">test.jsp</result>
             <result name="failed">test.jsp?failed</result>
         </action>       
+        
+        
+        <action name="vehiclemodel_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetVehicleModel_Listing">
+            <result name="session">index.jsp</result> 
+            <result name="success">test.jsp</result>
+        </action>
         
     </package>
 </struts>
