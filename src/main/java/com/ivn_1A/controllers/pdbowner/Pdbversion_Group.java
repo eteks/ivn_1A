@@ -26,6 +26,7 @@ import org.json.simple.parser.JSONParser;
 
 import com.ivn_1A.models.pdbowner.*;
 import com.opensymphony.xwork2.ActionContext;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,14 +109,13 @@ public class Pdbversion_Group {
         }
         return "success";
     }
-
-    public String CreatePDBVersion() {
+    
+    public String CreatePDBVersion() throws IOException {
         System.out.println("CreatePDBVersion");
-        JSONParser parser = new JSONParser();
-        String jsondata = JSONConfigure.getAngularJSONFile();
-//        String button_type = (String) json.get("button_type");
-//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        LocalDateTime now = LocalDateTime.now();
+        final ObjectMapper mapper = new ObjectMapper();
+        String jsonValues = JSONConfigure.getAngularJSONFile();
+        final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);     
+        System.out.println("readValue" + readValue);
         boolean status = (boolean) false;
 //        int pdbversion_id = 0;
         float version_name = 1.0f;
@@ -124,24 +124,26 @@ public class Pdbversion_Group {
         boolean flag;
         int prevpdb_id = 0;
         try {
-            Object obj = parser.parse(jsondata);
-            JSONObject json = (JSONObject) obj;
-            System.out.println("pdbdata" + json);
-            JSONObject pdbversion_value = (JSONObject) json.get("pdbversion");
-            JSONArray pdbdata_list = (JSONArray) json.get("pdbdata_list");
+//            Object obj = parser.parse(jsondata);
+//            JSONObject json = (JSONObject) obj;
+//            System.out.println("pdbdata" + json);
+            JsonNode pdbversion_value = (JsonNode) readValue.get("pdbversion");
+            System.out.println("pdbversion_value" + pdbversion_value);
+            ArrayNode pdbdata_list = (ArrayNode) readValue.get("pdbdata_list");
             System.out.println("pdbdata_list" + pdbdata_list);
-            String button_type = (String) json.get("button_type");
+            String button_type = readValue.get("button_type").asText();
 //            String notification_to = (String) json.get("notification_to");
+
             if (button_type.equals("save")) {
                 flag = false;
             } else {
                 flag = true;
             }
-            if (pdbversion_value.containsKey("status")) {
-                status = (boolean) pdbversion_value.get("status");
+            if (pdbversion_value.has("status")) {
+                status = pdbversion_value.get("status").asBoolean();
             }
 
-            if (pdbversion_value.containsKey("pdbversion_id") && status == false) {
+            if (pdbversion_value.has("pdbversion_id") && status == false) {
                 System.out.println("Ready to update in same version");
             } else {
                 System.out.println("Ready to create");
@@ -150,22 +152,21 @@ public class Pdbversion_Group {
                 Pdbversion pdbversion = new Pdbversion();
 //                if(!version_data.isEmpty() && !pdbversion_value.containsKey("pdbversion_id")){
                 if (!version_data.isEmpty()) {
-                    if (!pdbversion_value.containsKey("pdbversion_id")) {
+                    if (!pdbversion_value.has("pdbversion_id")) {
                         version_name = (float) 1.0 + version_data.get(0).getPdb_versionname();
                     } else {
-                        version_name = (float) 0.1 + Float.valueOf((String) pdbversion_value.get("pdbversion_name"));
-                        pdbversion.setPdb_reference_version(Float.valueOf((String) pdbversion_value.get("pdbversion_name")));
-                        prevpdb_id = Integer.parseInt((String) pdbversion_value.get("pdbversion_id"));
+                        version_name = (float) 0.1 + Float.valueOf(pdbversion_value.get("pdbversion_name").asText());
+                        pdbversion.setPdb_reference_version(Float.valueOf(pdbversion_value.get("pdbversion_name").asText()));
+                        prevpdb_id = pdbversion_value.get("pdbversion_id").asInt();
                     }
                 }
-                System.out.println("id" + Integer.parseInt((String) pdbversion_value.get("pdbversion_id")));
                 //To find and store removed id's and new feature'ids 
 //                List pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(Integer.parseInt((String) pdbversion_value.get("pdbversion_id")));
 //                System.out.println("pdb_previous_data" + pdb_previous_data);
-                JSONArray dfm_set = (JSONArray) json.get("dfm_set");
+                ArrayNode dfm_set = (ArrayNode) readValue.get("dfm_set");
 
                 pdbversion.setPdb_versionname(version_name);
-                pdbversion.setPdb_manual_comment((String) pdbversion_value.get("pdb_manual_comment"));
+                pdbversion.setPdb_manual_comment(pdbversion_value.get("pdb_manual_comment").asText());
                 pdbversion.setStatus(status);
                 pdbversion.setFlag(flag);
                 pdbversion.setCreated_date(new Date());
@@ -175,14 +176,14 @@ public class Pdbversion_Group {
                 //Insert data into PDB Version Group
                 int i = 0;
                 for (Object o : pdbdata_list) {
-                    JSONObject pdbdata = (JSONObject) o;
+                    JsonNode pdbdata = (JsonNode) o;
                     System.out.println("pdbdata" + pdbdata);
                     Pdbversion_group pvg = new Pdbversion_group();
                     pvg.setPdbversion_id(curpdb_id);
-                    pvg.setVehicle_id((Vehicle) session.get(Vehicle.class, Integer.parseInt((String) pdbversion_value.get("vehicle_id"))));
-                    pvg.setVehiclemodel_id((Vehiclemodel) session.get(Vehiclemodel.class, Integer.parseInt((String) pdbdata.get("model_id"))));
-                    pvg.setDomain_and_features_mapping_id((Domain_and_Features_Mapping) session.get(Domain_and_Features_Mapping.class, Integer.parseInt((String) pdbdata.get("dfm_id"))));
-                    pvg.setAvailable_status((String) pdbdata.get("status"));
+                    pvg.setVehicle_id((Vehicle) session.get(Vehicle.class, pdbversion_value.get("vehicle_id").asInt()));
+                    pvg.setVehiclemodel_id((Vehiclemodel) session.get(Vehiclemodel.class, pdbdata.get("model_id").asInt()));
+                    pvg.setDomain_and_features_mapping_id((Domain_and_Features_Mapping) session.get(Domain_and_Features_Mapping.class, pdbdata.get("dfm_id").asInt()));
+                    pvg.setAvailable_status(pdbdata.get("status").asText());
                     Pdbversion_group pvg_id = PDBOwnerDB.insertPDBVersionGroup(pvg);
                 }
                 if(prevpdb_id != 0){
