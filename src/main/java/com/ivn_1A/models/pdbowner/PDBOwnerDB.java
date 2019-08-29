@@ -517,7 +517,7 @@ public class PDBOwnerDB {
         }
     }
 
-    public static List<Map<String, Object>> GetVehicleModel_Listing() {
+    public static List<Object[]> GetVehicleModel_Listing() {
 
         try {
             System.err.println("GetVehicleModel_Listing");
@@ -539,48 +539,16 @@ public class PDBOwnerDB {
                     .groupBy(pRoot.get("vehiclemodel_id").get("modelname")).orderBy(criteriaBuilder.desc(pRoot.get("vehiclemodel_id").get("id")));
             List<Object[]> reObjects = session.createQuery(criteriaQuery).getResultList();
 
-            List<Map<String, Object>> row = new ArrayList<>();
-            for (Object[] reObject : reObjects) {
-
-                Map<String, Object> columns = new HashMap<String, Object>();
-
-                String modelname = (String) reObject[0];
-                System.out.println(modelname);
-                columns.put("modelname", modelname);
-
-                boolean status = (boolean) reObject[1];
-                System.out.println(status);
-                columns.put("status", status);
-
-                Date created_date = (Date) reObject[2];
-                System.out.println(created_date);
-                columns.put("created_date", created_date);
-
-                Date modified_date = (Date) reObject[3];
-                System.out.println(modified_date);
-                columns.put("modified_date", modified_date);
-
-                String vehiclename = (String) reObject[4];
-                System.out.println(vehiclename);
-                columns.put("vehiclename", vehiclename);
-
-                String versionname = (String) reObject[5];
-                System.out.println(versionname);
-                columns.put("versionname", versionname);
-
-                row.add(columns);
-                System.out.println("colums" + columns);
-            }
             tx.commit();
             session.clear();
-            return row;
+            return reObjects;
         } catch (Exception e) {
             System.err.println("Error in \"GetVehicleModel_Listing\" : " + e);
             return null;
         }
     }
 
-    public static List<Map<String, Object>> getVehicle_Listing() {
+    public static List<Object[]> getVehicle_Listing() {
 
         try {
             System.err.println("getVehicle_Listing");
@@ -596,48 +564,16 @@ public class PDBOwnerDB {
                     .distinct(true).groupBy(pRoot.get("vehicle_id").get("vehiclename")).orderBy(criteriaBuilder.desc(pRoot.get("vehicle_id").get("id")));
             List<Object[]> reObjects = session.createQuery(criteriaQuery).getResultList();
 
-            List<Map<String, Object>> row = new ArrayList<>();
-            for (Object[] reObject : reObjects) {
-
-                Map<String, Object> columns = new HashMap<String, Object>();
-
-                int pdb_version = (int) reObject[0];
-                System.out.println(pdb_version);
-                columns.put("pdb_version", pdb_version);
-
-                String vehiclename = (String) reObject[1];
-                System.out.println(vehiclename);
-                columns.put("vehiclename", vehiclename);
-
-                boolean status = (boolean) reObject[2];
-                System.out.println(status);
-                columns.put("status", status);
-
-                Date created_date = (Date) reObject[3];
-                System.out.println(created_date);
-                columns.put("created_date", created_date);
-
-                Date modified_date = (Date) reObject[4];
-                System.out.println(modified_date);
-                columns.put("modified_date", modified_date);
-
-                String versionname = (String) reObject[5];
-                System.out.println(versionname);
-                columns.put("versionname", versionname);
-
-                row.add(columns);
-                System.out.println("colums" + columns);
-            }
             tx.commit();
             session.clear();
-            return row;
+            return reObjects;
         } catch (Exception e) {
             System.err.println("Error in \"getVehicle_Listing\" : " + e);
             return null;
         }
     }
 
-    public static List<Map<String, Object>> GetPDBVersion_Listing() {
+    public static List<Object[]> GetPDBVersion_Listing() {
         try {
             System.err.println("GetVehicleVersion_Listing");
             Session session = HibernateUtil.getThreadLocalSession();
@@ -657,53 +593,9 @@ public class PDBOwnerDB {
                     .distinct(true).groupBy(pRoot.get("pdbversion_id").get("pdb_versionname")).orderBy(criteriaBuilder.desc(pRoot.get("pdbversion_id").get("id")));
             List<Object[]> reObjects = session.createQuery(criteriaQuery).getResultList();
 
-            List<Map<String, Object>> row = new ArrayList<>();
-            for (Object[] reObject : reObjects) {
-
-                Map<String, Object> columns = new HashMap<String, Object>();
-
-                int pdb_id = (int) reObject[0];
-                System.out.println(pdb_id);
-                columns.put("pdb_id", pdb_id);
-
-                float pdb_versionname = (float) reObject[1];
-                System.out.println(pdb_versionname);
-                columns.put("pdb_versionname", pdb_versionname);
-
-                String vehicle_id = (String) reObject[2];
-                System.out.println(vehicle_id);
-                columns.put("vehicle_id", vehicle_id);
-
-                String vehiclename = (String) reObject[3];
-                System.out.println(vehiclename);
-                columns.put("vehiclename", vehiclename);
-                
-                String modelname = (String) reObject[4];
-                System.out.println(modelname);
-                columns.put("modelname", modelname);
-
-                boolean status = (boolean) reObject[5];
-                System.out.println(status);
-                columns.put("status", status);
-
-                boolean flag = (boolean) reObject[6];
-                System.out.println(flag);
-                columns.put("flag", flag);
-
-                Date created_date = (Date) reObject[7];
-                System.out.println(created_date);
-                columns.put("created_date", created_date);
-
-                Date modified_date = (Date) reObject[8];
-                System.out.println(modified_date);
-                columns.put("modified_date", modified_date);
-
-                row.add(columns);
-                System.out.println("colums" + columns);
-            }
             tx.commit();
             session.clear();
-            return row;
+            return reObjects;
         } catch (Exception e) {
             System.err.println("Error in \"getVehicle_Listing\" : " + e);
             return null;

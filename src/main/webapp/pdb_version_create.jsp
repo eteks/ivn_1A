@@ -45,7 +45,7 @@
                                     <li ng-tab-head ="active" ng-click="tabstep1()">
                                         <a href="#" >Vehicle</a>
                                     </li>
-                                    <li ng-tab-head="{{dt.active}}" ng-click="tabstep2()">
+                                    <li ng-tab-head="" ng-click="tabstep2()">
                                         <a href="#" >PDB</a>
                                     </li>
                                 </ul>
@@ -64,7 +64,7 @@
                                                                     <div ng-if="Demo.data">
                                                                         <div class="form-group">
                                                                             <label for="vehicle">Select vehicle:</label>
-                                                                            <input type="radio" name="new_vehicle" ng-model="data.new_vehicle" value="select_vehicle" required=""/>
+                                                                            <input type="radio" ng-click="formRest()" name="new_vehicle" ng-model="data.new_vehicle" value="select_vehicle" required=""/>
                                                                         </div>
                                                                         <div class="form-group"  ng-if="data.new_vehicle=='select_vehicle'">
                                                                             <label for="vehiclename">Vehicle:</label>
@@ -75,8 +75,7 @@
                                                                                 </s:iterator>
                                                                             </select>
                                                                             <label for="vehicle">Version:</label>
-                                                                            <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion for arr in array_result" ng-change="LoadVehicleModels()" >
-                                                                              
+                                                                            <select disabled="" id="pdbversion" ng-model="data.pdbversion" ng-options="arr as arr.pdbversion_name for arr in array_result" ng-change="LoadVehicleModels()" >
                                                                             </select>
                                                                             <!--<select ng-init="arr[arr.length-1]" ng-model="data.pdbversion" ng-options="y.pdbversion for (x, y) in array_result track by arr | orderBy:'-'" ng-change="LoadVehicleModels()" ></select>-->
 <!--                                                                            <select ng-change="LoadVehicleModels()" ng-model="data.pdbversion" id="pdbversion">
@@ -85,16 +84,17 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="vehicle">New vehicle:</label>
-                                                                            <input type="radio" name="new_vehicle" ng-model="data.new_vehicle" value="new_vehicle" required=""/>
+                                                                            <input type="radio" ng-click="formRest()" name="new_vehicle" ng-model="data.new_vehicle" value="new_vehicle" required=""/>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="vehicle">Vehicle:</label>
-                                                                            <input type="text" class="form-control" placeholder="Enter vehicle" name="vehicle" ng-model="Demo.dt.vehiclename" required>
-                                                                            <span ng-show="myForm.vehicle.$touched && myForm.vehicle.$invalid">The name is required.</span>
+                                                                            <input type="text" class="form-control" placeholder="Enter vehicle" name="vehicle" ng-model="Demo.dt.vehiclename" ng-readonly="truefalse" required>
+                                                                            <span ng-show="myForm.vehicle.$touched && myForm.vehicle.$invalid" style="color: red;">The Vehicle Name is required.</span>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="model">Model:</label>
-                                                                            <tags-input ng-model="Demo.dt.modelname" use-strings="true"></tags-input>
+                                                                            <tags-input ng-model="Demo.dt.modelname" name="model" use-strings="true" ></tags-input>
+                                                                            <span ng-show="myForm.model.$touched && myForm.model.$invalid" style="color: red;">The Model Name is required.</span>
                                                                         </div>                                                      
                                                                     </div>                                                    
                                                                 </div>
@@ -301,7 +301,8 @@
             $scope.features = [];
             $scope.list = [];
             $scope.vehicleresults = {};
-            $scope.vercompare_results = {};
+            $scope.vercompare_results = {};            
+            $scope.truefalse = false;
 //            alert(JSON.parse("<s:property value="maps_object.pdb_previous_data_result"/>".replace(/&quot;/g,'"')));
 //            $scope.vercompare_results = JSON.parse("<s:property value="maps_object.pdb_previous_data_result"/>".replace(/&quot;/g,'"'));
 //            alert(JSON.stringify($scope.vercompare_results));
@@ -309,6 +310,23 @@
 //            $scope.features_list = $scope.features_list = [{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"}];
 //            alert($scope.features_list);
             $scope.features_list= JSON.parse("<s:property value="maps_object.features"/>".replace(/&quot;/g,'"'));
+            
+            $scope.formRest = function() 
+            {
+                if ($scope.data.new_vehicle=="select_vehicle") {
+                    
+                    $scope.truefalse = true;
+                    $scope.data.vehicle = "";
+                    $scope.data.pdbversion = "";
+                    $scope.Demo.dt.vehiclename = "";
+                    $scope.Demo.dt.modelname = "";
+                } else if ($scope.data.new_vehicle=="new_vehicle") {
+                    
+                    $scope.truefalse = false;
+                    $scope.Demo.dt.vehiclename = "";
+                    $scope.Demo.dt.modelname = "";
+                }
+            }
             $scope.tabstep1 = function() 
             {
     //            alert('hi');
@@ -359,26 +377,8 @@
 //                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
 //                    alert(JSON.stringify($scope.data));
                 } else {
-                    $scope.dt.active = "none";
-                    alert("chhose");
+                    $window.alert("Must File the Fields");
                 }
-//                alert('hi');
-//                $scope.vehicleresults = {"vehicle_id" :"1", "models":[{"model_id":1,"modelname":"m1"},{"model_id":2,"modelname":"m2"}]};   
-//                $scope.records = $scope.vehicleresults;
-//                $window.alert(JSON.stringify($scope.records));
-//                if ($scope.records == null) {
-//                    $scope.records = $scope.Demo.dt.modelname;
-////                    var m = [];
-////                    var arr = $scope.Demo.dt.modelname;
-////                    $window.alert(arr);
-////                    for (var item in arr) {
-////                        m.push({
-////                            "model_id":parseInt(item),
-////                            "modelname":arr[item]
-////                        });
-////                    }
-////                    $scope.records = m;
-//                }
             }
             
             $scope.showSave =true;
@@ -780,7 +780,7 @@
 //                        $window.alert($scope.data.pdbversion);
                         $scope.array_result.push({
                             "pdbid":data.pid,
-                            "pdbversion":parseFloat(data.pversion).toFixed(1)
+                            "pdbversion_name":parseFloat(data.pversion).toFixed(1)
                         });
                     }
                     $scope.data.pdbversion = $scope.array_result[0];
