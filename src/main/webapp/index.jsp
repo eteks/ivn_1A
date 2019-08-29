@@ -40,7 +40,7 @@
                                             <s:url action="vehicleversion_listing.action" var="aURL" />
                                             <s:a href="%{aURL}">   
                                                     <div class="card-block">
-                                                        <span>Vehicle Versions</span></br>
+                                                        <span>PDB Versions</span></br>
                                                         <span class="count"><s:property value="dashboard_result.vehicleversion_count"/></span>
                                                         <i class="icofont  icofont-car-alt-1 text-c-red"></i>  
                                                         <div class="clearfix"></div>

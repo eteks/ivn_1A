@@ -249,7 +249,7 @@ public class Pdbversion_Group {
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             int vehver_id = readValue.get("pdb_id").asInt();
             System.out.println(vehver_id);
-            List<Object[]> reObjects = (List<Object[]>) PDBOwnerDB.loadPdbversion_groupByVehicleId2(vehver_id);
+            List<Object[]> reObjects = (List<Object[]>) PDBOwnerDB.loadVehicleAndModelByVehicleId(vehver_id);
             Map<String, Object> m = new HashMap<>();
 //            JSONArray pdbvers_group_result = new JSONArray();
 //            for (Object[] reObject : reObjects) {
