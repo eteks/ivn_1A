@@ -46,13 +46,14 @@ import org.hibernate.Transaction;
  */
 public class Pdbversion_Group {
 
-    private Map<String, String> maps_string = new HashMap<String, String>();
-    private Map<String, Object> maps_object = new HashMap<String, Object>();
+    private Map<String, String> maps_string = new HashMap<>();
+    private Map<String, Object> maps_object = new HashMap<>();
     Session session = HibernateUtil.getThreadLocalSession();
     private List<Vehicle> vehicleversion_result;
+    private String resultValues;
     private List<Pdbversion_group> pdbversion_group_result = new ArrayList<>();
     private HashMap<String, Object> pdbversion_group_result1 = new HashMap<>(), pdbversion_group_result2 = new HashMap<>();
-    private List<Map<String, Object>> domainfeatures_result = new ArrayList<Map<String, Object>>();
+    private List<Map<String, Object>> domainfeatures_result = new ArrayList<>(), vehiclemodel_result = new ArrayList<>();
     private HashMap<String, Object> domainfeatures_result1 = new HashMap<>();
 
     public String PDBAssignPage() {
@@ -97,11 +98,9 @@ public class Pdbversion_Group {
 //            pdb_previous_data_result.put("previous_models","1.0");
 //            
 //            maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
-
             maps_object.put("features", featureslist_result);
-            
-//            maps_object.put("removed_features", StringUtils.join(",", pdb_previous_data.get("removed_features")));
 
+//            maps_object.put("removed_features", StringUtils.join(",", pdb_previous_data.get("removed_features")));
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             maps_string.put("status", "Some error occurred !!");
@@ -185,17 +184,17 @@ public class Pdbversion_Group {
                     pvg.setAvailable_status((String) pdbdata.get("status"));
                     Pdbversion_group pvg_id = PDBOwnerDB.insertPDBVersionGroup(pvg);
                 }
-                if(prevpdb_id != 0){
+                if (prevpdb_id != 0) {
                     Map<String, Object> pdb_previous_data = PDBOwnerDB.GetPDBPreviousVersion_DomFea(prevpdb_id, curpdb_id.getId());
                     System.out.println("pdb_previous_data result" + pdb_previous_data);
 
                     JSONObject pdb_previous_data_result = new JSONObject();
                     pdb_previous_data_result.put("removed_features", pdb_previous_data.get("removed_features"));
-                    pdb_previous_data_result.put("added_features",pdb_previous_data.get("added_features"));
-                    pdb_previous_data_result.put("removed_models",pdb_previous_data.get("removed_models"));
-                    pdb_previous_data_result.put("added_models",pdb_previous_data.get("added_models"));            
-                    pdb_previous_data_result.put("current_version","1.1");
-                    pdb_previous_data_result.put("previous_models","1.0");
+                    pdb_previous_data_result.put("added_features", pdb_previous_data.get("added_features"));
+                    pdb_previous_data_result.put("removed_models", pdb_previous_data.get("removed_models"));
+                    pdb_previous_data_result.put("added_models", pdb_previous_data.get("added_models"));
+                    pdb_previous_data_result.put("current_version", "1.1");
+                    pdb_previous_data_result.put("previous_models", "1.0");
 
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
@@ -219,9 +218,10 @@ public class Pdbversion_Group {
             System.out.println(vehver_id);
 
             List<Object[]> pdbversion_group_result = (List<Object[]>) PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
-//            pdbversion_group_result = (List<Pdbversion_group>) PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
             JSONArray pdbvers_group_result = new JSONArray();
+
             for (Object[] fea : pdbversion_group_result) {
+
                 System.err.println(fea[0] + " " + fea[1]);
                 JSONObject fr = new JSONObject();
                 fr.put("pid", fea[0]);
@@ -248,14 +248,34 @@ public class Pdbversion_Group {
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             int vehver_id = readValue.get("pdb_id").asInt();
             System.out.println(vehver_id);
-            pdbversion_group_result1 = (HashMap<String, Object>) PDBOwnerDB.loadPdbversion_groupByVehicleId2(vehver_id);
-            JSONArray pdbvers_group_result = new JSONArray();
-            JSONObject fr = new JSONObject();
-            fr.putAll(pdbversion_group_result1);
-            pdbvers_group_result.add(fr);
-            System.out.println("JSON ARRAY : " + fr);
-            maps_object.put("pdbversion", pdbvers_group_result);
-            System.out.println(pdbvers_group_result);
+            List<Object[]> reObjects = (List<Object[]>) PDBOwnerDB.loadPdbversion_groupByVehicleId2(vehver_id);
+            Map<String, Object> m = new HashMap<>();
+//            JSONArray pdbvers_group_result = new JSONArray();
+//            for (Object[] reObject : reObjects) {
+//
+//                JSONObject fr = new JSONObject();
+//                fr.put("versionname", reObject[0]);
+//                fr.put("status", reObject[1]);
+//                fr.put("vehicle_id", reObject[2]);
+//                fr.put("vehiclename", reObject[3]);
+//                fr.put("modelid", reObject[4]);
+//                fr.put("modelname", reObject[4]);
+//                System.out.println("JSON ARRAY : " + fr);
+//                pdbvers_group_result.add(fr);
+//            }
+            for (Object[] reObject : reObjects) {
+                
+                m.put("versionname", reObject[0]);
+                m.put("status", reObject[1]);
+                m.put("vehicle_id", reObject[2]);
+                m.put("vehiclename", reObject[3]);
+                m.put("modelid", reObject[4]);
+                m.put("modelname", reObject[5]);
+                System.out.println("JSON ARRAY : " + m);
+                domainfeatures_result.add(m);
+            }
+            maps_object.put("pdbversion", domainfeatures_result);
+            System.out.println(domainfeatures_result);
         } catch (Exception e) {
             System.out.println("Error : " + e);
         }
@@ -358,7 +378,47 @@ public class Pdbversion_Group {
 
     public String GetVehicleModel_Listing() {
 
-        List<Map<String, Object>> list = PDBOwnerDB.GetVehicleModel_Listing();
+        try {
+            vehiclemodel_result = PDBOwnerDB.GetVehicleModel_Listing();
+
+            System.out.println("Json Values : " + vehiclemodel_result);
+
+        } catch (Exception e) {
+            maps_object.put("Error", e);
+            System.err.println("Error : " + e);
+        }
+
+        return "success";
+    }
+
+    public String GetVehicle_Listing() {
+
+        try {
+            vehiclemodel_result = PDBOwnerDB.getVehicle_Listing();
+
+            System.out.println("Json Values : " + vehiclemodel_result);
+
+        } catch (Exception e) {
+            maps_object.put("Error", e);
+            System.err.println("Error : " + e);
+        }
+
+        return "success";
+    }
+
+    public String GetPDBVersion_Listing() {
+
+        System.out.println("GetVehicleVersion_Listing");
+        try {
+            vehiclemodel_result = PDBOwnerDB.GetPDBVersion_Listing();
+
+            System.out.println("Json Values : " + vehiclemodel_result);
+
+        } catch (Exception e) {
+            maps_object.put("Error", e);
+            System.err.println("Error : " + e);
+        }
+
         return "success";
     }
 
@@ -425,6 +485,21 @@ public class Pdbversion_Group {
     public void setDomainfeatures_result1(HashMap<String, Object> domainfeatures_result1) {
         this.domainfeatures_result1 = domainfeatures_result1;
     }
-    
-    
+
+    public List<Map<String, Object>> getVehiclemodel_result() {
+        return vehiclemodel_result;
+    }
+
+    public void setVehiclemodel_result(List<Map<String, Object>> vehiclemodel_result) {
+        this.vehiclemodel_result = vehiclemodel_result;
+    }
+
+    public String getResultValues() {
+        return resultValues;
+    }
+
+    public void setResultValues(String resultValues) {
+        this.resultValues = resultValues;
+    }
+
 }

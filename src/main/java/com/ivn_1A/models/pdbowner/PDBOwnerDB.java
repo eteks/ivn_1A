@@ -4,6 +4,7 @@ import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.models.admin.User;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,101 +37,100 @@ import org.hibernate.transform.Transformers;
  * @author ets-poc
  */
 public class PDBOwnerDB {
-    public static List<Pdbversion_group> GetComparedFeatures(int prevpdb_id, int curpdb_id, String feature_type){      
+
+    public static List<Pdbversion_group> GetComparedFeatures(int prevpdb_id, int curpdb_id, String feature_type) {
         Session s = HibernateUtil.getThreadLocalSession();
         Transaction tx = s.beginTransaction();
-        
+
         //Working code
         final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
         CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
         Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
         Join<Pdbversion_group, Domain_and_Features_Mapping> domfeaJoin = pdbversion_groupRoot.join("domain_and_features_mapping_id", JoinType.INNER);
         Join<Domain_and_Features_Mapping, Domain> domJoin = domfeaJoin.join("domain_id", JoinType.INNER);
-        Join<Domain_and_Features_Mapping, Features> feaJoin = domfeaJoin.join("feature_id", JoinType.INNER); 
+        Join<Domain_and_Features_Mapping, Features> feaJoin = domfeaJoin.join("feature_id", JoinType.INNER);
         criteriaQuery.select(
                 criteriaBuilder.concat(
-                criteriaBuilder.concat(
-                    criteriaBuilder.concat(
-                        "(", domJoin.<String>get("domain_name")
-                    ),
-                        ")"
-                ),
-                    feaJoin.<String>get("feature_name")
-        )).distinct(true);
+                        criteriaBuilder.concat(
+                                criteriaBuilder.concat(
+                                        "(", domJoin.<String>get("domain_name")
+                                ),
+                                ")"
+                        ),
+                        feaJoin.<String>get("feature_name")
+                )).distinct(true);
 
-        Subquery<Pdbversion_group > subquery = criteriaQuery.subquery(Pdbversion_group .class);
+        Subquery<Pdbversion_group> subquery = criteriaQuery.subquery(Pdbversion_group.class);
         Root<Pdbversion_group> subQueryRoot = subquery.from(Pdbversion_group.class);
         subquery.select(subQueryRoot.get("domain_and_features_mapping_id")).distinct(true);
-        if(feature_type.equals("removed")){
+        if (feature_type.equals("removed")) {
             System.out.println("entered into removed");
             subquery.where(criteriaBuilder.equal(subQueryRoot.get("pdbversion_id").get("id"), curpdb_id));
             criteriaQuery.where(
-                criteriaBuilder.and(
-                        criteriaBuilder.equal(
-                                pdbversion_groupRoot.get("pdbversion_id").get("id"),prevpdb_id
-                        ),
-                        criteriaBuilder.not(pdbversion_groupRoot.get("domain_and_features_mapping_id").in(subquery))
-                )
-            ); 
-        }
-        else{
+                    criteriaBuilder.and(
+                            criteriaBuilder.equal(
+                                    pdbversion_groupRoot.get("pdbversion_id").get("id"), prevpdb_id
+                            ),
+                            criteriaBuilder.not(pdbversion_groupRoot.get("domain_and_features_mapping_id").in(subquery))
+                    )
+            );
+        } else {
             subquery.where(criteriaBuilder.equal(subQueryRoot.get("pdbversion_id").get("id"), prevpdb_id));
             criteriaQuery.where(
-                criteriaBuilder.and(
-                        criteriaBuilder.equal(
-                                pdbversion_groupRoot.get("pdbversion_id").get("id"),curpdb_id
-                        ),
-                        criteriaBuilder.not(pdbversion_groupRoot.get("domain_and_features_mapping_id").in(subquery))
-                )
+                    criteriaBuilder.and(
+                            criteriaBuilder.equal(
+                                    pdbversion_groupRoot.get("pdbversion_id").get("id"), curpdb_id
+                            ),
+                            criteriaBuilder.not(pdbversion_groupRoot.get("domain_and_features_mapping_id").in(subquery))
+                    )
             );
         }
-        
+
 //            criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"), prevpdb_id)),criteriaBuilder.not(criteriaBuilder.exists(subquery))); 
         TypedQuery<Pdbversion_group> feature_results = s.createQuery(criteriaQuery);
         tx.commit();
         s.clear();
         return feature_results.getResultList();
     }
-    
-    public static List<Pdbversion_group> GetComparedVehicleModels(int prevpdb_id, int curpdb_id, String feature_type){      
+
+    public static List<Pdbversion_group> GetComparedVehicleModels(int prevpdb_id, int curpdb_id, String feature_type) {
         Session s = HibernateUtil.getThreadLocalSession();
         Transaction tx = s.beginTransaction();
-        
+
         //Working code
         final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
         CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
         Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
-        Join<Pdbversion_group, Vehiclemodel> vehmodJoin = pdbversion_groupRoot.join("vehiclemodel_id", JoinType.INNER); 
+        Join<Pdbversion_group, Vehiclemodel> vehmodJoin = pdbversion_groupRoot.join("vehiclemodel_id", JoinType.INNER);
         criteriaQuery.select(vehmodJoin.get("modelname")).distinct(true);
 
-        Subquery<Pdbversion_group > subquery = criteriaQuery.subquery(Pdbversion_group .class);
+        Subquery<Pdbversion_group> subquery = criteriaQuery.subquery(Pdbversion_group.class);
         Root<Pdbversion_group> subQueryRoot = subquery.from(Pdbversion_group.class);
         subquery.select(subQueryRoot.get("vehiclemodel_id")).distinct(true);
-            
-        if(feature_type.equals("removed")){
+
+        if (feature_type.equals("removed")) {
             System.out.println("entered into removed");
             subquery.where(criteriaBuilder.equal(subQueryRoot.get("pdbversion_id").get("id"), curpdb_id));
             criteriaQuery.where(
-                criteriaBuilder.and(
-                        criteriaBuilder.equal(
-                                pdbversion_groupRoot.get("pdbversion_id").get("id"),prevpdb_id
-                        ),
-                        criteriaBuilder.not(pdbversion_groupRoot.get("vehiclemodel_id").in(subquery))
-                )
-            ); 
-        }
-        else{
+                    criteriaBuilder.and(
+                            criteriaBuilder.equal(
+                                    pdbversion_groupRoot.get("pdbversion_id").get("id"), prevpdb_id
+                            ),
+                            criteriaBuilder.not(pdbversion_groupRoot.get("vehiclemodel_id").in(subquery))
+                    )
+            );
+        } else {
             subquery.where(criteriaBuilder.equal(subQueryRoot.get("pdbversion_id").get("id"), prevpdb_id));
             criteriaQuery.where(
-                criteriaBuilder.and(
-                        criteriaBuilder.equal(
-                                pdbversion_groupRoot.get("pdbversion_id").get("id"),curpdb_id
-                        ),
-                        criteriaBuilder.not(pdbversion_groupRoot.get("vehiclemodel_id").in(subquery))
-                )
+                    criteriaBuilder.and(
+                            criteriaBuilder.equal(
+                                    pdbversion_groupRoot.get("pdbversion_id").get("id"), curpdb_id
+                            ),
+                            criteriaBuilder.not(pdbversion_groupRoot.get("vehiclemodel_id").in(subquery))
+                    )
             );
         }
-        
+
 //            criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"), prevpdb_id)),criteriaBuilder.not(criteriaBuilder.exists(subquery))); 
         TypedQuery<Pdbversion_group> vehmod_results = s.createQuery(criteriaQuery);
         tx.commit();
@@ -311,7 +311,7 @@ public class PDBOwnerDB {
             return null;
         }
     }
-    
+
     public static Vehicle saveVehicles(Vehicle vehicle) {
         try {
             Vehicle vehicle1 = getVehicleByName(vehicle.getVehiclename());
@@ -330,7 +330,7 @@ public class PDBOwnerDB {
             return null;
         }
     }
-    
+
     //Vehicle Data by Name
     public static Vehicle getVehicleByName(String vehicleName) {
         try {
@@ -352,7 +352,7 @@ public class PDBOwnerDB {
             return null;
         }
     }
-    
+
     public static Vehiclemodel saveVehicleModel(Vehiclemodel vehiclemodel) {
         try {
             Vehiclemodel vehiclemodel1 = getVehicleModelByName(vehiclemodel.getModelname());
@@ -371,7 +371,7 @@ public class PDBOwnerDB {
             return null;
         }
     }
-        
+
     //Vehiclemodel Data by Name
     public static Vehiclemodel getVehicleModelByName(String vehicleModelName) {
         try {
@@ -393,31 +393,28 @@ public class PDBOwnerDB {
             return null;
         }
     }
-    
+
     public static Map<String, Object> GetPDBPreviousVersion_DomFea(int prevpdb_id, int curpdb_id) {
         try {
 //            Session s = HibernateUtil.getThreadLocalSession();
 //            Transaction tx = s.beginTransaction();
             Map<String, Object> results = new HashMap<String, Object>();
-            
+
             String removed = "removed";
             String added = "added";
-            
-            List<Pdbversion_group> removed_features = GetComparedFeatures(prevpdb_id, curpdb_id, removed);            
+
+            List<Pdbversion_group> removed_features = GetComparedFeatures(prevpdb_id, curpdb_id, removed);
             results.put("removed_features", StringUtils.join(removed_features, ","));
-            
-            List<Pdbversion_group> added_features = GetComparedFeatures(prevpdb_id, curpdb_id, added);            
+
+            List<Pdbversion_group> added_features = GetComparedFeatures(prevpdb_id, curpdb_id, added);
             results.put("added_features", StringUtils.join(added_features, ","));
-       
-            List<Pdbversion_group> removed_models = GetComparedVehicleModels(prevpdb_id, curpdb_id, removed);            
+
+            List<Pdbversion_group> removed_models = GetComparedVehicleModels(prevpdb_id, curpdb_id, removed);
             results.put("removed_models", StringUtils.join(removed_models, ","));
-            
-            List<Pdbversion_group> added_models = GetComparedVehicleModels(prevpdb_id, curpdb_id, added);            
+
+            List<Pdbversion_group> added_models = GetComparedVehicleModels(prevpdb_id, curpdb_id, added);
             results.put("added_models", StringUtils.join(added_models, ","));
 
-            
-            
-          
 //            
 //            tx.commit();
 //            s.clear();
@@ -439,7 +436,7 @@ public class PDBOwnerDB {
             Root<Domain_and_Features_Mapping> dfm = criteriaQuery.from(Domain_and_Features_Mapping.class);
 //            Join<Domain_and_Features_Mapping, Domain> joindomain = dfm.join("domain_id", JoinType.INNER);
 //            Join<Domain_and_Features_Mapping, Features> joinfeatures = dfm.join("feature_id", JoinType.INNER);
-            
+
 //            criteriaQuery.multiselect(joindomain.get("domain_id"), joinfeatures.get("feature_id"));
 //            criteriaQuery.select(joindomain.get("domain_name"));
 //            criteriaQuery.select(joinfeatures.get("feature_name"));
@@ -504,6 +501,7 @@ public class PDBOwnerDB {
     //Pdbversion group Data
     public static List<Object[]> loadPdbversion_groupByVehicleId(int id) {
         try {
+            System.err.println("loadPdbversion_groupByVehicleId");
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
 
@@ -517,7 +515,7 @@ public class PDBOwnerDB {
             s.clear();
             return res;
         } catch (Exception e) {
-            System.err.println("Error : " + e);
+            System.err.println("Error \"loadPdbversion_groupByVehicleId\" : " + e);
             return null;
         }
     }
@@ -525,6 +523,7 @@ public class PDBOwnerDB {
     //Pdbversion group Data
     public static List<Pdbversion_group> loadPdbversion_groupByVehicleId1(int id) {
         try {
+            System.err.println("loadPdbversion_groupByVehicleId1");
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
 
@@ -544,103 +543,89 @@ public class PDBOwnerDB {
             session.clear();
             return dfm_result.getResultList();
         } catch (Exception e) {
-            System.err.println("Error : " + e);
+            System.err.println("Error \"loadPdbversion_groupByVehicleId1\" : " + e);
             return null;
         }
     }
 
     //Pdbversion group Data
-    public static HashMap<String, Object> loadPdbversion_groupByVehicleId2(int id) {
+    public static List<Object[]> loadPdbversion_groupByVehicleId2(int id) {
         try {
+            System.err.println("loadPdbversion_groupByVehicleId2");
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
 
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
             Root<Pdbversion_group> pRoot = criteriaQuery.from(Pdbversion_group.class);
-            Root<Vehicle> vRoot = criteriaQuery.from(Vehicle.class);
-            Root<Vehiclemodel> vmRoot = criteriaQuery.from(Vehiclemodel.class);
 
-            criteriaQuery.multiselect(pRoot, vRoot.get("id"), vRoot.get("vehiclename"), criteriaBuilder.function("group_concat", String.class, vmRoot.get("modelname")), criteriaBuilder.function("group_concat", String.class, vmRoot.get("id"))).distinct(true)
-                    .where(criteriaBuilder.equal(pRoot.get("vehicle_id").get("id"), vRoot.get("id")), criteriaBuilder.equal(pRoot.get("vehiclemodel_id").get("id"), vmRoot.get("id")), criteriaBuilder.equal(pRoot.get("pdbversion_id").get("id"), id))
-                    .orderBy(criteriaBuilder.desc(pRoot.get("pdbversion_id").get("id")));
-
-            List<Object[]> reObjects = session.createQuery(criteriaQuery).getResultList();
-            HashMap<String, Object> hashMap = new HashMap<>();
-            for (Object[] reObject : reObjects) {
-
-                Pdbversion_group p = (Pdbversion_group) reObject[0];
-                System.err.println(p.getPdbversion_id().getPdb_versionname()+ " " +p.getPdbversion_id().getStatus());
-                hashMap.put("versionname", p.getPdbversion_id().getPdb_versionname());
-                hashMap.put("status", p.getPdbversion_id().getStatus());
-                
-                int vid = (Integer) reObject[1];
-                System.out.println(vid);
-                hashMap.put("vehicle_id", vid);
-
-                String vehicle = (String) reObject[2];
-                System.out.println(vehicle);
-                hashMap.put("vehiclename", vehicle);
-
-                String vehiclemodel = (String) reObject[3];
-                String[] vm = vehiclemodel.split(",");
-                System.out.println(vm);
-                hashMap.put("modelname", vm);
-
-                String mid = (String) reObject[4];
-                String[] mi = mid.split(",");
-                System.out.println(mi);
-                hashMap.put("model_id", mi);
-            }
-
+            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("pdb_versionname"), pRoot.get("pdbversion_id").get("status"), pRoot.get("vehicle_id").get("id"), pRoot.get("vehicle_id").get("vehiclename"),
+//                    pRoot.get("vehiclemodel_id").get("id"), pRoot.get("vehiclemodel_id").get("modelname")).distinct(true)
+                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("id")), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname"))).distinct(true)
+                    .where(criteriaBuilder.equal(pRoot.get("pdbversion_id").get("id"), id)).orderBy(criteriaBuilder.desc(pRoot.get("id")));
+            List<Object[]> list = session.createQuery(criteriaQuery).getResultList();
             tx.commit();
             session.clear();
-            return hashMap;
+            return list;
         } catch (Exception e) {
-            System.err.println("Error : " + e);
+            System.err.println("Error \"loadPdbversion_groupByVehicleId2\" : " + e);
             return null;
         }
     }
-    
+
     public static List<Map<String, Object>> GetVehicleModel_Listing() {
-        
+
         try {
+            System.err.println("GetVehicleModel_Listing");
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
-            List<Map<String, Object>> row = new ArrayList<Map<String, Object>>();
+
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+
             Root<Pdbversion_group> pRoot = criteriaQuery.from(Pdbversion_group.class);
-            Root<Vehicle> vRoot = criteriaQuery.from(Vehicle.class);
+            pRoot.join("vehicle_id", JoinType.INNER);
+            pRoot.join("vehiclemodel_id", JoinType.INNER);
+//            Root<Vehicle> vRoot = criteriaQuery.from(Vehicle.class);
             Root<Vehiclemodel> vmRoot = criteriaQuery.from(Vehiclemodel.class);
-            criteriaQuery.multiselect(vmRoot.get("modelname"), vmRoot.get("status"), vmRoot.get("created_date"), vmRoot.get("modified_date"), 
-                    criteriaBuilder.function("group_concat", String.class, vRoot.get("vehiclename")), criteriaBuilder.function("group_concat", String.class, pRoot.get("pdbversion_id").get("pdb_versionname")))
+
+            criteriaQuery.multiselect(pRoot.get("vehiclemodel_id").get("modelname"), pRoot.get("vehiclemodel_id").get("status"), pRoot.get("vehiclemodel_id").get("created_date"), pRoot.get("vehiclemodel_id").get("modified_date"),
+                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("vehiclename")), criteriaBuilder.function("group_concat", String.class, pRoot.get("pdbversion_id").get("pdb_versionname")))
                     .distinct(true).where(criteriaBuilder.equal(pRoot.get("vehiclemodel_id").get("id"), vmRoot.get("id")))
-                    .groupBy(vmRoot.get("modelname")).orderBy(criteriaBuilder.desc(vmRoot.get("id")));
+                    .groupBy(pRoot.get("vehiclemodel_id").get("modelname")).orderBy(criteriaBuilder.desc(pRoot.get("vehiclemodel_id").get("id")));
             List<Object[]> reObjects = session.createQuery(criteriaQuery).getResultList();
-            HashMap<String, Object> hashMap = new HashMap<>();
+
+            List<Map<String, Object>> row = new ArrayList<>();
             for (Object[] reObject : reObjects) {
+
+                Map<String, Object> columns = new HashMap<String, Object>();
 
                 String modelname = (String) reObject[0];
                 System.out.println(modelname);
-                String vehiclename = (String) reObject[5];
+                columns.put("modelname", modelname);
+
+                boolean status = (boolean) reObject[1];
+                System.out.println(status);
+                columns.put("status", status);
+
+                Date created_date = (Date) reObject[2];
+                System.out.println(created_date);
+                columns.put("created_date", created_date);
+
+                Date modified_date = (Date) reObject[3];
+                System.out.println(modified_date);
+                columns.put("modified_date", modified_date);
+
+                String vehiclename = (String) reObject[4];
                 System.out.println(vehiclename);
-                
-//                int vid = (Integer) reObject[1];
-//                System.out.println(vid);
-//                hashMap.put("vehicle_id", vid);
-//
-//                String vehicle = (String) reObject[2];
-//                System.out.println(vehicle);
-//                hashMap.put("vehiclename", vehicle);
-//
-//                String vehiclemodel = (String) reObject[3];
-//                System.out.println(vehiclemodel);
-//                hashMap.put("modelname", vehiclemodel);
-//
-//                String mid = (String) reObject[4];
-//                System.out.println(mid);
-//                hashMap.put("model_id", mid);
+                columns.put("vehiclename", vehiclename);
+
+                String versionname = (String) reObject[5];
+                System.out.println(versionname);
+                columns.put("versionname", versionname);
+
+                row.add(columns);
+                System.out.println("colums" + columns);
             }
             tx.commit();
             session.clear();
@@ -651,31 +636,133 @@ public class PDBOwnerDB {
         }
     }
 
-//    List<PostSummaryDTO> postSummaries = entityManager
-//    .createQuery(
-//        "select " +
-//        "   p.id as id, " +
-//        "   p.title as title, " +
-//        "   group_concat(t.name) as tags " +
-//        "from Post p " +
-//        "left join p.tags t " +
-//        "group by p.id, p.title")
-//    .unwrap(Query.class)
-//    .setResultTransformer(
-//        Transformers.aliasToBean(PostSummaryDTO.class)
-//    )
-//    .getResultList();
-//    Criteria criteria = getHibernateSession().createCriteria(A.class);
-//    criteria.createAlias("b", "b", JoinType.INNER_JOIN);
-//    criteria.createAlias("b.r", "b.r", JoinType.INNER_JOIN);
-//    criteria.createAlias("b.c", "b.c", JoinType.LEFT_OUTER_JOIN);
-//    ProjectionList projectionList = Projections.projectionList();
-//    // THE BELOW LINE WILL MAKE SURE COULMN a IS DISTINCT
-//    projectionList.add(Projections.distinct(Projections.property("a")), "a");
-//    // THE BELOW LINKE WILL GROUP IT BY COLUMN c
-//    projectionList.add(Projections.groupProperty("c"));
-//    // ADD all the fields that u want in projection
-//    criteria.setProjection(projectionList);
-//    criteria.setResultTransformer(Transformers.aliasToBean(A.class));
-//    return criteria.list();
+    public static List<Map<String, Object>> getVehicle_Listing() {
+
+        try {
+            System.err.println("getVehicle_Listing");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+            Root<Pdbversion_group> pRoot = criteriaQuery.from(Pdbversion_group.class);
+            pRoot.join("vehicle_id", JoinType.INNER);
+            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("id"), pRoot.get("vehicle_id").get("vehiclename"), pRoot.get("vehicle_id").get("status"),
+                    pRoot.get("vehicle_id").get("created_date"), pRoot.get("vehicle_id").get("modified_date"), criteriaBuilder.function("group_concat", String.class, pRoot.get("pdbversion_id").get("pdb_versionname")))
+                    .distinct(true).groupBy(pRoot.get("vehicle_id").get("vehiclename")).orderBy(criteriaBuilder.desc(pRoot.get("vehicle_id").get("id")));
+            List<Object[]> reObjects = session.createQuery(criteriaQuery).getResultList();
+
+            List<Map<String, Object>> row = new ArrayList<>();
+            for (Object[] reObject : reObjects) {
+
+                Map<String, Object> columns = new HashMap<String, Object>();
+
+                int pdb_version = (int) reObject[0];
+                System.out.println(pdb_version);
+                columns.put("pdb_version", pdb_version);
+
+                String vehiclename = (String) reObject[1];
+                System.out.println(vehiclename);
+                columns.put("vehiclename", vehiclename);
+
+                boolean status = (boolean) reObject[2];
+                System.out.println(status);
+                columns.put("status", status);
+
+                Date created_date = (Date) reObject[3];
+                System.out.println(created_date);
+                columns.put("created_date", created_date);
+
+                Date modified_date = (Date) reObject[4];
+                System.out.println(modified_date);
+                columns.put("modified_date", modified_date);
+
+                String versionname = (String) reObject[5];
+                System.out.println(versionname);
+                columns.put("versionname", versionname);
+
+                row.add(columns);
+                System.out.println("colums" + columns);
+            }
+            tx.commit();
+            session.clear();
+            return row;
+        } catch (Exception e) {
+            System.err.println("Error in \"getVehicle_Listing\" : " + e);
+            return null;
+        }
+    }
+
+    public static List<Map<String, Object>> GetPDBVersion_Listing() {
+        try {
+            System.err.println("GetVehicleVersion_Listing");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+            
+            Root<Pdbversion_group> pRoot = criteriaQuery.from(Pdbversion_group.class);
+            pRoot.join("pdbversion_id", JoinType.INNER);
+            pRoot.join("vehicle_id", JoinType.INNER);
+            pRoot.join("vehiclemodel_id", JoinType.INNER);
+            
+            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("id"), pRoot.get("pdbversion_id").get("pdb_versionname"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("id")), 
+                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("vehiclename")), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")), 
+                    pRoot.get("pdbversion_id").get("status"), pRoot.get("pdbversion_id").get("flag"), pRoot.get("pdbversion_id").get("created_date"), pRoot.get("pdbversion_id").get("modified_date"))
+                    .distinct(true).groupBy(pRoot.get("pdbversion_id").get("pdb_versionname")).orderBy(criteriaBuilder.desc(pRoot.get("pdbversion_id").get("id")));
+            List<Object[]> reObjects = session.createQuery(criteriaQuery).getResultList();
+
+            List<Map<String, Object>> row = new ArrayList<>();
+            for (Object[] reObject : reObjects) {
+
+                Map<String, Object> columns = new HashMap<String, Object>();
+
+                int pdb_id = (int) reObject[0];
+                System.out.println(pdb_id);
+                columns.put("pdb_id", pdb_id);
+
+                float pdb_versionname = (float) reObject[1];
+                System.out.println(pdb_versionname);
+                columns.put("pdb_versionname", pdb_versionname);
+
+                String vehicle_id = (String) reObject[2];
+                System.out.println(vehicle_id);
+                columns.put("vehicle_id", vehicle_id);
+
+                String vehiclename = (String) reObject[3];
+                System.out.println(vehiclename);
+                columns.put("vehiclename", vehiclename);
+                
+                String modelname = (String) reObject[4];
+                System.out.println(modelname);
+                columns.put("modelname", modelname);
+
+                boolean status = (boolean) reObject[5];
+                System.out.println(status);
+                columns.put("status", status);
+
+                boolean flag = (boolean) reObject[6];
+                System.out.println(flag);
+                columns.put("flag", flag);
+
+                Date created_date = (Date) reObject[7];
+                System.out.println(created_date);
+                columns.put("created_date", created_date);
+
+                Date modified_date = (Date) reObject[8];
+                System.out.println(modified_date);
+                columns.put("modified_date", modified_date);
+
+                row.add(columns);
+                System.out.println("colums" + columns);
+            }
+            tx.commit();
+            session.clear();
+            return row;
+        } catch (Exception e) {
+            System.err.println("Error in \"getVehicle_Listing\" : " + e);
+            return null;
+        }
+    }
 }

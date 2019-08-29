@@ -75,7 +75,7 @@
                                                                                 </s:iterator>
                                                                             </select>
                                                                             <label for="vehicle">Version:</label>
-                                                                            <select ng-model="data.pdbversion" ng-options="y.pdbversion for (x, y) in array_result | orderBy:'-'" ng-change="LoadVehicleModels()" ></select>
+                                                                            <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion for arr in array_result | orderBy:'-'" ng-change="LoadVehicleModels()" ></select>
                                                                             <!--<select ng-init="arr[arr.length-1]" ng-model="data.pdbversion" ng-options="y.pdbversion for (x, y) in array_result track by arr | orderBy:'-'" ng-change="LoadVehicleModels()" ></select>-->
 <!--                                                                            <select ng-change="LoadVehicleModels()" ng-model="data.pdbversion" id="pdbversion">
                                                                                 <option ng-repeat="arr in array_result | orderBy:'-'" ng-selected="arr.pdbid == data.pdbversion" value="{{arr.pdbid}}" >{{arr.pdbversion}}</option>
@@ -314,6 +314,7 @@
             $scope.tabstep2 = function() 
             {
                 if ($scope.data.new_vehicle=="select_vehicle") {
+                    
                     var vehiclename = $scope.Demo.dt.vehiclename;
                     var vn = {vehiclename};
                     var m = [];
@@ -575,10 +576,24 @@
                     
                    for(var i = 0; i < response.data.maps_object.pdbversion.length; i++)
                    {
-                       $scope.Demo.dt = response.data.maps_object.pdbversion[i];
+                       $window.alert(JSON.stringify(response.data.maps_object.pdbversion[i]));
+                       
+                        var array_result = [];
+                        var status_value = "";
+                       var data= response.data.maps_object.pdbversion[i];
+                       array_result.push({
+                            "vehiclename":data.vehiclename,
+                            "modelname":data.modelname.split(","),
+                            "modelid":data.modelid.split(","),
+                            "versionname":data.versionname,
+                            "status":data.status
+                        });
+                        status_value = data.status;  
 //                       $scope.vehicleresults = response.data.maps_object.pdbversion[i];
 //                       $window.alert(JSON.stringify($scope.Demo.dt));
                     }
+                    $scope.Demo.dt = array_result;          
+                       $window.alert(JSON.stringify($scope.Demo.dt));
                 });
             }
                         
@@ -761,7 +776,7 @@
                         var data= response.data.maps_object.pdbversion[i];
                         $scope.array_result.push({
                             "pdbid":data.pid,
-                            "pdbversion":data.pversion
+                            "pdbversion":parseFloat(data.pversion)
                         });
                     }
                     data.pdbversion = "1";
