@@ -75,7 +75,7 @@
                                                                                 </s:iterator>
                                                                             </select>
                                                                             <label for="vehicle">Version:</label>
-                                                                            <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion for arr in array_result" ng-change="LoadVehicleModels()" >
+                                                                            <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion_name for arr in array_result" ng-change="LoadVehicleModels()" disabled>
                                                                               
                                                                             </select>
                                                                             <!--<select ng-init="arr[arr.length-1]" ng-model="data.pdbversion" ng-options="y.pdbversion for (x, y) in array_result track by arr | orderBy:'-'" ng-change="LoadVehicleModels()" ></select>-->
@@ -401,10 +401,10 @@
                 alert(JSON.stringify($scope.list));
                 alert(JSON.stringify($scope.vehicleresults));
                 $scope.data.vehicle_id = $scope.vehicleresults.vehicle_id;
-                if($scope.data.pdbversion != undefined) {
-                    $scope.data.pdbversion_id = $scope.data.pdbversion;
-                    $scope.data.pdbversion_name = $scope.data.pdbversion;
-                }
+//                if($scope.data.pdbversion != undefined) {
+//                    $scope.data.pdbversion_id = $scope.data.pdbversion;
+//                    $scope.data.pdbversion_name = $scope.data.pdbversion;
+//                }
 //                data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true};
     //            data['pdbversion'] = {"vehicle_id": "1", "pdb_manual_comment":"test", "status": true,"pdbversion_id": "1", "pdbversion_name":"1.0"};
                 data['pdbversion'] = $scope.data;
@@ -780,7 +780,7 @@
 //                        $window.alert($scope.data.pdbversion);
                         $scope.array_result.push({
                             "pdbid":data.pid,
-                            "pdbversion":parseFloat(data.pversion).toFixed(1)
+                            "pdbversion_name":parseFloat(data.pversion).toFixed(1)
                         });
                     }
                     $scope.data.pdbversion = $scope.array_result[0];
