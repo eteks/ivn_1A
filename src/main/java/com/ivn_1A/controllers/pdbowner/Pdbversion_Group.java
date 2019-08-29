@@ -143,7 +143,7 @@ public class Pdbversion_Group {
                 status = pdbversion_value.get("status").asBoolean();
             }
 
-            if (pdbversion_value.has("pdbversion_id") && status == false) {
+            if (pdbversion_value.has("pdbversion") && status == false) {
                 System.out.println("Ready to update in same version");
             } else {
                 System.out.println("Ready to create");
@@ -152,12 +152,12 @@ public class Pdbversion_Group {
                 Pdbversion pdbversion = new Pdbversion();
 //                if(!version_data.isEmpty() && !pdbversion_value.containsKey("pdbversion_id")){
                 if (!version_data.isEmpty()) {
-                    if (!pdbversion_value.has("pdbversion_id")) {
+                    if (!pdbversion_value.has("pdbversion")) {
                         version_name = (float) 1.0 + version_data.get(0).getPdb_versionname();
                     } else {
-                        version_name = (float) 0.1 + Float.valueOf(pdbversion_value.get("pdbversion_name").asText());
-                        pdbversion.setPdb_reference_version(Float.valueOf(pdbversion_value.get("pdbversion_name").asText()));
-                        prevpdb_id = pdbversion_value.get("pdbversion_id").asInt();
+                        version_name = (float) 0.1 + Float.valueOf(pdbversion_value.get("pdbversion").get("pdbversion_name").asText());
+                        pdbversion.setPdb_reference_version(Float.valueOf(pdbversion_value.get("pdbversion").get("pdbversion_name").asText()));
+                        prevpdb_id = pdbversion_value.get("pdbversion").get("pdbid").asInt();
                     }
                 }
                 //To find and store removed id's and new feature'ids 
