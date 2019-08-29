@@ -2,31 +2,23 @@ package com.ivn_1A.models.pdbowner;
 
 import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.models.admin.User;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 import org.apache.commons.lang3.StringUtils;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
 import org.hibernate.query.Query;
-import org.hibernate.transform.Transformers;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

@@ -42,6 +42,6 @@ public class GroupConcatFunction implements SQLFunction {
         if (arguments.size() != 1) {
             throw new QueryException("group_concat should have only one argument");
         }
-        return "group_concat(" + arguments.get(0) + ")";
+        return "group_concat(distinct(" + arguments.get(0) + "))";
     }
 }

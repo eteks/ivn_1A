@@ -580,21 +580,20 @@
                    {
                        $window.alert(JSON.stringify(response.data.maps_object.pdbversion[i]));
                        
-                        var array_result = [];
                         var status_value = "";
                        var data= response.data.maps_object.pdbversion[i];
-                       array_result.push({
-                            "vehiclename":data.vehiclename,
+                       var array_res = {
+                           "vehiclename":data.vehiclename,
                             "modelname":data.modelname.split(","),
                             "modelid":data.modelid.split(","),
                             "versionname":data.versionname,
                             "status":data.status
-                        });
+                        };
                         status_value = data.status;  
 //                       $scope.vehicleresults = response.data.maps_object.pdbversion[i];
 //                       $window.alert(JSON.stringify($scope.Demo.dt));
                     }
-                    $scope.Demo.dt = array_result;          
+                    $scope.Demo.dt = array_res;          
                        $window.alert(JSON.stringify($scope.Demo.dt));
                 });
             }
