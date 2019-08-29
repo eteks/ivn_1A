@@ -45,7 +45,7 @@
                                     <li ng-tab-head ="active" ng-click="tabstep1()">
                                         <a href="#" >Vehicle</a>
                                     </li>
-                                    <li ng-tab-head ng-click="tabstep2()">
+                                    <li ng-tab-head="{{dt.active}}" ng-click="tabstep2()">
                                         <a href="#" >PDB</a>
                                     </li>
                                 </ul>
@@ -75,9 +75,8 @@
                                                                                 </s:iterator>
                                                                             </select>
                                                                             <label for="vehicle">Version:</label>
-                                                                            <!--<select disabled="" ng-model="data.pdbversion" ng-init="data.pdbversion={{array_result[0].pdbversion}}" data-test="{{array_result[0].pdbversion}}" ng-options="arr as arr.pdbversion for arr in array_result" ng-change="LoadVehicleModels()" ></select>-->
-                                                                            <select disabled="">
-                                                                                <option selected="" disabled="" value="{{data.pid}}">{{data.pdbversion}}</option>
+                                                                            <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion for arr in array_result" ng-change="LoadVehicleModels()" >
+                                                                              
                                                                             </select>
                                                                             <!--<select ng-init="arr[arr.length-1]" ng-model="data.pdbversion" ng-options="y.pdbversion for (x, y) in array_result track by arr | orderBy:'-'" ng-change="LoadVehicleModels()" ></select>-->
 <!--                                                                            <select ng-change="LoadVehicleModels()" ng-model="data.pdbversion" id="pdbversion">
@@ -359,7 +358,8 @@
                     });
 //                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
 //                    alert(JSON.stringify($scope.data));
-                } else {                    
+                } else {
+                    $scope.dt.active = "none";
                     alert("chhose");
                 }
 //                alert('hi');
@@ -572,7 +572,7 @@
                 $http({
                     url : 'loadvehiclemodelname',
                     method : "POST",
-                    data : {"pdb_id":$scope.data.pid}
+                    data : {"pdb_id":$scope.data.pdbversion.pdbid}
                 }).then(function (response, status, headers, config){
                     
                     var vm_result = [];
@@ -780,13 +780,11 @@
 //                        $window.alert($scope.data.pdbversion);
                         $scope.array_result.push({
                             "pdbid":data.pid,
-                            "pdbversion":parseFloat(data.pversion)
+                            "pdbversion":parseFloat(data.pversion).toFixed(1)
                         });
                     }
-                    $scope.data.pid = $scope.array_result[0].pdbid;
-                    $scope.data.pdbversion = parseFloat($scope.array_result[0].pdbversion).toFixed(1).toString();
+                    $scope.data.pdbversion = $scope.array_result[0];
                     $scope.LoadVehicleModels();
-//                    $scope.Demo.data = array_result;
     //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                 });
             };
