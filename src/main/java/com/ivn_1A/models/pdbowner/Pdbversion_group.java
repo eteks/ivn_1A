@@ -5,8 +5,7 @@
  */
 package com.ivn_1A.models.pdbowner;
 
-import com.ivn_1A.models.admin.User;
-import java.util.Date;
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +21,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "pdbversion_group")
-public class Pdbversion_group {
+public class Pdbversion_group implements Serializable {
 
     private int id;
     private Pdbversion pdbversion_id;

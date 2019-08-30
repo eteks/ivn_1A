@@ -3,7 +3,6 @@ package com.ivn_1A.models.pdbowner;
 import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.models.admin.User;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -477,12 +476,13 @@ public class PDBOwnerDB {
             final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
             CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
             Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
-            
+
             criteriaQuery.multiselect(pdbversion_groupRoot.get("pdbversion_id").get("id"), pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname"))
-                    .distinct(true).where(criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id))
+                    .distinct(true).where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("status"), true), criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("flag"), true), 
+                            criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id))
                     .orderBy(criteriaBuilder.desc(pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname")));
             List<Object[]> res = s.createQuery(criteriaQuery).getResultList();
-            
+
             tx.commit();
             s.clear();
             return res;
@@ -507,7 +507,7 @@ public class PDBOwnerDB {
                     criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("id")), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")))
                     .distinct(true).where(criteriaBuilder.equal(pRoot.get("pdbversion_id").get("id"), id)).orderBy(criteriaBuilder.desc(pRoot.get("id")));
             List<Object[]> list = session.createQuery(criteriaQuery).getResultList();
-            
+
             tx.commit();
             session.clear();
             return list;
@@ -581,16 +581,71 @@ public class PDBOwnerDB {
 
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
-            
+
             Root<Pdbversion_group> pRoot = criteriaQuery.from(Pdbversion_group.class);
             pRoot.join("pdbversion_id", JoinType.INNER);
             pRoot.join("vehicle_id", JoinType.INNER);
             pRoot.join("vehiclemodel_id", JoinType.INNER);
-            
-            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("id"), pRoot.get("pdbversion_id").get("pdb_versionname"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("id")), 
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("vehiclename")), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")), 
+
+            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("id"), pRoot.get("pdbversion_id").get("pdb_versionname"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("id")),
+                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("vehiclename")), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")),
                     pRoot.get("pdbversion_id").get("status"), pRoot.get("pdbversion_id").get("flag"), pRoot.get("pdbversion_id").get("created_date"), pRoot.get("pdbversion_id").get("modified_date"))
                     .distinct(true).groupBy(pRoot.get("pdbversion_id").get("pdb_versionname")).orderBy(criteriaBuilder.desc(pRoot.get("pdbversion_id").get("id")));
+            List<Object[]> reObjects = session.createQuery(criteriaQuery).getResultList();
+
+            tx.commit();
+            session.clear();
+            return reObjects;
+        } catch (Exception e) {
+            System.err.println("Error in \"getVehicle_Listing\" : " + e);
+            return null;
+        }
+    }
+
+    public static List<Object[]> GetDomainFeaturesListing() {
+        try {
+            System.err.println("GetVehicleVersion_Listing");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+
+            Root<Domain_and_Features_Mapping> pRoot = criteriaQuery.from(Domain_and_Features_Mapping.class);
+            pRoot.join("domain_id", JoinType.INNER);
+            pRoot.join("feature_id", JoinType.INNER);
+
+            criteriaQuery.multiselect(pRoot.get("id"), pRoot.get("domain_id").get("domain_name"), pRoot.get("feature_id").get("feature_name"),
+                    pRoot.get("feature_id").get("created_date"), pRoot.get("feature_id").get("modified_date"))
+                    .orderBy(criteriaBuilder.desc(pRoot.get("domain_id").get("id")));
+            List<Object[]> reObjects = session.createQuery(criteriaQuery).getResultList();
+
+            tx.commit();
+            session.clear();
+            return reObjects;
+        } catch (Exception e) {
+            System.err.println("Error in \"getVehicle_Listing\" : " + e);
+            return null;
+        }
+    }
+    
+    public static List<Object[]> GetDomainFeaturesListing1() {
+        try {
+            System.err.println("GetVehicleVersion_Listing");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+
+            Root<Domain_and_Features_Mapping> pRoot = criteriaQuery.from(Domain_and_Features_Mapping.class);
+            pRoot.join("domain_id", JoinType.INNER);
+            pRoot.join("feature_id", JoinType.INNER);
+
+            criteriaQuery.multiselect(pRoot.get("id"), pRoot.get("domain_id").get("domain_name"), criteriaBuilder.function("group_concat", String.class, pRoot.get("feature_id").get("feature_name")),
+                    criteriaBuilder.function("group_concat", String.class, pRoot.get("feature_id").get("created_date")),
+                    criteriaBuilder.function("group_concat", String.class, pRoot.get("feature_id").get("modified_date")))
+                    .orderBy(criteriaBuilder.desc(pRoot.get("domain_id").get("id")));
             List<Object[]> reObjects = session.createQuery(criteriaQuery).getResultList();
 
             tx.commit();

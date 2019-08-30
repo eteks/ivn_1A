@@ -88,7 +88,7 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="vehicle">Vehicle:</label>
-                                                                            <input type="text" class="form-control" placeholder="Enter vehicle" name="vehicle" ng-model="Demo.dt.vehiclename" ng-readonly="truefalse" required>
+                                                                            <input type="text" ng-blur="validateVehicle()" class="form-control" placeholder="Enter vehicle" id="vehicle" name="vehicle" ng-model="Demo.dt.vehiclename" ng-readonly="truefalse" required>
                                                                             <span ng-show="myForm.vehicle.$touched && myForm.vehicle.$invalid" style="color: red;">The Vehicle Name is required.</span>
                                                                         </div>
                                                                         <div class="form-group">
@@ -327,6 +327,22 @@
                     $scope.Demo.dt.modelname = "";
                 }
             }
+            
+            $scope.validateVehicle = function() 
+            {
+                if ($scope.Demo.dt.vehiclename && $scope.data.new_vehicle=="new_vehicle") {
+                    $http({
+                        url: 'verifyVehicle',
+                        method: "POST",
+                        data: {"vehiclename":$scope.Demo.dt.vehiclename},
+                    }).then(function (response, status, headers, config){
+                        $window.alert(JSON.stringify(response.data.maps_string.status));
+                    });
+                 } else {
+                    $window.alert("CheckBox Not Checked");
+                }
+            }
+            
             $scope.tabstep1 = function() 
             {
     //            alert('hi');
@@ -614,24 +630,38 @@
                 if($scope.Demo.data.length > 0)
                 {
                 // {"vehicle_id" :"1", "models":[{"model_id":1,"modelname":"m1"},{"model_id":2,"modelname":"m2"}]}                        alert(JSON.stringify(feature_and_domain_data));
-                       $http({
-                        url : 'createfeature_and_domain',
-                        method : "POST",
-                        data : feature_and_domain_data
-                       })
-                       .then(function (data, status, headers, config)
-                       {
-                            result_data = data.data.domainfeatures_result;
-                            $window.alert(JSON.stringify(result_data));
-                            //result_data =  result_data.slice(1, -1);
-                            for(var i = 0; i < result_data.length; i++) 
-                            {
-                                $scope.features.push({fid:result_data[i].fid,fea:result_data[i].fea,domain:result_data[i].domain});
-                            }
-                       });
-                       $('#modal-product-form').closeModal();
-                       $scope.domain="";
-                       $scope.Demo.data=[];
+                       
+                    $http({
+                        url: 'validateDomain',
+                        method: "POST",
+                        data: {"domainname":$scope.domain},
+                    }).then(function (response, status, headers, config){
+                        $window.alert(JSON.stringify(response.data.maps_string.status));
+                        if (response.data.maps_string.res != "failed") {
+                            $http({
+                            url : 'createfeature_and_domain',
+                            method : "POST",
+                            data : feature_and_domain_data
+                           })
+                           .then(function (data, status, headers, config)
+                           {
+                                result_data = data.data.domainfeatures_result;
+                                $window.alert(JSON.stringify(result_data));
+                                //result_data =  result_data.slice(1, -1);
+                                for(var i = 0; i < result_data.length; i++) 
+                                {
+                                    $scope.features.push({fid:result_data[i].fid,fea:result_data[i].fea,domain:result_data[i].domain});
+                                }
+                           });
+                           $('#modal-product-form').closeModal();
+                           $scope.domain="";
+                           $scope.Demo.data=[];
+                        } else {
+                            $('#modal-product-form').closeModal();
+                            $scope.domain="";
+                            $scope.Demo.data=[];
+                        }
+                    });
                 }
                 else
                 {
