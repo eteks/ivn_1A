@@ -37,7 +37,7 @@
                                    
                                    <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
-                                            <s:url action="vehicleversion_listing.action" var="aURL" />
+                                            <s:url action="pdb_listing.action" var="aURL" />
                                             <s:a href="%{aURL}">   
                                                     <div class="card-block">
                                                         <span>PDB Versions</span></br>
@@ -92,7 +92,7 @@
                                         </div>
                                     </div>
                                    
-                                    <div class="col-md-3 col-lg-3">
+<!--                                    <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
                                             <s:url action="model_version.action" var="aURL" />
                                             <s:a href="%{aURL}">      
@@ -118,8 +118,21 @@
                                                     </div>
                                             </s:a>   
                                         </div>
-                                    </div>
+                                    </div>-->
                                             
+                                    <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">
+                                            <s:url action="features_listing.action" var="aURL" />
+                                            <s:a href="%{aURL}">   
+                                                    <div class="card-block">
+                                                        <span>Domain & features</span></br>
+                                                        <span class="count"><s:property value="dashboard_result.modelversion_count"/></span> 
+                                                        <i class="icofont  icofont-numbered text-c-red"></i>  
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                            </s:a>   
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

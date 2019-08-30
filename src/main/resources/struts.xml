@@ -51,10 +51,29 @@
             <result type="json" />
         </action>
         
+<<<<<<< HEAD
         <action name="loadpdbdomainfeatures" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="LoadPDBDomainFeatures">
             <result type="json" />
         </action>
 
+=======
+        <action name="features_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetDomainFeaturesListing">
+            <result type="json" />
+        </action>
+        
+        <action name="features_listing1" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetDomainFeaturesListing1">
+            <result type="json" />
+        </action>
+        
+        <action name="verifyVehicle" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="verifyVehicles">
+            <result type="json" />
+        </action>
+        
+        <action name="validateDomain" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="validateDomain">
+            <result type="json" />
+        </action>
+        
+>>>>>>> 9ba73dfe5da2dc684700f860329076624478d7f8
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">

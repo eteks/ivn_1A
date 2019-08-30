@@ -7,7 +7,6 @@ package com.ivn_1A.controllers.pdbowner;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.HibernateUtil;
@@ -20,26 +19,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import com.ivn_1A.models.pdbowner.*;
-import com.opensymphony.xwork2.ActionContext;
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.stream.Collectors;
-import javax.json.JsonArray;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
-
-import org.apache.struts2.ServletActionContext;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.simple.parser.ParseException;
@@ -61,6 +49,7 @@ public class Pdbversion_Group {
     Gson gson = new Gson();
 
     public String PDBAssignPage() {
+        
         System.out.println("Entered");
         System.out.println("PDBAssignPage");
         //This will execute if url contains parameter(id and action-edit, view)
@@ -204,7 +193,7 @@ public class Pdbversion_Group {
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
             }
-            maps_string.put("success", "Process Done");
+            maps_string.put("status", "Process Done");
         } catch (Exception ex) {
             System.out.println("entered into catch");
             System.out.println(ex.getMessage());
@@ -240,7 +229,7 @@ public class Pdbversion_Group {
             maps_object.put("pdbversion", pdbvers_group_result);
             System.out.println(pdbvers_group_result);
         } catch (Exception e) {
-            maps_object.put("success", e);
+            maps_object.put("status", e);
             System.out.println("Error : " + e);
         }
         return "success";
@@ -284,7 +273,7 @@ public class Pdbversion_Group {
             maps_object.put("pdbversion", domainfeatures_result);
             System.out.println(domainfeatures_result);
         } catch (Exception e) {
-            maps_object.put("success", e);
+            maps_object.put("status", e);
             System.out.println("Error : " + e);
         }
         return "success";
@@ -335,10 +324,10 @@ public class Pdbversion_Group {
                 row.add(columns);
                 System.out.println("domainfeatures_result" + domainfeatures_result);
             }
-            maps_string.put("success", "Process Done");
+            maps_string.put("status", "Process Done");
         } catch (Exception e) {
             System.out.println("Error : " + e);
-            maps_object.put("msg", "Error in the Inserion : " + e);
+            maps_object.put("status", "Error in the Inserion : " + e);
         }
         return "success";
     }
@@ -377,11 +366,11 @@ public class Pdbversion_Group {
                 row.add(column);
 
             }
-            maps_string.put("success", "Process Done");
+            maps_string.put("status", "Process Done");
             domainfeatures_result1.put("models", row);
             System.out.println("domainfeatures_result" + domainfeatures_result1);
         } catch (Exception e) {
-            maps_object.put("Error", e);
+            maps_object.put("status", e);
             System.err.println("Error : " + e);
         }
         return "success";
@@ -424,11 +413,11 @@ public class Pdbversion_Group {
                 System.out.println("colums" + columns);
             }
             domainfeatures_result = row;
-            maps_string.put("success", "Listed Done");
+            maps_string.put("status", "Listed Done");
             System.out.println("Json Values : " + domainfeatures_result);
 
         } catch (Exception e) {
-            maps_object.put("Error", e);
+            maps_object.put("status", e);
             System.err.println("Error : " + e);
         }
 
@@ -440,43 +429,27 @@ public class Pdbversion_Group {
         try {
             listObjects = PDBOwnerDB.getVehicle_Listing();
             List<Map<String, Object>> row = new ArrayList<>();
-            for (Object[] reObject : listObjects) {
-
-                Map<String, Object> columns = new HashMap<String, Object>();
-
-                int pdb_version = (int) reObject[0];
-                System.out.println(pdb_version);
-                columns.put("pdb_version", pdb_version);
-
-                String vehiclename = (String) reObject[1];
-                System.out.println(vehiclename);
-                columns.put("vehiclename", vehiclename);
-
-                boolean status = (boolean) reObject[2];
-                System.out.println(status);
-                columns.put("status", status);
-
-                Date created_date = (Date) reObject[3];
-                System.out.println(created_date);
-                columns.put("created_date", created_date);
-
-                Date modified_date = (Date) reObject[4];
-                System.out.println(modified_date);
-                columns.put("modified_date", modified_date);
-
-                String versionname = (String) reObject[5];
-                System.out.println(versionname);
-                columns.put("versionname", versionname);
-
+            listObjects.stream().map((reObject) -> {
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("pdb_version", reObject[0]);
+                columns.put("vehiclename", reObject[1]);
+                columns.put("status", reObject[2]);
+                columns.put("created_date", reObject[3]);
+                columns.put("modified_date", reObject[4]);
+                columns.put("versionname", reObject[5]);
+                return columns;
+            }).map((columns) -> {
                 row.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
                 System.out.println("colums" + columns);
-            }
+            });
             domainfeatures_result = row;
-            maps_string.put("success", "Listed Done");
+            maps_string.put("status", "Listed Done");
             System.out.println("Json Values : " + domainfeatures_result);
 
         } catch (Exception e) {
-            maps_object.put("Error", e);
+            maps_object.put("status", e);
             System.err.println("Error : " + e);
         }
 
@@ -488,60 +461,146 @@ public class Pdbversion_Group {
         System.out.println("GetVehicleVersion_Listing");
         try {
             listObjects = PDBOwnerDB.GetPDBVersion_Listing();
-            
+
             List<Map<String, Object>> row = new ArrayList<>();
-            for (Object[] reObject : listObjects) {
-
-                Map<String, Object> columns = new HashMap<String, Object>();
-
-                int pdb_id = (int) reObject[0];
-                System.out.println(pdb_id);
-                columns.put("pdb_id", pdb_id);
-
-                float pdb_versionname = (float) reObject[1];
-                System.out.println(pdb_versionname);
-                columns.put("pdb_versionname", pdb_versionname);
-
-                String vehicle_id = (String) reObject[2];
-                System.out.println(vehicle_id);
-                columns.put("vehicle_id", vehicle_id);
-
-                String vehiclename = (String) reObject[3];
-                System.out.println(vehiclename);
-                columns.put("vehiclename", vehiclename);
-                
-                String modelname = (String) reObject[4];
-                System.out.println(modelname);
-                columns.put("modelname", modelname);
-
-                boolean status = (boolean) reObject[5];
-                System.out.println(status);
-                columns.put("status", status);
-
-                boolean flag = (boolean) reObject[6];
-                System.out.println(flag);
-                columns.put("flag", flag);
-
-                Date created_date = (Date) reObject[7];
-                System.out.println(created_date);
-                columns.put("created_date", created_date);
-
-                Date modified_date = (Date) reObject[8];
-                System.out.println(modified_date);
-                columns.put("modified_date", modified_date);
-
+            listObjects.stream().map((reObject) -> {
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("pdb_id", reObject[0]);
+                columns.put("pdb_versionname", reObject[1]);
+                columns.put("vehicle_id", reObject[2]);
+                columns.put("vehiclename", reObject[3]);
+                columns.put("modelname", reObject[4]);
+                columns.put("status", reObject[5]);
+                columns.put("flag", reObject[6]);
+                columns.put("created_date", reObject[7]);
+                columns.put("modified_date", reObject[8]);
+                return columns;
+            }).map((columns) -> {
                 row.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
                 System.out.println("colums" + columns);
-            }
+            });
             domainfeatures_result = row;
-            maps_string.put("success", "Listed Done");
+            maps_string.put("status", "Listed Done");
             System.out.println("Json Values : " + domainfeatures_result);
 
         } catch (Exception e) {
-            maps_object.put("Error", e);
+            maps_object.put("status", e);
             System.err.println("Error : " + e);
         }
 
+        return "success";
+    }
+
+    public String GetDomainFeaturesListing() {
+
+        System.out.println("GetFeaturesListing controller");
+        try {
+            listObjects = PDBOwnerDB.GetDomainFeaturesListing();
+
+            List<Map<String, Object>> row = new ArrayList<>();
+            listObjects.stream().map((reObject) -> {
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("dfm_id", reObject[0]);
+                columns.put("domain_name", reObject[1]);
+                columns.put("feature_name", reObject[2]);
+                columns.put("created_date", reObject[3]);
+                columns.put("modified_date", reObject[4]);
+                return columns;
+            }).map((columns) -> {
+                row.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums" + columns);
+            });
+            domainfeatures_result = row;
+            maps_string.put("status", "Listed Done");
+            System.out.println("Json Values : " + domainfeatures_result);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            maps_string.put("status", "Some error occurred !! " + ex);
+        }
+        return "success";
+    }
+
+    public String GetDomainFeaturesListing1() {
+
+        System.out.println("GetFeaturesListing controller");
+        try {
+            listObjects = PDBOwnerDB.GetDomainFeaturesListing1();
+
+            List<Map<String, Object>> row = new ArrayList<>();
+            listObjects.stream().map((reObject) -> {
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("dfm_id", reObject[0]);
+                columns.put("domain_name", reObject[1]);
+                columns.put("feature_name", reObject[2]);
+                columns.put("created_date", reObject[3]);
+                columns.put("modified_date", reObject[4]);
+                return columns;
+            }).map((columns) -> {
+                row.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums" + columns);
+            });
+            domainfeatures_result = row;
+            maps_string.put("status", "Listed Done");
+            System.out.println("Json Values : " + domainfeatures_result);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            maps_string.put("status", "Some error occurred !! " + ex);
+        }
+        return "success";
+    }
+
+    public String verifyVehicles() {
+
+        System.out.println("verifyVehicles controller");
+        try {
+
+            final ObjectMapper mapper = new ObjectMapper();
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            String vehicleName = readValue.get("vehiclename").asText();
+
+            Vehicle vehicle = PDBOwnerDB.getVehicleByName(vehicleName);
+            if (!vehicle.getVehiclename().equals(vehicleName)) {
+                maps_string.put("status", "No Vehicle Found You can Continue");
+            } else {
+                maps_string.put("status", "Your Entered Vehicle Already Exisit");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            maps_string.put("status", "You can Continue");
+        }
+        return "success";
+    }
+    
+    public String validateDomain() {
+
+        System.out.println("validateDomain controller");
+        try {
+
+            final ObjectMapper mapper = new ObjectMapper();
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            String domainname = readValue.get("domainname").asText();
+
+            Domain domain = PDBOwnerDB.getDomainByName(domainname);
+            if (!domain.getDomain_name().equals(domainname)) {
+                maps_string.put("status", "No Vehicle Found You can Continue");
+                maps_string.put("res", "success");
+            } else {
+                maps_string.put("status", "Your Entered Vehicle Already Exisit");
+                maps_string.put("res", "failed");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            maps_string.put("status", "You can Continue");
+            maps_string.put("res", "error");
+        }
         return "success";
     }
     
