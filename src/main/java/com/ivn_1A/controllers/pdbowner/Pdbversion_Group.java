@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.google.gson.Gson;
 import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.configs.JSONConfigure;
 
@@ -41,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.json.simple.parser.ParseException;
 
 /**
  * @author ets-poc
@@ -56,6 +58,7 @@ public class Pdbversion_Group {
     private List<Object[]> listObjects = new ArrayList<>();
     private List<Map<String, Object>> domainfeatures_result = new ArrayList<>();
     private HashMap<String, Object> domainfeatures_result1 = new HashMap<>();
+    Gson gson = new Gson();
 
     public String PDBAssignPage() {
         System.out.println("Entered");
@@ -539,6 +542,26 @@ public class Pdbversion_Group {
             System.err.println("Error : " + e);
         }
 
+        return "success";
+    }
+    
+    public String LoadPDBDomainFeatures() throws ParseException, IOException {
+        System.out.println("LoadPDBDomainFeatures controller");
+        final ObjectMapper mapper = new ObjectMapper();
+        String jsonValues = JSONConfigure.getAngularJSONFile();
+        final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+
+        try {
+            List<Pdbversion_group> pdb_map_result = PDBOwnerDB.LoadPDBDomainFeatures(readValue.get("pdbversion_id").asInt());
+            System.out.println("pdb_map_result" + pdb_map_result);          
+            String pdb_results = gson.toJson(pdb_map_result);
+            System.out.println("pdb_results"+pdb_results);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            maps_string.put("status", "Some error occurred !!");
+        }
+//            return vehmod_map_result;
+//            System.out.println("Result"+vehmod_map_result);
         return "success";
     }
 

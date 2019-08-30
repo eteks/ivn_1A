@@ -687,14 +687,14 @@
                 }
             };
             
-            $scope.LoadPDBPreviousVersion = function(data) 
+            $scope.LoadPDBDomainFeatures = function() 
             {               
 //                $('#edit_version').openModal();
-//                alert(data);
+//                alert($scope.data.pdbversion.pdbid);
                 $http({
-                    url : 'loadpdbpreviousvehicleversion_data',
+                    url : 'loadpdbdomainfeatures',
                     method : "POST",
-                    data : {"pdbversion_id":$scope.data.pdbversion}
+                    data : {"pdbversion_id":$scope.data.pdbversion.pdbid}
                 })
                 .then(function (response, status, headers, config){
 //                  alert(JSON.stringify(response.data.pdb_map_result,null,4));
@@ -785,6 +785,7 @@
                     }
                     $scope.data.pdbversion = $scope.array_result[0];
                     $scope.LoadVehicleModels();
+                    $scope.LoadPDBDomainFeatures();
     //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                 });
             };

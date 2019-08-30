@@ -50,6 +50,11 @@
         <action name="pdb_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
             <result type="json" />
         </action>
+        
+        <action name="loadpdbdomainfeatures" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="LoadPDBDomainFeatures">
+            <result type="json" />
+        </action>
+
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">
