@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import javax.persistence.Tuple;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.simple.parser.ParseException;
@@ -43,7 +44,7 @@ public class Pdbversion_Group {
     private List<Vehicle> vehicleversion_result;
     private String resultValues;
     private List<Pdbversion_group> pdbversion_group_result = new ArrayList<>();
-    private List<Object[]> listObjects = new ArrayList<>();
+    private List<Tuple> tupleObjects = new ArrayList<>();
     private List<Map<String, Object>> domainfeatures_result = new ArrayList<>();
     private HashMap<String, Object> domainfeatures_result1 = new HashMap<>();
     Gson gson = new Gson();
@@ -212,15 +213,15 @@ public class Pdbversion_Group {
             int vehver_id = readValue.get("vehicleversion_id").asInt();
             System.out.println(vehver_id);
 
-            List<Object[]> pdbversion_group_result = (List<Object[]>) PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
+            tupleObjects = PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
             JSONArray pdbvers_group_result = new JSONArray();
 
-            for (Object[] fea : pdbversion_group_result) {
+            for (Tuple tuple : tupleObjects) {
 
-                System.err.println(fea[0] + " " + fea[1]);
+                System.err.println(tuple.get("pid") + " " + tuple.get("pversion"));
                 JSONObject fr = new JSONObject();
-                fr.put("pid", fea[0]);
-                fr.put("pversion", fea[1]);
+                fr.put("pid", tuple.get("pid"));
+                fr.put("pversion", tuple.get("pversion"));
                 pdbvers_group_result.add(fr);
                 System.out.println("JSON ARRAY : " + fr);
             }
@@ -244,26 +245,26 @@ public class Pdbversion_Group {
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             int vehver_id = readValue.get("pdb_id").asInt();
             System.out.println(vehver_id);
-            List<Object[]> reObjects = (List<Object[]>) PDBOwnerDB.loadVehicleAndModelByVehicleId(vehver_id);
+            tupleObjects = PDBOwnerDB.loadVehicleAndModelByVehicleId(vehver_id);
             Map<String, Object> m = new HashMap<>();
-            reObjects.stream().map((reObject) -> {
-                m.put("versionname", reObject[0]);
-                return reObject;
-            }).map((reObject) -> {
-                m.put("status", reObject[1]);
-                return reObject;
-            }).map((reObject) -> {
-                m.put("vehicle_id", reObject[2]);
-                return reObject;
-            }).map((reObject) -> {
-                m.put("vehiclename", reObject[3]);
-                return reObject;
-            }).map((reObject) -> {
-                m.put("modelid", reObject[4]);
-                return reObject;
-            }).map((reObject) -> {
-                m.put("modelname", reObject[5]);
-                return reObject;
+            tupleObjects.stream().map((tuple) -> {
+                m.put("versionname", tuple.get("versionname"));
+                return tuple;
+            }).map((tuple) -> {
+                m.put("status", tuple.get("status"));
+                return tuple;
+            }).map((tuple) -> {
+                m.put("vehicle_id", tuple.get("vehicle_id"));
+                return tuple;
+            }).map((tuple) -> {
+                m.put("vehiclename", tuple.get("vehiclename"));
+                return tuple;
+            }).map((tuple) -> {
+                m.put("modelid", tuple.get("modelid"));
+                return tuple;
+            }).map((tuple) -> {
+                m.put("modelname", tuple.get("modelname"));
+                return tuple;
             }).map((_item) -> {
                 System.out.println("JSON ARRAY : " + m);
                 return _item;
@@ -379,16 +380,16 @@ public class Pdbversion_Group {
     public String GetVehicleModel_Listing() {
 
         try {
-            listObjects = PDBOwnerDB.GetVehicleModel_Listing();
+            tupleObjects = PDBOwnerDB.GetVehicleModel_Listing();
             List<Map<String, Object>> row = new ArrayList<>();
-            listObjects.stream().map((reObject) -> {
+            tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
-                columns.put("modelname", reObject[0]);
-                columns.put("status", reObject[1]);
-                columns.put("created_date", reObject[2]);
-                columns.put("modified_date", reObject[3]);
-                columns.put("vehiclename", reObject[4]);
-                columns.put("versionname", reObject[5]);
+                columns.put("modelname", tuple.get("modelname"));
+                columns.put("status", tuple.get("status"));
+                columns.put("created_date", tuple.get("created_date"));
+                columns.put("modified_date", tuple.get("modified_date"));
+                columns.put("vehiclename", tuple.get("vehiclename"));
+                columns.put("versionname", tuple.get("versionname"));
                 return columns;
             }).map((columns) -> {
                 row.add(columns);
@@ -411,16 +412,16 @@ public class Pdbversion_Group {
     public String GetVehicle_Listing() {
 
         try {
-            listObjects = PDBOwnerDB.getVehicle_Listing();
+            tupleObjects = PDBOwnerDB.getVehicle_Listing();
             List<Map<String, Object>> row = new ArrayList<>();
-            listObjects.stream().map((reObject) -> {
+            tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
-                columns.put("pdb_version", reObject[0]);
-                columns.put("vehiclename", reObject[1]);
-                columns.put("status", reObject[2]);
-                columns.put("created_date", reObject[3]);
-                columns.put("modified_date", reObject[4]);
-                columns.put("versionname", reObject[5]);
+                columns.put("pdb_version_id", tuple.get("pdb_version_id"));
+                columns.put("vehiclename", tuple.get("vehiclename"));
+                columns.put("status", tuple.get("status"));
+                columns.put("created_date", tuple.get("created_date"));
+                columns.put("modified_date", tuple.get("modified_date"));
+                columns.put("pdb_version_name", tuple.get("pdb_version_name"));
                 return columns;
             }).map((columns) -> {
                 row.add(columns);
@@ -444,20 +445,20 @@ public class Pdbversion_Group {
 
         System.out.println("GetVehicleVersion_Listing");
         try {
-            listObjects = PDBOwnerDB.GetPDBVersion_Listing();
+            tupleObjects = PDBOwnerDB.GetPDBVersion_Listing();
 
             List<Map<String, Object>> row = new ArrayList<>();
-            listObjects.stream().map((reObject) -> {
+            tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
-                columns.put("pdb_id", reObject[0]);
-                columns.put("pdb_versionname", reObject[1]);
-                columns.put("vehicle_id", reObject[2]);
-                columns.put("vehiclename", reObject[3]);
-                columns.put("modelname", reObject[4]);
-                columns.put("status", reObject[5]);
-                columns.put("flag", reObject[6]);
-                columns.put("created_date", reObject[7]);
-                columns.put("modified_date", reObject[8]);
+                columns.put("pdb_id", tuple.get("pdb_id"));
+                columns.put("pdb_versionname", tuple.get("pdb_versionname"));
+                columns.put("vehicle_id", tuple.get("vehicle_id"));
+                columns.put("vehiclename", tuple.get("vehiclename"));
+                columns.put("modelname", tuple.get("modelname"));
+                columns.put("status", tuple.get("status"));
+                columns.put("flag", tuple.get("flag"));
+                columns.put("created_date", tuple.get("created_date"));
+                columns.put("modified_date", tuple.get("modified_date"));
                 return columns;
             }).map((columns) -> {
                 row.add(columns);
@@ -481,16 +482,16 @@ public class Pdbversion_Group {
 
         System.out.println("GetFeaturesListing controller");
         try {
-            listObjects = PDBOwnerDB.GetDomainFeaturesListing();
+            tupleObjects = PDBOwnerDB.GetDomainFeaturesListing();
 
             List<Map<String, Object>> row = new ArrayList<>();
-            listObjects.stream().map((reObject) -> {
+            tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
-                columns.put("dfm_id", reObject[0]);
-                columns.put("domain_name", reObject[1]);
-                columns.put("feature_name", reObject[2]);
-                columns.put("created_date", reObject[3]);
-                columns.put("modified_date", reObject[4]);
+                columns.put("dfm_id", tuple.get("dfm_id"));
+                columns.put("domain_name", tuple.get("domain_name"));
+                columns.put("feature_name", tuple.get("feature_name"));
+                columns.put("created_date", tuple.get("created_date"));
+                columns.put("modified_date", tuple.get("modified_date"));
                 return columns;
             }).map((columns) -> {
                 row.add(columns);
@@ -512,16 +513,16 @@ public class Pdbversion_Group {
 
         System.out.println("GetFeaturesListing controller");
         try {
-            listObjects = PDBOwnerDB.GetDomainFeaturesListing1();
+            tupleObjects = PDBOwnerDB.GetDomainFeaturesListing1();
 
             List<Map<String, Object>> row = new ArrayList<>();
-            listObjects.stream().map((reObject) -> {
+            tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
-                columns.put("dfm_id", reObject[0]);
-                columns.put("domain_name", reObject[1]);
-                columns.put("feature_name", reObject[2]);
-                columns.put("created_date", reObject[3]);
-                columns.put("modified_date", reObject[4]);
+                columns.put("dfm_id", tuple.get("dfm_id"));
+                columns.put("domain_name", tuple.get("domain_name"));
+                columns.put("feature_name", tuple.get("feature_name"));
+                columns.put("created_date", tuple.get("created_date"));
+                columns.put("modified_date", tuple.get("modified_date"));
                 return columns;
             }).map((columns) -> {
                 row.add(columns);
