@@ -111,4 +111,8 @@ public class Pdbversion_group implements Serializable {
     public void setAvailable_status(String available_status) {
         this.available_status = available_status;
     }
+
+    public String get(String vm_id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

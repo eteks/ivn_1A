@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -602,14 +603,14 @@ public class PDBOwnerDB {
         }
     }
     
-    public static List<Pdbversion_group> LoadPDBDomainFeatures(int pdb_id) {
+    public static List<Tuple> LoadPDBDomainFeatures(int pdb_id) {
         System.out.println("LoadPDBDomainFeatures model");
         Session s = HibernateUtil.getThreadLocalSession();
         Transaction tx = s.beginTransaction();
 
 //        //Working code
         final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
-        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
+        CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
         Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
         criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"),pdb_id)); 
         criteriaQuery.multiselect(pdbversion_groupRoot.get("vehiclemodel_id").get("id").alias("vm_id"),
@@ -618,7 +619,18 @@ public class PDBOwnerDB {
                                   pdbversion_groupRoot.get("domain_and_features_mapping_id").get("domain_id").get("domain_name").alias("domainname"),
                                   pdbversion_groupRoot.get("domain_and_features_mapping_id").get("feature_id").get("feature_name").alias("featurename")
                                 );
-        TypedQuery<Pdbversion_group> feature_results = s.createQuery(criteriaQuery);
+//        criteriaQuery.multiselect(pdbversion_groupRoot.get("vehiclemodel_id").get("id"),
+//                                  pdbversion_groupRoot.get("domain_and_features_mapping_id").get("id"),
+//                                  pdbversion_groupRoot.get("available_status"),
+//                                  pdbversion_groupRoot.get("domain_and_features_mapping_id").get("domain_id").get("domain_name"),
+//                                  pdbversion_groupRoot.get("domain_and_features_mapping_id").get("feature_id").get("feature_name")
+//                                );
+//        TypedQuery<Pdbversion_group> feature_results = s.createQuery(criteriaQuery);
+        List<Tuple> feature_results = s.createQuery(criteriaQuery).getResultList();
+        
+//        for (Tuple fea : feature_results) {
+//                System.out.println("fea"+fea.get("featurename"));
+//        }
 
 //            CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
 //            CriteriaQuery<Pdbversion_group> criteriaQuery = criteriaBuilder.createQuery(Pdbversion_group.class);
@@ -631,7 +643,7 @@ public class PDBOwnerDB {
             
         tx.commit();
         s.clear();
-        return feature_results.getResultList();
+        return feature_results;
     }
 
     public static List<Object[]> GetDomainFeaturesListing() {

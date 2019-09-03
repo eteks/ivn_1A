@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import javax.persistence.Tuple;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.simple.parser.ParseException;
@@ -611,10 +612,32 @@ public class Pdbversion_Group {
         final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
 
         try {
-            List<Pdbversion_group> pdb_map_result = PDBOwnerDB.LoadPDBDomainFeatures(readValue.get("pdbversion_id").asInt());
-            System.out.println("pdb_map_result" + pdb_map_result);          
-            String pdb_results = gson.toJson(pdb_map_result);
-            System.out.println("pdb_results"+pdb_results);
+            List<Tuple> pdb_map_result = PDBOwnerDB.LoadPDBDomainFeatures(readValue.get("pdbversion_id").asInt());
+            System.out.println("pdb_map_result" + pdb_map_result);  
+            JSONArray pdb_result = new JSONArray();
+            for (Tuple pdb : pdb_map_result) {
+                JSONObject res = new JSONObject();
+                res.put("vm_id", pdb.get("vm_id"));
+                res.put("fid", pdb.get("fid"));
+                res.put("status", pdb.get("status"));
+                res.put("domainname", pdb.get("domainname"));
+                res.put("featurename", pdb.get("featurename"));
+                pdb_result.add(res);
+            }
+            System.out.println("pdb_result"+pdb_result);
+//            JSONArray pdb_result = new JSONArray();
+//            for (Pdbversion_group pdb : pdb_map_result) {
+//                JSONObject res = new JSONObject();
+//                res.put("vm_id", pdb.getVehiclemodel_id().getId());
+//                res.put("fid", pdb.getDomain_and_features_mapping_id().getId());
+//                res.put("status", pdb.getAvailable_status());
+//                res.put("domainname", pdb.getDomain_and_features_mapping_id().getDomain_id().getDomain_name());
+//                res.put("featurename", pdb.getDomain_and_features_mapping_id().getFeature_id().getFeature_name());
+//                pdb_result.add(res);
+//            }
+            maps_object.put("pdb_map_result", pdb_result);
+//            String pdb_results = gson.toJson(pdb_map_result);
+//            System.out.println("pdb_results"+pdb_results);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             maps_string.put("status", "Some error occurred !!");
