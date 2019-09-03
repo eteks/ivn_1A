@@ -601,7 +601,6 @@ public class PDBOwnerDB {
             return null;
         }
     }
-<<<<<<< HEAD
     
     public static List<Pdbversion_group> LoadPDBDomainFeatures(int pdb_id) {
         System.out.println("LoadPDBDomainFeatures model");
@@ -633,7 +632,7 @@ public class PDBOwnerDB {
         tx.commit();
         s.clear();
         return feature_results.getResultList();
-=======
+    }
 
     public static List<Object[]> GetDomainFeaturesListing() {
         try {
@@ -688,6 +687,5 @@ public class PDBOwnerDB {
             System.err.println("Error in \"getVehicle_Listing\" : " + e);
             return null;
         }
->>>>>>> 9ba73dfe5da2dc684700f860329076624478d7f8
     }
 }
