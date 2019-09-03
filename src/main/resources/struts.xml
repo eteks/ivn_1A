@@ -51,6 +51,10 @@
             <result type="json" />
         </action>
         
+        <action name="loadpdbdomainfeatures" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="LoadPDBDomainFeatures">
+            <result type="json" />
+        </action>
+
         <action name="features_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetDomainFeaturesListing">
             <result type="json" />
         </action>
