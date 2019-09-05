@@ -195,6 +195,9 @@
 
         app.controller('RecordCtrl1',function($scope, $http, $window)
         {
+            $window.alert("Erl");
+            var pdb_listing = JSON.stringify("<s:property value="domainfeatures_result"/>");
+            $window.alert(pdb_listing);
 //             $scope.records = [
 //                        { pdb_version: '1.0',veh_version: '1.0', vehicle: 'Scorpio',model:'m1,m2,m3', status: 'Active'},
 //                        { pdb_version: '2.0',veh_version: '2.0', vehicle: 'Xuv',model:'m2,m5,m6', status: 'Inactive'},
