@@ -195,9 +195,6 @@
 
         app.controller('RecordCtrl1',function($scope, $http, $window)
         {
-            $window.alert("Erl");
-            var pdb_listing = JSON.stringify("<s:property value="domainfeatures_result"/>");
-            $window.alert(pdb_listing);
 //             $scope.records = [
 //                        { pdb_version: '1.0',veh_version: '1.0', vehicle: 'Scorpio',model:'m1,m2,m3', status: 'Active'},
 //                        { pdb_version: '2.0',veh_version: '2.0', vehicle: 'Xuv',model:'m2,m5,m6', status: 'Inactive'},
@@ -208,8 +205,8 @@
 //                        { pdb_version: '6.0',veh_version: '1.0', vehicle: 'XUV',model:'m4,m5,m7', status: 'Active'}
 //                    ];
 //            alert("<s:property value="result_data_obj"/>");
-            var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-//            alert(JSON.stringify(data));
+            var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));            
+//            $window.alert(JSON.stringify(data));
             $scope.records = data;
             $scope.compare_records = []; 
             //console.log(data);
