@@ -227,7 +227,7 @@
                 }
                 console.log($scope.compare_records);
             }); 
-                    
+                  
             $scope.compare_1 = [];
             $scope.compare_2 = [];
             $scope.comp_1 = function(item) 

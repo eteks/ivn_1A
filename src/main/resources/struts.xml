@@ -84,6 +84,11 @@
             <!--<result name="session">index.jsp</result>--> 
             <result>pdb_version_create.jsp</result>
         </action>
+        
+        <action name="pdb_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="PDBAssignPage">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>pdb_listing.jsp</result>
+        </action>
 
         <!--This is for testing--> 
         <action name="inserts" class="com.ivn_1A.controllers.repositories.TestInsert" method="execute">
