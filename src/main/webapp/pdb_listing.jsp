@@ -60,10 +60,8 @@
                                                         <table st-table="rowCollection" class="table table-striped">
                                                                 <thead>
                                                                 <tr>
-                                                                    
-                                                                    <th ng-click="sort('pdb_version')" class="text-center">PDB Version</th>
-                                                                    <th ng-click="sort('veh_version')" class="text-center">Vehicle Version</th>
-                                                                    <th ng-click="sort('vehicle')" class="text-center">Vehicle</th>
+                                                                    <th ng-click="sort('pdb_version')" class="text-center">PDB Version</th> 
+                                                                    <th ng-click="sort('veh_version')" class="text-center">Vehicle</th>                                                                    
                                                                     <th ng-click="sort('model')" class="text-center">Model</th>
                                                                     <th ng-click="sort('status')" class="text-center">Status</th>
                                                                     <th ng-click="sort('status')" class="text-center">Version Type</th>
@@ -76,22 +74,12 @@
                                                                 <tbody>
                                                                     
                                                                     <tr dir-paginate="record in records|orderBy:sortKey:reverse|filter:search|itemsPerPage:5">
-                                                                        
+                                                                        <td class="text-center">                                                                           
+                                                                                {{record.pdb_version}}                                                                                
+                                                                        </td>
                                                                        <td class="text-center">
-                                                                           
-                                                                                {{record.pdb_version}}
-                                                                                
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                           
-                                                                                {{record.veh_version}}
-                                                                                
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                           
-                                                                                {{record.vehicle}}
-                                                                                
-                                                                        </td>
+                                                                                {{record.vehicle}}                                                                                
+                                                                        </td>                                                                        
                                                                         <td class="text-center">
                                                                            <a class="mytooltip p-l-10 p-r-10 blink" href="javascript:void(0)"> 
                                                                                 <i class="icofont icofont-hand-drawn-up"></i>
@@ -206,7 +194,7 @@
 //                    ];
 //            alert("<s:property value="result_data_obj"/>");
             var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));            
-//            $window.alert(JSON.stringify(data));
+            $window.alert(JSON.stringify(data));
             $scope.records = data;
             $scope.compare_records = []; 
             //console.log(data);
