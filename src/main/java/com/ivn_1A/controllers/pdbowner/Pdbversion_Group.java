@@ -42,15 +42,12 @@ public class Pdbversion_Group {
     private Map<String, Object> maps_object = new HashMap<>();
     Session session = HibernateUtil.getThreadLocalSession();
     private List<Vehicle> vehicleversion_result;
-    private String resultValues;
-    private List<Pdbversion_group> pdbversion_group_result = new ArrayList<>();
     private List<Tuple> tupleObjects = new ArrayList<>();
-    private List<Map<String, Object>> domainfeatures_result = new ArrayList<>();
-    private HashMap<String, Object> domainfeatures_result1 = new HashMap<>();
     Gson gson = new Gson();
+    private String result_data_obj;
 
     public String PDBAssignPage() {
-        
+
         System.out.println("Entered");
         System.out.println("PDBAssignPage");
         //This will execute if url contains parameter(id and action-edit, view)
@@ -216,15 +213,20 @@ public class Pdbversion_Group {
             tupleObjects = PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
             JSONArray pdbvers_group_result = new JSONArray();
 
-            for (Tuple tuple : tupleObjects) {
-
+            tupleObjects.stream().map((tuple) -> {
                 System.err.println(tuple.get("pid") + " " + tuple.get("pversion"));
+                return tuple;
+            }).map((tuple) -> {
                 JSONObject fr = new JSONObject();
                 fr.put("pid", tuple.get("pid"));
                 fr.put("pversion", tuple.get("pversion"));
+                return fr;
+            }).map((fr) -> {
                 pdbvers_group_result.add(fr);
+                return fr;
+            }).forEachOrdered((fr) -> {
                 System.out.println("JSON ARRAY : " + fr);
-            }
+            });
 //            mapper.enable(SerializationFeature.INDENT_OUTPUT);
 //            String pdbvers_group_result = mapper.writeValueAsString(pdbversion_group_result);
             maps_object.put("pdbversion", pdbvers_group_result);
@@ -244,6 +246,7 @@ public class Pdbversion_Group {
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             int vehver_id = readValue.get("pdb_id").asInt();
+            List<Map<String, Object>> domainfeatures_result = new ArrayList<>();
             System.out.println(vehver_id);
             tupleObjects = PDBOwnerDB.loadVehicleAndModelByVehicleId(vehver_id);
             Map<String, Object> m = new HashMap<>();
@@ -288,6 +291,7 @@ public class Pdbversion_Group {
             final ObjectMapper mapper = new ObjectMapper();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            List<Map<String, Object>> domainfeatures_result = new ArrayList<>();
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
             boolean status = (boolean) false;
@@ -326,6 +330,7 @@ public class Pdbversion_Group {
                 System.out.println("domainfeatures_result" + domainfeatures_result);
             }
             maps_string.put("status", "Process Done");
+            maps_object.put("domainfeatures_result", domainfeatures_result);
         } catch (Exception e) {
             System.out.println("Error : " + e);
             maps_object.put("status", "Error in the Inserion : " + e);
@@ -341,6 +346,7 @@ public class Pdbversion_Group {
             final ObjectMapper mapper = new ObjectMapper();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            Map<String, Object> vehicleAndModel = new HashMap<>();
 
             String vehiclename = readValue.get("vehiclename").asText();
             ArrayNode models = (ArrayNode) readValue.get("models");
@@ -348,8 +354,8 @@ public class Pdbversion_Group {
             Vehicle vehicle = new Vehicle(vehiclename, true, new Date(), new Date(), PDBOwnerDB.getUser(1));
             Vehicle vehicleId = PDBOwnerDB.saveVehicles(vehicle);
             List<Map<String, Object>> row = new ArrayList<>();
-            domainfeatures_result1.put("vehicle_id", vehicleId.getId());
-            domainfeatures_result1.put("vehiclename", vehicleId.getVehiclename());
+            vehicleAndModel.put("vehicle_id", vehicleId.getId());
+            vehicleAndModel.put("vehiclename", vehicleId.getVehiclename());
             for (Object o : models) {
 
                 Map<String, Object> column = new HashMap<>();
@@ -368,8 +374,9 @@ public class Pdbversion_Group {
 
             }
             maps_string.put("status", "Process Done");
-            domainfeatures_result1.put("models", row);
-            System.out.println("domainfeatures_result" + domainfeatures_result1);
+            maps_object.put("vehicleAndModel", vehicleAndModel);
+            vehicleAndModel.put("models", row);
+            System.out.println("vehicleAndModel" + vehicleAndModel);
         } catch (Exception e) {
             maps_object.put("status", e);
             System.err.println("Error : " + e);
@@ -397,9 +404,9 @@ public class Pdbversion_Group {
             }).forEachOrdered((columns) -> {
                 System.out.println("colums" + columns);
             });
-            domainfeatures_result = row;
             maps_string.put("status", "Listed Done");
-            System.out.println("Json Values : " + domainfeatures_result);
+            maps_object.put("domainfeatures_result", row);
+            System.out.println("Json Values : " + row);
 
         } catch (Exception e) {
             maps_object.put("status", e);
@@ -429,9 +436,9 @@ public class Pdbversion_Group {
             }).forEachOrdered((columns) -> {
                 System.out.println("colums" + columns);
             });
-            domainfeatures_result = row;
             maps_string.put("status", "Listed Done");
-            System.out.println("Json Values : " + domainfeatures_result);
+            maps_object.put("domainfeatures_result", row);
+            System.out.println("Json Values : " + row);
 
         } catch (Exception e) {
             maps_object.put("status", e);
@@ -445,16 +452,17 @@ public class Pdbversion_Group {
 
         System.out.println("GetVehicleVersion_Listing");
         try {
+            ObjectMapper mapper = new ObjectMapper();
             tupleObjects = PDBOwnerDB.GetPDBVersion_Listing();
 
             List<Map<String, Object>> row = new ArrayList<>();
             tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("pdb_id", tuple.get("pdb_id"));
-                columns.put("pdb_versionname", tuple.get("pdb_versionname"));
+                columns.put("pdb_version", tuple.get("pdb_versionname"));
                 columns.put("vehicle_id", tuple.get("vehicle_id"));
-                columns.put("vehiclename", tuple.get("vehiclename"));
-                columns.put("modelname", tuple.get("modelname"));
+                columns.put("vehicle", tuple.get("vehiclename"));
+                columns.put("model", tuple.get("modelname"));
                 columns.put("status", tuple.get("status"));
                 columns.put("flag", tuple.get("flag"));
                 columns.put("created_date", tuple.get("created_date"));
@@ -466,9 +474,10 @@ public class Pdbversion_Group {
             }).forEachOrdered((columns) -> {
                 System.out.println("colums" + columns);
             });
-            domainfeatures_result = row;
             maps_string.put("status", "Listed Done");
-            System.out.println("Json Values : " + domainfeatures_result);
+            result_data_obj = gson.toJson(row);
+            maps_object.put("pdb_version_list", mapper.writeValueAsString(row));
+            System.out.println("Json Values : " + row);
 
         } catch (Exception e) {
             maps_object.put("status", e);
@@ -499,9 +508,9 @@ public class Pdbversion_Group {
             }).forEachOrdered((columns) -> {
                 System.out.println("colums" + columns);
             });
-            domainfeatures_result = row;
             maps_string.put("status", "Listed Done");
-            System.out.println("Json Values : " + domainfeatures_result);
+            maps_object.put("domainfeatures_result", row);
+            System.out.println("Json Values : " + row);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             maps_string.put("status", "Some error occurred !! " + ex);
@@ -530,9 +539,9 @@ public class Pdbversion_Group {
             }).forEachOrdered((columns) -> {
                 System.out.println("colums" + columns);
             });
-            domainfeatures_result = row;
             maps_string.put("status", "Listed Done");
-            System.out.println("Json Values : " + domainfeatures_result);
+            maps_object.put("domainfeatures_result", row);
+            System.out.println("Json Values : " + row);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             maps_string.put("status", "Some error occurred !! " + ex);
@@ -562,7 +571,7 @@ public class Pdbversion_Group {
         }
         return "success";
     }
-    
+
     public String validateDomain() {
 
         System.out.println("validateDomain controller");
@@ -588,7 +597,7 @@ public class Pdbversion_Group {
         }
         return "success";
     }
-    
+
     public String LoadPDBDomainFeatures() throws ParseException, IOException {
         System.out.println("LoadPDBDomainFeatures controller");
         final ObjectMapper mapper = new ObjectMapper();
@@ -597,18 +606,20 @@ public class Pdbversion_Group {
 
         try {
             List<Tuple> pdb_map_result = PDBOwnerDB.LoadPDBDomainFeatures(readValue.get("pdbversion_id").asInt());
-            System.out.println("pdb_map_result" + pdb_map_result);  
+            System.out.println("pdb_map_result" + pdb_map_result);
             JSONArray pdb_result = new JSONArray();
-            for (Tuple pdb : pdb_map_result) {
+            pdb_map_result.stream().map((pdb) -> {
                 JSONObject res = new JSONObject();
                 res.put("vm_id", pdb.get("vm_id"));
                 res.put("fid", pdb.get("fid"));
                 res.put("status", pdb.get("status"));
                 res.put("domainname", pdb.get("domainname"));
                 res.put("featurename", pdb.get("featurename"));
+                return res;
+            }).forEachOrdered((res) -> {
                 pdb_result.add(res);
-            }
-            System.out.println("pdb_result"+pdb_result);
+            });
+            System.out.println("pdb_result" + pdb_result);
 //            JSONArray pdb_result = new JSONArray();
 //            for (Pdbversion_group pdb : pdb_map_result) {
 //                JSONObject res = new JSONObject();
@@ -655,36 +666,12 @@ public class Pdbversion_Group {
         this.maps_string = maps_string;
     }
 
-    public List<Pdbversion_group> getPdbversion_group_result() {
-        return pdbversion_group_result;
+    public String getResult_data_obj() {
+        return result_data_obj;
     }
 
-    public void setPdbversion_group_result(List<Pdbversion_group> pdbversion_group_result) {
-        this.pdbversion_group_result = pdbversion_group_result;
+    public void setResult_data_obj(String result_data_obj) {
+        this.result_data_obj = result_data_obj;
     }
-
-    public List<Map<String, Object>> getDomainfeatures_result() {
-        return domainfeatures_result;
-    }
-
-    public void setDomainfeatures_result(List<Map<String, Object>> domainfeatures_result) {
-        this.domainfeatures_result = domainfeatures_result;
-    }
-
-    public HashMap<String, Object> getDomainfeatures_result1() {
-        return domainfeatures_result1;
-    }
-
-    public void setDomainfeatures_result1(HashMap<String, Object> domainfeatures_result1) {
-        this.domainfeatures_result1 = domainfeatures_result1;
-    }
-
-    public String getResultValues() {
-        return resultValues;
-    }
-
-    public void setResultValues(String resultValues) {
-        this.resultValues = resultValues;
-    }
-
+    
 }

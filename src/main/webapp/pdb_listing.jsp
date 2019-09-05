@@ -57,83 +57,74 @@
                                                         <a class="feature_add sig_add modal-trigger" href="#comparelist">
                                                             Compare
                                                         </a>
-                                                        <table st-table="rowCollection" class="table table-striped">
-                                                                <thead>
-                                                                <tr>
-                                                                    
-                                                                    <th ng-click="sort('pdb_version')" class="text-center">PDB Version</th>
-                                                                    <th ng-click="sort('veh_version')" class="text-center">Vehicle Version</th>
-                                                                    <th ng-click="sort('vehicle')" class="text-center">Vehicle</th>
-                                                                    <th ng-click="sort('model')" class="text-center">Model</th>
-                                                                    <th ng-click="sort('status')" class="text-center">Status</th>
-                                                                    <th ng-click="sort('status')" class="text-center">Version Type</th>
-                                                                    <th ng-click="sort('created_date')" class="text-center">Created Date</th>
-                                                                    <th ng-click="sort('modified_date')" class="text-center">Modified Date</th>
-                                                                    <th ng-click="sort('action')" class="text-center">Action</th>
-                                                                    
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    
-                                                                    <tr dir-paginate="record in records|orderBy:sortKey:reverse|filter:search|itemsPerPage:5">
-                                                                        
-                                                                       <td class="text-center">
-                                                                           
-                                                                                {{record.pdb_version}}
-                                                                                
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                           
-                                                                                {{record.veh_version}}
-                                                                                
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                           
-                                                                                {{record.vehicle}}
-                                                                                
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                           <a class="mytooltip p-l-10 p-r-10 blink" href="javascript:void(0)"> 
-                                                                                <i class="icofont icofont-hand-drawn-up"></i>
-                                                                                <span class="tooltip-content5">
-                                                                                    <span class="tooltip-text3">
-                                                                                        <span class="tooltip-inner2">
-                                                                                            <h3>Models:</h3>
-                                                                                            <ul class="model-list">
-                                                                                                <li ng-repeat="mod in (record.model | customSplitString)"><i class="icofont icofont-hand-right"></i> {{mod}}</li>
-                                                                                            </ul>
+                                                        <div class="ng-table-scrollcontainer">
+                                                            <table st-table="rowCollection" class="table table-striped">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th ng-click="sort('pdb_version')" class="text-center ng-table-fixedcolumn">PDB Version</th> 
+                                                                        <th ng-click="sort('veh_version')" class="text-center">Vehicle</th>                                                                    
+                                                                        <th ng-click="sort('model')" class="text-center">Model</th>
+                                                                        <th ng-click="sort('status')" class="text-center">Status</th>
+                                                                        <th ng-click="sort('status')" class="text-center">Version Type</th>
+                                                                        <th ng-click="sort('created_date')" class="text-center">Created Date</th>
+                                                                        <th ng-click="sort('modified_date')" class="text-center">Modified Date</th>
+                                                                        <th ng-click="sort('action')" class="text-center">Action</th>
+
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+
+                                                                        <tr dir-paginate="record in records|orderBy:sortKey:reverse|filter:search|itemsPerPage:5">
+                                                                            <td class="text-center ng-table-fixedcolumn">                                                                           
+                                                                                    {{record.pdb_version}}                                                                                
+                                                                            </td>
+                                                                           <td class="text-center">
+                                                                                    {{record.vehicle}}                                                                                
+                                                                            </td>                                                                        
+                                                                            <td class="text-center">
+                                                                               <a class="mytooltip p-l-10 p-r-10 blink" href="javascript:void(0)"> 
+                                                                                    <i class="icofont icofont-hand-drawn-up"></i>
+                                                                                    <span class="tooltip-content5">
+                                                                                        <span class="tooltip-text3">
+                                                                                            <span class="tooltip-inner2">
+                                                                                                <h3>Models:</h3>
+                                                                                                <ul class="model-list">
+                                                                                                    <li ng-repeat="mod in (record.model | customSplitString)"><i class="icofont icofont-hand-right"></i> {{mod}}</li>
+                                                                                                </ul>
+                                                                                            </span>
                                                                                         </span>
                                                                                     </span>
-                                                                                </span>
-                                                                            </a>     
-                                                                        </td>
-                                                                        <td class="text-center"> 
-                                                                            
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status === true">Active
-                                                                            </button>
+                                                                                </a>     
+                                                                            </td>
+                                                                            <td class="text-center"> 
 
-                                                                            <button class="btn btn-default btn-bg-c-yellow btn-outline-default btn-round btn-action" ng-if="record.status === false">Inactive
-                                                                            </button>
+                                                                                <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status === true">Active
+                                                                                </button>
 
-                                                                        </td>
-                                                                        <td class="text-center">                                                                             
-                                                                            <span ng-if="record.flag === false">Temporary</span>
-                                                                            <span ng-if="record.flag === true">Permanent</span>
-                                                                        </td>
-                                                                        <td class="text-center">{{record.created_date}}</td>
-                                                                        <td class="text-center">{{record.modified_date}}</td>
-                                                                        <td class="text-center"> 
-                                                                            
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.id}}" ng-click="View_and_edit($event)" name="edit" ng-if="record.status === false">Edit</button>
+                                                                                <button class="btn btn-default btn-bg-c-yellow btn-outline-default btn-round btn-action" ng-if="record.status === false">Inactive
+                                                                                </button>
 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-id="{{record.id}}" ng-click="View_and_edit($event)" name="view" ng-if="record.status === true">view</button>
-                                                                            
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.id}}" ng-click="delete($event)" name="delete" ng-if="record.delBut === 1">Delete</button>
-                                                                        </td>
-                                                                    </tr>
+                                                                            </td>
+                                                                            <td class="text-center">                                                                             
+                                                                                <span ng-if="record.flag === false">Temporary</span>
+                                                                                <span ng-if="record.flag === true">Permanent</span>
+                                                                            </td>
+                                                                            <td class="text-center">{{record.created_date}}</td>
+                                                                            <td class="text-center">{{record.modified_date}}</td>
+                                                                            <td class="text-center"> 
 
-                                                                </tbody>
-                                                            </table>
+                                                                                <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.id}}" ng-click="View_and_edit($event)" name="edit" ng-if="record.status === false">Edit</button>
+
+                                                                                <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-id="{{record.id}}" ng-click="View_and_edit($event)" name="view" ng-if="record.status === true">view</button>
+
+                                                                                <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.id}}" ng-click="delete($event)" name="delete" ng-if="record.delBut === 1">Delete</button>
+                                                                            </td>
+                                                                        </tr>
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        <!--table Scroller-->
                                                             <dir-pagination-controls
                                                                 max-size="5"
                                                                 direction-links="true"
@@ -205,8 +196,8 @@
 //                        { pdb_version: '6.0',veh_version: '1.0', vehicle: 'XUV',model:'m4,m5,m7', status: 'Active'}
 //                    ];
 //            alert("<s:property value="result_data_obj"/>");
-            var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-//            alert(JSON.stringify(data));
+            var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));            
+            $window.alert(JSON.stringify(data));
             $scope.records = data;
             $scope.compare_records = []; 
             //console.log(data);
@@ -227,7 +218,7 @@
                 }
                 console.log($scope.compare_records);
             }); 
-                    
+                  
             $scope.compare_1 = [];
             $scope.compare_2 = [];
             $scope.comp_1 = function(item) 

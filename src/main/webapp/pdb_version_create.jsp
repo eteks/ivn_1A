@@ -365,9 +365,10 @@
                         method: "POST",
                         data: vn,
                     }).then(function (response, status, headers, config){
-                        $scope.vehicleresults = response.data.domainfeatures_result1;
-                        $scope.records = response.data.domainfeatures_result1.models;
-//                        $window.alert("$scope.records "+JSON.stringify($scope.records));
+                        
+                        $scope.vehicleresults = response.data.maps_object.vehicleAndModel;
+                        $scope.records = response.data.maps_object.vehicleAndModel.models;
+                        $window.alert("$scope.records "+JSON.stringify($scope.records));
                     });
 //                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
                 } else if ($scope.data.new_vehicle=="new_vehicle") {
@@ -386,8 +387,9 @@
                         method: "POST",
                         data: vn,
                     }).then(function (response, status, headers, config){
-                        $scope.vehicleresults = response.data.domainfeatures_result1;
-                        $scope.records = response.data.domainfeatures_result1.models;
+                        
+                        $scope.vehicleresults = response.data.maps_object.vehicleAndModel;
+                        $scope.records = response.data.maps_object.vehicleAndModel.models;
                         $window.alert("$scope.records "+JSON.stringify($scope.records));
                     });
 //                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
@@ -645,7 +647,7 @@
                            })
                            .then(function (data, status, headers, config)
                            {
-                                result_data = data.data.domainfeatures_result;
+                                result_data = data.data.maps_object.domainfeatures_result;
                                 $window.alert(JSON.stringify(result_data));
                                 //result_data =  result_data.slice(1, -1);
                                 for(var i = 0; i < result_data.length; i++) 
