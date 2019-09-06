@@ -237,13 +237,14 @@
 //                alert("view_and_edit");
 //                alert(event.target.id);
                 var id = event.target.attributes['data-id'].value;
+                $window.alert(id.toString());
                 var name = event.target.name;
 //                alert(id);
 //                alert(name);
 //                $http.get("vehicle_add.action", {
 //                    params: { "id": id }
 //                });
-                $window.open("pdb_assign.action?id="+id+"&action="+name,"_self"); //  
+                $window.open("create_pdb.action?id="+id+"&action="+name,"_self"); //  
             }
             
             $scope.delete = function(event){
