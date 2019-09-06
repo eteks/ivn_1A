@@ -610,7 +610,7 @@ public class Pdbversion_Group {
             JSONArray pdb_result = new JSONArray();
             pdb_map_result.stream().map((pdb) -> {
                 JSONObject res = new JSONObject();
-                res.put("vm_id", pdb.get("vm_id"));
+                res.put("model_id", pdb.get("model_id"));
                 res.put("fid", pdb.get("fid"));
                 res.put("status", pdb.get("status"));
                 res.put("domainname", pdb.get("domainname"));

@@ -368,7 +368,7 @@
                         
                         $scope.vehicleresults = response.data.maps_object.vehicleAndModel;
                         $scope.records = response.data.maps_object.vehicleAndModel.models;
-                        $window.alert("$scope.records "+JSON.stringify($scope.records));
+//                        $window.alert("$scope.records "+JSON.stringify($scope.records));
                     });
 //                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
                 } else if ($scope.data.new_vehicle=="new_vehicle") {
@@ -741,8 +741,8 @@
 //                    }
                     $scope.list = [];
 //                    
-//                    for(var i=0; i<$scope.features.length; i++)                        
-//                        $scope.features_list.push({fid:$scope.features[i].fid,domain:$scope.features[i].domain,fea: $scope.features[i].fea})
+                    for(var i=0; i<$scope.features.length; i++)                        
+                        $scope.features_list.push({fid:$scope.features[i].fid,domain:$scope.features[i].domain,fea: $scope.features[i].fea})
 //                    alert(data);
 //                    alert(JSON.stringify(response.data.maps_object.pdb_map_result));
                     $scope.features = [];
@@ -776,20 +776,35 @@
                             $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].model_id,featuredetail_list[i].status);
 //                        alert(JSON.stringify($scope.list));  
                     }
+//                    alert(JSON.stringify($scope.list));  
 //                    if(data === "edit"){
+                        alert(angular.element(document.querySelector(".radio_button")).length);
                         angular.element(function () {
-                            var result = document.getElementsByClassName("radio_button");
-                            angular.forEach(result, function(value) {
-                                var result_name = value.getAttribute("name").substring(1).split("_");
-                                var fid = result_name[0];
-                                var model_id = result_name[1];
-                                var status = value.getAttribute("value");  
-                                angular.forEach($scope.list, function(item) {
-                                    if(item.dfm_id == fid && item.model_id == model_id && item.status == status)
-                                        value.setAttribute("checked","checked");
-                                });    
-                            });
+                                var result_radiobutton = document.getElementsByClassName("radio_button");
+                                alert(result_radiobutton.length);
                         });
+//                        angular.element(function () {
+//                            var result = document.getElementsByClassName("radio_button");
+//                            alert(result.length);
+////                            alert(JSON.stringify($scope.list)); 
+//                            angular.forEach(result, function(value) {
+//                                alert(JSON.stringify($scope.list));
+//                                var result_name = value.getAttribute("name").substring(1).split("_");
+//                                var fid = result_name[0];
+//                                var model_id = result_name[1];
+//                                var status = value.getAttribute("value");  
+//                                alert(fid);
+//                                alert(JSON.stringify($scope.list));  
+//                                angular.forEach($scope.list, function(item) {
+//                                    alert(item.dfm_id);
+//                                    alert(fid);
+//                                    if(item.dfm_id == fid && item.model_id == model_id && item.status == status){
+//                                        alert("if");
+//                                        value.setAttribute("checked","checked");
+//                                    }
+//                                });    
+//                            });
+//                        });
 //                    }
                 });
             };

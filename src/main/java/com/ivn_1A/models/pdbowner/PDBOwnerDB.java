@@ -606,7 +606,7 @@ public class PDBOwnerDB {
         CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
         Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
         criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"),pdb_id)); 
-        criteriaQuery.multiselect(pdbversion_groupRoot.get("vehiclemodel_id").get("id").alias("vm_id"),
+        criteriaQuery.multiselect(pdbversion_groupRoot.get("vehiclemodel_id").get("id").alias("model_id"),
                                   pdbversion_groupRoot.get("domain_and_features_mapping_id").get("id").alias("fid"),
                                   pdbversion_groupRoot.get("available_status").alias("status"),
                                   pdbversion_groupRoot.get("domain_and_features_mapping_id").get("domain_id").get("domain_name").alias("domainname"),
