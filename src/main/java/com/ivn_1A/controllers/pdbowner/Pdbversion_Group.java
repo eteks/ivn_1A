@@ -23,12 +23,15 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.ivn_1A.models.pdbowner.*;
+import com.opensymphony.xwork2.ActionContext;
 import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import javax.persistence.Tuple;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.struts2.ServletActionContext;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.simple.parser.ParseException;
@@ -50,30 +53,46 @@ public class Pdbversion_Group {
 
         System.out.println("Entered");
         System.out.println("PDBAssignPage");
-        //This will execute if url contains parameter(id and action-edit, view)
-//        try {
-//            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext()
-//                    .get(ServletActionContext.HTTP_REQUEST);
-//            System.out.println("request" + request);
-//            System.out.println("id_value" + request.getParameter("id"));
-//            System.out.println("action_value" + request.getParameter("action"));
-//            PDBversion pdbver = new PDBversion(Integer.parseInt(request.getParameter("id")));
-//            pdb_map_result = PDBVersionDB.LoadPDBPreviousVehicleversionData(pdbver);
-//            result_data_obj = new Gson().toJson(pdb_map_result);
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        }
+
+//        This will execute if url contains parameter(id and action-edit, view)
+        try {
+            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
+            System.out.println("request" + request);
+            System.out.println("id_value" + request.getParameter("id"));
+            System.out.println("action_value" + request.getParameter("action"));
+            List<Pdbversion_group> pdbversion_group_List = PDBOwnerDB.LoadPDBPreviousVehicleversionData(Integer.parseInt(request.getParameter("id")));
+            List<Map<String, Object>> pdb_map_result = new ArrayList<>();
+            pdbversion_group_List.stream().map((pdbversion_group) -> {
+                Map<String, Object> vehicleMap = new HashMap<>();
+                vehicleMap.put("vehver_id", pdbversion_group.getVehicle_id().getId());
+                vehicleMap.put("vehiclename", pdbversion_group.getVehicle_id().getVehiclename());
+                vehicleMap.put("modelname", pdbversion_group.getVehiclemodel_id().getModelname());
+                vehicleMap.put("pdbversion_group_id", pdbversion_group.getId());
+                vehicleMap.put("pdbversion_id", pdbversion_group.getPdbversion_id().getId());
+                vehicleMap.put("pdbversion_name", pdbversion_group.getPdbversion_id().getPdb_versionname());
+                vehicleMap.put("status", pdbversion_group.getPdbversion_id().getStatus());
+                return vehicleMap;
+            }).forEachOrdered((vehicleMap) -> {
+                pdb_map_result.add(vehicleMap);
+            });
+            result_data_obj = new Gson().toJson(pdb_map_result);
+            System.err.println("result_data_obj " + result_data_obj);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
         try {
             List<Domain_and_Features_Mapping> featureslist = PDBOwnerDB.LoadFeaturesList();
 
             JSONArray featureslist_result = new JSONArray();
-            for (Domain_and_Features_Mapping fea : featureslist) {
+            featureslist.stream().map((fea) -> {
                 JSONObject fr = new JSONObject();
                 fr.put("fid", fea.getId());
                 fr.put("fea", fea.getDomain_id().getDomain_name());
                 fr.put("domain", fea.getFeature_id().getFeature_name());
+                return fr;
+            }).forEachOrdered((fr) -> {
                 featureslist_result.add(fr);
-            }
+            });
             vehicleversion_result = PDBOwnerDB.loadVehicleVersion();
             System.out.println("featureslist_result result" + featureslist_result);
 
@@ -458,7 +477,7 @@ public class Pdbversion_Group {
             List<Map<String, Object>> row = new ArrayList<>();
             tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
-                columns.put("pdb_id", tuple.get("pdb_id"));
+                columns.put("id", tuple.get("pdb_id"));
                 columns.put("pdb_version", tuple.get("pdb_versionname"));
                 columns.put("vehicle_id", tuple.get("vehicle_id"));
                 columns.put("vehicle", tuple.get("vehiclename"));
@@ -673,5 +692,5 @@ public class Pdbversion_Group {
     public void setResult_data_obj(String result_data_obj) {
         this.result_data_obj = result_data_obj;
     }
-    
+
 }

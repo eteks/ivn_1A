@@ -64,18 +64,18 @@
                                                                     <div ng-if="Demo.data">
                                                                         <div class="form-group">
                                                                             <label for="vehicle">Select vehicle:</label>
-                                                                            <input type="radio" ng-click="formRest()" name="new_vehicle" ng-model="data.new_vehicle" value="select_vehicle" required=""/>
+                                                                            <input type="radio" ng-click="formRest()" id="select_vehicle" name="new_vehicle" ng-model="data.new_vehicle" value="select_vehicle" required=""/>
                                                                         </div>
                                                                         <div class="form-group"  ng-if="data.new_vehicle=='select_vehicle'">
                                                                             <label for="vehiclename">Vehicle:</label>
                                                                             <select id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()" >
-                                                                                <option selected="" disabled="">Select Version</option>
                                                                                 <s:iterator value="vehicleversion_result" var="data" >
                                                                                     <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
                                                                                 </s:iterator>
                                                                             </select>
                                                                             <label for="vehicle">Version:</label>
-                                                                            <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion_name for arr in array_result" ng-change="LoadVehicleModels()" disabled>
+                                                                            <!--<select ng-hide="data.vehicle"></select>-->
+                                                                            <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion_name for arr in array_result" ng-change="LoadVehicleModels()" >
                                                                             </select>
                                                                             <!--<select ng-init="arr[arr.length-1]" ng-model="data.pdbversion" ng-options="y.pdbversion for (x, y) in array_result track by arr | orderBy:'-'" ng-change="LoadVehicleModels()" ></select>-->
 <!--                                                                            <select ng-change="LoadVehicleModels()" ng-model="data.pdbversion" id="pdbversion">
@@ -84,7 +84,7 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="vehicle">New vehicle:</label>
-                                                                            <input type="radio" ng-click="formRest()" name="new_vehicle" ng-model="data.new_vehicle" value="new_vehicle" required=""/>
+                                                                            <input type="radio" ng-click="formRest()" id="new_vehicle" name="new_vehicle" ng-model="data.new_vehicle" value="new_vehicle" required=""/>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="vehicle">Vehicle:</label>
@@ -131,13 +131,11 @@
                                                <table st-table="rowCollection" class="table table-striped">
                                                        <thead>
                                                        <tr>
-
                                                            <th class="ng-table-fixedcolumn">Domain</th>
                                                            <th class="ng-table-fixedcolumn" style="left:150px;">Features</th>
                                                            <th class="text-center" ng-repeat="i in records">
                                                                {{i.modelname}}
                                                            </th>
-
                                                        </tr>
                                                        </thead>
 
@@ -297,9 +295,10 @@
         {
          
             this.data=[];
-            var notification_to;
+            var notification_to;    
             $scope.features = [];
             $scope.list = [];
+            $scope.Demo.dt = [];
             $scope.vehicleresults = {};
             $scope.vercompare_results = {};            
             $scope.truefalse = false;
@@ -310,6 +309,11 @@
 //            $scope.features_list = $scope.features_list = [{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"}];
 //            alert($scope.features_list);
             $scope.features_list= JSON.parse("<s:property value="maps_object.features"/>".replace(/&quot;/g,'"'));
+            
+//            $scope.RadioChange = function (s) {
+//                $window.alert(s);
+//                $scope.new_vehicle = s;
+//            };
             
             $scope.formRest = function() 
             {
@@ -853,42 +857,54 @@
                 $scope.data.pdbversion = params_array[0].id;
                 var action = params_array[1].action;
                 
-                var result_data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-                var vehicledetail_list = result_data.vehicledetail_list;
-                $scope.data.status = result_data.pdbversion_status[0].status;
+//                var result_data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
                 
-                $scope.data.vehicleversion = vehicledetail_list[0].vehver_id.toString();
-                $scope.LoadSelectedVehicleVersionData();
-                $scope.data.vehiclename = vehicledetail_list[0].vehicle_id.toString();
+                var vehicledetail_list = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                $window.alert(JSON.stringify(vehicledetail_list));
+                $scope.data.new_vehicle="select_vehicle";
+                
+                $scope.data.status = vehicledetail_list[0].status;                
+                $scope.data.vehicle = vehicledetail_list[0].vehver_id.toString();
+                $scope.LoadPreviousVersion();
                 $scope.records = vehicledetail_list;
-//                    alert(JSON.stringify($scope.records));                    
-                var featuredetail_list = result_data.featuredetail_list;
-                for(var i=0; i<featuredetail_list.length; i++)
-                {
-                    if($scope.features.length === 0)
-                    {
-                        $scope.add_feature_tab(featuredetail_list[i].fid);
-//                            $scope.features.push({fid:featuredetail_list[i].fid,fea:featuredetail_list[i].featurename,domain:featuredetail_list[i].domainname,status:featuredetail_list[i].status});
-                    }
-                    else
-                    {
-                        var temp=0;
-                        for(var j=0; j<$scope.features.length; j++)
-                        {
-                            if($scope.features[j].fid === featuredetail_list[i].fid)
-                            {
-                                temp=1;
-                            }   
-                        }
-                        if(temp==0)
-                        {
-                            $scope.add_feature_tab(featuredetail_list[i].fid);
-                        }
-                    }
+                
+                
+//                var vehicledetail_list = result_data.vehicledetail_list;
+//                $scope.data.status = result_data.pdbversion_status[0].status;
+//                
+//                $scope.data.vehicleversion = vehicledetail_list[0].vehver_id.toString();
+//                $scope.LoadSelectedVehicleVersionData();
+//                $scope.data.vehiclename = vehicledetail_list[0].vehicle_id.toString();
+//                $scope.records = vehicledetail_list;
+//                    alert(JSON.stringify($scope.records));             
 
-                    $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].model_id,featuredetail_list[i].status);
-//                        alert(JSON.stringify($scope.list));  
-                }
+//                var featuredetail_list = result_data.featuredetail_list;
+//                for(var i=0; i<featuredetail_list.length; i++)
+//                {
+//                    if($scope.features.length === 0)
+//                    {
+//                        $scope.add_feature_tab(featuredetail_list[i].fid);
+////                            $scope.features.push({fid:featuredetail_list[i].fid,fea:featuredetail_list[i].featurename,domain:featuredetail_list[i].domainname,status:featuredetail_list[i].status});
+//                    }
+//                    else
+//                    {
+//                        var temp=0;
+//                        for(var j=0; j<$scope.features.length; j++)
+//                        {
+//                            if($scope.features[j].fid === featuredetail_list[i].fid)
+//                            {
+//                                temp=1;
+//                            }   
+//                        }
+//                        if(temp==0)
+//                        {
+//                            $scope.add_feature_tab(featuredetail_list[i].fid);
+//                        }
+//                    }
+//
+//                    $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].model_id,featuredetail_list[i].status);
+////                        alert(JSON.stringify($scope.list));  
+//                }
                 angular.element(function () {
                     var result = document.getElementsByClassName("radio_button");
                     angular.forEach(result, function(value) {
