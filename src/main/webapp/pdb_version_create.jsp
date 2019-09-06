@@ -734,23 +734,26 @@
                 })
                 .then(function (response, status, headers, config){
 //                  alert(JSON.stringify(response.data.pdb_map_result,null,4));
-                    var result_data = response.data.maps_object.pdb_map_result;
-                    var vehicledetail_list = result_data.vehicledetail_list;
-                    if(data === "edit"){
-                        $scope.data.status = result_data.pdbversion_status[0].status;
-                        $scope.data.vehicleversion = vehicledetail_list[0].vehver_id.toString();
-                        $scope.LoadSelectedVehicleVersionData();
-                        $scope.data.vehiclename = vehicledetail_list[0].vehicle_id.toString();
-                        $scope.records = vehicledetail_list;
-                    }
+//                    var result_data = response.data.pdb_map_result;
+//                    var vehicledetail_list = result_data.vehicledetail_list;
+//                    if(data === "edit"){
+//                        $scope.data.status = result_data.pdbversion_status[0].status;
+//                        $scope.data.vehicleversion = vehicledetail_list[0].vehver_id.toString();
+//                        $scope.LoadSelectedVehicleVersionData();
+//                        $scope.data.vehiclename = vehicledetail_list[0].vehicle_id.toString();
+//                        $scope.records = vehicledetail_list;
+//                    }
                     $scope.list = [];
-                    
-                    for(var i=0; i<$scope.features.length; i++)                        
-                        $scope.features_list.push({fid:$scope.features[i].fid,domain:$scope.features[i].domain,fea: $scope.features[i].fea})
-                    
+//                    
+//                    for(var i=0; i<$scope.features.length; i++)                        
+//                        $scope.features_list.push({fid:$scope.features[i].fid,domain:$scope.features[i].domain,fea: $scope.features[i].fea})
+//                    alert(data);
+//                    alert(JSON.stringify(response.data.maps_object.pdb_map_result));
                     $scope.features = [];
 //                    alert(JSON.stringify($scope.records));                    
-                    var featuredetail_list = result_data.featuredetail_list;
+//                    var featuredetail_list = result_data.featuredetail_list;
+                    var featuredetail_list = response.data.maps_object.pdb_map_result;
+//                    alert(JSON.stringify(featuredetail_list));
                     for(var i=0; i<featuredetail_list.length; i++)
                     {
                         if($scope.features.length === 0)
@@ -773,11 +776,11 @@
                                 $scope.add_feature_tab(featuredetail_list[i].fid);
                             }
                         }
-                        if(data === "edit")
+//                        if(data === "edit")
                             $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].model_id,featuredetail_list[i].status);
 //                        alert(JSON.stringify($scope.list));  
                     }
-                    if(data === "edit"){
+//                    if(data === "edit"){
                         angular.element(function () {
                             var result = document.getElementsByClassName("radio_button");
                             angular.forEach(result, function(value) {
@@ -791,7 +794,7 @@
                                 });    
                             });
                         });
-                    }
+//                    }
                 });
             };
             
