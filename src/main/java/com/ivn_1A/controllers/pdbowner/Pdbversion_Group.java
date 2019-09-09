@@ -172,7 +172,7 @@ public class Pdbversion_Group {
                 //To find and store removed id's and new feature'ids 
 //                List pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(Integer.parseInt((String) pdbversion_value.get("pdbversion_id")));
 //                System.out.println("pdb_previous_data" + pdb_previous_data);
-                ArrayNode dfm_set = (ArrayNode) readValue.get("dfm_set");
+//                ArrayNode dfm_set = (ArrayNode) readValue.get("dfm_set");
 
                 pdbversion.setPdb_versionname(version_name);
                 pdbversion.setPdb_manual_comment(pdbversion_value.get("pdb_manual_comment").asText());
@@ -204,8 +204,9 @@ public class Pdbversion_Group {
                     pdb_previous_data_result.put("added_features", pdb_previous_data.get("added_features"));
                     pdb_previous_data_result.put("removed_models", pdb_previous_data.get("removed_models"));
                     pdb_previous_data_result.put("added_models", pdb_previous_data.get("added_models"));
-                    pdb_previous_data_result.put("current_version", "1.1");
-                    pdb_previous_data_result.put("previous_models", "1.0");
+                    pdb_previous_data_result.put("current_version", curpdb_id.getPdb_versionname());
+                    System.out.println("current_version"+curpdb_id.getPdb_versionname());
+                    pdb_previous_data_result.put("previous_version", pdbversion_value.get("pdbversion").get("pdbversion_name").asDouble());
 
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
