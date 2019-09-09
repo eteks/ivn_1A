@@ -634,6 +634,7 @@ public class Pdbversion_Group {
                 res.put("status", pdb.get("status"));
                 res.put("domainname", pdb.get("domainname"));
                 res.put("featurename", pdb.get("featurename"));
+                res.put("pdbstatus", pdb.get("pdbstatus"));
                 return res;
             }).forEachOrdered((res) -> {
                 pdb_result.add(res);

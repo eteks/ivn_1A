@@ -75,7 +75,7 @@
                                                                             </select>
                                                                             <label for="vehicle">Version:</label>
                                                                             <!--<select ng-hide="data.vehicle"></select>-->
-                                                                            <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion_name for arr in array_result" ng-change="LoadVehicleModels()" >
+                                                                            <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion_name for arr in array_result" ng-change="LoadVehicleModels()" disabled>
                                                                             </select>
                                                                             <!--<select ng-init="arr[arr.length-1]" ng-model="data.pdbversion" ng-options="y.pdbversion for (x, y) in array_result track by arr | orderBy:'-'" ng-change="LoadVehicleModels()" ></select>-->
 <!--                                                                            <select ng-change="LoadVehicleModels()" ng-model="data.pdbversion" id="pdbversion">
@@ -302,6 +302,7 @@
             $scope.vehicleresults = {};
             $scope.vercompare_results = {};            
             $scope.truefalse = false;
+            $scope.records = [];
 //            alert(JSON.parse("<s:property value="maps_object.pdb_previous_data_result"/>".replace(/&quot;/g,'"')));
 //            $scope.vercompare_results = JSON.parse("<s:property value="maps_object.pdb_previous_data_result"/>".replace(/&quot;/g,'"'));
 //            alert(JSON.stringify($scope.vercompare_results));
@@ -372,8 +373,10 @@
                         
                         $scope.vehicleresults = response.data.maps_object.vehicleAndModel;
                         $scope.records = response.data.maps_object.vehicleAndModel.models;
-//                        $window.alert("$scope.records "+JSON.stringify($scope.records));
+//                        $window.alert("$scope.records1 "+JSON.stringify($scope.records));
+                        $scope.LoadPDBDomainFeatures();
                     });
+                    
 //                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
                 } else if ($scope.data.new_vehicle=="new_vehicle") {
                     
@@ -394,7 +397,7 @@
                         
                         $scope.vehicleresults = response.data.maps_object.vehicleAndModel;
                         $scope.records = response.data.maps_object.vehicleAndModel.models;
-                        $window.alert("$scope.records "+JSON.stringify($scope.records));
+//                        $window.alert("$scope.records "+JSON.stringify($scope.records));
                     });
 //                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
 //                    alert(JSON.stringify($scope.data));
@@ -458,7 +461,7 @@
             
             $scope.createpdbversion = function (event)
             {
-              alert("createpdbversion");
+//              alert("createpdbversion");
 //            var status = true;
             var status = $scope.data.status;
             if(status == undefined )
@@ -469,7 +472,7 @@
 //            }
 //            alert("before do submit");
 //            $scope.doSubmit = false;  
-            alert(JSON.stringify($scope.list));
+//            alert(JSON.stringify($scope.list));
 //            alert($scope.list.length);
 //            alert($scope.records.length * $scope.features.length);
             if($scope.list.length > 0){
@@ -743,8 +746,10 @@
 //                        $scope.data.vehiclename = vehicledetail_list[0].vehicle_id.toString();
 //                        $scope.records = vehicledetail_list;
 //                    }
+//                    $window.alert("$scope.records2 "+JSON.stringify($scope.records));
                     $scope.list = [];
-//                    
+//                    alert(response.data.maps_object.pdb_map_result[0].pdbstatus);
+                    $scope.data.status = response.data.maps_object.pdb_map_result[0].pdbstatus;  
                     for(var i=0; i<$scope.features.length; i++)                        
                         $scope.features_list.push({fid:$scope.features[i].fid,domain:$scope.features[i].domain,fea: $scope.features[i].fea})
 //                    alert(data);
@@ -782,33 +787,20 @@
                     }
 //                    alert(JSON.stringify($scope.list));  
 //                    if(data === "edit"){
-                        alert(angular.element(document.querySelector(".radio_button")).length);
                         angular.element(function () {
-                                var result_radiobutton = document.getElementsByClassName("radio_button");
-                                alert(result_radiobutton.length);
+                            var result = document.getElementsByClassName("radio_button");
+                            angular.forEach(result, function(value) {
+                                var result_name = value.getAttribute("name").substring(1).split("_");
+                                var fid = result_name[0];
+                                var model_id = result_name[1];
+                                var status = value.getAttribute("value");  
+                                angular.forEach($scope.list, function(item) {
+                                    if(item.dfm_id == fid && item.model_id == model_id && item.status == status){
+                                        value.setAttribute("checked","checked");
+                                    }
+                                });    
+                            });
                         });
-//                        angular.element(function () {
-//                            var result = document.getElementsByClassName("radio_button");
-//                            alert(result.length);
-////                            alert(JSON.stringify($scope.list)); 
-//                            angular.forEach(result, function(value) {
-//                                alert(JSON.stringify($scope.list));
-//                                var result_name = value.getAttribute("name").substring(1).split("_");
-//                                var fid = result_name[0];
-//                                var model_id = result_name[1];
-//                                var status = value.getAttribute("value");  
-//                                alert(fid);
-//                                alert(JSON.stringify($scope.list));  
-//                                angular.forEach($scope.list, function(item) {
-//                                    alert(item.dfm_id);
-//                                    alert(fid);
-//                                    if(item.dfm_id == fid && item.model_id == model_id && item.status == status){
-//                                        alert("if");
-//                                        value.setAttribute("checked","checked");
-//                                    }
-//                                });    
-//                            });
-//                        });
 //                    }
                 });
             };
@@ -839,7 +831,6 @@
                     }
                     $scope.data.pdbversion = $scope.array_result[0];
                     $scope.LoadVehicleModels();
-                    $scope.LoadPDBDomainFeatures();
     //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                 });
             };

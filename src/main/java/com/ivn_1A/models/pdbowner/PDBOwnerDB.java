@@ -612,7 +612,8 @@ public class PDBOwnerDB {
                                   pdbversion_groupRoot.get("domain_and_features_mapping_id").get("id").alias("fid"),
                                   pdbversion_groupRoot.get("available_status").alias("status"),
                                   pdbversion_groupRoot.get("domain_and_features_mapping_id").get("domain_id").get("domain_name").alias("domainname"),
-                                  pdbversion_groupRoot.get("domain_and_features_mapping_id").get("feature_id").get("feature_name").alias("featurename")
+                                  pdbversion_groupRoot.get("domain_and_features_mapping_id").get("feature_id").get("feature_name").alias("featurename"),
+                                  pdbversion_groupRoot.get("pdbversion_id").get("status").alias("pdbstatus")
                                 );
 //        criteriaQuery.multiselect(pdbversion_groupRoot.get("vehiclemodel_id").get("id"),
 //                                  pdbversion_groupRoot.get("domain_and_features_mapping_id").get("id"),
