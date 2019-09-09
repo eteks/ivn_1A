@@ -473,15 +473,21 @@
 //            alert($scope.list.length);
 //            alert($scope.records.length * $scope.features.length);
             if($scope.list.length > 0){
-                if($scope.list.length === $scope.records.length * $scope.features.length){
+                $window.alert(" list Length : "+ $scope.list.length +" Record Length : "+ $scope.records.length +" Feature Length : "+ $scope.features.length +" Record Length : "+ JSON.stringify($scope.records)+" Feature Length : "+ JSON.stringify($scope.features));
+                if(status && event === "submit"){
+                    $(".notifyPopup").click();
+                }else {
+                    $scope.createpdbAjax(event);
+                }
+//                if($scope.list.length === $scope.records.length * $scope.features.length){
 //                    if(status && event === "submit"){
 //                        $(".notifyPopup").click();
 //                    }else
 //                        $scope.createpdbAjax(event);
-                    $scope.createpdbAjax(event);
-                }
-                else
-                    alert("Please fill all the domain and feature status to create PDB version");
+////                    $scope.createpdbAjax(event);
+//                }
+//                else
+//                    alert("Please fill all the domain and feature status to create PDB version");
             }
             else{
                 alert("Please fill the domain and feature status to create PDB version");
@@ -847,7 +853,7 @@
                 var vehicledetail_list = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
                 $window.alert(JSON.stringify(vehicledetail_list));
                 $scope.data.new_vehicle="select_vehicle";
-                
+                $scope.truefalse = true;
                 $scope.data.status = vehicledetail_list[0].status;                
                 $scope.data.vehicle = vehicledetail_list[0].vehver_id.toString();
                 $scope.LoadPreviousVersion();

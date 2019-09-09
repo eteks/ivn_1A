@@ -133,6 +133,7 @@ public class Pdbversion_Group {
         boolean flag;
         int prevpdb_id = 0;
         try {
+            Transaction tx = session.beginTransaction();
 //            Object obj = parser.parse(jsondata);
 //            JSONObject json = (JSONObject) obj;
 //            System.out.println("pdbdata" + json);
@@ -210,6 +211,8 @@ public class Pdbversion_Group {
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
             }
+            tx.commit();
+            session.clear();
             maps_string.put("status", "Process Done");
         } catch (Exception ex) {
             System.out.println("entered into catch");
