@@ -6,6 +6,7 @@
 package com.ivn_1A.controllers.repositories;
 
 import com.ivn_1A.configs.HibernateUtil;
+import com.ivn_1A.models.Groups;
 import com.ivn_1A.models.admin.User;
 import com.ivn_1A.models.pdbowner.Domain;
 import com.ivn_1A.models.pdbowner.Domain_and_Features_Mapping;
@@ -31,6 +32,11 @@ public class TestInsert {
         Date date = new Date();
         TestInsert testInsert = new TestInsert();
         try {
+            
+            Groups groups = new Groups("IVN Supervisor", "ivn_supervisor", true, 0, true, date, date);
+            testInsert.saveGroups(groups);
+            User user = new User("Ram", groups);
+            testInsert.saveUser(user);
 //            Domain domain = new Domain();
 //            domain.setCreated_date(new Date());
 //            domain.setCreated_or_updated_by(new TestInsert().getUser(1));
@@ -82,13 +88,13 @@ public class TestInsert {
 //            pdbversion.setStatus(false);
 //            testInsert.savePdbversion(pdbversion);
             
-            Pdbversion_group pdbversion_group = new Pdbversion_group();
-            pdbversion_group.setAvailable_status("audi available");
-            pdbversion_group.setDomain_and_features_mapping_id(testInsert.getDomain_and_Features_Mapping(1));
-            pdbversion_group.setPdbversion_id(testInsert.getPdbversion(3));
-            pdbversion_group.setVehiclemodel_id(testInsert.getVehiclemodel(6));
-            pdbversion_group.setVehicle_id(testInsert.getVehicle(1));
-            testInsert.savePdbversion_group(pdbversion_group);
+//            Pdbversion_group pdbversion_group = new Pdbversion_group();
+//            pdbversion_group.setAvailable_status("audi available");
+//            pdbversion_group.setDomain_and_features_mapping_id(testInsert.getDomain_and_Features_Mapping(1));
+//            pdbversion_group.setPdbversion_id(testInsert.getPdbversion(3));
+//            pdbversion_group.setVehiclemodel_id(testInsert.getVehiclemodel(6));
+//            pdbversion_group.setVehicle_id(testInsert.getVehicle(1));
+//            testInsert.savePdbversion_group(pdbversion_group);
             return "success";
         } catch (Exception e) {
             System.err.println("Error : " + e);
@@ -101,6 +107,36 @@ public class TestInsert {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
             s.save(vehicle);
+//            s.createQuery("INSERT INTO `user`(username) SELECT 'Ram' FROM (select 1) as dummy WHERE NOT EXISTS (SELECT 1 from `user` WHERE username  = 'Ram')");
+            tx.commit();
+            s.clear();
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error in \"Vehicle_Repository\" : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean saveGroups(Groups groups) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            s.save(groups);
+//            s.createQuery("INSERT INTO `user`(username) SELECT 'Ram' FROM (select 1) as dummy WHERE NOT EXISTS (SELECT 1 from `user` WHERE username  = 'Ram')");
+            tx.commit();
+            s.clear();
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error in \"Vehicle_Repository\" : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean saveUser(User user) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            s.save(user);
 //            s.createQuery("INSERT INTO `user`(username) SELECT 'Ram' FROM (select 1) as dummy WHERE NOT EXISTS (SELECT 1 from `user` WHERE username  = 'Ram')");
             tx.commit();
             s.clear();

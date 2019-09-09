@@ -43,7 +43,7 @@
             <result type="json" />
         </action>
         
-<!--        <action name="pdb_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+        <!--        <action name="pdb_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
             <result type="json" />
         </action>-->
         
@@ -71,7 +71,7 @@
     
     <package name="struts" extends="struts-default" namespace="/">
 
-<!--        <action name="create_pdb" class="com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group" method="DisplayCreateVehicleversion">
+        <!--        <action name="create_pdb" class="com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group" method="DisplayCreateVehicleversion">
             <result name="session">index.jsp</result> 
             <result name="success">pdb_version_create.jsp</result>
         </action>-->
