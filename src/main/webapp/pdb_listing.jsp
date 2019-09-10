@@ -197,7 +197,7 @@
 //                    ];
 //            alert("<s:property value="result_data_obj"/>");
             var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));            
-            $window.alert(JSON.stringify(data));
+//            $window.alert(JSON.stringify(data));
             $scope.records = data;
             $scope.compare_records = []; 
             //console.log(data);
@@ -240,7 +240,7 @@
 //                alert("view_and_edit");
 //                alert(event.target.id);
                 var id = event.target.attributes['data-id'].value;
-                $window.alert(id.toString());
+//                $window.alert(id.toString());
                 var name = event.target.name;
 //                alert(id);
 //                alert(name);

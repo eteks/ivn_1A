@@ -193,11 +193,11 @@ public class Pdbversion_Group {
 //                    pvg.setVehicle_id((Vehicle) session.get(Vehicle.class, pdbversion_value.get("vehicle_id").asInt()));
 //                    pvg.setVehiclemodel_id((Vehiclemodel) session.get(Vehiclemodel.class, pdbdata.get("model_id").asInt()));
 //                    pvg.setDomain_and_features_mapping_id((Domain_and_Features_Mapping) session.get(Domain_and_Features_Mapping.class, pdbdata.get("dfm_id").asInt()));
-                    
+
                     pvg.setVehicle_id(PDBOwnerDB.getVehicle(pdbversion_value.get("vehicle_id").asInt()));
                     pvg.setVehiclemodel_id(PDBOwnerDB.getVehiclemodel(pdbdata.get("model_id").asInt()));
                     pvg.setDomain_and_features_mapping_id(PDBOwnerDB.getDomain_and_Features_Mapping(pdbdata.get("dfm_id").asInt()));
-                    
+
                     pvg.setAvailable_status(pdbdata.get("status").asText());
                     Pdbversion_group pvg_id = PDBOwnerDB.insertPDBVersionGroup(pvg);
                 }
@@ -240,13 +240,18 @@ public class Pdbversion_Group {
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             int vehver_id = readValue.get("vehicleversion_id").asInt();
+            String action = readValue.get("action").asText();
             System.out.println(vehver_id);
 
-            tupleObjects = PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
+            if (action.equals("edit")) {
+                tupleObjects = PDBOwnerDB.loadPdbversion_groupByVehicleIds(vehver_id);
+            } else {
+                tupleObjects = PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
+            }
             JSONArray pdbvers_group_result = new JSONArray();
 
             tupleObjects.stream().map((tuple) -> {
-                System.err.println(tuple.get("pid") + " " + tuple.get("pversion"));
+                System.err.println("*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*****************" + tuple.get("pid") + " " + tuple.get("pversion"));
                 return tuple;
             }).map((tuple) -> {
                 JSONObject fr = new JSONObject();
@@ -356,13 +361,13 @@ public class Pdbversion_Group {
                 columns.put("did", domain_and_Features_MappingId.getId());
                 domainfeatures_result.add(columns);
                 row.add(columns);
-                System.out.println("domainfeatures_result" + domainfeatures_result);
             }
-            maps_string.put("status", "Process Done");
+            maps_string.put("status", "Success");
             maps_object.put("domainfeatures_result", domainfeatures_result);
+            System.out.println("domainfeatures_result" + domainfeatures_result);
         } catch (Exception e) {
             System.out.println("Error : " + e);
-            maps_object.put("status", "Error in the Inserion : " + e);
+            maps_string.put("status", "Error");
         }
         return "success";
     }
@@ -614,7 +619,7 @@ public class Pdbversion_Group {
             String domainname = readValue.get("domainname").asText();
 
             Domain domain = PDBOwnerDB.getDomainByName(domainname);
-            if (!domain.getDomain_name().equals(domainname)) {
+            if (domain == null) {
                 maps_string.put("status", "No Domain Found You can Continue");
                 maps_string.put("res", "success");
             } else {
