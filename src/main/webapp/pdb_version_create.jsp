@@ -476,25 +476,19 @@
 //            alert($scope.list.length);
 //            alert($scope.records.length * $scope.features.length);
             if($scope.list.length > 0){
-                $window.alert(" list Length : "+ $scope.list.length +" Record Length : "+ $scope.records.length +" Feature Length : "+ $scope.features.length +" Record Length : "+ JSON.stringify($scope.records)+" Feature Length : "+ JSON.stringify($scope.features));
-                if(status && event === "submit"){
-                    $(".notifyPopup").click();
-                }else {
-                    $scope.createpdbAjax(event);
-                }
-//                if($scope.list.length === $scope.records.length * $scope.features.length){
+                if($scope.list.length === $scope.records.length * $scope.features.length){
 //                    if(status && event === "submit"){
 //                        $(".notifyPopup").click();
 //                    }else
 //                        $scope.createpdbAjax(event);
-////                    $scope.createpdbAjax(event);
-//                }
-//                else
-//                    alert("Please fill all the domain and feature status to create PDB version");
+                    $scope.createpdbAjax(event);
+                }
+                else
+                    alert("Please fill all the domain and feature status to create PDB version");
             }
             else{
                 alert("Please fill the domain and feature status to create PDB version");
-            }        
+            }
           }
                              
             $scope.sort = function(keyname)
