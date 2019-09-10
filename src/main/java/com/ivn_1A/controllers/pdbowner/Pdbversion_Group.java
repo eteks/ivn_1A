@@ -181,7 +181,7 @@ public class Pdbversion_Group {
                 pdbversion.setFlag(flag);
                 pdbversion.setCreated_date(new Date());
                 pdbversion.setModified_date(new Date());
-                pdbversion.setCreated_or_updated_by(vehicle_Repository.getUser(1));
+                pdbversion.setCreated_or_updated_by(PDBOwnerDB.getUser(1));
                 Pdbversion curpdb_id = PDBOwnerDB.insertPDBVersion(pdbversion);
                 //Insert data into PDB Version Group
                 int i = 0;
@@ -206,7 +206,7 @@ public class Pdbversion_Group {
                     pdb_previous_data_result.put("removed_models", pdb_previous_data.get("removed_models"));
                     pdb_previous_data_result.put("added_models", pdb_previous_data.get("added_models"));
                     pdb_previous_data_result.put("current_version", curpdb_id.getPdb_versionname());
-                    System.out.println("current_version"+curpdb_id.getPdb_versionname());
+                    System.out.println("current_version" + curpdb_id.getPdb_versionname());
                     pdb_previous_data_result.put("previous_version", pdbversion_value.get("pdbversion").get("pdbversion_name").asDouble());
 
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
@@ -315,25 +315,22 @@ public class Pdbversion_Group {
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             List<Map<String, Object>> domainfeatures_result = new ArrayList<>();
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-            boolean status = (boolean) false;
-            int vehicleversion_id = 0;
-            String previousversion_status = null;
 
             String domain_name = readValue.get("domain_name").asText();
             ArrayNode features_and_description = (ArrayNode) readValue.get("features_and_description");
             System.out.println("vehiclename" + domain_name);
             System.out.println("vehicle_and_model_value" + features_and_description);
 
-            Domain domain = new Domain(domain_name, false, new Date(), new Date(), PDBOwnerDB.getUser(1));
-            Domain domainId = PDBOwnerDB.saveDomain(domain);
-            List<Map<String, Object>> row = new ArrayList<Map<String, Object>>();
+            Domain domainId = PDBOwnerDB.getDomainByName(domain_name);
+            if (domainId == null) {
+                domainId = PDBOwnerDB.saveDomain(new Domain(domain_name, false, new Date(), new Date(), PDBOwnerDB.getUser(1)));
+            }
+            List<Map<String, Object>> row = new ArrayList<>();
 
             //Insert Data in Features table
             for (Object o : features_and_description) {
 
-                Map<String, Object> columns = new HashMap<String, Object>();
+                Map<String, Object> columns = new HashMap<>();
                 JsonNode jn = (JsonNode) o;
                 String feature_name = jn.get("feature").asText();
                 String feature_description = jn.get("description").asText();
@@ -374,8 +371,10 @@ public class Pdbversion_Group {
             String vehiclename = readValue.get("vehiclename").asText();
             ArrayNode models = (ArrayNode) readValue.get("models");
 
-            Vehicle vehicle = new Vehicle(vehiclename, true, new Date(), new Date(), PDBOwnerDB.getUser(1));
-            Vehicle vehicleId = PDBOwnerDB.saveVehicles(vehicle);
+            Vehicle vehicleId = PDBOwnerDB.getVehicleByName(vehiclename);
+            if (vehicleId == null) {
+                vehicleId = PDBOwnerDB.saveVehicles(new Vehicle(vehiclename, true, new Date(), new Date(), PDBOwnerDB.getUser(1)));
+            }
             List<Map<String, Object>> row = new ArrayList<>();
             vehicleAndModel.put("vehicle_id", vehicleId.getId());
             vehicleAndModel.put("vehiclename", vehicleId.getVehiclename());
@@ -607,10 +606,10 @@ public class Pdbversion_Group {
 
             Domain domain = PDBOwnerDB.getDomainByName(domainname);
             if (!domain.getDomain_name().equals(domainname)) {
-                maps_string.put("status", "No Vehicle Found You can Continue");
+                maps_string.put("status", "No Domain Found You can Continue");
                 maps_string.put("res", "success");
             } else {
-                maps_string.put("status", "Your Entered Vehicle Already Exisit");
+                maps_string.put("status", "Your Entered Domain Already Exisit");
                 maps_string.put("res", "failed");
             }
         } catch (Exception ex) {

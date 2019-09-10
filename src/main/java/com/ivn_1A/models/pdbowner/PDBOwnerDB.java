@@ -145,13 +145,13 @@ public class PDBOwnerDB {
             CriteriaQuery<Pdbversion> criteriaQuery = criteriaBuilder.createQuery(Pdbversion.class);
             // The root of our search is sku
             Root<Pdbversion> test = criteriaQuery.from(Pdbversion.class);
-            List<Predicate> restrictions = new ArrayList<Predicate>();
+            List<Predicate> restrictions = new ArrayList<>();
             restrictions.add(criteriaBuilder.isNull(test.get("pdb_reference_version")));
             criteriaQuery.where(restrictions.toArray(new Predicate[restrictions.size()]));
             criteriaQuery.orderBy(criteriaBuilder.desc(test.get("pdb_versionname")));
             //create resultset as list
-            Query pdbversion = s.createQuery(criteriaQuery);
-            pdbversion.setMaxResults(1);
+            Query pdbversion = s.createQuery(criteriaQuery).setMaxResults(1);
+            
             tx.commit();
             s.clear();
             return pdbversion.getResultList();
@@ -165,7 +165,9 @@ public class PDBOwnerDB {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
+            
             s.save(pdbversion);
+            
             tx.commit();
             s.clear();
             return pdbversion;

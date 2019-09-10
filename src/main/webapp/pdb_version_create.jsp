@@ -341,10 +341,10 @@
                         method: "POST",
                         data: {"vehiclename":$scope.Demo.dt.vehiclename},
                     }).then(function (response, status, headers, config){
-                        $window.alert(JSON.stringify(response.data.maps_string.status));
+                        Console.log(JSON.stringify(response.data.maps_string.status));
                     });
                  } else {
-                    $window.alert("CheckBox Not Checked");
+                    $scope.data.new_vehicle="new_vehicle";
                 }
             }
             
@@ -362,7 +362,7 @@
                     var arr = $scope.Demo.dt.modelname;
                     for (var item in arr) {
                         m.push({"modelname":arr[item],});    
-                        }
+                    }
                     vn.models = m;
 //                    $window.alert(JSON.stringify(vn));
                     $http({
@@ -386,7 +386,7 @@
                     var arr = $scope.Demo.dt.modelname;
                     for (var item in arr) {
                         m.push({"modelname":arr[item],});    
-                        }
+                    }
                     vn.models = m;
 //                    $window.alert(JSON.stringify(vn));
                     $http({
@@ -646,8 +646,10 @@
                         method: "POST",
                         data: {"domainname":$scope.domain},
                     }).then(function (response, status, headers, config){
-                        $window.alert(JSON.stringify(response.data.maps_string.status));
-                        if (response.data.maps_string.res != "failed") {
+                        
+                        Console.log(JSON.stringify(response.data.maps_string.status));
+                        if (response.data.maps_string.res === "success") {
+                            
                             $http({
                             url : 'createfeature_and_domain',
                             method : "POST",
@@ -666,15 +668,35 @@
                            $('#modal-product-form').closeModal();
                            $scope.domain="";
                            $scope.Demo.data=[];
+                           
+                        } else if (response.data.maps_string.res === "failed") {
+                            
+                            $http({
+                            url : 'createfeature_and_domain',
+                            method : "POST",
+                            data : feature_and_domain_data
+                           })
+                           .then(function (data, status, headers, config)
+                           {
+                                result_data = data.data.maps_object.domainfeatures_result;
+                                $window.alert(JSON.stringify(result_data));
+                                //result_data =  result_data.slice(1, -1);
+                                for(var i = 0; i < result_data.length; i++) 
+                                {
+                                    $scope.features.push({fid:result_data[i].fid,fea:result_data[i].fea,domain:result_data[i].domain});
+                                }
+                           });
+                           $('#modal-product-form').closeModal();
+                           $scope.domain="";
+                           $scope.Demo.data=[];
+                           
                         } else {
                             $('#modal-product-form').closeModal();
                             $scope.domain="";
                             $scope.Demo.data=[];
                         }
                     });
-                }
-                else
-                {
+                } else {
                     alert("Please create atleast one features");
                 }
             }
