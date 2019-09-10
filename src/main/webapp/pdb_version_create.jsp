@@ -846,6 +846,10 @@
             $scope.LoadPreviousVersion = function()
             {
                 var ac = action ? action : "none";
+                $scope.truefalse = true;
+                $scope.data.pdbversion = "";
+                $scope.Demo.dt.vehiclename = "";
+                $scope.Demo.dt.modelname = "";
 //                $window.alert(ac);
                 $http({
                     url : 'loadpdbversion_data',
@@ -856,19 +860,22 @@
                     $scope.array_result = [];
                     $scope.status_value = "";
                     var pdbLength = response.data.maps_object.pdbversion.length;
-                    
-                   for(var i = 0; i < pdbLength; i++)
-                   {
-                        var data= response.data.maps_object.pdbversion[i];
-//                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
-//                        $window.alert($scope.data.pdbversion);
-                        $scope.array_result.push({
-                            "pdbid":data.pid,
-                            "pdbversion_name":parseFloat(data.pversion).toFixed(1)
-                        });
+                    if (pdbLength > 0) {
+                        for(var i = 0; i < pdbLength; i++)
+                        {
+                             var data= response.data.maps_object.pdbversion[i];
+     //                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
+     //                        $window.alert($scope.data.pdbversion);
+                             $scope.array_result.push({
+                                 "pdbid":data.pid,
+                                 "pdbversion_name":parseFloat(data.pversion).toFixed(1)
+                             });
+                         }
+                         $scope.data.pdbversion = $scope.array_result[0];
+                         $scope.LoadVehicleModels();
+                    } else {
+                        $window.alert("The Selected Vehicle is now Inactive.");
                     }
-                    $scope.data.pdbversion = $scope.array_result[0];
-                    $scope.LoadVehicleModels();
     //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                 });
             };
