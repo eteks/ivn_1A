@@ -224,7 +224,7 @@ public class PDBOwnerDB {
             CriteriaQuery<Domain> criteriaQuery = criteriaBuilder.createQuery(Domain.class);
 
             Root<Domain> domainRoot = criteriaQuery.from(Domain.class);
-            criteriaQuery.where(criteriaBuilder.equal(domainRoot.get("domain_name"), domainName)).orderBy(criteriaBuilder.desc(domainRoot.get("id")));
+            criteriaQuery.where(criteriaBuilder.equal(domainRoot.get("domain_name"), domainName));
             TypedQuery<Domain> dfm_result = s.createQuery(criteriaQuery);
 
             tx.commit();
@@ -265,7 +265,7 @@ public class PDBOwnerDB {
             CriteriaQuery<Features> criteriaQuery = criteriaBuilder.createQuery(Features.class);
 
             Root<Features> featureRoot = criteriaQuery.from(Features.class);
-            criteriaQuery.where(criteriaBuilder.equal(featureRoot.get("feature_name"), featureName)).orderBy(criteriaBuilder.desc(featureRoot.get("id")));
+            criteriaQuery.where(criteriaBuilder.equal(featureRoot.get("feature_name"), featureName));
             TypedQuery<Features> dfm_result = s.createQuery(criteriaQuery);
 
             tx.commit();
@@ -335,7 +335,7 @@ public class PDBOwnerDB {
             CriteriaQuery<Vehicle> criteriaQuery = criteriaBuilder.createQuery(Vehicle.class);
 
             Root<Vehicle> vehicleRoot = criteriaQuery.from(Vehicle.class);
-            criteriaQuery.where(criteriaBuilder.equal(vehicleRoot.get("vehiclename"), vehicleName)).orderBy(criteriaBuilder.desc(vehicleRoot.get("id")));
+            criteriaQuery.where(criteriaBuilder.equal(vehicleRoot.get("vehiclename"), vehicleName));
             TypedQuery<Vehicle> dfm_result = s.createQuery(criteriaQuery);
 
             tx.commit();
@@ -376,7 +376,7 @@ public class PDBOwnerDB {
             CriteriaQuery<Vehiclemodel> criteriaQuery = criteriaBuilder.createQuery(Vehiclemodel.class);
 
             Root<Vehiclemodel> vehicleModelRoot = criteriaQuery.from(Vehiclemodel.class);
-            criteriaQuery.where(criteriaBuilder.equal(vehicleModelRoot.get("modelname"), vehicleModelName)).orderBy(criteriaBuilder.desc(vehicleModelRoot.get("id")));
+            criteriaQuery.where(criteriaBuilder.equal(vehicleModelRoot.get("modelname"), vehicleModelName));
             TypedQuery<Vehiclemodel> dfm_result = s.createQuery(criteriaQuery);
 
             tx.commit();
@@ -476,6 +476,31 @@ public class PDBOwnerDB {
             criteriaQuery.multiselect(pdbversion_groupRoot.get("pdbversion_id").get("id").alias("pid"), pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname").alias("pversion"))
                     .distinct(true).where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("status"), true), criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("flag"), true),
                     criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id))
+                    .orderBy(criteriaBuilder.desc(pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname")));
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error \"loadPdbversion_groupByVehicleId\" : " + e);
+            return null;
+        }
+    }
+
+    //Pdbversion group Data
+    public static List<Tuple> loadPdbversion_groupByVehicleIds(int id) {
+        try {
+            System.err.println("loadPdbversion_groupByVehicleId");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
+
+            criteriaQuery.multiselect(pdbversion_groupRoot.get("pdbversion_id").get("id").alias("pid"), pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname").alias("pversion"))
+                    .distinct(true).where(criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id))
                     .orderBy(criteriaBuilder.desc(pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 

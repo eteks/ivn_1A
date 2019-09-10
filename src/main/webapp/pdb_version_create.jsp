@@ -190,7 +190,7 @@
                                                 </label>
 
                                                
-                                               <a class="feature_add_tip modal-trigger btn-floating btn-primary" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
+                                               <a class="feature_add_tip modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
                                                <div id="modal-comment" class="modal">
                                                     <div class="modal-content text-left">
                                                         <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
@@ -341,7 +341,7 @@
                         method: "POST",
                         data: {"vehiclename":$scope.Demo.dt.vehiclename},
                     }).then(function (response, status, headers, config){
-                        Console.log(JSON.stringify(response.data.maps_string.status));
+                        console.log(JSON.stringify(response.data.maps_string.status));
                     });
                  } else {
                     $scope.data.new_vehicle="new_vehicle";
@@ -407,6 +407,7 @@
             }
             
             $scope.showSave =true;
+            $scope.showProceed =true;
             $scope.showSubmit =true;
             $scope.$on('notifyValue', function (event, args) {
                 notification_to = args;
@@ -647,7 +648,7 @@
                         data: {"domainname":$scope.domain},
                     }).then(function (response, status, headers, config){
                         
-                        Console.log(JSON.stringify(response.data.maps_string.status));
+                        console.log(JSON.stringify(response.data.maps_string.status));
                         if (response.data.maps_string.res === "success") {
                             
                             $http({
@@ -670,26 +671,29 @@
                            $scope.Demo.data=[];
                            
                         } else if (response.data.maps_string.res === "failed") {
-                            
-                            $http({
-                            url : 'createfeature_and_domain',
-                            method : "POST",
-                            data : feature_and_domain_data
-                           })
-                           .then(function (data, status, headers, config)
-                           {
-                                result_data = data.data.maps_object.domainfeatures_result;
-                                $window.alert(JSON.stringify(result_data));
-                                //result_data =  result_data.slice(1, -1);
-                                for(var i = 0; i < result_data.length; i++) 
-                                {
-                                    $scope.features.push({fid:result_data[i].fid,fea:result_data[i].fea,domain:result_data[i].domain});
-                                }
-                           });
-                           $('#modal-product-form').closeModal();
-                           $scope.domain="";
-                           $scope.Demo.data=[];
-                           
+                            $window.alert(response.data.maps_string.status);
+                            $('#modal-product-form').closeModal();
+                            $scope.domain="";
+                            $scope.Demo.data=[];
+//                            $http({
+//                            url : 'createfeature_and_domain',
+//                            method : "POST",
+//                            data : feature_and_domain_data
+//                           })
+//                           .then(function (data, status, headers, config)
+//                           {
+//                                result_data = data.data.maps_object.domainfeatures_result;
+//                                $window.alert(JSON.stringify(result_data));
+//                                //result_data =  result_data.slice(1, -1);
+//                                for(var i = 0; i < result_data.length; i++) 
+//                                {
+//                                    $scope.features.push({fid:result_data[i].fid,fea:result_data[i].fea,domain:result_data[i].domain});
+//                                }
+//                           });
+//                           $('#modal-product-form').closeModal();
+//                           $scope.domain="";
+//                           $scope.Demo.data=[];
+//                           
                         } else {
                             $('#modal-product-form').closeModal();
                             $scope.domain="";
@@ -835,7 +839,7 @@
                 $http({
                     url : 'loadpdbversion_data',
                     method : "POST",
-                    data : {"vehicleversion_id":$scope.data.vehicle}
+                    data : {"vehicleversion_id":$scope.data.vehicle, "action":action}
                 }).then(function (response, status, headers, config){
                     
                     $scope.array_result = [];
@@ -874,7 +878,7 @@
 //                var result_data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
                 
                 var vehicledetail_list = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-                $window.alert(JSON.stringify(vehicledetail_list));
+//                $window.alert(JSON.stringify(vehicledetail_list));
                 $scope.data.new_vehicle="select_vehicle";
                 $scope.truefalse = true;
                 $scope.data.status = vehicledetail_list[0].status;                
@@ -933,8 +937,11 @@
                     });
                 });
                 if(action == "view"){
+                    $scope.showProceed =false;
                     $scope.showSave =false;
                     $scope.showSubmit =false;
+                } else if(action == "edit"){
+                    $scope.showProceed =true;
                 }
             }    
         });
