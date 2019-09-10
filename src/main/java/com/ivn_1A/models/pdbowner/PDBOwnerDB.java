@@ -731,4 +731,43 @@ public class PDBOwnerDB {
             return null;
         }
     }
+    public static Vehicle getVehicle(int id) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            Vehicle vehicle = s.get(Vehicle.class, id);
+            tx.commit();
+            s.clear();
+            return vehicle;
+        } catch (Exception e) {
+            System.err.println("Error in \"getUser\" : " + e.getMessage());
+            return null;
+        }
+    }
+    public static Vehiclemodel getVehiclemodel(int id) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            Vehiclemodel vehiclemodel = s.get(Vehiclemodel.class, id);
+            tx.commit();
+            s.clear();
+            return vehiclemodel;
+        } catch (Exception e) {
+            System.err.println("Error in \"getUser\" : " + e.getMessage());
+            return null;
+        }
+    }
+    public static Domain_and_Features_Mapping getDomain_and_Features_Mapping(int id) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            Domain_and_Features_Mapping dfm = s.get(Domain_and_Features_Mapping.class, id);
+            tx.commit();
+            s.clear();
+            return dfm;
+        } catch (Exception e) {
+            System.err.println("Error in \"getUser\" : " + e.getMessage());
+            return null;
+        }
+    }
 }
