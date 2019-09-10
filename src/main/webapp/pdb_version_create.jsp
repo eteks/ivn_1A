@@ -310,6 +310,7 @@
 //            $scope.features_list = $scope.features_list = [{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"}];
 //            alert($scope.features_list);
             $scope.features_list= JSON.parse("<s:property value="maps_object.features"/>".replace(/&quot;/g,'"'));
+//            alert(JSON.stringify($scope.features_list));
             
 //            $scope.RadioChange = function (s) {
 //                $window.alert(s);
@@ -402,7 +403,7 @@
 //                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
 //                    alert(JSON.stringify($scope.data));
                 } else {
-                    $window.alert("Must File the Fields");
+                    $window.alert("Please fill all the vehicle details");
                 }
             }
             
@@ -451,9 +452,16 @@
 //                                                 "removed_models":"m2,m4", "added_models":"m3", 
 //                                                 "previous_version":"1.0", "current_version":"1.1"
 //                                                };
-                      $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
-                      alert("version_compare_results");
-                      alert(JSON.stringify($scope.vercompare_results));                          
+                      alert(response.data.maps_string);
+                      var vercompare_res = response.data.maps_object.pdb_previous_data_result;
+                      if(vercompare_res != undefined){
+                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
+//                            alert(JSON.stringify($scope.vercompare_results));    
+                      }
+                      else{
+                            alert("No any previous version found to compare");
+                      }
+                      $('#modal-product-form').closeModal();
     //                                    $window.alert(JSON.stringify(data));
     //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
     //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);

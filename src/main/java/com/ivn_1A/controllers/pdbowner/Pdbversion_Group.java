@@ -87,8 +87,8 @@ public class Pdbversion_Group {
             featureslist.stream().map((fea) -> {
                 JSONObject fr = new JSONObject();
                 fr.put("fid", fea.getId());
-                fr.put("fea", fea.getDomain_id().getDomain_name());
-                fr.put("domain", fea.getFeature_id().getFeature_name());
+                fr.put("fea", fea.getFeature_id().getFeature_name());
+                fr.put("domain",fea.getDomain_id().getDomain_name() );
                 return fr;
             }).forEachOrdered((fr) -> {
                 featureslist_result.add(fr);
@@ -216,10 +216,14 @@ public class Pdbversion_Group {
 
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
+                if (button_type.equals("save"))
+                    maps_string.put("status", "New Temporary PDB Version Created Successfully");
+                else
+                    maps_string.put("status", "New Permanent PDB Version Created Successfully");
             }
 //            tx.commit();
 //            session.clear();
-            maps_string.put("status", "Process Done");
+//            maps_string.put("status", "Process Done");
         } catch (Exception ex) {
             System.out.println("entered into catch");
             System.out.println(ex.getMessage());
