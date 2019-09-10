@@ -155,7 +155,8 @@ public class Pdbversion_Group {
                 status = pdbversion_value.get("status").asBoolean();
             }
 
-            if (pdbversion_value.has("pdbversion") && status == false) {
+//            if (pdbversion_value.has("pdbversion") && status == false) {
+            if (pdbversion_value.has("pdbversion") && pdbversion_value.get("pdbversion").get("status").asBoolean() == false) {
                 System.out.println("Ready to update in same version");
             } else {
                 System.out.println("Ready to create");
@@ -214,7 +215,7 @@ public class Pdbversion_Group {
                     pdb_previous_data_result.put("added_models", pdb_previous_data.get("added_models"));
                     pdb_previous_data_result.put("current_version", curpdb_id.getPdb_versionname());
                     System.out.println("current_version" + curpdb_id.getPdb_versionname());
-                    pdb_previous_data_result.put("previous_version", pdbversion_value.get("pdbversion").get("pdbversion_name").asDouble());
+                    pdb_previous_data_result.put("reference_version", pdbversion_value.get("pdbversion").get("pdbversion_name").asDouble());
 
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
@@ -255,6 +256,7 @@ public class Pdbversion_Group {
                 JSONObject fr = new JSONObject();
                 fr.put("pid", tuple.get("pid"));
                 fr.put("pversion", tuple.get("pversion"));
+                fr.put("status", tuple.get("status"));
                 return fr;
             }).map((fr) -> {
                 pdbvers_group_result.add(fr);

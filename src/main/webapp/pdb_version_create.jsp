@@ -452,16 +452,16 @@
 //                                                 "removed_models":"m2,m4", "added_models":"m3", 
 //                                                 "previous_version":"1.0", "current_version":"1.1"
 //                                                };
-                      alert(response.data.maps_string);
+                      alert(response.data.maps_string.status);
                       var vercompare_res = response.data.maps_object.pdb_previous_data_result;
                       if(vercompare_res != undefined){
                             $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
-//                            alert(JSON.stringify($scope.vercompare_results));    
+                            alert(JSON.stringify($scope.vercompare_results));    
                       }
                       else{
                             alert("No any previous version found to compare");
                       }
-                      $('#modal-product-form').closeModal();
+                      $('#modal-comment').closeModal();
     //                                    $window.alert(JSON.stringify(data));
     //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
     //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
@@ -482,6 +482,7 @@
 //            }
 //            alert("before do submit");
 //            $scope.doSubmit = false;  
+//            alert(JSON.stringify($scope.records));
 //            alert(JSON.stringify($scope.list));
 //            alert($scope.list.length);
 //            alert($scope.records.length * $scope.features.length);
@@ -868,7 +869,8 @@
      //                        $window.alert($scope.data.pdbversion);
                              $scope.array_result.push({
                                  "pdbid":data.pid,
-                                 "pdbversion_name":parseFloat(data.pversion).toFixed(1)
+                                 "pdbversion_name":parseFloat(data.pversion).toFixed(1),
+                                 "status":data.status
                              });
                          }
                          $scope.data.pdbversion = $scope.array_result[0];

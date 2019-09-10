@@ -472,13 +472,13 @@ public class PDBOwnerDB {
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
             Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
-            
+
             criteriaQuery.multiselect(pdbversion_groupRoot.get("pdbversion_id").get("id").alias("pid"), pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname").alias("pversion")).distinct(true);
             if (action.equals("edit")) {
                 criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
             } else {
                 criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("status"), true), criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("flag"), true),
-                    criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
+                        criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
             }
             criteriaQuery.orderBy(criteriaBuilder.desc(pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
