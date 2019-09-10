@@ -25,6 +25,8 @@ import org.json.simple.JSONObject;
 import com.ivn_1A.models.pdbowner.*;
 import com.opensymphony.xwork2.ActionContext;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -243,11 +245,7 @@ public class Pdbversion_Group {
             String action = readValue.get("action").asText();
             System.out.println(vehver_id);
 
-            if (action.equals("edit")) {
-                tupleObjects = PDBOwnerDB.loadPdbversion_groupByVehicleIds(vehver_id);
-            } else {
-                tupleObjects = PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id);
-            }
+            tupleObjects = PDBOwnerDB.loadPdbversion_groupByVehicleId(vehver_id, action);
             JSONArray pdbvers_group_result = new JSONArray();
 
             tupleObjects.stream().map((tuple) -> {
@@ -495,7 +493,8 @@ public class Pdbversion_Group {
             tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("id", tuple.get("pdb_id"));
-                columns.put("pdb_version", tuple.get("pdb_versionname"));
+                columns.put("pdb_version", String.format("%.1f", tuple.get("pdb_versionname")));
+//                columns.put("pdb_version", BigDecimal.valueOf((float)tuple.get("pdb_versionname")).setScale(1, RoundingMode.HALF_UP));
                 columns.put("vehicle_id", tuple.get("vehicle_id"));
                 columns.put("vehicle", tuple.get("vehiclename"));
                 columns.put("model", tuple.get("modelname"));

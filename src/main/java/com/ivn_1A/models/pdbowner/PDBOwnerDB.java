@@ -151,7 +151,7 @@ public class PDBOwnerDB {
             criteriaQuery.orderBy(criteriaBuilder.desc(test.get("pdb_versionname")));
             //create resultset as list
             Query pdbversion = s.createQuery(criteriaQuery).setMaxResults(1);
-            
+
             tx.commit();
             s.clear();
             return pdbversion.getResultList();
@@ -165,9 +165,9 @@ public class PDBOwnerDB {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
-            
+
             s.save(pdbversion);
-            
+
             tx.commit();
             s.clear();
             return pdbversion;
@@ -463,7 +463,7 @@ public class PDBOwnerDB {
     }
 
     //Pdbversion group Data
-    public static List<Tuple> loadPdbversion_groupByVehicleId(int id) {
+    public static List<Tuple> loadPdbversion_groupByVehicleId(int id, String action) {
         try {
             System.err.println("loadPdbversion_groupByVehicleId");
             Session session = HibernateUtil.getThreadLocalSession();
@@ -472,36 +472,15 @@ public class PDBOwnerDB {
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
             Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
-
-            criteriaQuery.multiselect(pdbversion_groupRoot.get("pdbversion_id").get("id").alias("pid"), pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname").alias("pversion"))
-                    .distinct(true).where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("status"), true), criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("flag"), true),
-                    criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id))
-                    .orderBy(criteriaBuilder.desc(pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname")));
-            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
-
-            tx.commit();
-            session.clear();
-            return typedQuery.getResultList();
-        } catch (Exception e) {
-            System.err.println("Error \"loadPdbversion_groupByVehicleId\" : " + e);
-            return null;
-        }
-    }
-
-    //Pdbversion group Data
-    public static List<Tuple> loadPdbversion_groupByVehicleIds(int id) {
-        try {
-            System.err.println("loadPdbversion_groupByVehicleId");
-            Session session = HibernateUtil.getThreadLocalSession();
-            Transaction tx = session.beginTransaction();
-
-            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
-            Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
-
-            criteriaQuery.multiselect(pdbversion_groupRoot.get("pdbversion_id").get("id").alias("pid"), pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname").alias("pversion"))
-                    .distinct(true).where(criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id))
-                    .orderBy(criteriaBuilder.desc(pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname")));
+            
+            criteriaQuery.multiselect(pdbversion_groupRoot.get("pdbversion_id").get("id").alias("pid"), pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname").alias("pversion")).distinct(true);
+            if (action.equals("edit")) {
+                criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
+            } else {
+                criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("status"), true), criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("flag"), true),
+                    criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
+            }
+            criteriaQuery.orderBy(criteriaBuilder.desc(pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();
@@ -516,7 +495,7 @@ public class PDBOwnerDB {
     //Vehicle and Vehicle Model Data
     public static List<Tuple> loadVehicleAndModelByVehicleId(int id) {
         try {
-            System.err.println("loadPdbversion_groupByVehicleId2");
+            System.err.println("loadPdbversion_groupByVehicleId");
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
 
@@ -631,17 +610,17 @@ public class PDBOwnerDB {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
 //        //Working code
-        final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
-        CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
-        Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
-        criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"),pdb_id)); 
-        criteriaQuery.multiselect(pdbversion_groupRoot.get("vehiclemodel_id").get("id").alias("model_id"),
-                                  pdbversion_groupRoot.get("domain_and_features_mapping_id").get("id").alias("fid"),
-                                  pdbversion_groupRoot.get("available_status").alias("status"),
-                                  pdbversion_groupRoot.get("domain_and_features_mapping_id").get("domain_id").get("domain_name").alias("domainname"),
-                                  pdbversion_groupRoot.get("domain_and_features_mapping_id").get("feature_id").get("feature_name").alias("featurename"),
-                                  pdbversion_groupRoot.get("pdbversion_id").get("status").alias("pdbstatus")
-                                );
+            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
+            Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
+            criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"), pdb_id));
+            criteriaQuery.multiselect(pdbversion_groupRoot.get("vehiclemodel_id").get("id").alias("model_id"),
+                    pdbversion_groupRoot.get("domain_and_features_mapping_id").get("id").alias("fid"),
+                    pdbversion_groupRoot.get("available_status").alias("status"),
+                    pdbversion_groupRoot.get("domain_and_features_mapping_id").get("domain_id").get("domain_name").alias("domainname"),
+                    pdbversion_groupRoot.get("domain_and_features_mapping_id").get("feature_id").get("feature_name").alias("featurename"),
+                    pdbversion_groupRoot.get("pdbversion_id").get("status").alias("pdbstatus")
+            );
 //        criteriaQuery.multiselect(pdbversion_groupRoot.get("vehiclemodel_id").get("id"),
 //                                  pdbversion_groupRoot.get("domain_and_features_mapping_id").get("id"),
 //                                  pdbversion_groupRoot.get("available_status"),
@@ -649,12 +628,11 @@ public class PDBOwnerDB {
 //                                  pdbversion_groupRoot.get("domain_and_features_mapping_id").get("feature_id").get("feature_name")
 //                                );
 //        TypedQuery<Pdbversion_group> feature_results = s.createQuery(criteriaQuery);
-        List<Tuple> feature_results = s.createQuery(criteriaQuery).getResultList();
-        
+            List<Tuple> feature_results = s.createQuery(criteriaQuery).getResultList();
+
 //        for (Tuple fea : feature_results) {
 //                System.out.println("fea"+fea.get("featurename"));
 //        }
-
 //            CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
 //            CriteriaQuery<Pdbversion_group> criteriaQuery = criteriaBuilder.createQuery(Pdbversion_group.class);
 //            Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
@@ -663,10 +641,9 @@ public class PDBOwnerDB {
 //            
 //            //create resultset as list
 //            TypedQuery<Pdbversion_group> feature_results = s.createQuery(criteriaQuery);
-            
-        tx.commit();
-        s.clear();
-        return feature_results;
+            tx.commit();
+            s.clear();
+            return feature_results;
         } catch (Exception e) {
             System.err.println("Error in \"LoadPDBDomainFeatures\" : " + e);
             return null;
@@ -758,6 +735,7 @@ public class PDBOwnerDB {
             return null;
         }
     }
+
     public static Vehicle getVehicle(int id) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
@@ -771,6 +749,7 @@ public class PDBOwnerDB {
             return null;
         }
     }
+
     public static Vehiclemodel getVehiclemodel(int id) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
@@ -784,6 +763,7 @@ public class PDBOwnerDB {
             return null;
         }
     }
+
     public static Domain_and_Features_Mapping getDomain_and_Features_Mapping(int id) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();

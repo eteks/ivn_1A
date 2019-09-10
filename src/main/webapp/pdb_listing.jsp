@@ -196,8 +196,9 @@
 //                        { pdb_version: '6.0',veh_version: '1.0', vehicle: 'XUV',model:'m4,m5,m7', status: 'Active'}
 //                    ];
 //            alert("<s:property value="result_data_obj"/>");
-            var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));            
+            var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"')); 
 //            $window.alert(JSON.stringify(data));
+//            data.pdb_version=parseFloat(data.pdb_version).toFixed(1);
             $scope.records = data;
             $scope.compare_records = []; 
             //console.log(data);
