@@ -836,10 +836,12 @@
             //getting pdb version and id
             $scope.LoadPreviousVersion = function()
             {
+                var ac = action ? action : "none";
+//                $window.alert(ac);
                 $http({
                     url : 'loadpdbversion_data',
                     method : "POST",
-                    data : {"vehicleversion_id":$scope.data.vehicle, "action":action}
+                    data : {"vehicleversion_id":$scope.data.vehicle, "action":ac}
                 }).then(function (response, status, headers, config){
                     
                     $scope.array_result = [];
