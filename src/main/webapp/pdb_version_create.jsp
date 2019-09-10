@@ -695,6 +695,7 @@
 //                           $scope.Demo.data=[];
 //                           
                         } else {
+                            $window.alert(response.data.maps_string.status);
                             $('#modal-product-form').closeModal();
                             $scope.domain="";
                             $scope.Demo.data=[];
