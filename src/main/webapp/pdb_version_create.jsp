@@ -423,8 +423,8 @@
                 if(status == undefined || status == false)
                     notification_to = undefined;
                 var data = {};
-                alert(JSON.stringify($scope.list));
-                alert(JSON.stringify($scope.vehicleresults));
+//                alert(JSON.stringify($scope.list));
+//                alert(JSON.stringify($scope.vehicleresults));
                 $scope.data.vehicle_id = $scope.vehicleresults.vehicle_id;
 //                if($scope.data.pdbversion != undefined) {
 //                    $scope.data.pdbversion_id = $scope.data.pdbversion;
@@ -437,9 +437,9 @@
                 data['pdbdata_list'] = $scope.list;
                 data['button_type'] = event;
                 data['notification_to'] = notification_to+"";
-                alert(JSON.stringify($scope.features));
+//                alert(JSON.stringify($scope.features));
                 data['dfm_set'] = ["1","2","3"];
-                alert(JSON.stringify(data));
+//                alert(JSON.stringify(data));
                 $http({
                     url: 'createpdbversion',
                     method: "POST",

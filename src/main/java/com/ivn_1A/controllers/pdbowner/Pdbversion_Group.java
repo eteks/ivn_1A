@@ -32,7 +32,7 @@ import java.util.HashMap;
 import javax.persistence.Tuple;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.ServletActionContext;
-import org.hibernate.Session;
+//import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.simple.parser.ParseException;
 
@@ -43,7 +43,7 @@ public class Pdbversion_Group {
 
     private Map<String, String> maps_string = new HashMap<>();
     private Map<String, Object> maps_object = new HashMap<>();
-    Session session = HibernateUtil.getThreadLocalSession();
+//    Session session = HibernateUtil.getThreadLocalSession();
     private List<Vehicle> vehicleversion_result;
     private List<Tuple> tupleObjects = new ArrayList<>();
     Gson gson = new Gson();
@@ -133,7 +133,7 @@ public class Pdbversion_Group {
         boolean flag;
         int prevpdb_id = 0;
         try {
-            Transaction tx = session.beginTransaction();
+//            Transaction tx = session.beginTransaction();
 //            Object obj = parser.parse(jsondata);
 //            JSONObject json = (JSONObject) obj;
 //            System.out.println("pdbdata" + json);
@@ -190,9 +190,14 @@ public class Pdbversion_Group {
                     System.out.println("pdbdata" + pdbdata);
                     Pdbversion_group pvg = new Pdbversion_group();
                     pvg.setPdbversion_id(curpdb_id);
-                    pvg.setVehicle_id((Vehicle) session.get(Vehicle.class, pdbversion_value.get("vehicle_id").asInt()));
-                    pvg.setVehiclemodel_id((Vehiclemodel) session.get(Vehiclemodel.class, pdbdata.get("model_id").asInt()));
-                    pvg.setDomain_and_features_mapping_id((Domain_and_Features_Mapping) session.get(Domain_and_Features_Mapping.class, pdbdata.get("dfm_id").asInt()));
+//                    pvg.setVehicle_id((Vehicle) session.get(Vehicle.class, pdbversion_value.get("vehicle_id").asInt()));
+//                    pvg.setVehiclemodel_id((Vehiclemodel) session.get(Vehiclemodel.class, pdbdata.get("model_id").asInt()));
+//                    pvg.setDomain_and_features_mapping_id((Domain_and_Features_Mapping) session.get(Domain_and_Features_Mapping.class, pdbdata.get("dfm_id").asInt()));
+                    
+                    pvg.setVehicle_id(PDBOwnerDB.getVehicle(pdbversion_value.get("vehicle_id").asInt()));
+                    pvg.setVehiclemodel_id(PDBOwnerDB.getVehiclemodel(pdbdata.get("model_id").asInt()));
+                    pvg.setDomain_and_features_mapping_id(PDBOwnerDB.getDomain_and_Features_Mapping(pdbdata.get("dfm_id").asInt()));
+                    
                     pvg.setAvailable_status(pdbdata.get("status").asText());
                     Pdbversion_group pvg_id = PDBOwnerDB.insertPDBVersionGroup(pvg);
                 }
@@ -212,8 +217,8 @@ public class Pdbversion_Group {
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
             }
-            tx.commit();
-            session.clear();
+//            tx.commit();
+//            session.clear();
             maps_string.put("status", "Process Done");
         } catch (Exception ex) {
             System.out.println("entered into catch");
