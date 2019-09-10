@@ -592,7 +592,7 @@ public class Pdbversion_Group {
             String vehicleName = readValue.get("vehiclename").asText();
 
             Vehicle vehicle = PDBOwnerDB.getVehicleByName(vehicleName);
-            if (!vehicle.getVehiclename().equals(vehicleName)) {
+            if (vehicle == null) {
                 maps_string.put("status", "No Vehicle Found You can Continue");
             } else {
                 maps_string.put("status", "Your Entered Vehicle Already Exisit");
