@@ -213,8 +213,7 @@ public class Pdbversion_Group {
                     pdb_previous_data_result.put("added_features", pdb_previous_data.get("added_features"));
                     pdb_previous_data_result.put("removed_models", pdb_previous_data.get("removed_models"));
                     pdb_previous_data_result.put("added_models", pdb_previous_data.get("added_models"));
-                    pdb_previous_data_result.put("current_version", curpdb_id.getPdb_versionname());
-                    System.out.println("current_version" + curpdb_id.getPdb_versionname());
+                    pdb_previous_data_result.put("current_version", String.format("%.1f", curpdb_id.getPdb_versionname()));
                     pdb_previous_data_result.put("reference_version", pdbversion_value.get("pdbversion").get("pdbversion_name").asDouble());
 
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
