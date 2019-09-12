@@ -488,11 +488,12 @@
 //            alert($scope.records.length * $scope.features.length);
             if($scope.list.length > 0){
                 if($scope.list.length === $scope.records.length * $scope.features.length){
-//                    if(status && event === "submit"){
-//                        $(".notifyPopup").click();
-//                    }else
-//                        $scope.createpdbAjax(event);
-                    $scope.createpdbAjax(event);
+                    if(status && event === "submit"){
+                        $(".notifyPopup").click();
+                    } else {
+                        $scope.createpdbAjax(event);
+                    }
+//                    $scope.createpdbAjax(event);
                 }
                 else
                     alert("Please fill all the domain and feature status to create PDB version");

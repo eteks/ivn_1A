@@ -778,4 +778,28 @@ public class PDBOwnerDB {
             return null;
         }
     }
+    
+    
+    //Pdbversion Data by Name
+    public static Pdbversion getPdbversionByName(float domainName) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery<Pdbversion> criteriaQuery = criteriaBuilder.createQuery(Pdbversion.class);
+
+            Root<Pdbversion> pdbversionRoot = criteriaQuery.from(Pdbversion.class);
+            criteriaQuery.where(criteriaBuilder.equal(pdbversionRoot.get("pdb_versionname"), domainName));
+            TypedQuery<Pdbversion> dfm_result = s.createQuery(criteriaQuery);
+
+            tx.commit();
+            s.clear();
+            return dfm_result.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Error : \"getPdbversionByName\"" + e);
+            return null;
+        }
+    }
+
 }

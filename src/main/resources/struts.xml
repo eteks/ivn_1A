@@ -5,11 +5,24 @@
 
 <struts>
     <constant name="struts.devMode" value="false" /> 
+    <constant name="struts.enable.DynamicMethodInvocation" value="true" />
     <package name="default" extends="struts-default" namespace="/">
         
     </package>
     
     <package name="json" extends="json-default" namespace="/">
+        
+<!--        <action name="*notification" class="com.ivn_1A.controllers.notification.NotificationController" method="{1}Notification">
+            <result type="json"/>
+        </action>-->
+        
+        <action name="unreadnotification" class="com.ivn_1A.controllers.notification.NotificationController" method="unreadNotification">
+            <result type="json"/>
+        </action>
+        
+        <action name="readnotification" class="com.ivn_1A.controllers.notification.NotificationController" method="readNotification">
+            <result type="json"/>
+        </action>
         
         <action name="createpdbversion" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="CreatePDBVersion">
             <result type="json" />
@@ -67,6 +80,9 @@
             <result type="json" />
         </action>
         
+        <action name="dashboardata" class="com.ivn_1A.commons.GlobalAction" method="GetDashboardData">
+            <result type="json" />
+        </action>
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">
