@@ -14,8 +14,8 @@ import com.ivn_1A.models.notification.StatusNotification;
 import com.ivn_1A.models.notification.StatusNotificationDB;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import java.io.UnsupportedEncodingException;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +43,23 @@ public class NotificationController {
     }
 
     public void createNotification(int version_type_id, float version_name, String creation_date, String receiverId) throws UnsupportedEncodingException {
-        int senderId = CookieRead.getUserIdFromSession();
-        HttpServletRequest request = ServletActionContext.getRequest();
-        Notification notification = new Notification(PDBOwnerDB.getUser(senderId), receiverId, version_type_id, PDBOwnerDB.getPdbversionByName(version_name), Date.valueOf(creation_date));
-        NotificationDB.insertNotification(notification);
+
+        try {
+            System.err.println("createNotification");
+//            int senderId = CookieRead.getUserIdFromSession();
+//            HttpServletRequest request = ServletActionContext.getRequest();
+            System.err.println(PDBOwnerDB.getUser(1)+" "+receiverId+" "+version_type_id+" "+PDBOwnerDB.getPdbversionByName(version_name)+" "+creation_date);
+            Notification notification = new Notification();
+            notification.setSender_id(PDBOwnerDB.getUser(1));
+            notification.setReceiver_id(receiverId);
+            notification.setVersion_type_id(version_type_id);
+            notification.setVersion_id(PDBOwnerDB.getPdbversionByName(version_name));
+            notification.setCreated_date(new Date());
+            int a = NotificationDB.insertNotification(notification);
+            System.err.println("createdNotification res : " + a);
+        } catch (Exception e) {
+            System.err.println("Error in \"createNotification\" : " + e);
+        }
 //        List<String> emailList = UserDB.getEmailListforNotification(senderId, receiverId);
 //        String versionLink = NotificationController.getURLPath(request) + "/" + VersionViewPage.fromId(version_type_id) + ".action?id=" + NotificationDB.getVersionId(VersionType.fromId(version_type_id), version_name) + "&action=view";
 //        if (!emailList.isEmpty()) {

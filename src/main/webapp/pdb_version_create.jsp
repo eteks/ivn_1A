@@ -295,7 +295,12 @@
         {
          
             this.data=[];
-            var notification_to;    
+            var notification_to;
+            $scope.$on('notifyValue', function (event, args) {
+                notification_to = args;
+                $scope.createpdbAjax("submit");
+            });
+            $window.alert(notification_to);
             $scope.features = [];
             $scope.list = [];
             $scope.Demo.dt = [];

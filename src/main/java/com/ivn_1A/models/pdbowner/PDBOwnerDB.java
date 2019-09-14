@@ -781,7 +781,7 @@ public class PDBOwnerDB {
     
     
     //Pdbversion Data by Name
-    public static Pdbversion getPdbversionByName(float domainName) {
+    public static Pdbversion getPdbversionByName(float versionname) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
@@ -790,12 +790,12 @@ public class PDBOwnerDB {
             CriteriaQuery<Pdbversion> criteriaQuery = criteriaBuilder.createQuery(Pdbversion.class);
 
             Root<Pdbversion> pdbversionRoot = criteriaQuery.from(Pdbversion.class);
-            criteriaQuery.where(criteriaBuilder.equal(pdbversionRoot.get("pdb_versionname"), domainName));
+            criteriaQuery.select(pdbversionRoot).distinct(true).where(criteriaBuilder.equal(pdbversionRoot.get("pdb_versionname"), versionname));
             TypedQuery<Pdbversion> dfm_result = s.createQuery(criteriaQuery);
 
             tx.commit();
             s.clear();
-            return dfm_result.getSingleResult();
+            return dfm_result.getResultList().get(0);
         } catch (Exception e) {
             System.err.println("Error : \"getPdbversionByName\"" + e);
             return null;

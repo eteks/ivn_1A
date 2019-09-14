@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.configs.JSONConfigure;
+import com.ivn_1A.configs.VersionType;
+import com.ivn_1A.controllers.notification.NotificationController;
 
 import static com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group.vehicle_Repository;
 
@@ -122,6 +124,7 @@ public class Pdbversion_Group {
 
     public String CreatePDBVersion() throws IOException {
 
+        NotificationController notificationController = new NotificationController();
         System.out.println("CreatePDBVersion");
         final ObjectMapper mapper = new ObjectMapper();
         String jsonValues = JSONConfigure.getAngularJSONFile();
@@ -141,6 +144,8 @@ public class Pdbversion_Group {
 //            System.out.println("pdbdata" + json);
             JsonNode pdbversion_value = (JsonNode) readValue.get("pdbversion");
             System.out.println("pdbversion_value" + pdbversion_value);
+            String notification_to = readValue.get("notification_to").asText();
+            System.out.println("notification_to" + notification_to);
             ArrayNode pdbdata_list = (ArrayNode) readValue.get("pdbdata_list");
             System.out.println("pdbdata_list" + pdbdata_list);
             String button_type = readValue.get("button_type").asText();
@@ -218,10 +223,12 @@ public class Pdbversion_Group {
 
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
-                if (button_type.equals("save"))
+                if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary PDB Version Created Successfully");
-                else
+                } else {
+                    notificationController.createNotification(VersionType.VehicleVersion.getVersionCode(), version_name, new Date().toString(), notification_to);
                     maps_string.put("status", "New Permanent PDB Version Created Successfully");
+                }
             }
 //            tx.commit();
 //            session.clear();

@@ -33,9 +33,9 @@ public class TestInsert {
         TestInsert testInsert = new TestInsert();
         try {
             
-            Groups groups = new Groups("IVN Supervisor", "ivn_supervisor", true, 0, true, date, date);
+            Groups groups = new Groups("PDB Owner", "pdb_owner", true, 0, true, date, date);
             testInsert.saveGroups(groups);
-            User user = new User("Ram", groups);
+            User user = new User("khan", groups);
             testInsert.saveUser(user);
 //            Domain domain = new Domain();
 //            domain.setCreated_date(new Date());
