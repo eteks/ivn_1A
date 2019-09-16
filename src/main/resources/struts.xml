@@ -91,6 +91,10 @@
             <result name="session">index.jsp</result> 
             <result name="success">pdb_version_create.jsp</result>
         </action>-->
+        <action name="features_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="PDBAssignPage">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>features_listing.jsp</result>
+        </action>
         
         <action name="create_pdb" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="PDBAssignPage">
             <!--<result name="session">index.jsp</result>--> 
@@ -100,6 +104,44 @@
         <action name="pdb_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
             <!--<result name="session">index.jsp</result>--> 
             <result>pdb_listing.jsp</result>
+        </action>
+        
+        <action name="legislation" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>legislation.jsp</result>
+        </action>
+        
+        <action name="legislation_combination" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>legislation_combination.jsp</result>
+        </action>
+        
+        <action name="legislate_list" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>legislate_list.jsp</result>
+        </action>
+        <action name="legi_ver_create" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>legislation_ver_create.jsp</result>
+        </action>
+        
+        <action name="safety" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>safety.jsp</result>
+        </action>
+        
+        <action name="safety_combination" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>safety_combination.jsp</result>
+        </action>
+        
+        <action name="safety_list" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>safety_list.jsp</result>
+        </action>
+        <action name="safety_ver_create" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>safety_ver_create.jsp</result>
         </action>
 
         <!--This is for testing--> 
