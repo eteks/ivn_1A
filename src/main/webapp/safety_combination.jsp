@@ -137,10 +137,14 @@
                                 <h5 class="text-c-red m-b-25">Feature Combination <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>                                
                                 
                                            <div class="alert alert-info">
-                                                <strong>Example Output</strong><br>
+                                                <strong>Output</strong><br>
                                                 <span ng-bind-html="output"></span>
                                             </div>
-
+                                            <div class="col-md-12 col-lg-offset-1">
+                                                <input type="text" id="combname" name="combname" placeholder="Name" class="col-md-12"/>
+                                                <input type="hidden" id="combid"/>
+                                                <input type="hidden" id="button_status"/>
+                                            </div></br>
                                             <query-builder group="filter.group"></query-builder>
                                             <div class="col-md-12 col-lg-offset-1">
                                                 <div id="builder-basic" style="display: block;"></div>

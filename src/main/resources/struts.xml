@@ -91,6 +91,10 @@
             <result name="session">index.jsp</result> 
             <result name="success">pdb_version_create.jsp</result>
         </action>-->
+        <action name="features_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="PDBAssignPage">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>features_listing.jsp</result>
+        </action>
         
         <action name="create_pdb" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="PDBAssignPage">
             <!--<result name="session">index.jsp</result>--> 
