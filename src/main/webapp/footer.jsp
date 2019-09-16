@@ -132,7 +132,8 @@
                 app.controller('notificationController', function ($scope, $http, $window) {
                     $http.get("unreadnotification.action").then(function (response, data, status, headers, config) {
                         $scope.addlist = response.data.notification_result;
-                        //console.log(response.data.notification_result);
+                        $window.alert("@!########@$#%$#%^#$^%$^%$^$%   "+JSON.stringify($scope.addlist));
+                        console.log("@!########@$#%$#%^#$^%$^%$^$%   "+response.data.notification_result);
                         //$scope.count = response.data.notification_result.length;
                         $scope.count = 0;
                         angular.forEach($scope.addlist, function(value, key) {

@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.configs.JSONConfigure;
+import com.ivn_1A.configs.VersionType;
+import com.ivn_1A.controllers.notification.NotificationController;
 
 import static com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group.vehicle_Repository;
 
@@ -122,6 +124,7 @@ public class Pdbversion_Group {
 
     public String CreatePDBVersion() throws IOException {
 
+        NotificationController notificationController = new NotificationController();
         System.out.println("CreatePDBVersion");
         final ObjectMapper mapper = new ObjectMapper();
         String jsonValues = JSONConfigure.getAngularJSONFile();
@@ -141,6 +144,8 @@ public class Pdbversion_Group {
 //            System.out.println("pdbdata" + json);
             JsonNode pdbversion_value = (JsonNode) readValue.get("pdbversion");
             System.out.println("pdbversion_value" + pdbversion_value);
+            String notification_to = readValue.get("notification_to").asText();
+            System.out.println("notification_to" + notification_to);
             ArrayNode pdbdata_list = (ArrayNode) readValue.get("pdbdata_list");
             System.out.println("pdbdata_list" + pdbdata_list);
             String button_type = readValue.get("button_type").asText();
@@ -213,16 +218,17 @@ public class Pdbversion_Group {
                     pdb_previous_data_result.put("added_features", pdb_previous_data.get("added_features"));
                     pdb_previous_data_result.put("removed_models", pdb_previous_data.get("removed_models"));
                     pdb_previous_data_result.put("added_models", pdb_previous_data.get("added_models"));
-                    pdb_previous_data_result.put("current_version", curpdb_id.getPdb_versionname());
-                    System.out.println("current_version" + curpdb_id.getPdb_versionname());
+                    pdb_previous_data_result.put("current_version", String.format("%.1f", curpdb_id.getPdb_versionname()));
                     pdb_previous_data_result.put("reference_version", pdbversion_value.get("pdbversion").get("pdbversion_name").asDouble());
 
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
-                if (button_type.equals("save"))
+                if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary PDB Version Created Successfully");
-                else
+                } else {
+                    notificationController.createNotification(VersionType.VehicleVersion.getVersionCode(), version_name, new Date().toString(), notification_to);
                     maps_string.put("status", "New Permanent PDB Version Created Successfully");
+                }
             }
 //            tx.commit();
 //            session.clear();
@@ -598,13 +604,13 @@ public class Pdbversion_Group {
 
             Vehicle vehicle = PDBOwnerDB.getVehicleByName(vehicleName);
             if (vehicle == null) {
-                maps_string.put("status", "No Vehicle Found You can Continue");
+                maps_string.put("success", "No Vehicle Found You can Continue");
             } else {
-                maps_string.put("status", "Your Entered Vehicle Already Exisit");
+                maps_string.put("failed", "Your Entered Vehicle Already Exisit");
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            maps_string.put("status", "You can Continue");
+            maps_string.put("error", "You can Continue");
         }
         return "success";
     }

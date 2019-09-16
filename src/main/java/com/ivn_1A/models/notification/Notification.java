@@ -39,8 +39,7 @@ public class Notification implements Serializable {
     public Notification() {
     }
 
-    public Notification(int id, User sender_id, String receiver_id, int version_type_id, Pdbversion version_id, Date created_date) {
-        this.id = id;
+    public Notification(User sender_id, String receiver_id, int version_type_id, Pdbversion version_id, Date created_date) {
         this.sender_id = sender_id;
         this.receiver_id = receiver_id;
         this.version_type_id = version_type_id;
