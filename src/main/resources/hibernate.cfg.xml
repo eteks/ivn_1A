@@ -25,7 +25,16 @@
     <mapping class="com.ivn_1A.models.pdbowner.Pdbversion_group" /> 
     <!--<mapping class="com.ivn_1A.models.pdbowner.Pdb_domain_feature_mapping" />--> 
     <mapping class="com.ivn_1A.models.pdbowner.Pdb_log_for_DomainFeatures" /> 
-    <mapping class="com.ivn_1A.models.pdbowner.Pdb_log_for_vehiclemodel" />  
+    <mapping class="com.ivn_1A.models.pdbowner.Pdb_log_for_vehiclemodel" /> 
+    
+    <mapping class="com.ivn_1A.models.pdbowner.Querybuilder" /> 
+    <mapping class="com.ivn_1A.models.pdbowner.Safetyversion" /> 
+    <mapping class="com.ivn_1A.models.pdbowner.Safetyversion_group" /> 
+    <mapping class="com.ivn_1A.models.pdbowner.Legislationversion" /> 
+    <mapping class="com.ivn_1A.models.pdbowner.Legislationversion_group" /> 
+    <mapping class="com.ivn_1A.models.pdbowner.Featureversion" /> 
+    
+    
     <mapping class="com.ivn_1A.models.Groups" />
     <mapping class="com.ivn_1A.models.notification.StatusNotification" />
     <mapping class="com.ivn_1A.models.notification.Notification" />
