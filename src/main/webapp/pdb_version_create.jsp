@@ -93,7 +93,7 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="model">Model:</label>
-                                                                            <tags-input ng-model="Demo.dt.modelname" name="model" use-strings="true" ></tags-input>
+                                                                            <tags-input ng-model="Demo.dt.modelname" name="model" id="model" use-strings="true" ></tags-input>
                                                                             <span ng-show="myForm.model.$touched && myForm.model.$invalid" style="color: red;">The Model Name is required.</span>
                                                                         </div>                                                      
                                                                     </div>                                                    
@@ -296,10 +296,10 @@
          
             this.data=[];
             var notification_to;
-            $scope.$on('notifyValue', function (event, args) {
-                notification_to = args;
-                $scope.createpdbAjax("submit");
-            });
+//            $scope.$on('notifyValue', function (event, args) {
+//                notification_to = args;
+//                $scope.createpdbAjax("submit");
+//            });
             $window.alert(notification_to);
             $scope.features = [];
             $scope.list = [];
@@ -342,15 +342,34 @@
             $scope.validateVehicle = function() 
             {
                 if ($scope.Demo.dt.vehiclename && $scope.data.new_vehicle=="new_vehicle") {
+                    
+                    //Checks the vehicle is existing or not
                     $http({
                         url: 'verifyVehicle',
                         method: "POST",
                         data: {"vehiclename":$scope.Demo.dt.vehiclename},
                     }).then(function (response, status, headers, config){
+                        if(response.data.maps_string.failed){
+                            $window.alert("Your Entered Vehicle Already Exisit");
+//                            $window.document.getElementById('model').focus();
+                        }
                         console.log(JSON.stringify(response.data.maps_string.status));
                     });
                  } else {
+                     
+                    //If the checkbox not selected then checked and Checks the vehicle is existing or not
                     $scope.data.new_vehicle="new_vehicle";
+                    $http({
+                        url: 'verifyVehicle',
+                        method: "POST",
+                        data: {"vehiclename":$scope.Demo.dt.vehiclename},
+                    }).then(function (response, status, headers, config){
+                        if(response.data.maps_string.failed){
+                            $window.alert("Your Entered Vehicle Already Exisit");
+//                            $window.document.getElementById('model').focus();
+                        }
+                        console.log(JSON.stringify(response.data.maps_string.status));
+                    });
                 }
             }
             
@@ -547,7 +566,7 @@
 		}
 		if( index === -1 ) 
                 {
-			alert( "Something gone wrong" );
+                    alert( "Something gone wrong" );
 		}
                 $scope.features_list.push({fid:comArr[index].fid,domain:comArr[index].domain,fea: comArr[index].fea})
 		$scope.features.splice( index, 1 );

@@ -604,13 +604,13 @@ public class Pdbversion_Group {
 
             Vehicle vehicle = PDBOwnerDB.getVehicleByName(vehicleName);
             if (vehicle == null) {
-                maps_string.put("status", "No Vehicle Found You can Continue");
+                maps_string.put("success", "No Vehicle Found You can Continue");
             } else {
-                maps_string.put("status", "Your Entered Vehicle Already Exisit");
+                maps_string.put("failed", "Your Entered Vehicle Already Exisit");
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            maps_string.put("status", "You can Continue");
+            maps_string.put("error", "You can Continue");
         }
         return "success";
     }
