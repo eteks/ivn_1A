@@ -182,7 +182,7 @@
                         <%@include file="footer.jsp" %>
                         <!--<script src="js/lib/materialize.min.js"></script>-->
                         <!--<script src="js/dirPagination.js"></script>-->
-                        <script type="text/ng-template" id="/queryBuilderDirective.html">
+                        <script type="text/ng-template" id="/queryBuilderDirective.html" >
                         <div class="alert alert-warning alert-group">
                             <div class="form-inline">
                                 <select ng-options="o.name as o.name for o in operators" ng-model="group.operator" class="form-control input-sm"></select>
