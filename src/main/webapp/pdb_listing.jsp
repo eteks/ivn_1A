@@ -269,8 +269,7 @@
                         alert("Error while deleting PDB Version");
                     }
             });
-            }
-            
+            }           
         });
         app.filter('customSplitString', function() 
         {

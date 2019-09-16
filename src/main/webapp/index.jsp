@@ -49,7 +49,7 @@
                                         </div>
                                     </div>
                                    
-                                   <div class="col-md-3 col-lg-3">
+<!--                                   <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
                                             <s:url action="vehicle_listing.action" var="aURL" />
                                             <s:a href="%{aURL}">   
@@ -76,8 +76,20 @@
                                                     </div>
                                             </s:a>   
                                         </div>
+                                    </div>-->
+                                   <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">
+                                            <s:url action="features_listing.action" var="aURL" />
+                                            <s:a href="%{aURL}">   
+                                                    <div class="card-block">
+                                                        <span>Domain & features</span></br>
+                                                        <span class="count"><s:property value="dashboard_result.modelversion_count"/></span> 
+                                                        <i class="icofont  icofont-numbered text-c-red"></i>  
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                            </s:a>   
+                                        </div>
                                     </div>
-                                   
                                    <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
                                             <s:url action="create_pdb.action" var="aURL" />
@@ -91,7 +103,32 @@
                                             </s:a>    
                                         </div>
                                     </div>
-                                   
+                                    <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">
+                                            <s:url action="legislation.action" var="aURL" />
+                                            <s:a href="%{aURL}">      
+                                                <div class="card-block">
+                                                    <span>Legislation</span>
+                                                    <span class="count"> + </span>
+                                                    <i class="icofont icofont-plus-square text-c-red"></i>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </s:a>    
+                                        </div>
+                                    </div>
+                                   <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">
+                                            <s:url action="safety.action" var="aURL" />
+                                            <s:a href="%{aURL}">      
+                                                <div class="card-block">
+                                                    <span>Safety</span>
+                                                    <span class="count"> + </span>
+                                                    <i class="icofont icofont-plus-square text-c-red"></i>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </s:a>    
+                                        </div>
+                                    </div>
 <!--                                    <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
                                             <s:url action="model_version.action" var="aURL" />
@@ -120,19 +157,7 @@
                                         </div>
                                     </div>-->
                                             
-                                    <div class="col-md-3 col-lg-3">
-                                        <div class="card visitor-card">
-                                            <s:url action="features_listing.action" var="aURL" />
-                                            <s:a href="%{aURL}">   
-                                                    <div class="card-block">
-                                                        <span>Domain & features</span></br>
-                                                        <span class="count"><s:property value="dashboard_result.modelversion_count"/></span> 
-                                                        <i class="icofont  icofont-numbered text-c-red"></i>  
-                                                        <div class="clearfix"></div>
-                                                    </div>
-                                            </s:a>   
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
