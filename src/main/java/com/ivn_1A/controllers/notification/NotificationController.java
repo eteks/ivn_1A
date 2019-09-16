@@ -29,6 +29,8 @@ import org.apache.struts2.ServletActionContext;
  */
 public class NotificationController {
 
+    private Map<String, String> maps_string = new HashMap<>();
+    private Map<String, Object> maps_object = new HashMap<>();
     private List<Map<String, Object>> notification_result = new ArrayList<>();
     private List<Map<String, Object>> view_notification = new ArrayList<>();
     private List<Tuple> tempTuples = new ArrayList<>();
@@ -48,7 +50,7 @@ public class NotificationController {
             System.err.println("createNotification");
 //            int senderId = CookieRead.getUserIdFromSession();
 //            HttpServletRequest request = ServletActionContext.getRequest();
-            System.err.println(PDBOwnerDB.getUser(1)+" "+receiverId+" "+version_type_id+" "+PDBOwnerDB.getPdbversionByName(version_name)+" "+creation_date);
+            System.err.println(PDBOwnerDB.getUser(1) + " " + receiverId + " " + version_type_id + " " + PDBOwnerDB.getPdbversionByName(version_name) + " " + creation_date);
             Notification notification = new Notification();
             notification.setSender_id(PDBOwnerDB.getUser(1));
             notification.setReceiver_id(receiverId);
@@ -57,8 +59,10 @@ public class NotificationController {
             notification.setCreated_date(new Date());
             int a = NotificationDB.insertNotification(notification);
             System.err.println("createdNotification res : " + a);
+            maps_string.put("success", "Notification Created");
         } catch (Exception e) {
             System.err.println("Error in \"createNotification\" : " + e);
+            maps_string.put("failed", "Error Notification not Created");
         }
 //        List<String> emailList = UserDB.getEmailListforNotification(senderId, receiverId);
 //        String versionLink = NotificationController.getURLPath(request) + "/" + VersionViewPage.fromId(version_type_id) + ".action?id=" + NotificationDB.getVersionId(VersionType.fromId(version_type_id), version_name) + "&action=view";
@@ -90,33 +94,42 @@ public class NotificationController {
             }).forEachOrdered((columns) -> {
                 System.out.println("colums___________" + columns);
             });
+            maps_string.put("success", "Unread notification fetched");
         } catch (Exception ex) {
             System.out.println("entered into catch");
             System.out.println(ex.getMessage());
+            maps_string.put("failed", "Error Unread notification fetched");
         }
         return "success";
     }
 
     public String readNotification() {
 
-        System.err.println("readNotification");
-        int userid = CookieRead.getUserIdFromSession();
-        tempTuples = NotificationDB.readNotification(getNotification_id());
-        tempTuples.stream().map((tuple) -> {
-            Map<String, Object> columns = new HashMap<>();
-            columns.put("version_type", VersionType.fromId(Integer.parseInt(tuple.get("version_type_id").toString())));
-            columns.put("version_id", tuple.get("version_id"));
-            return columns;
-        }).map((columns) -> {
-            notification_result.add(columns);
-            return columns;
-        }).forEachOrdered((columns) -> {
-            System.out.println("colums___________" + columns);
-        });
-        StatusNotification sn = new StatusNotification();
-        sn.setNotification_id(NotificationDB.getNotification(getNotification_id()));
-        sn.setReceiver_id(userid);
-        StatusNotificationDB.insertStatus(sn);
+        try {
+            System.err.println("readNotification");
+//            int userid = CookieRead.getUserIdFromSession();
+            tempTuples = NotificationDB.readNotification(getNotification_id());
+            tempTuples.stream().map((tuple) -> {
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("version_type", VersionType.fromId(Integer.parseInt(tuple.get("version_type_id").toString())));
+                columns.put("version_id", tuple.get("version_id"));
+                return columns;
+            }).map((columns) -> {
+                view_notification.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums___________" + columns);
+            });
+            StatusNotification sn = new StatusNotification();
+            sn.setNotification_id(NotificationDB.getNotification(getNotification_id()));
+            sn.setReceiver_id(1);
+            StatusNotificationDB.insertStatus(sn);
+            maps_string.put("success", "Read notification fetched");
+        } catch (Exception ex) {
+            System.out.println("entered into catch");
+            System.out.println(ex.getMessage());
+            maps_string.put("failed", "Error Read notification fetched");
+        }
         return "success";
     }
 
@@ -142,6 +155,22 @@ public class NotificationController {
 
     public void setNotification_id(int notification_id) {
         this.notification_id = notification_id;
+    }
+
+    public Map<String, String> getMaps_string() {
+        return maps_string;
+    }
+
+    public void setMaps_string(Map<String, String> maps_string) {
+        this.maps_string = maps_string;
+    }
+
+    public Map<String, Object> getMaps_object() {
+        return maps_object;
+    }
+
+    public void setMaps_object(Map<String, Object> maps_object) {
+        this.maps_object = maps_object;
     }
 
 }

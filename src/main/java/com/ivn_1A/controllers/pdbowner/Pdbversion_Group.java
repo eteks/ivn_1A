@@ -226,7 +226,7 @@ public class Pdbversion_Group {
                 if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary PDB Version Created Successfully");
                 } else {
-                    notificationController.createNotification(VersionType.VehicleVersion.getVersionCode(), version_name, new Date().toString(), notification_to);
+                    notificationController.createNotification(VersionType.Pdbversion.getVersionCode(), curpdb_id.getPdb_versionname(), new Date().toString(), notification_to);
                     maps_string.put("status", "New Permanent PDB Version Created Successfully");
                 }
             }

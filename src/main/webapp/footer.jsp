@@ -131,7 +131,7 @@
                         $scope.addlist = response.data.notification_result;
                         $window.alert("@!########@$#%$#%^#$^%$^%$^$%   "+JSON.stringify($scope.addlist));
                         console.log("@!########@$#%$#%^#$^%$^%$^$%   "+response.data.notification_result);
-                        //$scope.count = response.data.notification_result.length;
+//                        $scope.count = response.data.notification_result.length;
                         $scope.count = 0;
                         angular.forEach($scope.addlist, function(value, key) {
                             // Increment each number by one when you hit it
@@ -142,6 +142,7 @@
                     });
                     $scope.view = function (id) {
                         $http.get("readnotification.action?notification_id=" + id).then(function (response, data, status, headers, config) {
+                            $window.alert(JSON.stringify(response.data.view_notification));
                             $window.open(response.data.view_notification[0].version_type + ".action?id=" + response.data.view_notification[0].version_id + "&action=view", "_self");
                         });
                     }

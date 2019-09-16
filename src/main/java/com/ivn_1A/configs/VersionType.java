@@ -10,8 +10,8 @@ package com.ivn_1A.configs;
  * @author ETS-05
  */
 public enum VersionType {
-    VehicleVersion(1),
-    pdbVersion(2),
+    Pdbversion(1),
+    Notification(2),
     ivnVersion(3),
     acbVersion(4),
     SystemVersion(5),
