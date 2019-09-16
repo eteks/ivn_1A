@@ -665,7 +665,8 @@ public class PDBOwnerDB {
             pRoot.join("feature_id", JoinType.INNER);
 
             criteriaQuery.multiselect(pRoot.get("id").alias("dfm_id"), pRoot.get("domain_id").get("domain_name").alias("domain_name"),
-                    pRoot.get("feature_id").get("feature_name").alias("feature_name"), pRoot.get("feature_id").get("created_date").alias("created_date"),
+                    pRoot.get("feature_id").get("feature_name").alias("feature_name"), pRoot.get("feature_id").get("id").alias("fid"),
+                    pRoot.get("feature_id").get("created_date").alias("created_date"),
                     pRoot.get("feature_id").get("modified_date").alias("modified_date"))
                     .orderBy(criteriaBuilder.desc(pRoot.get("domain_id").get("id")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);

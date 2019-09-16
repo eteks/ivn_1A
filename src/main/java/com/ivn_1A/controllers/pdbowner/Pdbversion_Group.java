@@ -226,7 +226,7 @@ public class Pdbversion_Group {
                 if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary PDB Version Created Successfully");
                 } else {
-                    notificationController.createNotification(VersionType.VehicleVersion.getVersionCode(), version_name, new Date().toString(), notification_to);
+                    notificationController.createNotification(VersionType.Pdbversion.getVersionCode(), curpdb_id.getPdb_versionname(), new Date().toString(), notification_to);
                     maps_string.put("status", "New Permanent PDB Version Created Successfully");
                 }
             }
@@ -534,14 +534,16 @@ public class Pdbversion_Group {
 
         System.out.println("GetFeaturesListing controller");
         try {
+            ObjectMapper mapper = new ObjectMapper();
             tupleObjects = PDBOwnerDB.GetDomainFeaturesListing();
 
             List<Map<String, Object>> row = new ArrayList<>();
             tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("dfm_id", tuple.get("dfm_id"));
-                columns.put("domain_name", tuple.get("domain_name"));
-                columns.put("feature_name", tuple.get("feature_name"));
+                columns.put("domain", tuple.get("domain_name"));
+                columns.put("fid", tuple.get("fid"));
+                columns.put("fea", tuple.get("feature_name"));
                 columns.put("created_date", tuple.get("created_date"));
                 columns.put("modified_date", tuple.get("modified_date"));
                 return columns;
@@ -551,8 +553,9 @@ public class Pdbversion_Group {
             }).forEachOrdered((columns) -> {
                 System.out.println("colums" + columns);
             });
-            maps_string.put("status", "Listed Done");
-            maps_object.put("domainfeatures_result", row);
+            maps_string.put("status", "Listed Done");            
+            result_data_obj = gson.toJson(row);
+            maps_object.put("domainfeatures_result", mapper.writeValueAsString(row));
             System.out.println("Json Values : " + row);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
