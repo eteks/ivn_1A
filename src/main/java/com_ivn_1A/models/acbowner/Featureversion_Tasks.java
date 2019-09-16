@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ivn_1A.models.pdbowner;
+package com_ivn_1A.models.acbowner;
 
 import com.ivn_1A.models.admin.User;
+import com.ivn_1A.models.pdbowner.Featureversion;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -26,60 +25,48 @@ import org.hibernate.annotations.UpdateTimestamp;
  * @author ets-poc
  */
 @Entity
-@Table(name = "querybuilder")
-public class Querybuilder implements Serializable {
-
-    private Long id;
-    private String querybuilder_name;
-    private String querybuilder_type;
-    private String querybuilder_condition;
-    private boolean querybuilder_status;   
+@Table(name = "featureversion_tasks")
+public class Featureversion_Tasks implements Serializable {    
+    private int id;
+    private Featureversion featureversion_id;
+    private boolean approval_status;  
+    private boolean completion_status;  
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
     
-       
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
-    @Column(name = "querybuilder_name", nullable = false, columnDefinition ="Text")
-    public String getQuerybuilder_name() {
-        return querybuilder_name;
+    @OneToOne
+    @JoinColumn(name = "featureversion_id", nullable = false)
+    public Featureversion getFeatureversion_id() {
+        return featureversion_id;
     }
 
-    public void setQuerybuilder_name(String querybuilder_name) {
-        this.querybuilder_name = querybuilder_name;
+    public void setFeatureversion_id(Featureversion featureversion_id) {
+        this.featureversion_id = featureversion_id;
+    }
+    @Column(name = "approval_status", nullable = false, columnDefinition = "TINYINT(1) default 1")
+    public boolean getApproval_status() {
+        return approval_status;
     }
 
-    public String getQuerybuilder_type() {
-        return querybuilder_type;
+    public void setApproval_status(boolean approval_status) {
+        this.approval_status = approval_status;
+    }
+    @Column(name = "completion_status", nullable = false, columnDefinition = "TINYINT(1) default 1")
+    public boolean getCompletion_status() {
+        return completion_status;
     }
 
-    public void setQuerybuilder_type(String querybuilder_type) {
-        this.querybuilder_type = querybuilder_type;
-    }
-    @Column(name = "querybuilder_condition", nullable = false, columnDefinition ="Text")
-    public String getQuerybuilder_condition() {
-        return querybuilder_condition;
-    }
-
-    public void setQuerybuilder_condition(String querybuilder_condition) {
-        this.querybuilder_condition = querybuilder_condition;
-    }
-    @Column(name = "querybuilder_status", nullable = false, columnDefinition = "TINYINT(1) default 1")
-    public boolean getQuerybuilder_status() {
-        return querybuilder_status;
-    }
-
-    public void setQuerybuilder_status(boolean querybuilder_status) {
-        this.querybuilder_status = querybuilder_status;
+    public void setCompletion_status(boolean completion_status) {
+        this.completion_status = completion_status;
     }
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -109,6 +96,5 @@ public class Querybuilder implements Serializable {
 
     public void setCreated_or_updated_by(User created_or_updated_by) {
         this.created_or_updated_by = created_or_updated_by;
-    }
-       
+    }   
 }
