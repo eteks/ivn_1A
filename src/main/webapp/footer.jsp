@@ -77,16 +77,19 @@
 <!--<script type="text/javascript" src="js/select2.js"></script>-->
 <script type="text/javascript" src="js/query-builder.min.js"></script>
 <script type="text/javascript" src="js/sql-parser.min.js"></script>
-<script type="text/javascript" src="js/combineBuilder.js"></script>
+<!--<script type="text/javascript" src="js/combineBuilder.js"></script>-->
 <script type="text/javascript" src="js/select2.full.min.js"></script>
 <script type="text/javascript" src="js/select2-custom.js"></script>
 <script src="js/tabs.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.18/angular-sanitize.min.js"></script>
+<script src="js/angular-query-builder.js"></script>
 <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.js"></script>    -->
 <script src="js/dirPagination.js"></script>
 <script>
-                    var app = angular.module('angularTable', ['angularUtils.directives.dirPagination', 'ngTagsInput','tabs']);
+                    var app = angular.module('angularTable', ['angularUtils.directives.dirPagination', 'ngTagsInput','tabs','ngSanitize','queryBuilder']);
 //        var app = angular.module('angularTable', ['ui.bootstrap']);
                 app.controller('RecordCtrl', function ($scope, $http,$rootScope)
                 {
