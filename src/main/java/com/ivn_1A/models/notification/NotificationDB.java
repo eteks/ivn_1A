@@ -165,12 +165,13 @@ public class NotificationDB {
             criteriaQuery.multiselect(notificationRoot.get("id").alias("id"), notificationRoot.get("sender_id").get("username").alias("firstname"),
                     notificationRoot.get("version_type_id").alias("version_type_id"), notificationRoot.get("version_id").get("pdb_versionname").alias("version_id"),
                     notificationRoot.get("created_date").alias("created_date")).distinct(true)
-                    .where(
-                            criteriaBuilder.and(
-                                    criteriaBuilder.notEqual(notificationRoot.get("sender_id").get("id"), user_id),
-                                    criteriaBuilder.like(notificationRoot.get("receiver_id").as(String.class), "'%" + user_id + "%'")
-                            )
-                    ).orderBy(criteriaBuilder.desc(notificationRoot.get("created_date")));
+                    //                    .where(
+                    //                            criteriaBuilder.and(
+                    //                                    criteriaBuilder.notEqual(notificationRoot.get("sender_id").get("id"), user_id),
+                    //                                    criteriaBuilder.like(notificationRoot.get("receiver_id").as(String.class), "'%" + user_id + "%'")
+                    //                            )
+                    //                    )
+                    .orderBy(criteriaBuilder.desc(notificationRoot.get("created_date")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();
@@ -206,28 +207,5 @@ public class NotificationDB {
             return null;
         }
     }
-    
-//    public static int getVersionId(VersionType versionType, float versionNumber) {
-//        
-//        try {
-//            System.err.println("getReadStatusForNotification");
-//            Session s = HibernateUtil.getThreadLocalSession();
-//            Transaction tx = s.beginTransaction();
-//
-//            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
-//            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
-//
-//            Root<Notification> notificationRoot = criteriaQuery.from(Notification.class);
-//            criteriaQuery.multiselect(notificationRoot.get("version_type_id").alias("version_type_id"), notificationRoot.get("version_id").get("id").alias("version_id"))
-//                    .where(criteriaBuilder.equal(notificationRoot.get("id"), notification_id));
-//            TypedQuery<Tuple> dfm_result = s.createQuery(criteriaQuery);
-//
-//            tx.commit();
-//            s.clear();
-//            return 1;
-//        } catch (Exception e) {
-//            System.err.println("Error : \"getGroupIdForUser\"" + e);
-//            return 0;
-//        }
-//    }
+
 }

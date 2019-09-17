@@ -43,7 +43,7 @@
                                                 <div class="card">
                                                     <div class="card-block marketing-card p-t-0">
                                                          <div class="row p-t-30">
-                                                            <div class="form-group col-md-3">
+<!--                                                            <div class="form-group col-md-3">
                                                                 <label for="vehicle">Vehicle version :</label>
                                                                 <select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">
                                                                     <s:iterator value="vehicleversion_result" >
@@ -52,12 +52,23 @@
                                                                         </option>
                                                                     </s:iterator>
                                                                 </select>
-                                                            </div>
+                                                            </div>-->
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Vehicle:</label>
-                                                                <select ng-hide="data.vehicleversion"></select>
+                                                                <select ng-model="data.vehicle" ng-change="LoadPreviousVersion()">
+                                                                    <option value="">Select Vehicle</option>
+                                                                    <s:iterator value="vehicle_result" var="data">   
+                                                                            <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
+                                                                    </s:iterator>
+                                                                </select>
+<!--                                                                <select ng-hide="data.vehicleversion"></select>
                                                                 <select ng-change="LoadVehicleModels(data.vehiclename)" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
                                                                         <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
+                                                                </select>-->
+                                                            </div>
+                                                            <div class="form-group col-md-3">
+                                                                <label for="pdbversion">PDB version :</label>
+                                                                <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion_name for arr in array_result" ng-change="LoadVehicleModels()" disabled>
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-3">
@@ -203,6 +214,8 @@
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>-->
   <!--<script src="js/dirPagination.js"></script>-->
     <script>
+//        var app = angular.module('angularTable', ['angularUtils.directives.dirPagination']);
+
         app.controller('RecordCtrl1', function($scope, $http)
                             {
                                  var data = '{"group": {"operator": "AND","rules": []}}';
@@ -309,7 +322,7 @@
         // initialize modal
         $('.modal-trigger').leanModal();
     });
-    </script>   
+    </script>    
 </body>
 
 </html>          
