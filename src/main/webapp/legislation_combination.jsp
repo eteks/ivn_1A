@@ -96,7 +96,7 @@
 
                                             </tr>
                                         </thead>
-                                        <tbody ng-init="getAllDomain_and_Features()">
+                                        <tbody ng-init="getAllLegislation()">
 
                                             <tr dir-paginate="record in legislation|orderBy:sortKey:reverse|filter:search|itemsPerPage:5">
                                                 <td style="display:none;" class="combination">{{record.combination}}</td>
@@ -136,8 +136,8 @@
                                                 <td class="text-center">{{record.created_date}}</td>
                                                 <td class="text-center">{{record.modified_date}}</td>
                                                 <td class="text-center"> 
-                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round modal-trigger" id="edit_or_view" name="edit" ng-if="record.status === false" data-target="modal-product-form">Edit</button>
-                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round modal-trigger" id="edit_or_view" name="view" ng-if="record.status === true" data-target="modal-product-form">view</button>
+                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round modal-trigger" id="edit_or_view" name="edit" ng-click="view_and_edit()" ng-if="record.status === false" data-target="modal-product-form">Edit</button>
+                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round modal-trigger" id="edit_or_view" name="view" ng-click="view_and_edit()" ng-if="record.status === true" data-target="modal-product-form">view</button>
 <!--                                                    <button class="btn btn-success set-sql" data-target="import_export" id="btn-set1">Set rules from SQL</button>
                                                     <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-target="import_export" id="btn-set1">Set rules from SQL</button>-->
                                                 </td>
@@ -165,15 +165,15 @@
                                                 <span ng-bind-html="output"></span>
                                             </div>
                                             <div class="col-md-12 col-lg-offset-1">
-                                                <input type="text" id="combname" name="combname" placeholder="Name" class="col-md-12"/>
-                                                <input type="hidden" id="combid"/>
-                                                <input type="hidden" id="button_status"/>
+                                                <input type="text" id="combname" ng-model="combname" name="combname" placeholder="Name" class="col-md-12"/>
+                                                <input type="hidden" id="combid" ng-model="combid" />
+                                                <input type="hidden" id="button_status" ng-model="button_status" />
                                             </div>
                                             <query-builder group="filter.group"></query-builder>
                                             <div class="col-md-12 col-lg-offset-1">
                                                 <div id="builder-basic" style="display: block;"></div>
                                                 <div class="btn-group float-right">                                                    
-                                                        <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="safety">Submit</button>                                                        
+                                                    <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="safety" ng-click="addCombination($element.target)" >Submit</button>                                                        
                                                 </div>
                                             </div>
                             </div>
@@ -198,7 +198,7 @@
                                         </div>
                                         <div ng-switch-default="ng-switch-default">
                                             <div class="form-inline">
-                                                <select ng-options="t.name as t.name for t in fields" ng-model="rule.field" class="form-control input-sm"></select>
+                                                <select ng-options="t as t.name for t in fields" ng-model="rule.field" class="form-control input-sm"></select>
                                                 <select style="margin-left: 5px" ng-options="c.name as c.name for c in conditions" ng-model="rule.condition" class="form-control input-sm"></select>
                                                 <!-- <input style="margin-left: 5px" type="text" ng-model="rule.data" class="form-control input-sm"/> -->
                                                 <button style="margin-left: 5px" ng-click="removeCondition($index)" class="btn btn-sm btn-danger">X</button>
@@ -212,8 +212,12 @@
                         <script>
                             //        var app = angular.module('angularTable', ['angularUtils.directives.dirPagination']);
 
-                            app.controller('RecordCtrl1', function($scope, $http)
+                            app.controller('RecordCtrl1', function($scope, $http, $window)
                             {
+                                this.data = [];
+                                $scope.legislation = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                                $window.alert(JSON.stringify($scope.legislation));
+                                
                                  var data = '{"group": {"operator": "AND","rules": []}}';
 
                                 function htmlEntities(str) {
@@ -226,7 +230,7 @@
                                         i > 0 && (str += " <strong>" + group.operator + "</strong> ");
                                         str += group.rules[i].group ?
                                             computed(group.rules[i].group) :
-                                            group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+                                            group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
                                     }
 
                                     return str + ")";
@@ -239,93 +243,160 @@
                                 $scope.$watch('filter', function (newValue) {
                                     $scope.json = JSON.stringify(newValue, null, 2);
                                     $scope.output = computed(newValue.group);
+//                                    alert(JSON.stringify($scope.output));
                                 }, true);                            
-
+//                                $scope.getAllLegislation = function(){
+//                                    //                alert("getall");
+//                                    $http.get("features_list.action")
+//                                        .then(function(response, data, status, headers, config){
+//                                            $window.alert(JSON.stringify(response.data.maps_object));
+//                                    });
+//                                }
+                            $scope.addCombination = function(btn){
+                                if ($scope.combname) {
+                                    $window.alert("hai");
+//                                    var result = {};
+//                                    var result = $('#builder-basic').queryBuilder('getSQL', false);
+                                    result['qb_name'] = $scope.combname;
+                                    result['sql'] = $scope.output;
+//                                    var ctype = btn.getAttribute('data-ctype').value;
+                                    var ctype = $(this).attr('data-ctype');
+                                    var url_link = "";
+                                    if(ctype === "safety")
+                                        url_link = "createsafety_comb";
+                                    else
+                                        url_link = "createlegislation_comb";
+                                    
+                                    if($scope.button_status === "edit")
+                                        result['cid'] = $scope.combid;
+                                    
+                                    result['qb_status'] = true;
+                                    alert(JSON.stringify(result) + url_link);
+                                    
+                                    if (result && url_link !== "") {
+                                        $http({
+                                            url: url_link,
+                                            method: "POST",
+                                            data: result,
+                                        }).then(function (response, status, headers, config){
+                                            alert(JSON.stringify(response.data.maps.status));
+                                            location.reload();
+                                        });
+                                    } else {
+                                        alert("Missing Some values");
+                                    }
+                                } else {
+                                    alert("Fill the Data");
+                                }
+                            }
+                            $scope.view_and_edit = function() {
+                                alert("hai");
+                                $scope.output = $scope.record.combination;
+                                $scope.rule.field = $scope.record.combination;
+                            }
+                            
                             });
                             var queryBuilder = angular.module('queryBuilder', []);
-                            queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
+                            queryBuilder.directive('queryBuilder', ['$compile','$http', function ($compile, $http) {
+                                    
                                 return {
-                                    restrict: 'E',
-                                    scope: {
-                                        group: '='
-                                    },
-                                    templateUrl: '/queryBuilderDirective.html',
-                                    compile: function (element, attrs) {
-                                        var content, directive;
-                                        content = element.contents().remove();
-                                        return function (scope, element, attrs) {
-                                            scope.operators = [
-                                                { name: 'AND' },
-                                                { name: 'OR' }
-                                            ];
-
-                                            scope.fields = [
-                                                { name: 'f1' },
-                                                { name: 'f2' },
-                                                { name: 'f3' },
-                                                { name: 'f4' },
-                                                { name: 'f5' }
-                                            ];
-
-                                            scope.conditions = [
-
-                                                { name: '1' },
-                                                { name: '0' }
-                                                // { name: '=' },
-                                                // { name: '<>' },
-                                                // { name: '<' },
-                                                // { name: '<=' },
-                                                // { name: '>' },
-                                                // { name: '>=' }
-                                            ];
-
-                                            scope.addCondition = function () {
-                                                scope.group.rules.push({
-                                                    condition: '=',
-                                                    field: '',
-                                                    data: ''
+                                        restrict: 'E',
+                                        scope: {
+                                            group: '='
+                                        },
+                                        templateUrl: '/queryBuilderDirective.html',
+                                        compile: function (element, attrs) {
+                                            var content, directive;
+                                            content = element.contents().remove();
+                                            return function (scope, element, attrs) {
+                                                scope.operators = [
+                                                    { name: 'AND' },
+                                                    { name: 'OR' }
+                                                ];
+                                                scope.fields = [];
+                                                $http.get("features_list.action")
+                                                    .then(function(response, data, status, headers, config){
+                                                        if (response.data.maps_object.result_data_obj) {
+                                                            var features = response.data.maps_object.result_data_obj;
+    //                                                        alert(JSON.stringify(features));
+                                                            for (var item in features) {
+                                                                scope.fields.push({ id: features[item].fid,
+                                                                    name: features[item].feature_name });
+                                                            }
+//                                                            alert(JSON.stringify(scope.fields));
+                                                        } else {
+                                                            alert("Features not Found");
+                                                        }
                                                 });
-                                            };
+                                                
+//                                                    scope.fields = [
+//                                                        { name: 'f1' },
+//                                                        { name: 'f2' },
+//                                                        { name: 'f3' },
+//                                                        { name: 'f4' },
+//                                                        { name: 'f5' }
+//                                                    ];
 
-                                            scope.removeCondition = function (index) {
-                                                scope.group.rules.splice(index, 1);
-                                            };
+                                                scope.conditions = [
 
-                                            scope.addGroup = function () {
-                                                scope.group.rules.push({
-                                                    group: {
-                                                        operator: 'AND',
-                                                        rules: []
-                                                    }
-                                                });
-                                            };
+                                                    { name: true },
+                                                    { name: false }
+                                                    // { name: '=' },
+                                                    // { name: '<>' },
+                                                    // { name: '<' },
+                                                    // { name: '<=' },
+                                                    // { name: '>' },
+                                                    // { name: '>=' }
+                                                ];
 
-                                            scope.removeGroup = function () {
-                                                "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
-                                            };
+                                                scope.addCondition = function () {
+                                                    scope.group.rules.push({
+                                                        condition: '=',
+                                                        field: '',
+                                                        field_id: '',
+                                                        data: ''
+                                                    });
+                                                };
 
-                                            directive || (directive = $compile(content));
+                                                scope.removeCondition = function (index) {
+                                                    scope.group.rules.splice(index, 1);
+                                                };
 
-                                            element.append(directive(scope, function ($compile) {
-                                                return $compile;
-                                            }));
-                                        } 
+                                                scope.addGroup = function () {
+                                                    scope.group.rules.push({
+                                                        group: {
+                                                            operator: 'AND',
+                                                            rules: []
+                                                        }
+                                                    });
+                                                };
+
+                                                scope.removeGroup = function () {
+                                                    "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
+                                                };
+
+                                                directive || (directive = $compile(content));
+
+                                                element.append(directive(scope, function ($compile) {
+                                                    return $compile;
+                                                }));
+                                            } 
+                                        }
                                     }
-                                }
                             }]);
                             $(document).ready(function(){
-                            // initialize modal
-                            $('.modal-trigger').leanModal();
+                                // initialize modal
+                                $('.modal-trigger').leanModal();
                             });
                             app.filter('customSplitString', function()
                             {
-                            return function(input)
-                            {
-                            if (input != undefined){
-                            var arr = input.split(',');
-                            return arr;
-                            }
-                            };
+                                return function(input)
+                                {
+                                    if (input != undefined){
+                                    var arr = input.split(',');
+                                    return arr;
+                                }
+                                };
                             });
                         </script>   
                         </body>
