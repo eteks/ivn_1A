@@ -104,7 +104,26 @@ criteriaQuery.select(criteriaBuilder.concat(domJoin.<String>get("domain_name"),f
 }
 
 SELECT DISTINCT pvg.vehiclemodel_id as vm_id, vm.modelname as modelname FROM pdbversion_group as pvg 
-INNER JOIN domain_and_features_mapping as dfm ON dfm.id = pvg.domain_and_features_mapping_id 
-INNER JOIN domain as d ON d.id=dfm.domain_id 
-INNER JOIN features as f ON f.id=dfm.feature_id
-WHERE pdbversion_id=2 AND pvg.domain_and_features_mapping_id NOT IN (SELECT DISTINCT domain_and_features_mapping_id FROM pdbversion_group WHERE pdbversion_id=1)
+INNER JOIN vehiclemodel as vm ON vm.id = pvg.vehiclemodel_id
+WHERE pdbversion_id=1 AND pvg.vehiclemodel_id NOT IN (SELECT DISTINCT vehiclemodel_id FROM pdbversion_group WHERE pdbversion_id=2)
+
+
+1. if select vehicle, show the major/minor option
+   if new vehicle, hide the major/minor option
+
+2. if new vehicle means, always store the version as 1.0
+
+3. if select vehicle, version has to be stored as two format:
+-if major changes - new version 2.0 should create
+-if minor changes - sub version 1.1 should create
+
+
+
+In load pdb version, the pdb data will be generated based on vehicle from pdbversion table
+
+
+-load 1.0 data 
+if status inactive, update in same version, never show the major/minor options
+if status active, ask major or minor changes- if major new version or if minor sub version
+major version 
+

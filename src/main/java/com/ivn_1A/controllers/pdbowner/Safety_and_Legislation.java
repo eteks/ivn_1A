@@ -49,8 +49,8 @@ public class Safety_and_Legislation {
             List<Map<String, Object>> pdb_map_result = new ArrayList<>();
             pdbversion_group_List.stream().map((pdbversion_group) -> {
                 Map<String, Object> vehicleMap = new HashMap<>();
-                vehicleMap.put("vehver_id", pdbversion_group.getVehicle_id().getId());
-                vehicleMap.put("vehiclename", pdbversion_group.getVehicle_id().getVehiclename());
+//                vehicleMap.put("vehver_id", pdbversion_group.getVehicle_id().getId());
+//                vehicleMap.put("vehiclename", pdbversion_group.getVehicle_id().getVehiclename());
                 vehicleMap.put("modelname", pdbversion_group.getVehiclemodel_id().getModelname());
                 vehicleMap.put("pdbversion_group_id", pdbversion_group.getId());
                 vehicleMap.put("pdbversion_id", pdbversion_group.getPdbversion_id().getId());
