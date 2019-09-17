@@ -145,347 +145,167 @@
                     <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="checkNotify('submit')" name="submit">Submit</button>
 
                 </div>
-                <div id="modal-product-form" class="modal">
+                <!-- Marketing End -->
+                        <div id="modal-product-form" class="modal">
                             <div class="modal-content">
                                 <h5 class="text-c-red m-b-25">Feature Combination <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>                                
-                                <div class="col-md-12 col-lg-offset-1">
-                                    <input type="text" ng-model="" placeholder="Name" class="col-md-12"/>
-                                </div>
-                                <div class="col-md-12 col-lg-offset-1">
-                                    <div id="builder-basic" style="display: block;"></div>
-                                    <div class="btn-group">
-                                        <!--                                        <button class="btn btn-warning reset" data-target="basic">Reset</button>
-                                                                                <button class="btn btn-success set-json" data-target="basic">Set rules</button>-->
-                                        <button class="btn btn-primary parse-json" data-target="basic" id="btn-get">Get rules</button>
+                                
+                                           <div class="alert alert-info">
+                                                <strong>Output</strong><br>
+                                                <span ng-bind-html="output"></span>
+                                            </div>
+                                            <div class="col-md-12 col-lg-offset-1">
+                                                <input type="text" id="combname" name="combname" placeholder="Name" class="col-md-12"/>
+                                                <input type="hidden" id="combid"/>
+                                                <input type="hidden" id="button_status"/>
+                                            </div></br>
+                                            <query-builder group="filter.group"></query-builder>
+                                            <div class="col-md-12 col-lg-offset-1">
+                                                <div id="builder-basic" style="display: block;"></div>
+                                                <div class="btn-group float-right">                                                    
+                                                        <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="safety">Submit</button>                                                        
+                                                </div>
+                                            </div>
+                                
+                            </div>
+                        </div>
+             
+                        <%@include file="footer.jsp" %>
+                        <!--<script src="js/lib/materialize.min.js"></script>-->
+                        <!--<script src="js/dirPagination.js"></script>-->
+                        <script type="text/ng-template" id="/queryBuilderDirective.html">
+                        <div class="alert alert-warning alert-group">
+                            <div class="form-inline">
+                                <select ng-options="o.name as o.name for o in operators" ng-model="group.operator" class="form-control input-sm"></select>
+                                <button style="margin-left: 5px" ng-click="addCondition()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Condition</button>
+                                <button style="margin-left: 5px" ng-click="addGroup()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Group</button>
+                                <button style="margin-left: 5px" ng-click="removeGroup()" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-minus-sign"></span> Remove Group</button>
+                            </div>
+                            <div class="group-conditions">
+                                <div ng-repeat="rule in group.rules | orderBy:'index'" class="condition">
+                                    <div ng-switch="rule.hasOwnProperty('group')">
+                                        <div ng-switch-when="true">
+                                            <query-builder group="rule.group"></query-builder>
+                                        </div>
+                                        <div ng-switch-default="ng-switch-default">
+                                            <div class="form-inline">
+                                                <select ng-options="t.name as t.name for t in fields" ng-model="rule.field" class="form-control input-sm"></select>
+                                                <select style="margin-left: 5px" ng-options="c.name as c.name for c in conditions" ng-model="rule.condition" class="form-control input-sm"></select>
+                                                <!-- <input style="margin-left: 5px" type="text" ng-model="rule.data" class="form-control input-sm"/> -->
+                                                <button style="margin-left: 5px" ng-click="removeCondition($index)" class="btn btn-sm btn-danger">X</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                                            <!-- Marketing End -->
-            <!--<form class=""  name="myForm">-->
-                <!-- modal for for creating new product -->   
-<!--            <pre>list={{list}}</pre>-->
-<%@include file="footer.jsp" %>
+                        </script>
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>-->
   <!--<script src="js/dirPagination.js"></script>-->
     <script>
 //        var app = angular.module('angularTable', ['angularUtils.directives.dirPagination']);
 
-        app.controller('RecordCtrl1',function($scope, $http, $window, $location, $element)
-        {
-                  
-//       $scope.records = [
-//                        { mod: 'm1'},
-//                        { mod: 'm2'},
-//                        { mod: 'm3'},
-//                        { mod: 'm4'}
-//                    ];
-            this.data=[];
-            var notification_to;
-            $scope.features = [];
-            $scope.list = [];
-            
-            var features_list = JSON.parse("<s:property value="featureslist_result_obj"/>".replace(/&quot;/g,'"'));
-            $scope.features_list = features_list;
-            
-            $scope.showSave =true;
-            $scope.showSubmit =true;
-            $scope.$on('notifyValue', function (event, args) {
-                notification_to = args;
-                $scope.createpdbversion("submit");
-            });
-            $scope.data = {};
-                             
-            $scope.sort = function(keyname)
-            {
-                $scope.sortKey = keyname;   //set the sortKey to the param passed
-                $scope.reverse = !$scope.reverse; //if true make it false and vice versa
-            }
-            $scope.add_feature_tab = function(fid)
-            {				
-		var index = -1;		
-		var comArr = eval( $scope.features_list );
-		for( var i = 0; i < comArr.length; i++ ) 
-                {
-                    if( comArr[i].fid === fid ) 
-                    {
-                        index = i;
-                        break;
-                    }
-		}
-		if( index === -1 ) 
-                {
-			alert( "Something gone wrong" );
-		}
-                $scope.features.push({fid:comArr[index].fid,domain:comArr[index].domain,fea: comArr[index].fea})
-		$scope.features_list.splice( index, 1 );
-                
-            };
-            $scope.removeRow = function(fid)
-            {				
-		var index = -1;		
-		var comArr = eval( $scope.features );
-		for( var i = 0; i < comArr.length; i++ ) 
-                {
-                    if( comArr[i].fid === fid ) 
-                    {
-                        index = i;
-                        break;
-                    }
-		}
-		if( index === -1 ) 
-                {
-			alert( "Something gone wrong" );
-		}
-                $scope.features_list.push({fid:comArr[index].fid,domain:comArr[index].domain,fea: comArr[index].fea})
-		$scope.features.splice( index, 1 );
-                
-                var list_data =[];
-                $scope.list.filter(function(l,j){
-                    if(l.dfm_id != fid)
-                        list_data.push(l);
-                });
-                $scope.list = list_data;
-//                alert(JSON.stringify($scope.list));
-                
-//                var list_index = -1;
-//                $scope.list.filter(function(l,j){
-//                    if(l.dfm_id == fid)
-//                        list_index = j;
-//                });
-//                if(list_index != 1)
-//                    $scope.list.splice( list_index, 1 );
-            };
-            $scope.LoadSelectedVehicleVersionData = function() 
-            {
-                $http({
-                    url : 'loadpreviousvehicleversion_data',
-                    method : "POST",
-                    data : {"vehicleversion_id":$scope.data.vehicleversion}
-                })
-                .then(function (response, status, headers, config){
-                    result_data = JSON.stringify(response.data.vehmod_map_result);
-//                    alert(result_data);
-                    $scope.vehicle_list = []; 
-                    $scope.model_list = [];
-//                    var vm_id =[];
-//                    $scope.vehicle_list.push({"vehicle_id":"","vehiclename":"Select"});
-                    for(var i = 0; i < response.data.vehmod_map_result.length; i++) 
-                    {
-                         var data= response.data.vehmod_map_result[i];
-                         $scope.vehicle_list.push({
-                             "vehicle_id":data.vehicle_id,
-                             "vehiclename":data.vehiclename,
-                         });          
-                         $scope.model_list.push({
-                             "vehicle_id":data.vehicle_id,
-                             "mod":data.modelname.split(","),
-                             "model_id":data.model_id.split(","),
-                             "vehicle_mapping_id":data.vehicle_mapping_id.split(","),
-                         });                         
-//                         vm_id.push({"vehicle_mapping_id": data.vehicle_mapping_id.split(",")});
-//                         angular.forEach(data.modelname.split(","), function(value, key) {
-//                            $scope.model_list.push({
-//                             "vehicle_id":data.vehicle_id,
-//                             "mod":value,
-//                            }); 
-//                         })
-                    }
-//                    alert(JSON.stringify($scope.model_list));
-                });
-            };
-            $scope.LoadVehicleModels= function(selected_vehicleid)
-            {
-                $scope.records = [];
-                $scope.list = [];
-                for(var i = 0; i < $scope.model_list.length; i++) 
-                {
-                   var data = $scope.model_list[i];
-                   if(data.vehicle_id == selected_vehicleid){
-//                       alert(data.vehicle_mapping_id);
-                        angular.forEach(data.mod, function(value, key) {
-                            $scope.records.push({
-                             "modelname":value,
-                             "vehicle_model_mapping_id":data.vehicle_mapping_id[key],
-                            }); 
-                        })
-                   }
-                }
-//                alert(JSON.stringify($scope.records));
-            }
-            $scope.createfeature_and_domain = function (event) 
-            {        
-                if (!$scope.doSubmit) 
-                {
-                    return;
-                }
-                $scope.doSubmit = false; 
-                var feature_and_domain_data = {};
-                feature_and_domain_data['domain_name'] = $scope.domain;
-                feature_and_domain_data['features_and_description'] = $scope.Demo.data;
-                if($scope.Demo.data.length > 0)
-                {
-                //                        alert(JSON.stringify(feature_and_domain_data));
-                       $http({
-                       url : 'createfeature_and_domain',
-                       method : "POST",
-                       data : feature_and_domain_data
-                       })
-                       .then(function (data, status, headers, config)
-                       {
-                            result_data = data.data.domainFeatures_result;
-                            //result_data =  result_data.slice(1, -1);
-                            for(var i = 0; i < result_data.length; i++) 
+        app.controller('RecordCtrl1', function($scope, $http)
                             {
-                                $scope.features.push({fid:result_data[i].fid,fea:result_data[i].fea,domain:result_data[i].domain});
-                            }
-                       });
-                       $('#modal-product-form').closeModal();
-                }
-                else
-                {
-                    alert("Please create atleast one features");
-                }
-            }
-            $scope.checkNotify = function (event){
-            if($scope.data.status && event === "submit"){
-                $(".notifyPopup").click();
-            }else
-                $scope.createpdbversion(event);
-            }
-            
-            $scope.createpdbversion = function (event) 
-            {           
-                if (!$scope.doSubmit) 
-                {
-                    return;
-                }
-                $scope.doSubmit = false;         
-//                alert(event);
-//                $scope.list.push(this.text);
-//                alert(JSON.stringify($scope.list));
-                var data = {};
-                data['pdbversion'] = $scope.data;
-                data['pdbdata_list'] = $scope.list;
-                data['button_type'] = event;
-                data['notification_to'] = notification_to+"";
-                //console.log(data);
-                if($scope.list.length > 0){
-                    $http({
-                        url : 'createpdbversion',
-                        method : "POST",
-                        data : data,
-                        })
-                        .then(function (data, status, headers, config){               
-                              alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-                              $window.open("pdb_listing.action","_self"); //                alert(data.maps);
-    //            //                Materialize.toast(data['maps']["status"], 4000);
-                    });
-                }
-                else{
-                    alert("Please fill the domain and feature status to create PDB version");
-                }
-            }
-            $scope.radiovalue = function(dfm_id,vmm_id,status)
-            {		
-//                alert("enter");
-                if($scope.list.length === 0)
-                {
-                    $scope.list.push({vmm_id:vmm_id,dfm_id:dfm_id,status:status});
-                }
-                else
-                {
-                    var temp=0;
-                    for(var i=0; i<$scope.list.length; i++)
-                    {
-                        if(($scope.list[i].vmm_id === vmm_id) && ($scope.list[i].dfm_id === dfm_id))
-                        {
-                            $scope.list[i].status=status;
-                            temp=1;
-                        }
-                        
-                    }
-                    if(temp==0)
-                    {
-                        $scope.list.push({vmm_id:vmm_id,dfm_id:dfm_id,status:status});
-                    }
-                }
-//                alert(JSON.stringify($scope.list))
-            };
-            $scope.LoadPDBPreviousVersion = function() 
-            {                
-                $scope.safety = [{"saf":"Safety1","yes":"power window,RSC,f4","no":"AEB","opt":"f2"},
-                                    {"saf":"Safety2","yes":"f3","no":"f4,f2","opt":"f1"}]; 
-            };
-            
-            if($location.absUrl().includes("?")){
-                var params_array = [];
-                var absUrl = $location.absUrl().split("?")[1].split("&");
-                for(i=0;i<absUrl.length;i++){
-                    var key_test = absUrl[i].split("=")[0];
-                    var value = absUrl[i].split("=")[1];
-//                    alert(key_test);
-//                    alert(value);
-                    params_array.push({[key_test]:value});
-                }
-                $scope.data.pdbversion = params_array[0].id;
-                var action = params_array[1].action;
-                
-                var result_data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-                var vehicledetail_list = result_data.vehicledetail_list;
-                $scope.data.status = result_data.pdbversion_status[0].status;
-                
-                $scope.data.vehicleversion = vehicledetail_list[0].vehver_id.toString();
-                $scope.LoadSelectedVehicleVersionData();
-                $scope.data.vehiclename = vehicledetail_list[0].vehicle_id.toString();
-                $scope.records = vehicledetail_list;
-//                    alert(JSON.stringify($scope.records));                    
-                var featuredetail_list = result_data.featuredetail_list;
-                for(var i=0; i<featuredetail_list.length; i++)
-                {
-                    if($scope.features.length === 0)
-                    {
-                        $scope.add_feature_tab(featuredetail_list[i].fid);
-//                            $scope.features.push({fid:featuredetail_list[i].fid,fea:featuredetail_list[i].featurename,domain:featuredetail_list[i].domainname,status:featuredetail_list[i].status});
-                    }
-                    else
-                    {
-                        var temp=0;
-                        for(var j=0; j<$scope.features.length; j++)
-                        {
-                            if($scope.features[j].fid === featuredetail_list[i].fid)
-                            {
-                                temp=1;
-                            }   
-                        }
-                        if(temp==0)
-                        {
-                            $scope.add_feature_tab(featuredetail_list[i].fid);
-                        }
-                    }
+                                 var data = '{"group": {"operator": "AND","rules": []}}';
 
-                    $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].vmm_id,featuredetail_list[i].status);
-//                        alert(JSON.stringify($scope.list));  
-                }
-                angular.element(function () {
-                    var result = document.getElementsByClassName("radio_button");
-                    angular.forEach(result, function(value) {
-                        var result_name = value.getAttribute("name").substring(1).split("_");
-                        var fid = result_name[0];
-                        var vmm_id = result_name[1];
-                        var status = value.getAttribute("value");  
-                        angular.forEach($scope.list, function(item) {
-                            if(item.dfm_id == fid && item.vmm_id == vmm_id && item.status == status)
-                                value.setAttribute("checked","checked");
-                        });    
-                    });
-                });
-                if(action == "view"){
-                    $scope.showSave =false;
-                    $scope.showSubmit =false;
-                }
-            }    
-        });
+                                function htmlEntities(str) {
+                                    return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                                }
+
+                                function computed(group) {
+                                    if (!group) return "";
+                                    for (var str = "(", i = 0; i < group.rules.length; i++) {
+                                        i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+                                        str += group.rules[i].group ?
+                                            computed(group.rules[i].group) :
+                                            group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+                                    }
+
+                                    return str + ")";
+                                }
+
+                                $scope.json = null;
+
+                                $scope.filter = JSON.parse(data);
+
+                                $scope.$watch('filter', function (newValue) {
+                                    $scope.json = JSON.stringify(newValue, null, 2);
+                                    $scope.output = computed(newValue.group);
+                                }, true);                            
+
+                            });
+                            var queryBuilder = angular.module('queryBuilder', []);
+                            queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
+                                return {
+                                    restrict: 'E',
+                                    scope: {
+                                        group: '='
+                                    },
+                                    templateUrl: '/queryBuilderDirective.html',
+                                    compile: function (element, attrs) {
+                                        var content, directive;
+                                        content = element.contents().remove();
+                                        return function (scope, element, attrs) {
+                                            scope.operators = [
+                                                { name: 'AND' },
+                                                { name: 'OR' }
+                                            ];
+
+                                            scope.fields = [
+                                                { name: 'f1' },
+                                                { name: 'f2' },
+                                                { name: 'f3' },
+                                                { name: 'f4' },
+                                                { name: 'f5' }
+                                            ];
+
+                                            scope.conditions = [
+
+                                                { name: '1' },
+                                                { name: '0' }
+                                                // { name: '=' },
+                                                // { name: '<>' },
+                                                // { name: '<' },
+                                                // { name: '<=' },
+                                                // { name: '>' },
+                                                // { name: '>=' }
+                                            ];
+
+                                            scope.addCondition = function () {
+                                                scope.group.rules.push({
+                                                    condition: '=',
+                                                    field: '',
+                                                    data: ''
+                                                });
+                                            };
+
+                                            scope.removeCondition = function (index) {
+                                                scope.group.rules.splice(index, 1);
+                                            };
+
+                                            scope.addGroup = function () {
+                                                scope.group.rules.push({
+                                                    group: {
+                                                        operator: 'AND',
+                                                        rules: []
+                                                    }
+                                                });
+                                            };
+
+                                            scope.removeGroup = function () {
+                                                "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
+                                            };
+
+                                            directive || (directive = $compile(content));
+
+                                            element.append(directive(scope, function ($compile) {
+                                                return $compile;
+                                            }));
+                                        } 
+                                    }
+                                }
+                            }]);
 
     $(document).ready(function(){
         // initialize modal
