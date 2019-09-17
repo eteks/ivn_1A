@@ -179,9 +179,9 @@
                                            </dir-pagination-controls>                                                        
                                            </div>
                                            <div class="text-right p-10">
-                                                <a class="modal-trigger float-left text-c-green" style="font-weight:600;padding-left: 10px;" href="#modal-upload" style="text-decoration:underline;" ng-click="assignstart(record.fid)">
+<!--                                                <a class="modal-trigger float-left text-c-green" style="font-weight:600;padding-left: 10px;" href="#modal-upload" style="text-decoration:underline;" ng-click="assignstart(record.fid)">
                                                    Import
-                                               </a>
+                                               </a>-->
                                                
                                                <label for="status" style="vertical-align:middle">Status:</label>
                                                <label class="switch m-r-50"  style="vertical-align:middle">
@@ -193,8 +193,13 @@
                                                <a class="feature_add_tip modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
                                                <div id="modal-comment" class="modal">
                                                     <div class="modal-content text-left">
+                                                        
                                                         <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
                                                         <textarea class="col-md-12 m-b-10" ng-model="data.pdb_manual_comment"></textarea>
+                                                        <div>
+                                                            <input type="radio" ng-click="" name="version_change" value="major" class="radio_button">Major
+                                                            &nbsp;<input type="radio" ng-click="" name="version_change" value="minor" class="radio_button">Minor
+                                                        </div>
                                                         <div class="text-right">
                                                             <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('save')" name="save">Save</button>
                                                             <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('submit')" name="submit">Submit</button>
