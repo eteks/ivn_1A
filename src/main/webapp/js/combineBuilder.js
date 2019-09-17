@@ -109,7 +109,7 @@ $(function () {
         $('#builder-basic').queryBuilder('setRules', rules_basic);
     });
     $('#btn-get').on('click', function () {
-//        alert("btn");
+        alert("btn");
         //var result = $('#builder-basic').queryBuilder('getRules'); 
         if($('#combname').val() != ""){
             var result = $('#builder-basic').queryBuilder('getSQL', false);

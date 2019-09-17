@@ -765,6 +765,36 @@ public class Pdbversion_Group {
         return "success";
     }
 
+    public String GetFeatures_Listing() {
+
+        try {
+            
+            List<Features> featureses = PDBOwnerDB.getFeatures();
+            List<Map<String, Object>> row = new ArrayList<>();
+            featureses.stream().map((features) -> {
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("fid", features.getId());
+                columns.put("feature_name", features.getFeature_name());
+                columns.put("created_date", features.getCreated_date());
+                columns.put("modified_date", features.getModified_date());
+                return columns;
+            }).map((columns) -> {
+                row.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums" + columns);
+            });            
+            maps_object.put("result_data_obj", row);
+//            result_data_obj = new Gson().toJson(row);
+            System.err.println("result_data_obj " + row);
+        } catch (Exception e) {
+            maps_object.put("status", e);
+            System.err.println("Error : " + e);
+        }
+
+        return "success";
+    }
+    
     public Map<String, Object> getMaps_object() {
         return maps_object;
     }

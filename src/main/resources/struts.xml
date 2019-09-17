@@ -12,7 +12,7 @@
     
     <package name="json" extends="json-default" namespace="/">
         
-<!--        <action name="*notification" class="com.ivn_1A.controllers.notification.NotificationController" method="{1}Notification">
+        <!--        <action name="*notification" class="com.ivn_1A.controllers.notification.NotificationController" method="{1}Notification">
             <result type="json"/>
         </action>-->
         
@@ -64,13 +64,17 @@
             <result type="json" />
         </action>
 
-        <action name="features_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetDomainFeaturesListing">
+        <action name="features_list" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetFeatures_Listing">
             <result type="json" />
         </action>
         
-        <action name="features_listing1" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetDomainFeaturesListing1">
+        <action name="createlegislation_comb" class="com.ivn_1A.controllers.legislation.Legislation_Combination" method="CreateLegComb">
             <result type="json" />
         </action>
+        
+        <!--        <action name="features_listing1" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetDomainFeaturesListing1">
+            <result type="json" />
+        </action>-->
         
         <action name="verifyVehicle" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="verifyVehicles">
             <result type="json" />
@@ -111,7 +115,7 @@
             <result>legislation.jsp</result>
         </action>
         
-        <action name="legislation_combination" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+        <action name="legislation_combination" class="com.ivn_1A.controllers.legislation.Legislation_Combination" method="GetLegislationCombinationListing">
             <!--<result name="session">index.jsp</result>--> 
             <result>legislation_combination.jsp</result>
         </action>

@@ -255,7 +255,7 @@ public class PDBOwnerDB {
         }
     }
 
-    //Domain Data by Name
+    //Features Data by Name
     public static Features getFeaturesByName(String featureName) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
@@ -271,6 +271,28 @@ public class PDBOwnerDB {
             tx.commit();
             s.clear();
             return dfm_result.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Error : \"getFeaturesByName\"" + e);
+            return null;
+        }
+    }
+
+    //Features Data
+    public static List<Features> getFeatures() {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery<Features> criteriaQuery = criteriaBuilder.createQuery(Features.class);
+
+            Root<Features> featureRoot = criteriaQuery.from(Features.class);
+            criteriaQuery.select(featureRoot);
+            TypedQuery<Features> dfm_result = s.createQuery(criteriaQuery);
+
+            tx.commit();
+            s.clear();
+            return dfm_result.getResultList();
         } catch (Exception e) {
             System.err.println("Error : \"getFeaturesByName\"" + e);
             return null;
