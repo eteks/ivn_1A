@@ -28,10 +28,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Table(name = "pdbversion")
 public class Pdbversion implements Serializable{
-   private int id;
+    private int id;
+    private Vehicle vehicle_id;
     private float pdb_versionname;
     private String pdb_manual_comment;
     private Float pdb_reference_version;
+    private String version_type;
     private boolean status;  
     private boolean flag; 
     private Date modified_date;
@@ -41,11 +43,12 @@ public class Pdbversion implements Serializable{
     public Pdbversion() {
     }
 
-    public Pdbversion(float pdb_versionname, String pdb_manual_comment,Float pdb_reference_version, boolean status, boolean flag, Date modified_date, Date created_date, User created_or_updated_by) {
-
+    public Pdbversion(Vehicle vehicle_id, float pdb_versionname, String pdb_manual_comment,Float pdb_reference_version, String version_type, boolean status, boolean flag, Date modified_date, Date created_date, User created_or_updated_by) {
+        this.vehicle_id = vehicle_id;
         this.pdb_versionname = pdb_versionname;
         this.pdb_manual_comment = pdb_manual_comment;
         this.pdb_reference_version = pdb_reference_version;
+        this.version_type = version_type;
         this.status = status;
         this.flag = flag;
         this.modified_date = modified_date;
@@ -64,6 +67,16 @@ public class Pdbversion implements Serializable{
         this.id = id;
     }
     
+    @OneToOne
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    public Vehicle getVehicle_id() {
+        return vehicle_id;
+    }
+
+    public void setVehicle_id(Vehicle vehicle_id) {
+        this.vehicle_id = vehicle_id;
+    }
+    
     @Column(name = "pdb_versionname", nullable = false, columnDefinition="Float(10,1)")
     public float getPdb_versionname() {
             return pdb_versionname;
@@ -80,6 +93,16 @@ public class Pdbversion implements Serializable{
 
     public void setPdb_reference_version(Float pdb_reference_version) {
             this.pdb_reference_version = pdb_reference_version;
+    }
+    
+    @Column(name = "version_type", nullable = false, length =50)
+    // version type data will be stored as new, minor_changes, major_changes
+    public String getVersion_type() {
+        return version_type;
+    }
+
+    public void setVersion_type(String version_type) {
+        this.version_type = version_type;
     }
     
     @Column(name = "pdb_manual_comment", nullable = false, columnDefinition ="Text")

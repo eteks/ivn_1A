@@ -196,9 +196,9 @@
                                                         
                                                         <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
                                                         <textarea class="col-md-12 m-b-10" ng-model="data.pdb_manual_comment"></textarea>
-                                                        <div>
-                                                            <input type="radio" ng-click="" name="version_change" value="major" class="radio_button">Major
-                                                            &nbsp;<input type="radio" ng-click="" name="version_change" value="minor" class="radio_button">Minor
+                                                        <div ng-if="create_type == true">
+                                                            <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">Major
+                                                            &nbsp;<input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">Minor
                                                         </div>
                                                         <div class="text-right">
                                                             <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('save')" name="save">Save</button>
@@ -313,6 +313,7 @@
             $scope.vercompare_results = {};            
             $scope.truefalse = false;
             $scope.records = [];
+            $scope.create_type = false;
 //            alert(JSON.parse("<s:property value="maps_object.pdb_previous_data_result"/>".replace(/&quot;/g,'"')));
 //            $scope.vercompare_results = JSON.parse("<s:property value="maps_object.pdb_previous_data_result"/>".replace(/&quot;/g,'"'));
 //            alert(JSON.stringify($scope.vercompare_results));
@@ -336,11 +337,13 @@
                     $scope.data.pdbversion = "";
                     $scope.Demo.dt.vehiclename = "";
                     $scope.Demo.dt.modelname = "";
+                    $scope.create_type = true;
                 } else if ($scope.data.new_vehicle=="new_vehicle") {
                     
                     $scope.truefalse = false;
                     $scope.Demo.dt.vehiclename = "";
                     $scope.Demo.dt.modelname = "";
+                    $scope.create_type = false;
                 }
             }
             
@@ -424,7 +427,7 @@
                         method: "POST",
                         data: vn,
                     }).then(function (response, status, headers, config){
-                        
+                        alert(JSON.stringify(response.data.maps_object.vehicleAndModel));
                         $scope.vehicleresults = response.data.maps_object.vehicleAndModel;
                         $scope.records = response.data.maps_object.vehicleAndModel.models;
 //                        $window.alert("$scope.records "+JSON.stringify($scope.records));
@@ -470,7 +473,7 @@
                 data['notification_to'] = notification_to+"";
 //                alert(JSON.stringify($scope.features));
                 data['dfm_set'] = ["1","2","3"];
-//                alert(JSON.stringify(data));
+                alert(JSON.stringify(data));
                 $http({
                     url: 'createpdbversion',
                     method: "POST",

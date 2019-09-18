@@ -25,7 +25,7 @@ public class Pdbversion_group implements Serializable {
 
     private int id;
     private Pdbversion pdbversion_id;
-    private Vehicle vehicle_id;
+//    private Vehicle vehicle_id;
     private Vehiclemodel vehiclemodel_id;
     private Domain_and_Features_Mapping domain_and_features_mapping_id;
 //    private Pdb_domain_feature_mapping pdb_dom_fea_mapping_id; 
@@ -34,10 +34,18 @@ public class Pdbversion_group implements Serializable {
     public Pdbversion_group() {
     }
 
-    public Pdbversion_group(Pdbversion pdbversion_id, Vehicle vehicle_id, Vehiclemodel vehiclemodel_id, Domain_and_Features_Mapping domain_and_features_mapping_id, String available_status) {
+//    public Pdbversion_group(Pdbversion pdbversion_id, Vehicle vehicle_id, Vehiclemodel vehiclemodel_id, Domain_and_Features_Mapping domain_and_features_mapping_id, String available_status) {
+//
+//        this.pdbversion_id = pdbversion_id;
+//        this.vehicle_id = vehicle_id;
+//        this.vehiclemodel_id = vehiclemodel_id;
+//        this.domain_and_features_mapping_id = domain_and_features_mapping_id;
+//        this.available_status = available_status;
+//    }
+    //Removed vehicle id from above function and add it to pdbversion table
+    public Pdbversion_group(Pdbversion pdbversion_id, Vehiclemodel vehiclemodel_id, Domain_and_Features_Mapping domain_and_features_mapping_id, String available_status) {
 
         this.pdbversion_id = pdbversion_id;
-        this.vehicle_id = vehicle_id;
         this.vehiclemodel_id = vehiclemodel_id;
         this.domain_and_features_mapping_id = domain_and_features_mapping_id;
         this.available_status = available_status;
@@ -64,15 +72,15 @@ public class Pdbversion_group implements Serializable {
         this.pdbversion_id = pdbversion_id;
     }
 
-    @OneToOne
-    @JoinColumn(name = "vehicle_id", nullable = false)
-    public Vehicle getVehicle_id() {
-        return vehicle_id;
-    }
-
-    public void setVehicle_id(Vehicle vehicle_id) {
-        this.vehicle_id = vehicle_id;
-    }
+//    @OneToOne
+//    @JoinColumn(name = "vehicle_id", nullable = false)
+//    public Vehicle getVehicle_id() {
+//        return vehicle_id;
+//    }
+//
+//    public void setVehicle_id(Vehicle vehicle_id) {
+//        this.vehicle_id = vehicle_id;
+//    }
 
     @OneToOne
     @JoinColumn(name = "vehiclemodel_id", nullable = false)

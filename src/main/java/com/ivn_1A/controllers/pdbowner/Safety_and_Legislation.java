@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import com.ivn_1A.models.pdbowner.Domain_and_Features_Mapping;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.pdbowner.Pdbversion_group;
+import com.ivn_1A.models.pdbowner.Querybuilder;
+import com.ivn_1A.models.pdbowner.SafetyLegDB;
 import com.ivn_1A.models.pdbowner.Vehicle;
 import com.opensymphony.xwork2.ActionContext;
 import java.util.ArrayList;
@@ -49,8 +51,8 @@ public class Safety_and_Legislation {
             List<Map<String, Object>> pdb_map_result = new ArrayList<>();
             pdbversion_group_List.stream().map((pdbversion_group) -> {
                 Map<String, Object> vehicleMap = new HashMap<>();
-                vehicleMap.put("vehver_id", pdbversion_group.getVehicle_id().getId());
-                vehicleMap.put("vehiclename", pdbversion_group.getVehicle_id().getVehiclename());
+//                vehicleMap.put("vehver_id", pdbversion_group.getVehicle_id().getId());
+//                vehicleMap.put("vehiclename", pdbversion_group.getVehicle_id().getVehiclename());
                 vehicleMap.put("modelname", pdbversion_group.getVehiclemodel_id().getModelname());
                 vehicleMap.put("pdbversion_group_id", pdbversion_group.getId());
                 vehicleMap.put("pdbversion_id", pdbversion_group.getPdbversion_id().getId());
@@ -66,18 +68,18 @@ public class Safety_and_Legislation {
             System.out.println(ex.getMessage());
         }
         try {
-            List<Domain_and_Features_Mapping> featureslist = PDBOwnerDB.LoadFeaturesList();
+            List<Querybuilder> legcomb_list = SafetyLegDB.LoadCombinationList("legislation");
 
-            JSONArray featureslist_result = new JSONArray();
-            featureslist.stream().map((fea) -> {
+            JSONArray legcomb_list_res = new JSONArray();
+            legcomb_list.stream().map((leg) -> {
                 JSONObject fr = new JSONObject();
-                fr.put("fid", fea.getId());
-                fr.put("fea", fea.getFeature_id().getFeature_name());
-                fr.put("domain",fea.getDomain_id().getDomain_name() );
+                fr.put("lid", leg.getId());
+                fr.put("leg", leg.getQuerybuilder_name());
                 return fr;
             }).forEachOrdered((fr) -> {
-                featureslist_result.add(fr);
+                legcomb_list_res.add(fr);
             });
+            maps_object.put("legcomb_list_res", legcomb_list_res);
             vehicle_result = PDBOwnerDB.loadVehicleVersion();
             System.out.println("vehicle_result" + vehicle_result);
             
@@ -94,7 +96,7 @@ public class Safety_and_Legislation {
 //            pdb_previous_data_result.put("previous_models","1.0");
 //            
 //            maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
-            maps_object.put("features", featureslist_result);
+//            maps_object.put("features", featureslist_result);
 
 //            maps_object.put("removed_features", StringUtils.join(",", pdb_previous_data.get("removed_features")));
         } catch (Exception ex) {

@@ -37,8 +37,35 @@ public class Querybuilder implements Serializable {
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
+
+    public Querybuilder() {
+    }
+
     
-       
+    public Querybuilder(Long id) {
+        this.id = id;
+    }
+
+    public Querybuilder(Long id, String querybuilder_name, String querybuilder_type, String querybuilder_condition, boolean querybuilder_status, Date modified_date, Date created_date, User created_or_updated_by) {
+        this.id = id;
+        this.querybuilder_name = querybuilder_name;
+        this.querybuilder_type = querybuilder_type;
+        this.querybuilder_condition = querybuilder_condition;
+        this.querybuilder_status = querybuilder_status;
+        this.modified_date = modified_date;
+        this.created_date = created_date;
+        this.created_or_updated_by = created_or_updated_by;
+    }
+
+    public Querybuilder(String querybuilder_name, String querybuilder_type, String querybuilder_condition, Date modified_date, Date created_date, User created_or_updated_by) {
+        this.querybuilder_name = querybuilder_name;
+        this.querybuilder_type = querybuilder_type;
+        this.querybuilder_condition = querybuilder_condition;
+        this.modified_date = modified_date;
+        this.created_date = created_date;
+        this.created_or_updated_by = created_or_updated_by;
+    }
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)

@@ -130,7 +130,40 @@ public class PDBOwnerDB {
         return vehmod_results.getResultList();
     }
 
-    public static List<Pdbversion> GetVersionname() {
+//    public static List<Pdbversion> GetVersionname() {
+//        try {
+////            Query pdbversion = s.createQuery("FROM Pdbversion p order by p.pdb_versionname desc").setParameter("pdb_reference_version", "1.0");
+////            pdbversion.setMaxResults(1);
+//            Session s = HibernateUtil.getThreadLocalSession();
+//            Transaction tx = s.beginTransaction();
+//
+//            // create Criteria
+////            CriteriaQuery<Pdbversion> criteriaQuery = s.getCriteriaBuilder().createQuery(Pdbversion.class);           
+////            criteriaQuery.from(Pdbversion.class); 
+//            //Working code
+//            CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+//            CriteriaQuery<Pdbversion> criteriaQuery = criteriaBuilder.createQuery(Pdbversion.class);
+//            // The root of our search is sku
+//            Root<Pdbversion> test = criteriaQuery.from(Pdbversion.class);
+//            List<Predicate> restrictions = new ArrayList<>();
+//            restrictions.add(criteriaBuilder.isNull(test.get("pdb_reference_version")));
+//            criteriaQuery.where(restrictions.toArray(new Predicate[restrictions.size()]));
+//            criteriaQuery.orderBy(criteriaBuilder.desc(test.get("pdb_versionname")));
+//            //create resultset as list
+//            Query pdbversion = s.createQuery(criteriaQuery).setMaxResults(1);
+//
+//            tx.commit();
+//            s.clear();
+//            return pdbversion.getResultList();
+//        } catch (Exception e) {
+//            System.err.println("Error in \"GetVersionname\" : " + e.getMessage());
+//            return null;
+//        }
+//    }
+    
+    public static List<Pdbversion> GetVersionname(int vehicle_id, String version_type) {
+        System.out.println("Entered GetVersionname");
+        System.out.println("vehicle_id"+vehicle_id);
         try {
 //            Query pdbversion = s.createQuery("FROM Pdbversion p order by p.pdb_versionname desc").setParameter("pdb_reference_version", "1.0");
 //            pdbversion.setMaxResults(1);
@@ -147,7 +180,26 @@ public class PDBOwnerDB {
             Root<Pdbversion> test = criteriaQuery.from(Pdbversion.class);
             List<Predicate> restrictions = new ArrayList<>();
             restrictions.add(criteriaBuilder.isNull(test.get("pdb_reference_version")));
-            criteriaQuery.where(restrictions.toArray(new Predicate[restrictions.size()]));
+//            criteriaQuery.where(restrictions.toArray(new Predicate[restrictions.size()]));
+            if(version_type.equals("new")){
+                criteriaQuery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(
+                                        test.get("vehicle_id"), vehicle_id
+                                ),
+                                criteriaBuilder.equal(
+                                        test.get("version_type"),version_type
+                                )
+                        )
+                );
+            }
+            else{
+                criteriaQuery.where(
+                        criteriaBuilder.equal(
+                                test.get("vehicle_id"), vehicle_id
+                        )
+                );
+            }
             criteriaQuery.orderBy(criteriaBuilder.desc(test.get("pdb_versionname")));
             //create resultset as list
             Query pdbversion = s.createQuery(criteriaQuery).setMaxResults(1);
@@ -255,7 +307,7 @@ public class PDBOwnerDB {
         }
     }
 
-    //Domain Data by Name
+    //Features Data by Name
     public static Features getFeaturesByName(String featureName) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
@@ -271,6 +323,28 @@ public class PDBOwnerDB {
             tx.commit();
             s.clear();
             return dfm_result.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Error : \"getFeaturesByName\"" + e);
+            return null;
+        }
+    }
+
+    //Features Data
+    public static List<Features> getFeatures() {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery<Features> criteriaQuery = criteriaBuilder.createQuery(Features.class);
+
+            Root<Features> featureRoot = criteriaQuery.from(Features.class);
+            criteriaQuery.select(featureRoot);
+            TypedQuery<Features> dfm_result = s.createQuery(criteriaQuery);
+
+            tx.commit();
+            s.clear();
+            return dfm_result.getResultList();
         } catch (Exception e) {
             System.err.println("Error : \"getFeaturesByName\"" + e);
             return null;
@@ -469,19 +543,34 @@ public class PDBOwnerDB {
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
 
+//            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+//            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+//            Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
+//
+//            criteriaQuery.multiselect(pdbversion_groupRoot.get("pdbversion_id").get("id").alias("pid"), pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname").alias("pversion"), 
+//                    pdbversion_groupRoot.get("pdbversion_id").get("status").alias("status")).distinct(true);
+//            if (action.equals("edit")) {
+//                criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
+//            } else {
+//                criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("status"), true), criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("flag"), true),
+//                        criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
+//            }
+//            criteriaQuery.orderBy(criteriaBuilder.desc(pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname")));
+//            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
-            Root<Pdbversion_group> pdbversion_groupRoot = criteriaQuery.from(Pdbversion_group.class);
+            Root<Pdbversion> pdbversion = criteriaQuery.from(Pdbversion.class);
 
-            criteriaQuery.multiselect(pdbversion_groupRoot.get("pdbversion_id").get("id").alias("pid"), pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname").alias("pversion"), 
-                    pdbversion_groupRoot.get("pdbversion_id").get("status").alias("status")).distinct(true);
+            criteriaQuery.multiselect(pdbversion.get("id").alias("pid"), pdbversion.get("pdb_versionname").alias("pversion"), 
+                    pdbversion.get("status").alias("status"));
             if (action.equals("edit")) {
-                criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
+                criteriaQuery.where(criteriaBuilder.equal(pdbversion.get("vehicle_id").get("id"), id));
             } else {
-                criteriaQuery.where(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("status"), true), criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("flag"), true),
-                        criteriaBuilder.equal(pdbversion_groupRoot.get("vehicle_id").get("id"), id));
+                criteriaQuery.where(criteriaBuilder.equal(pdbversion.get("status"), true), criteriaBuilder.equal(pdbversion.get("flag"), true),
+                        criteriaBuilder.equal(pdbversion.get("vehicle_id").get("id"), id));
             }
-            criteriaQuery.orderBy(criteriaBuilder.desc(pdbversion_groupRoot.get("pdbversion_id").get("pdb_versionname")));
+            criteriaQuery.orderBy(criteriaBuilder.desc(pdbversion.get("pdb_versionname")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();
@@ -504,8 +593,13 @@ public class PDBOwnerDB {
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
             Root<Pdbversion_group> pRoot = criteriaQuery.from(Pdbversion_group.class);
 
-            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("pdb_versionname").alias("versionname"), pRoot.get("pdbversion_id").get("status").alias("status"), pRoot.get("vehicle_id").get("id").alias("vehicle_id"),
-                    pRoot.get("vehicle_id").get("vehiclename").alias("vehiclename"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("modelid"),
+//            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("pdb_versionname").alias("versionname"), pRoot.get("pdbversion_id").get("status").alias("status"), pRoot.get("vehicle_id").get("id").alias("vehicle_id"),
+//                    pRoot.get("vehicle_id").get("vehiclename").alias("vehiclename"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("modelid"),
+//                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"))
+//                    .distinct(true).where(criteriaBuilder.equal(pRoot.get("pdbversion_id").get("id"), id)).orderBy(criteriaBuilder.desc(pRoot.get("id")));
+            
+            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("pdb_versionname").alias("versionname"), pRoot.get("pdbversion_id").get("status").alias("status"), pRoot.get("pdbversion_id").get("vehicle_id").get("id").alias("vehicle_id"),
+                    pRoot.get("pdbversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("modelid"),
                     criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"))
                     .distinct(true).where(criteriaBuilder.equal(pRoot.get("pdbversion_id").get("id"), id)).orderBy(criteriaBuilder.desc(pRoot.get("id")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
@@ -585,15 +679,37 @@ public class PDBOwnerDB {
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
 
+//            Root<Pdbversion_group> pRoot = criteriaQuery.from(Pdbversion_group.class);
+//            pRoot.join("pdbversion_id", JoinType.INNER);
+////            pRoot.join("vehicle_id", JoinType.INNER);
+//            pRoot.join("vehiclemodel_id", JoinType.INNER);
+//
+////            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("id").alias("pdb_id"), pRoot.get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("id")).alias("vehicle_id"),
+////                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("vehiclename")).alias("vehiclename"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
+////                    pRoot.get("pdbversion_id").get("status").alias("status"), pRoot.get("pdbversion_id").get("flag").alias("flag"), pRoot.get("pdbversion_id").get("created_date").alias("created_date"), pRoot.get("pdbversion_id").get("modified_date").alias("modified_date"))
+////                    .distinct(true).groupBy(pRoot.get("pdbversion_id").get("pdb_versionname")).orderBy(criteriaBuilder.desc(pRoot.get("pdbversion_id").get("id")));
+//            
+//            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("id").alias("pdb_id"), pRoot.get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), criteriaBuilder.function("group_concat", String.class, pRoot.get("pdbversion_id").get("vehicle_id").get("id")).alias("vehicle_id"),
+//                    criteriaBuilder.function("group_concat", String.class, pRoot.get("pdbversion_id").get("vehicle_id").get("vehiclename")).alias("vehiclename"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
+//                    pRoot.get("pdbversion_id").get("status").alias("status"), pRoot.get("pdbversion_id").get("flag").alias("flag"), pRoot.get("pdbversion_id").get("created_date").alias("created_date"), pRoot.get("pdbversion_id").get("modified_date").alias("modified_date"))
+//                    .distinct(true).groupBy(pRoot.get("pdbversion_id").get("pdb_versionname")).orderBy(criteriaBuilder.desc(pRoot.get("pdbversion_id").get("id")));
+
             Root<Pdbversion_group> pRoot = criteriaQuery.from(Pdbversion_group.class);
             pRoot.join("pdbversion_id", JoinType.INNER);
-            pRoot.join("vehicle_id", JoinType.INNER);
+//            pRoot.join("vehicle_id", JoinType.INNER);
             pRoot.join("vehiclemodel_id", JoinType.INNER);
 
-            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("id").alias("pdb_id"), pRoot.get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("id")).alias("vehicle_id"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("vehiclename")).alias("vehiclename"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
+//            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("id").alias("pdb_id"), pRoot.get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("id")).alias("vehicle_id"),
+//                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehicle_id").get("vehiclename")).alias("vehiclename"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
+//                    pRoot.get("pdbversion_id").get("status").alias("status"), pRoot.get("pdbversion_id").get("flag").alias("flag"), pRoot.get("pdbversion_id").get("created_date").alias("created_date"), pRoot.get("pdbversion_id").get("modified_date").alias("modified_date"))
+//                    .distinct(true).groupBy(pRoot.get("pdbversion_id").get("pdb_versionname")).orderBy(criteriaBuilder.desc(pRoot.get("pdbversion_id").get("id")));
+            
+            criteriaQuery.multiselect(pRoot.get("pdbversion_id").get("id").alias("pdb_id"), pRoot.get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), criteriaBuilder.function("group_concat", String.class, pRoot.get("pdbversion_id").get("vehicle_id").get("id")).alias("vehicle_id"),
+                    criteriaBuilder.function("group_concat", String.class, pRoot.get("pdbversion_id").get("vehicle_id").get("vehiclename")).alias("vehiclename"), criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
                     pRoot.get("pdbversion_id").get("status").alias("status"), pRoot.get("pdbversion_id").get("flag").alias("flag"), pRoot.get("pdbversion_id").get("created_date").alias("created_date"), pRoot.get("pdbversion_id").get("modified_date").alias("modified_date"))
-                    .distinct(true).groupBy(pRoot.get("pdbversion_id").get("pdb_versionname")).orderBy(criteriaBuilder.desc(pRoot.get("pdbversion_id").get("id")));
+                    .distinct(true).groupBy(pRoot.get("pdbversion_id").get("pdb_versionname"), pRoot.get("pdbversion_id").get("vehicle_id")).orderBy(criteriaBuilder.desc(pRoot.get("pdbversion_id").get("id")));
+            
+            
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();
@@ -721,7 +837,7 @@ public class PDBOwnerDB {
 
             Root<Pdbversion_group> pRoot = criteriaQuery.from(Pdbversion_group.class);
             pRoot.join("pdbversion_id", JoinType.INNER);
-            pRoot.join("vehicle_id", JoinType.INNER);
+//            pRoot.join("vehicle_id", JoinType.INNER);
             pRoot.join("vehiclemodel_id", JoinType.INNER);
 
             criteriaQuery.distinct(true).where(criteriaBuilder.equal(pRoot.get("pdbversion_id").get("id"), pdb_version_id))
