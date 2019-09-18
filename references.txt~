@@ -127,8 +127,3 @@ if status inactive, update in same version, never show the major/minor options
 if status active, ask major or minor changes- if major new version or if minor sub version
 major version 
 
-
-SELECT pdb.id as id, CAST(pdb.pdb_versionname as CHAR(100)) as pdb_version,GROUP_CONCAT(DISTINCT(vv.id)) as vehicleversion_id,
-GROUP_CONCAT(DISTINCT(vv.versionname)) as veh_version,GROUP_CONCAT(DISTINCT(v.vehiclename)) as vehicle,
-GROUP_CONCAT(DISTINCT(vm.modelname)) as model,pdb.status as status,pdb.flag,pdb.created_date,pdb.modified_date FROM pdbversion as pdb LEFT JOIN pdbversion_group as pg ON pg.pdbversion_id=pdb.id LEFT JOIN vehicle_and_model_mapping as vmm ON vmm.id=pg.vehicle_and_model_mapping_id LEFT JOIN vehicle as v ON v.id=vmm.vehicle_id LEFT JOIN vehiclemodel as vm ON vm.id=vmm.model_id LEFT JOIN vehicleversion as vv ON vv.id=vmm.vehicleversion_id group by pg.pdbversion_id order by pdb.id desc
-
