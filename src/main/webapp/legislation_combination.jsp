@@ -216,7 +216,7 @@
                             {
                                 this.data = [];
                                 $scope.legislation = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-                                $window.alert(JSON.stringify($scope.legislation));
+//                                $window.alert(JSON.stringify($scope.legislation));
                                 
                                  var data = '{"group": {"operator": "AND","rules": []}}';
 
@@ -253,8 +253,8 @@
 
                                 $scope.$watch('filter', function (newValue) {
                                     $scope.json = JSON.stringify(newValue, null, 2);
+                                    alert($scope.json);
                                     $scope.output = computed(newValue.group);
-//                                    alert(JSON.stringify($scope.output));
                                 }, true);                            
 //                                $scope.getAllLegislation = function(){
 //                                    //                alert("getall");
@@ -301,9 +301,14 @@
                                 }
                             }
                             $scope.view_and_edit = function() {
-                                alert("hai");
-                                $scope.output = $scope.record.combination;
-                                $scope.rule.field = $scope.record.combination;
+                                alert(JSON.stringify($scope.legislation));
+                                for (var item in $scope.legislation) {
+                                    $scope.output = $scope.legislation[item].combination;
+                                    $scope.combname = $scope.legislation[item].leg;
+                                    $scope.group.operator = $scope.legislation[item].combination;
+                                    $scope.rule.field = $scope.legislation[item].combination;
+                                    $scope.rule.condition = $scope.legislation[item].combination;
+                                }
                             }
                             
                             });
