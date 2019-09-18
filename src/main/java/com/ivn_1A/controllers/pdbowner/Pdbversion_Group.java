@@ -68,14 +68,21 @@ public class Pdbversion_Group {
             List<Map<String, Object>> pdb_map_result = new ArrayList<>();
             pdbversion_group_List.stream().map((pdbversion_group) -> {
                 Map<String, Object> vehicleMap = new HashMap<>();
+                System.out.println("vehver_id"+pdbversion_group.getPdbversion_id().getVehicle_id().getId());
 //                vehicleMap.put("vehver_id", pdbversion_group.getVehicle_id().getId());
 //                vehicleMap.put("vehiclename", pdbversion_group.getVehicle_id().getVehiclename());
                 vehicleMap.put("vehver_id", pdbversion_group.getPdbversion_id().getVehicle_id().getId());
+                System.out.println("vehiclename"+pdbversion_group.getPdbversion_id().getVehicle_id().getVehiclename());
                 vehicleMap.put("vehiclename", pdbversion_group.getPdbversion_id().getVehicle_id().getVehiclename());
+                System.out.println("modelname"+pdbversion_group.getVehiclemodel_id().getModelname());
                 vehicleMap.put("modelname", pdbversion_group.getVehiclemodel_id().getModelname());
+                System.out.println("pdbversion_group_id"+pdbversion_group.getId());
                 vehicleMap.put("pdbversion_group_id", pdbversion_group.getId());
+                System.out.println("pdbversion_id"+pdbversion_group.getPdbversion_id().getId());
                 vehicleMap.put("pdbversion_id", pdbversion_group.getPdbversion_id().getId());
+                System.out.println("pdbversion_name"+pdbversion_group.getPdbversion_id().getPdb_versionname());
                 vehicleMap.put("pdbversion_name", pdbversion_group.getPdbversion_id().getPdb_versionname());
+                System.out.println("status"+pdbversion_group.getPdbversion_id().getStatus());
                 vehicleMap.put("status", pdbversion_group.getPdbversion_id().getStatus());
                 return vehicleMap;
             }).forEachOrdered((vehicleMap) -> {
@@ -135,6 +142,7 @@ public class Pdbversion_Group {
         boolean status = (boolean) false;
 //        int pdbversion_id = 0;
         float version_name = 1.0f;
+        String version_type = "new";
 //        String previousversion_status = null;
 //        String previousversion_flag = null;
         boolean flag;
@@ -168,20 +176,37 @@ public class Pdbversion_Group {
             } else {
                 System.out.println("Ready to create");
                 //Create PDB version               
-                List<Pdbversion> version_data = PDBOwnerDB.GetVersionname();
+//                List<Pdbversion> version_data = PDBOwnerDB.GetVersionname();
                 Pdbversion pdbversion = new Pdbversion();
 //                if(!version_data.isEmpty() && !pdbversion_value.containsKey("pdbversion_id")){
                 if (pdbversion_value.has("pdbversion")) {
-                    if (!version_data.isEmpty()) {
-                        if (!pdbversion_value.has("pdbversion")) {
+                    System.out.println("enter pdbversion");
+                    if (pdbversion_value.has("version_change")) {
+                        System.out.println("enter version change");
+                        System.out.println("enter version change1"+pdbversion_value.get("version_change").asText());
+                        if(pdbversion_value.get("version_change").asText().equals("major")){
+                            System.out.println("major");
+                            System.out.println("vehicle_id"+pdbversion_value.get("vehicle_id").asInt());
+                            List<Pdbversion> version_data = PDBOwnerDB.GetVersionname(pdbversion_value.get("vehicle_id").asInt(),version_type);
                             version_name = (float) 1.0 + version_data.get(0).getPdb_versionname();
-                        } else {
-                            version_name = (float) 0.1 + Float.valueOf(pdbversion_value.get("pdbversion").get("pdbversion_name").asText());
-                            pdbversion.setPdb_reference_version(Float.valueOf(pdbversion_value.get("pdbversion").get("pdbversion_name").asText()));
-                            prevpdb_id = pdbversion_value.get("pdbversion").get("pdbid").asInt();
+//                            pdbversion.setPdb_reference_version(Float.valueOf(version_data.get(0).getPdb_versionname()));
+                            prevpdb_id = version_data.get(0).getId();
+                            
                         }
+                        //else if minor changes
+                        else{
+                            version_type = "minor_changes";
+                            System.out.println("minor");
+                            List<Pdbversion> version_data = PDBOwnerDB.GetVersionname(pdbversion_value.get("vehicle_id").asInt(),version_type);
+                            version_name = (float) 0.1 + version_data.get(0).getPdb_versionname();
+//                            pdbversion.setPdb_reference_version(Float.valueOf(pdbversion_value.get("pdbversion").get("pdbversion_name").asText()));
+                            prevpdb_id = pdbversion_value.get("pdbversion").get("pdbid").asInt();                           
+                        }
+                        pdbversion.setPdb_reference_version(Float.valueOf(pdbversion_value.get("pdbversion").get("pdbversion_name").asText()));
                     }
-                }
+                }                
+                System.out.println("version_name"+version_name);
+                System.out.println("prevpdb_id"+prevpdb_id);
                 //To find and store removed id's and new feature'ids 
 //                List pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(Integer.parseInt((String) pdbversion_value.get("pdbversion_id")));
 //                System.out.println("pdb_previous_data" + pdb_previous_data);
@@ -189,6 +214,7 @@ public class Pdbversion_Group {
                 pdbversion.setVehicle_id(PDBOwnerDB.getVehicle(pdbversion_value.get("vehicle_id").asInt()));
                 pdbversion.setPdb_versionname(version_name);
                 pdbversion.setPdb_manual_comment(pdbversion_value.get("pdb_manual_comment").asText());
+                pdbversion.setVersion_type(version_type);
                 pdbversion.setStatus(status);
                 pdbversion.setFlag(flag);
                 pdbversion.setCreated_date(new Date());
@@ -306,9 +332,9 @@ public class Pdbversion_Group {
 //                    maps_string.put("status", "New Permanent PDB Version Created Successfully");
 //                }
 //            }
-//            tx.commit();
-//            session.clear();
-//            maps_string.put("status", "Process Done");
+////            tx.commit();
+////            session.clear();
+////            maps_string.put("status", "Process Done");
         } catch (Exception ex) {
             System.out.println("entered into catch");
             System.out.println(ex.getMessage());

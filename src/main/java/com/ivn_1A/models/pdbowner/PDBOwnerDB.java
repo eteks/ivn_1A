@@ -130,7 +130,40 @@ public class PDBOwnerDB {
         return vehmod_results.getResultList();
     }
 
-    public static List<Pdbversion> GetVersionname() {
+//    public static List<Pdbversion> GetVersionname() {
+//        try {
+////            Query pdbversion = s.createQuery("FROM Pdbversion p order by p.pdb_versionname desc").setParameter("pdb_reference_version", "1.0");
+////            pdbversion.setMaxResults(1);
+//            Session s = HibernateUtil.getThreadLocalSession();
+//            Transaction tx = s.beginTransaction();
+//
+//            // create Criteria
+////            CriteriaQuery<Pdbversion> criteriaQuery = s.getCriteriaBuilder().createQuery(Pdbversion.class);           
+////            criteriaQuery.from(Pdbversion.class); 
+//            //Working code
+//            CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+//            CriteriaQuery<Pdbversion> criteriaQuery = criteriaBuilder.createQuery(Pdbversion.class);
+//            // The root of our search is sku
+//            Root<Pdbversion> test = criteriaQuery.from(Pdbversion.class);
+//            List<Predicate> restrictions = new ArrayList<>();
+//            restrictions.add(criteriaBuilder.isNull(test.get("pdb_reference_version")));
+//            criteriaQuery.where(restrictions.toArray(new Predicate[restrictions.size()]));
+//            criteriaQuery.orderBy(criteriaBuilder.desc(test.get("pdb_versionname")));
+//            //create resultset as list
+//            Query pdbversion = s.createQuery(criteriaQuery).setMaxResults(1);
+//
+//            tx.commit();
+//            s.clear();
+//            return pdbversion.getResultList();
+//        } catch (Exception e) {
+//            System.err.println("Error in \"GetVersionname\" : " + e.getMessage());
+//            return null;
+//        }
+//    }
+    
+    public static List<Pdbversion> GetVersionname(int vehicle_id, String version_type) {
+        System.out.println("Entered GetVersionname");
+        System.out.println("vehicle_id"+vehicle_id);
         try {
 //            Query pdbversion = s.createQuery("FROM Pdbversion p order by p.pdb_versionname desc").setParameter("pdb_reference_version", "1.0");
 //            pdbversion.setMaxResults(1);
@@ -147,7 +180,26 @@ public class PDBOwnerDB {
             Root<Pdbversion> test = criteriaQuery.from(Pdbversion.class);
             List<Predicate> restrictions = new ArrayList<>();
             restrictions.add(criteriaBuilder.isNull(test.get("pdb_reference_version")));
-            criteriaQuery.where(restrictions.toArray(new Predicate[restrictions.size()]));
+//            criteriaQuery.where(restrictions.toArray(new Predicate[restrictions.size()]));
+            if(version_type.equals("new")){
+                criteriaQuery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(
+                                        test.get("vehicle_id"), vehicle_id
+                                ),
+                                criteriaBuilder.equal(
+                                        test.get("version_type"),version_type
+                                )
+                        )
+                );
+            }
+            else{
+                criteriaQuery.where(
+                        criteriaBuilder.equal(
+                                test.get("vehicle_id"), vehicle_id
+                        )
+                );
+            }
             criteriaQuery.orderBy(criteriaBuilder.desc(test.get("pdb_versionname")));
             //create resultset as list
             Query pdbversion = s.createQuery(criteriaQuery).setMaxResults(1);

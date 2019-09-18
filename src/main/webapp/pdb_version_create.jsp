@@ -474,31 +474,31 @@
 //                alert(JSON.stringify($scope.features));
                 data['dfm_set'] = ["1","2","3"];
                 alert(JSON.stringify(data));
-//                $http({
-//                    url: 'createpdbversion',
-//                    method: "POST",
-//                    data: data,
-//                }).then(function (response, status, headers, config) {
-////                    $scope.vercompare_results = {"removed_features":"(d1) feature3, (d1) feature5", 
-////                                                 "added_features":"(d1) feature4", 
-////                                                 "removed_models":"m2,m4", "added_models":"m3", 
-////                                                 "previous_version":"1.0", "current_version":"1.1"
-////                                                };
-//                      alert(response.data.maps_string.status);
-//                      var vercompare_res = response.data.maps_object.pdb_previous_data_result;
-//                      if(vercompare_res != undefined){
-//                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
-//                            alert(JSON.stringify($scope.vercompare_results));    
-//                      }
-//                      else{
-//                            alert("No any previous version found to compare");
-//                      }
-//                      $('#modal-comment').closeModal();
-//    //                                    $window.alert(JSON.stringify(data));
-//    //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-//    //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
-//    //            //                        Materialize.toast(data['maps']["status"], 4000);
-//                });
+                $http({
+                    url: 'createpdbversion',
+                    method: "POST",
+                    data: data,
+                }).then(function (response, status, headers, config) {
+//                    $scope.vercompare_results = {"removed_features":"(d1) feature3, (d1) feature5", 
+//                                                 "added_features":"(d1) feature4", 
+//                                                 "removed_models":"m2,m4", "added_models":"m3", 
+//                                                 "previous_version":"1.0", "current_version":"1.1"
+//                                                };
+                      alert(response.data.maps_string.status);
+                      var vercompare_res = response.data.maps_object.pdb_previous_data_result;
+                      if(vercompare_res != undefined){
+                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
+                            alert(JSON.stringify($scope.vercompare_results));    
+                      }
+                      else{
+                            alert("No any previous version found to compare");
+                      }
+                      $('#modal-comment').closeModal();
+    //                                    $window.alert(JSON.stringify(data));
+    //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
+    //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
+    //            //                        Materialize.toast(data['maps']["status"], 4000);
+                });
             }
             
             $scope.createpdbversion = function (event)
