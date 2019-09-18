@@ -12,8 +12,8 @@
                             <div class="page-header-title">
                                 <i class="icofont icofont-automation bg-c-red"></i>
                                 <div class="d-inline">
-                                    <h4>PDB Owner</h4>
-                                    <span>Vehicle,Domain and Features</span>
+                                    <h4>Feature Version</h4>
+                                    <span>PDB,Safety and Legislation</span>
                                 </div>
                             </div>
                         </div>
@@ -23,7 +23,7 @@
                                     <li class="breadcrumb-item">
                                         <a href="index.html"> <i class="icofont icofont-home"></i> </a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#!">PDB</a> </li>
+                                    <li class="breadcrumb-item"><a href="#!">Version</a> </li>
                                 </ul>
                             </div>
                         </div>
@@ -37,10 +37,10 @@
                                    
                                    <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
-                                            <s:url action="pdb_listing.action" var="aURL" />
+                                            <s:url action="feature_version_listing.action" var="aURL" />
                                             <s:a href="%{aURL}">   
                                                     <div class="card-block">
-                                                        <span>PDB Versions</span></br>
+                                                        <span>Feature Listing</span></br>
                                                         <span class="count"><s:property value="dashboard_result.vehicleversion_count"/></span>
                                                         <i class="icofont  icofont-car-alt-1 text-c-red"></i>  
                                                         <div class="clearfix"></div>
@@ -49,40 +49,12 @@
                                         </div>
                                     </div>
                                    
-<!--                                   <div class="col-md-3 col-lg-3">
-                                        <div class="card visitor-card">
-                                            <s:url action="vehicle_listing.action" var="aURL" />
-                                            <s:a href="%{aURL}">   
-                                                    <div class="card-block">
-                                                        <span>Vehicles</span>
-                                                        <span class="count"><s:property value="dashboard_result.vehiclecount"/></span>
-                                                        <i class="icofont  icofont-car-alt-2 text-c-red"></i>  
-                                                        <div class="clearfix"></div>
-                                                    </div>
-                                            </s:a>
-                                            </a>    
-                                        </div>
-                                    </div>
-                                   
-                                   <div class="col-md-3 col-lg-3">
-                                        <div class="card visitor-card">  
-                                            <s:url action="vehiclemodel_listing.action" var="aURL" />
-                                            <s:a href="%{aURL}">     
-                                                    <div class="card-block">
-                                                        <span>Models</span>
-                                                        <span class="count"><s:property value="dashboard_result.modelcount"/></span>
-                                                        <i class="icofont icofont-racings-wheel text-c-red"></i>  
-                                                        <div class="clearfix"></div>
-                                                    </div>
-                                            </s:a>   
-                                        </div>
-                                    </div>-->
                                    <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
-                                            <s:url action="features_listing.action" var="aURL" />
+                                            <s:url action="feature_version_create.action" var="aURL" />
                                             <s:a href="%{aURL}">   
                                                     <div class="card-block">
-                                                        <span>Domain & features</span></br>
+                                                        <span>Feature Versions</span></br>
                                                         <span class="count"><s:property value="dashboard_result.modelversion_count"/></span> 
                                                         <i class="icofont  icofont-numbered text-c-red"></i>  
                                                         <div class="clearfix"></div>
@@ -90,19 +62,7 @@
                                             </s:a>   
                                         </div>
                                     </div>
-                                   <div class="col-md-3 col-lg-3">
-                                        <div class="card visitor-card">
-                                            <s:url action="create_pdb.action" var="aURL" />
-                                            <s:a href="%{aURL}">      
-                                                <div class="card-block">
-                                                    <span>Create_PDB</span>
-                                                    <span class="count"> + </span>
-                                                    <i class="icofont icofont-plus-square text-c-red"></i>
-                                                    <div class="clearfix"></div>
-                                                </div>
-                                            </s:a>    
-                                        </div>
-                                    </div>
+                                   
                                 </div>
                             </div>
                         </div>

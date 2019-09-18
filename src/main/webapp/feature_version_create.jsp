@@ -13,8 +13,8 @@
                                                 <div class="page-header-title">
                                                     <i class="icofont  icofont-mining bg-c-red"></i>
                                                     <div class="d-inline">
-                                                        <h4>Legislation</h4>
-                                                        <span>Legislation Listing</span>
+                                                        <h4>Safety</h4>
+                                                        <span>Safety Listing</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -25,7 +25,7 @@
                                                             <a href="index.html"> <i class="icofont icofont-home"></i></a>
                                                         </li>
                                                         <li class="breadcrumb-item">
-                                                            <s:url action="legislation.action" var="aURL" />
+                                                            <s:url action="safety.action" var="aURL" />
                                                             <s:a href="%{aURL}">
                                                                 Back
                                                             </s:a>
@@ -43,7 +43,7 @@
                                                 <div class="card">
                                                     <div class="card-block marketing-card p-t-0">
                                                          <div class="row p-t-30">
-<!--                                                            <div class="form-group col-md-3">
+                                                            <div class="form-group col-md-3">
                                                                 <label for="vehicle">Vehicle version :</label>
                                                                 <select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">
                                                                     <s:iterator value="vehicleversion_result" >
@@ -52,27 +52,16 @@
                                                                         </option>
                                                                     </s:iterator>
                                                                 </select>
-                                                            </div>-->
+                                                            </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Vehicle:</label>
-                                                                <select ng-model="data.vehicle" ng-change="LoadPreviousVersion()">
-                                                                    <option value="">Select Vehicle</option>
-                                                                    <s:iterator value="vehicle_result" var="data">   
-                                                                            <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
-                                                                    </s:iterator>
-                                                                </select>
-<!--                                                                <select ng-hide="data.vehicleversion"></select>
+                                                                <select ng-hide="data.vehicleversion"></select>
                                                                 <select ng-change="LoadVehicleModels(data.vehiclename)" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
                                                                         <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
-                                                                </select>-->
-                                                            </div>
-                                                            <div class="form-group col-md-3">
-                                                                <label for="pdbversion">PDB version :</label>
-                                                                <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion_name for arr in array_result" ng-change="LoadVehicleModels()" disabled>
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-3">
-                                                                <label for="vehicle">Legislation version :</label>
+                                                                <label for="vehicle">Safety version :</label>
                                                                 <select ng-model="data.pdbversion" ng-change="LoadPDBPreviousVersion()">
                                                                     <s:iterator value="pdbversion_result" >
                                                                         <option value="<s:property value="id"/>">
@@ -88,7 +77,7 @@
                                                                 <thead>
                                                                 <tr>
                                                                     
-                                                                    <th class="">Legislation</th>
+                                                                    <th class="">Safety</th>
                                                                     <th class="text-center" ng-repeat="i in records">
                                                                         {{i.modelname}}
                                                                     </th>
@@ -98,11 +87,11 @@
                                                                 
                                                                 <tbody>
                                                                 <form ng-model="myform">    
-                                                                    <tr dir-paginate="record in legislation|orderBy:sortKey:reverse|filter:search|itemsPerPage:20">
+                                                                    <tr dir-paginate="record in safety|orderBy:sortKey:reverse|filter:search|itemsPerPage:20">
                                                                         
                                                                        
                                                                         <td class="">
-                                                                            <a href="#" ng-click="removeRow(record.fid)"><i class="icofont icofont-ui-close text-c-red"></i></a> {{record.leg}}
+                                                                            <a href="#" ng-click="removeRow(record.fid)"><i class="icofont icofont-ui-close text-c-red"></i></a> {{record.saf}}
                                                                         </td>
                                                                         <td class="text-center" ng-repeat="i in records">                                                                             
                                                                               <label class="custom_radio mytooltip tooltip-effect-8">                                                                                
@@ -217,172 +206,112 @@
 //        var app = angular.module('angularTable', ['angularUtils.directives.dirPagination']);
 
         app.controller('RecordCtrl1', function($scope, $http)
-        {
-             var data = '{"group": {"operator": "AND","rules": []}}';
-             var action;
-             $scope.records = [];
-             $scope.legislation= JSON.parse("<s:property value="maps_object.legcomb_list_res"/>".replace(/&quot;/g,'"'));
-//             $scope.legislation = [{"leg":"Legislation1","yes":"power window,RSC,f4","no":"AEB","opt":"f2"},
-//                                    {"leg":"Legislation2","yes":"f3","no":"f4,f2","opt":"f1"}]; 
-            function htmlEntities(str) {
-                return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            }
+                            {
+                                 var data = '{"group": {"operator": "AND","rules": []}}';
 
-            function computed(group) {
-                if (!group) return "";
-                for (var str = "(", i = 0; i < group.rules.length; i++) {
-                    i > 0 && (str += " <strong>" + group.operator + "</strong> ");
-                    str += group.rules[i].group ?
-                        computed(group.rules[i].group) :
-                        group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
-                }
+                                function htmlEntities(str) {
+                                    return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                                }
 
-                return str + ")";
-            }
+                                function computed(group) {
+                                    if (!group) return "";
+                                    for (var str = "(", i = 0; i < group.rules.length; i++) {
+                                        i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+                                        str += group.rules[i].group ?
+                                            computed(group.rules[i].group) :
+                                            group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+                                    }
 
-            $scope.json = null;
+                                    return str + ")";
+                                }
 
-            $scope.filter = JSON.parse(data);
+                                $scope.json = null;
 
-            $scope.$watch('filter', function (newValue) {
-                $scope.json = JSON.stringify(newValue, null, 2);
-                $scope.output = computed(newValue.group);
-            }, true);  
-            
-            $scope.LoadPreviousVersion = function()
-            {
-                var ac = action ? action : "none";
-                $scope.truefalse = true;
-                $scope.data.pdbversion = "";
-//                $scope.Demo.dt.vehiclename = "";
-//                $scope.Demo.dt.modelname = "";
-//                $window.alert(ac);
-                $http({
-                    url : 'loadpdbversion_data',
-                    method : "POST",
-                    data : {"vehicleversion_id":$scope.data.vehicle, "action":ac}
-                }).then(function (response, status, headers, config){
-//                    alert(JSON.stringify(response));
-                    $scope.array_result = [];
-                    $scope.status_value = "";
-                    var pdbLength = response.data.maps_object.pdbversion.length;
-                    if (pdbLength > 0) {
-                        for(var i = 0; i < pdbLength; i++)
-                        {
-                             var data= response.data.maps_object.pdbversion[i];
-     //                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
-     //                        $window.alert($scope.data.pdbversion);
-                             $scope.array_result.push({
-                                 "pdbid":data.pid,
-                                 "pdbversion_name":parseFloat(data.pversion).toFixed(1),
-                                 "status":data.status
-                             });
-                         }
-                         $scope.data.pdbversion = $scope.array_result[0];
-                         $scope.LoadVehicleModels();
-                    } else {
-                        $window.alert("The Selected Vehicle is now Inactive.");
-                    }
-    //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
-                });
-            };
-            //load vehicle and model name
-            $scope.LoadVehicleModels= function()
-            {
-                $http({
-                    url : 'loadvehiclemodelname',
-                    method : "POST",
-                    data : {"pdb_id":$scope.data.pdbversion.pdbid}
-                }).then(function (response, status, headers, config){
-                    $scope.records = [];
-                    var result_data = response.data.maps_object.pdbversion[0];
-                    var modelid = result_data.modelid.split(",");
-                    var modelname = result_data.modelname.split(",");
-                    angular.forEach(modelid, function (value, key) {
-                        $scope.records.push({"model_id":value,"modelname":modelname[key]});  
-                        
-                    });
-                });
-            };
+                                $scope.filter = JSON.parse(data);
 
-    });
-    var queryBuilder = angular.module('queryBuilder', []);
-    queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
-        return {
-            restrict: 'E',
-            scope: {
-                group: '='
-            },
-            templateUrl: '/queryBuilderDirective.html',
-            compile: function (element, attrs) {
-                var content, directive;
-                content = element.contents().remove();
-                return function (scope, element, attrs) {
-                    scope.operators = [
-                        { name: 'AND' },
-                        { name: 'OR' }
-                    ];
+                                $scope.$watch('filter', function (newValue) {
+                                    $scope.json = JSON.stringify(newValue, null, 2);
+                                    $scope.output = computed(newValue.group);
+                                }, true);                            
 
-                    scope.fields = [
-                        { name: 'f1' },
-                        { name: 'f2' },
-                        { name: 'f3' },
-                        { name: 'f4' },
-                        { name: 'f5' }
-                    ];
+                            });
+                            var queryBuilder = angular.module('queryBuilder', []);
+                            queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
+                                return {
+                                    restrict: 'E',
+                                    scope: {
+                                        group: '='
+                                    },
+                                    templateUrl: '/queryBuilderDirective.html',
+                                    compile: function (element, attrs) {
+                                        var content, directive;
+                                        content = element.contents().remove();
+                                        return function (scope, element, attrs) {
+                                            scope.operators = [
+                                                { name: 'AND' },
+                                                { name: 'OR' }
+                                            ];
 
-                    scope.conditions = [
+                                            scope.fields = [
+                                                { name: 'f1' },
+                                                { name: 'f2' },
+                                                { name: 'f3' },
+                                                { name: 'f4' },
+                                                { name: 'f5' }
+                                            ];
 
-                        { name: '1' },
-                        { name: '0' }
-                        // { name: '=' },
-                        // { name: '<>' },
-                        // { name: '<' },
-                        // { name: '<=' },
-                        // { name: '>' },
-                        // { name: '>=' }
-                    ];
+                                            scope.conditions = [
 
-                    scope.addCondition = function () {
-                        scope.group.rules.push({
-                            condition: '=',
-                            field: '',
-                            data: ''
-                        });
-                    };
+                                                { name: '1' },
+                                                { name: '0' }
+                                                // { name: '=' },
+                                                // { name: '<>' },
+                                                // { name: '<' },
+                                                // { name: '<=' },
+                                                // { name: '>' },
+                                                // { name: '>=' }
+                                            ];
 
-                    scope.removeCondition = function (index) {
-                        scope.group.rules.splice(index, 1);
-                    };
+                                            scope.addCondition = function () {
+                                                scope.group.rules.push({
+                                                    condition: '=',
+                                                    field: '',
+                                                    data: ''
+                                                });
+                                            };
 
-                    scope.addGroup = function () {
-                        scope.group.rules.push({
-                            group: {
-                                operator: 'AND',
-                                rules: []
-                            }
-                        });
-                    };
+                                            scope.removeCondition = function (index) {
+                                                scope.group.rules.splice(index, 1);
+                                            };
 
-                    scope.removeGroup = function () {
-                        "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
-                    };
+                                            scope.addGroup = function () {
+                                                scope.group.rules.push({
+                                                    group: {
+                                                        operator: 'AND',
+                                                        rules: []
+                                                    }
+                                                });
+                                            };
 
-                    directive || (directive = $compile(content));
+                                            scope.removeGroup = function () {
+                                                "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
+                                            };
 
-                    element.append(directive(scope, function ($compile) {
-                        return $compile;
-                    }));
-                } 
-            }
-        }
-    }]);
+                                            directive || (directive = $compile(content));
+
+                                            element.append(directive(scope, function ($compile) {
+                                                return $compile;
+                                            }));
+                                        } 
+                                    }
+                                }
+                            }]);
 
     $(document).ready(function(){
         // initialize modal
         $('.modal-trigger').leanModal();
     });
-    </script>    
+    </script>   
 </body>
 
 </html>          

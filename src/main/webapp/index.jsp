@@ -37,10 +37,10 @@
                                    
                                    <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
-                                            <s:url action="pdb_listing.action" var="aURL" />
+                                            <s:url action="pdb_owner.action" var="aURL" />
                                             <s:a href="%{aURL}">   
                                                     <div class="card-block">
-                                                        <span>PDB Versions</span></br>
+                                                        <span>PDB Owner</span></br>
                                                         <span class="count"><s:property value="dashboard_result.vehicleversion_count"/></span>
                                                         <i class="icofont  icofont-car-alt-1 text-c-red"></i>  
                                                         <div class="clearfix"></div>
@@ -49,60 +49,6 @@
                                         </div>
                                     </div>
                                    
-<!--                                   <div class="col-md-3 col-lg-3">
-                                        <div class="card visitor-card">
-                                            <s:url action="vehicle_listing.action" var="aURL" />
-                                            <s:a href="%{aURL}">   
-                                                    <div class="card-block">
-                                                        <span>Vehicles</span>
-                                                        <span class="count"><s:property value="dashboard_result.vehiclecount"/></span>
-                                                        <i class="icofont  icofont-car-alt-2 text-c-red"></i>  
-                                                        <div class="clearfix"></div>
-                                                    </div>
-                                            </s:a>
-                                            </a>    
-                                        </div>
-                                    </div>
-                                   
-                                   <div class="col-md-3 col-lg-3">
-                                        <div class="card visitor-card">  
-                                            <s:url action="vehiclemodel_listing.action" var="aURL" />
-                                            <s:a href="%{aURL}">     
-                                                    <div class="card-block">
-                                                        <span>Models</span>
-                                                        <span class="count"><s:property value="dashboard_result.modelcount"/></span>
-                                                        <i class="icofont icofont-racings-wheel text-c-red"></i>  
-                                                        <div class="clearfix"></div>
-                                                    </div>
-                                            </s:a>   
-                                        </div>
-                                    </div>-->
-                                   <div class="col-md-3 col-lg-3">
-                                        <div class="card visitor-card">
-                                            <s:url action="features_listing.action" var="aURL" />
-                                            <s:a href="%{aURL}">   
-                                                    <div class="card-block">
-                                                        <span>Domain & features</span></br>
-                                                        <span class="count"><s:property value="dashboard_result.modelversion_count"/></span> 
-                                                        <i class="icofont  icofont-numbered text-c-red"></i>  
-                                                        <div class="clearfix"></div>
-                                                    </div>
-                                            </s:a>   
-                                        </div>
-                                    </div>
-                                   <div class="col-md-3 col-lg-3">
-                                        <div class="card visitor-card">
-                                            <s:url action="create_pdb.action" var="aURL" />
-                                            <s:a href="%{aURL}">      
-                                                <div class="card-block">
-                                                    <span>Create_PDB</span>
-                                                    <span class="count"> + </span>
-                                                    <i class="icofont icofont-plus-square text-c-red"></i>
-                                                    <div class="clearfix"></div>
-                                                </div>
-                                            </s:a>    
-                                        </div>
-                                    </div>
                                     <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
                                             <s:url action="legislation.action" var="aURL" />
@@ -122,6 +68,19 @@
                                             <s:a href="%{aURL}">      
                                                 <div class="card-block">
                                                     <span>Safety</span>
+                                                    <span class="count"> + </span>
+                                                    <i class="icofont icofont-plus-square text-c-red"></i>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </s:a>    
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">
+                                            <s:url action="feature.action" var="aURL" />
+                                            <s:a href="%{aURL}">      
+                                                <div class="card-block">
+                                                    <span>Feature version</span>
                                                     <span class="count"> + </span>
                                                     <i class="icofont icofont-plus-square text-c-red"></i>
                                                     <div class="clearfix"></div>
