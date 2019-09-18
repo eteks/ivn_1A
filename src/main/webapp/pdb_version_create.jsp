@@ -888,7 +888,7 @@
                 $http({
                     url : 'loadpdbversion_data',
                     method : "POST",
-                    data : {"pdbversion_id":$scope.data.vehicle, "action":ac}
+                    data : {"vehicle_id":$scope.data.vehicle, "action":ac}
                 }).then(function (response, status, headers, config){
                     
                     $scope.array_result = [];
