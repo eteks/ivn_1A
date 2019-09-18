@@ -231,6 +231,9 @@
 
         app.controller('RecordCtrl1', function($scope, $http)
         {
+            $scope.showSave =true;
+            $scope.showProceed =true;
+            $scope.showSubmit =true;
              var data = '{"group": {"operator": "AND","rules": []}}';
              var action;
              $scope.records = [];
