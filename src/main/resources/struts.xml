@@ -96,6 +96,11 @@
             <result>features_listing.jsp</result>
         </action>
         
+        <action name="pdb_owner" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="PDBAssignPage">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>pdb_owner.jsp</result>
+        </action>
+        
         <action name="create_pdb" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="PDBAssignPage">
             <!--<result name="session">index.jsp</result>--> 
             <result>pdb_version_create.jsp</result>
@@ -143,7 +148,19 @@
             <!--<result name="session">index.jsp</result>--> 
             <result>safety_ver_create.jsp</result>
         </action>
-
+        
+        <action name="feature" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>feature.jsp</result>
+        </action>
+        <action name="feature_version_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>feature_version_listing.jsp</result>
+        </action>
+        <action name="feature_version_create" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>feature_version_create.jsp</result>
+        </action>
         <!--This is for testing--> 
         <action name="inserts" class="com.ivn_1A.controllers.repositories.TestInsert" method="execute">
             <result name="success">test.jsp</result>

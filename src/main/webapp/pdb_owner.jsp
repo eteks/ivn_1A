@@ -37,60 +37,72 @@
                                    
                                    <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
-                                            <s:url action="vehicleversion_listing.action" var="aURL" />
+                                            <s:url action="pdb_listing.action" var="aURL" />
                                             <s:a href="%{aURL}">   
                                                     <div class="card-block">
-                                                        <span>Vehicle version</span></br>
+                                                        <span>PDB Versions</span></br>
                                                         <span class="count"><s:property value="dashboard_result.vehicleversion_count"/></span>
-                                                        <i class="icofont icofont-car-alt-1 text-c-red"></i>  
+                                                        <i class="icofont  icofont-car-alt-1 text-c-red"></i>  
                                                         <div class="clearfix"></div>
                                                     </div>
                                             </s:a>   
                                         </div>
                                     </div>
                                    
-                                   <div class="col-md-3 col-lg-3">
+<!--                                   <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
-                                            <s:url action="pdb_listing.action" var="aURL" />
+                                            <s:url action="vehicle_listing.action" var="aURL" />
                                             <s:a href="%{aURL}">   
                                                     <div class="card-block">
-                                                        <span>PDB Version</span>
-                                                        <span class="count"><s:property value="dashboard_result.pdbversion_count"/></span>
-                                                        <i class="icofont icofont-list text-c-red"></i>  
+                                                        <span>Vehicles</span>
+                                                        <span class="count"><s:property value="dashboard_result.vehiclecount"/></span>
+                                                        <i class="icofont  icofont-car-alt-2 text-c-red"></i>  
                                                         <div class="clearfix"></div>
                                                     </div>
-                                            </s:a>  
+                                            </s:a>
+                                            </a>    
                                         </div>
                                     </div>
                                    
                                    <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">  
-                                            <s:url action="features_listing.action" var="aURL" />
+                                            <s:url action="vehiclemodel_listing.action" var="aURL" />
                                             <s:a href="%{aURL}">     
                                                     <div class="card-block">
-                                                        <span>Global Features</span>
-                                                        <span class="count"><s:property value="dashboard_result.pdbfeatures_count"/></span>
-                                                        <i class="icofont icofont-sub-listing text-c-red"></i>  
+                                                        <span>Models</span>
+                                                        <span class="count"><s:property value="dashboard_result.modelcount"/></span>
+                                                        <i class="icofont icofont-racings-wheel text-c-red"></i>  
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                            </s:a>   
+                                        </div>
+                                    </div>-->
+                                   <div class="col-md-3 col-lg-3">
+                                        <div class="card visitor-card">
+                                            <s:url action="features_listing.action" var="aURL" />
+                                            <s:a href="%{aURL}">   
+                                                    <div class="card-block">
+                                                        <span>Domain & features</span></br>
+                                                        <span class="count"><s:property value="dashboard_result.modelversion_count"/></span> 
+                                                        <i class="icofont  icofont-numbered text-c-red"></i>  
                                                         <div class="clearfix"></div>
                                                     </div>
                                             </s:a>   
                                         </div>
                                     </div>
-                                   
                                    <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
-                                            <s:url action="pdb_assign.action" var="aURL" />
+                                            <s:url action="create_pdb.action" var="aURL" />
                                             <s:a href="%{aURL}">      
                                                 <div class="card-block">
-                                                    <span>Add PDB</span>
+                                                    <span>Create_PDB</span>
                                                     <span class="count"> + </span>
-                                                     <i class="icofont icofont-plus-square text-c-red"></i>
+                                                    <i class="icofont icofont-plus-square text-c-red"></i>
                                                     <div class="clearfix"></div>
                                                 </div>
                                             </s:a>    
                                         </div>
                                     </div>
-                                   
                                 </div>
                             </div>
                         </div>
