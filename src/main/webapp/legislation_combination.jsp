@@ -224,16 +224,27 @@
                                     return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
                                 }
 
+//                                function computed(group) {
+//                                    if (!group) return "";
+//                                    for (var str = "(", i = 0; i < group.rules.length; i++) {
+//                                        i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+//                                        str += group.rules[i].group ?
+//                                            computed(group.rules[i].group) :
+//                                            group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+//                                    }
+//
+//                                    return str + ")";
+//                                }
                                 function computed(group) {
                                     if (!group) return "";
-                                    for (var str = "(", i = 0; i < group.rules.length; i++) {
-                                        i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+                                    for (var str = "", i = 0; i < group.rules.length; i++) {
+                                        i > 0 && (str += group.operator);
                                         str += group.rules[i].group ?
                                             computed(group.rules[i].group) :
-                                            group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+                                            " "+group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
                                     }
 
-                                    return str + ")";
+                                    return str;
                                 }
 
                                 $scope.json = null;

@@ -910,8 +910,17 @@
 //                         alert(JSON.stringfy($scope.array_result));
 //                         alert($location.absUrl());
                          if($location.absUrl().includes("?")){
-                             var pdb_id = $location.absUrl().split("?")[1].split("&")[0].split("=")[1];
-                             alert(pdb_id);
+                            var pdb_id = $location.absUrl().split("?")[1].split("&")[0].split("=")[1];
+//                             alert(pdb_id);                             
+                            for (var i = 0; i < $scope.array_result.length; i++){
+                                // here jsonObject['sync_contact_list'][i] is your current "bit"
+//                                alert($scope.array_result[i].pdbid==pdb_id);
+                                if ($scope.array_result[i].pdbid==pdb_id) {
+//                                    alert(JSON.stringify($scope.array_result[i]));
+                                    $scope.data.pdbversion = $scope.array_result[i];
+                                }
+                            }
+//                             alert(JSON.stringify($scope.array_result['pdbid']));
 //                             $scope.data.pdbversion = {"pdbid":2,"pdbversion_name":"1.1","status":true};
                          }
                          else{
