@@ -36,6 +36,7 @@
         <link rel="stylesheet" href="css/select2.min.css"/>
         <link rel="stylesheet" href="css/animate.min.css" />
         <link rel="stylesheet" href="css/angular.css" />
+         <link rel="stylesheet" href="css/drag_n_drop.css" />
         <style>
             ul.pcoded-item
             {

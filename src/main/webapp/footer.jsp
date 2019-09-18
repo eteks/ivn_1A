@@ -88,8 +88,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.js"></script>    -->
 <script src="js/dirPagination.js"></script>
+<script src="js/drag-and-drop-lists.js"></script>
 <script>
-                    var app = angular.module('angularTable', ['angularUtils.directives.dirPagination', 'ngTagsInput','tabs','ngSanitize','queryBuilder']);
+                    var app = angular.module('angularTable', ['angularUtils.directives.dirPagination', 'ngTagsInput','tabs','ngSanitize','queryBuilder','dndLists']);
 //        var app = angular.module('angularTable', ['ui.bootstrap']);
                 app.controller('RecordCtrl', function ($scope, $http,$rootScope)
                 {
