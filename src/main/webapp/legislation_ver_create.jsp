@@ -217,106 +217,166 @@
 //        var app = angular.module('angularTable', ['angularUtils.directives.dirPagination']);
 
         app.controller('RecordCtrl1', function($scope, $http)
-                            {
-                                 var data = '{"group": {"operator": "AND","rules": []}}';
+        {
+             var data = '{"group": {"operator": "AND","rules": []}}';
+             var action;
+             $scope.records = [];
+             $scope.legislation= JSON.parse("<s:property value="maps_object.legcomb_list_res"/>".replace(/&quot;/g,'"'));
+//             $scope.legislation = [{"leg":"Legislation1","yes":"power window,RSC,f4","no":"AEB","opt":"f2"},
+//                                    {"leg":"Legislation2","yes":"f3","no":"f4,f2","opt":"f1"}]; 
+            function htmlEntities(str) {
+                return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
 
-                                function htmlEntities(str) {
-                                    return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                                }
+            function computed(group) {
+                if (!group) return "";
+                for (var str = "(", i = 0; i < group.rules.length; i++) {
+                    i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+                    str += group.rules[i].group ?
+                        computed(group.rules[i].group) :
+                        group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+                }
 
-                                function computed(group) {
-                                    if (!group) return "";
-                                    for (var str = "(", i = 0; i < group.rules.length; i++) {
-                                        i > 0 && (str += " <strong>" + group.operator + "</strong> ");
-                                        str += group.rules[i].group ?
-                                            computed(group.rules[i].group) :
-                                            group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
-                                    }
+                return str + ")";
+            }
 
-                                    return str + ")";
-                                }
+            $scope.json = null;
 
-                                $scope.json = null;
+            $scope.filter = JSON.parse(data);
 
-                                $scope.filter = JSON.parse(data);
+            $scope.$watch('filter', function (newValue) {
+                $scope.json = JSON.stringify(newValue, null, 2);
+                $scope.output = computed(newValue.group);
+            }, true);  
+            
+            $scope.LoadPreviousVersion = function()
+            {
+                var ac = action ? action : "none";
+                $scope.truefalse = true;
+                $scope.data.pdbversion = "";
+//                $scope.Demo.dt.vehiclename = "";
+//                $scope.Demo.dt.modelname = "";
+//                $window.alert(ac);
+                $http({
+                    url : 'loadpdbversion_data',
+                    method : "POST",
+                    data : {"vehicleversion_id":$scope.data.vehicle, "action":ac}
+                }).then(function (response, status, headers, config){
+//                    alert(JSON.stringify(response));
+                    $scope.array_result = [];
+                    $scope.status_value = "";
+                    var pdbLength = response.data.maps_object.pdbversion.length;
+                    if (pdbLength > 0) {
+                        for(var i = 0; i < pdbLength; i++)
+                        {
+                             var data= response.data.maps_object.pdbversion[i];
+     //                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
+     //                        $window.alert($scope.data.pdbversion);
+                             $scope.array_result.push({
+                                 "pdbid":data.pid,
+                                 "pdbversion_name":parseFloat(data.pversion).toFixed(1),
+                                 "status":data.status
+                             });
+                         }
+                         $scope.data.pdbversion = $scope.array_result[0];
+                         $scope.LoadVehicleModels();
+                    } else {
+                        $window.alert("The Selected Vehicle is now Inactive.");
+                    }
+    //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
+                });
+            };
+            //load vehicle and model name
+            $scope.LoadVehicleModels= function()
+            {
+                $http({
+                    url : 'loadvehiclemodelname',
+                    method : "POST",
+                    data : {"pdb_id":$scope.data.pdbversion.pdbid}
+                }).then(function (response, status, headers, config){
+                    $scope.records = [];
+                    var result_data = response.data.maps_object.pdbversion[0];
+                    var modelid = result_data.modelid.split(",");
+                    var modelname = result_data.modelname.split(",");
+                    angular.forEach(modelid, function (value, key) {
+                        $scope.records.push({"model_id":value,"modelname":modelname[key]});  
+                        
+                    });
+                });
+            };
 
-                                $scope.$watch('filter', function (newValue) {
-                                    $scope.json = JSON.stringify(newValue, null, 2);
-                                    $scope.output = computed(newValue.group);
-                                }, true);                            
+    });
+    var queryBuilder = angular.module('queryBuilder', []);
+    queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
+        return {
+            restrict: 'E',
+            scope: {
+                group: '='
+            },
+            templateUrl: '/queryBuilderDirective.html',
+            compile: function (element, attrs) {
+                var content, directive;
+                content = element.contents().remove();
+                return function (scope, element, attrs) {
+                    scope.operators = [
+                        { name: 'AND' },
+                        { name: 'OR' }
+                    ];
 
-                            });
-                            var queryBuilder = angular.module('queryBuilder', []);
-                            queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
-                                return {
-                                    restrict: 'E',
-                                    scope: {
-                                        group: '='
-                                    },
-                                    templateUrl: '/queryBuilderDirective.html',
-                                    compile: function (element, attrs) {
-                                        var content, directive;
-                                        content = element.contents().remove();
-                                        return function (scope, element, attrs) {
-                                            scope.operators = [
-                                                { name: 'AND' },
-                                                { name: 'OR' }
-                                            ];
+                    scope.fields = [
+                        { name: 'f1' },
+                        { name: 'f2' },
+                        { name: 'f3' },
+                        { name: 'f4' },
+                        { name: 'f5' }
+                    ];
 
-                                            scope.fields = [
-                                                { name: 'f1' },
-                                                { name: 'f2' },
-                                                { name: 'f3' },
-                                                { name: 'f4' },
-                                                { name: 'f5' }
-                                            ];
+                    scope.conditions = [
 
-                                            scope.conditions = [
+                        { name: '1' },
+                        { name: '0' }
+                        // { name: '=' },
+                        // { name: '<>' },
+                        // { name: '<' },
+                        // { name: '<=' },
+                        // { name: '>' },
+                        // { name: '>=' }
+                    ];
 
-                                                { name: '1' },
-                                                { name: '0' }
-                                                // { name: '=' },
-                                                // { name: '<>' },
-                                                // { name: '<' },
-                                                // { name: '<=' },
-                                                // { name: '>' },
-                                                // { name: '>=' }
-                                            ];
+                    scope.addCondition = function () {
+                        scope.group.rules.push({
+                            condition: '=',
+                            field: '',
+                            data: ''
+                        });
+                    };
 
-                                            scope.addCondition = function () {
-                                                scope.group.rules.push({
-                                                    condition: '=',
-                                                    field: '',
-                                                    data: ''
-                                                });
-                                            };
+                    scope.removeCondition = function (index) {
+                        scope.group.rules.splice(index, 1);
+                    };
 
-                                            scope.removeCondition = function (index) {
-                                                scope.group.rules.splice(index, 1);
-                                            };
+                    scope.addGroup = function () {
+                        scope.group.rules.push({
+                            group: {
+                                operator: 'AND',
+                                rules: []
+                            }
+                        });
+                    };
 
-                                            scope.addGroup = function () {
-                                                scope.group.rules.push({
-                                                    group: {
-                                                        operator: 'AND',
-                                                        rules: []
-                                                    }
-                                                });
-                                            };
+                    scope.removeGroup = function () {
+                        "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
+                    };
 
-                                            scope.removeGroup = function () {
-                                                "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
-                                            };
+                    directive || (directive = $compile(content));
 
-                                            directive || (directive = $compile(content));
-
-                                            element.append(directive(scope, function ($compile) {
-                                                return $compile;
-                                            }));
-                                        } 
-                                    }
-                                }
-                            }]);
+                    element.append(directive(scope, function ($compile) {
+                        return $compile;
+                    }));
+                } 
+            }
+        }
+    }]);
 
     $(document).ready(function(){
         // initialize modal
