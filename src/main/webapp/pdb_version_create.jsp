@@ -305,7 +305,7 @@
 //                notification_to = args;
 //                $scope.createpdbAjax("submit");
 //            });
-            $window.alert(notification_to);
+//            $window.alert(notification_to);
             $scope.features = [];
             $scope.list = [];
             $scope.Demo.dt = [];
@@ -888,12 +888,13 @@
                 $http({
                     url : 'loadpdbversion_data',
                     method : "POST",
-                    data : {"pdbversion_id":$scope.data.vehicle, "action":ac}
+                    data : {"vehicle_id":$scope.data.vehicle, "action":ac}
                 }).then(function (response, status, headers, config){
                     
                     $scope.array_result = [];
                     $scope.status_value = "";
                     var pdbLength = response.data.maps_object.pdbversion.length;
+//                    alert(JSON.stringify(response.data.maps_object.pdbversion));
                     if (pdbLength > 0) {
                         for(var i = 0; i < pdbLength; i++)
                         {
@@ -906,7 +907,18 @@
                                  "status":data.status
                              });
                          }
-                         $scope.data.pdbversion = $scope.array_result[0];
+//                         alert(JSON.stringfy($scope.array_result));
+//                         alert($location.absUrl());
+                         if($location.absUrl().includes("?")){
+                             var pdb_id = $location.absUrl().split("?")[1].split("&")[0].split("=")[1];
+                             alert(pdb_id);
+//                             $scope.data.pdbversion = {"pdbid":2,"pdbversion_name":"1.1","status":true};
+                         }
+                         else{
+                             alert(JSON.stringify($scope.array_result[0]));
+                             $scope.data.pdbversion = $scope.array_result[0];
+                         }    
+//                         $scope.data.pdbversion = {"pdbid":5,"pdbversion_name":"2.1","status":true};
                          $scope.LoadVehicleModels();
                     } else {
                         $window.alert("The Selected Vehicle is now Inactive.");

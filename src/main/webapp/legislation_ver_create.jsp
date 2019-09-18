@@ -273,9 +273,9 @@
                 $http({
                     url : 'loadpdbversion_data',
                     method : "POST",
-                    data : {"vehicleversion_id":$scope.data.vehicle, "action":ac}
+                    data : {"vehicle_id":$scope.data.vehicle, "action":ac}
                 }).then(function (response, status, headers, config){
-//                    alert(JSON.stringify(response));
+                    alert(JSON.stringify(response.data.maps_object.pdbversion));
                     $scope.array_result = [];
                     $scope.status_value = "";
                     var pdbLength = response.data.maps_object.pdbversion.length;

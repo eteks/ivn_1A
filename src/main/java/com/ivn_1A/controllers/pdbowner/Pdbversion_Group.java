@@ -350,11 +350,13 @@ public class Pdbversion_Group {
             final ObjectMapper mapper = new ObjectMapper();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
-            int pdbversion_id = readValue.get("pdbversion_id").asInt();
+            System.out.println("LoadPdbversionData1");
+            int vehicle_id = readValue.get("vehicle_id").asInt();
+            System.out.println("LoadPdbversionData2");
             String action = readValue.get("action").asText();
-            System.out.println(pdbversion_id+"$$$$$$$$$$$$$$$$$$$$$$$$44"+action);
+            System.out.println(vehicle_id+"$$$$$$$$$$$$$$$$$$$$$$$$44"+action);
 
-            tupleObjects = PDBOwnerDB.loadPdbversion_groupByVehicleId(pdbversion_id, action);
+            tupleObjects = PDBOwnerDB.loadPdbversion_groupByVehicleId(vehicle_id, action);
             JSONArray pdbvers_group_result = new JSONArray();
 
             tupleObjects.stream().map((tuple) -> {

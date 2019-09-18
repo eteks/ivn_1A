@@ -565,10 +565,10 @@ public class PDBOwnerDB {
             criteriaQuery.multiselect(pdbversion.get("id").alias("pid"), pdbversion.get("pdb_versionname").alias("pversion"), 
                     pdbversion.get("status").alias("status"));
             if (action.equals("edit")) {
-                criteriaQuery.where(criteriaBuilder.equal(pdbversion.get("id"), id));
+                criteriaQuery.where(criteriaBuilder.equal(pdbversion.get("vehicle_id").get("id"), id));
             } else {
                 criteriaQuery.where(criteriaBuilder.equal(pdbversion.get("status"), true), criteriaBuilder.equal(pdbversion.get("flag"), true),
-                        criteriaBuilder.equal(pdbversion.get("id"), id));
+                        criteriaBuilder.equal(pdbversion.get("vehicle_id").get("id"), id));
             }
             criteriaQuery.orderBy(criteriaBuilder.desc(pdbversion.get("pdb_versionname")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
