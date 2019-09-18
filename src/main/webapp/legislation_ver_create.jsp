@@ -102,7 +102,7 @@
                                                                         
                                                                        
                                                                         <td class="">
-                                                                            <a href="#" ng-click="removeRow(record.fid)"><i class="icofont icofont-ui-close text-c-red"></i></a> {{record.leg}}
+                                                                            <a href="#" ng-click="removeRow(record.lid)"><i class="icofont icofont-ui-close text-c-red"></i></a> {{record.leg}}
                                                                         </td>
                                                                         <td class="text-center" ng-repeat="i in records">                                                                             
                                                                               <label class="custom_radio mytooltip tooltip-effect-8">                                                                                
@@ -152,9 +152,22 @@
                         <span class="slider round"></span>
                      </label>
 
-                    <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="checkNotify('save')" name="save">Save</button>
-                    <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="checkNotify('submit')" name="submit">Submit</button>
+                    <a class="feature_add_tip modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
+                    <div id="modal-comment" class="modal">
+                         <div class="modal-content text-left">
 
+                             <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
+                             <textarea class="col-md-12 m-b-10" ng-model="data.pdb_manual_comment"></textarea>
+                             <div ng-if="create_type == true">
+                                 <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">Major
+                                 &nbsp;<input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">Minor
+                             </div>
+                             <div class="text-right">
+                                 <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('save')" name="save">Save</button>
+                                 <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('submit')" name="submit">Submit</button>
+                             </div>
+                         </div>
+                     </div>
                 </div>
                 <!-- Marketing End -->
                         <div id="modal-product-form" class="modal">
@@ -222,8 +235,8 @@
              var action;
              $scope.records = [];
              $scope.legislation= JSON.parse("<s:property value="maps_object.legcomb_list_res"/>".replace(/&quot;/g,'"'));
-//             $scope.legislation = [{"leg":"Legislation1","yes":"power window,RSC,f4","no":"AEB","opt":"f2"},
-//                                    {"leg":"Legislation2","yes":"f3","no":"f4,f2","opt":"f1"}]; 
+//             $scope.legislation = [{"lid":"1","leg":"Legislation1","yes":"power window,RSC,f4","no":"AEB","opt":"f2"},
+//                                    {"lid":"2","leg":"Legislation2","yes":"f3","no":"f4,f2","opt":"f1"}]; 
             function htmlEntities(str) {
                 return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
             }
@@ -303,6 +316,42 @@
                         
                     });
                 });
+            };
+            $scope.removeRow = function(lid)
+            {		
+//                alert(fid);
+		var index = -1;		
+		var comArr = eval( $scope.legislation );
+		for( var i = 0; i < comArr.length; i++ ) 
+                {
+                    if( comArr[i].lid === lid ) 
+                    {
+                        index = i;
+                        break;
+                    }
+		}
+		if( index === -1 ) 
+                {
+			alert( "Something gone wrong" );
+		}
+//                $scope.legislation_list.push({fid:comArr[index].fid,domain:comArr[index].domain,fea: comArr[index].fea})
+		$scope.legislation.splice( index, 1 );
+                
+//                var list_data =[];
+//                $scope.list.filter(function(l,j){
+//                    if(l.dfm_id != lid)
+//                        list_data.push(l);
+//                });
+//                $scope.list = list_data;
+//                alert(JSON.stringify($scope.list));
+                
+//                var list_index = -1;
+//                $scope.list.filter(function(l,j){
+//                    if(l.dfm_id == fid)
+//                        list_index = j;
+//                });
+//                if(list_index != 1)
+//                    $scope.list.splice( list_index, 1 );
             };
 
     });
