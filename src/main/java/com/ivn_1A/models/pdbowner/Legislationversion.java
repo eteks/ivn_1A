@@ -34,6 +34,7 @@ public class Legislationversion implements Serializable{
     private float legislation_versionname;
     private String legislation_manual_comment;
     private Float legislation_reference_version;
+    private String version_type;
     private Vehicle vehicle_id;
     private Pdbversion pdbversion_id;
     private boolean status;  
@@ -71,6 +72,16 @@ public class Legislationversion implements Serializable{
     @Column(name = "legislation_reference_version", nullable = true, columnDefinition="Float(10,1)")
     public Float getLegislation_reference_version() {
         return legislation_reference_version;
+    }
+    
+    @Column(name = "version_type", nullable = false, length =50)
+    // version type data will be stored as new, minor_changes, major_changes
+    public String getVersion_type() {
+        return version_type;
+    }
+
+    public void setVersion_type(String version_type) {
+        this.version_type = version_type;
     }
 
     public void setLegislation_reference_version(Float legislation_reference_version) {

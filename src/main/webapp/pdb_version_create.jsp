@@ -301,11 +301,6 @@
          
             this.data=[];
             var notification_to;
-//            $scope.$on('notifyValue', function (event, args) {
-//                notification_to = args;
-//                $scope.createpdbAjax("submit");
-//            });
-//            $window.alert(notification_to);
             $scope.features = [];
             $scope.list = [];
             $scope.Demo.dt = [];
@@ -314,12 +309,10 @@
             $scope.truefalse = false;
             $scope.records = [];
             $scope.create_type = false;
-//            alert(JSON.parse("<s:property value="maps_object.pdb_previous_data_result"/>".replace(/&quot;/g,'"')));
-//            $scope.vercompare_results = JSON.parse("<s:property value="maps_object.pdb_previous_data_result"/>".replace(/&quot;/g,'"'));
-//            alert(JSON.stringify($scope.vercompare_results));
-
-//            $scope.features_list = $scope.features_list = [{"fid":"1","fea":"FRT MNL A/C ON","domain":"AIR CONDITIONER"},{"fid":"2","fea":"FRT AUTO A/C ON (DUAL ZONE)","domain":"AIR CONDITIONER"}];
-//            alert($scope.features_list);
+            $scope.showSave =true;
+            $scope.showProceed =true;
+            $scope.showSubmit =true;
+            $scope.data = {};
             $scope.features_list= JSON.parse("<s:property value="maps_object.features"/>".replace(/&quot;/g,'"'));
 //            alert(JSON.stringify($scope.features_list));
             
@@ -439,19 +432,17 @@
                 }
             }
             
-            $scope.showSave =true;
-            $scope.showProceed =true;
-            $scope.showSubmit =true;
             $scope.$on('notifyValue', function (event, args) {
                 notification_to = args;
                 $scope.createpdbAjax("submit");
             });
-            $scope.data = {};
+            
             
             $rootScope.$on("CallLoadPDBPreviousVersion", function(event,data){
 //                alert(data);
                 $scope.LoadPDBPreviousVersion(data);
             });
+            
             $scope.createpdbAjax = function (event){
                 var status = $scope.data.status;
                 if(status == undefined || status == false)

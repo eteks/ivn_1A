@@ -73,12 +73,7 @@
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Legislation version :</label>
-                                                                <select ng-model="data.pdbversion" ng-change="LoadPDBPreviousVersion()">
-                                                                    <s:iterator value="pdbversion_result" >
-                                                                        <option value="<s:property value="id"/>">
-                                                                            <s:property value="pdb_versionname"/>
-                                                                        </option>
-                                                                    </s:iterator>
+                                                                <select ng-model="data.legislationversion" ng-options="arr as arr.legversion_name for arr in legarray_result" disabled>
                                                                 </select>
                                                             </div>
                                                             <a class="waves-effect waves-light modal-trigger" href="#modal-product-form" ng-click="showCreateForm()">Add Combination</a>
@@ -102,22 +97,22 @@
                                                                         
                                                                        
                                                                         <td class="">
-                                                                            <a href="#" ng-click="removeRow(record.lid)"><i class="icofont icofont-ui-close text-c-red"></i></a> {{record.leg}}
+                                                                            <a href="#" ng-click="removeRow(record.qb_id)"><i class="icofont icofont-ui-close text-c-red"></i></a> {{record.qb_name}}
                                                                         </td>
                                                                         <td class="text-center" ng-repeat="i in records">                                                                             
                                                                               <label class="custom_radio mytooltip tooltip-effect-8">                                                                                
-                                                                                <input type="radio" ng-click="radiovalue(record.fid,i.vehicle_model_mapping_id,'y')" name="f{{record.fid}}_{{i.vehicle_model_mapping_id}}" value="y" class="radio_button">
+                                                                                <input type="radio" ng-click="radiovalue(record.qb_id,i.model_id,'y')" name="f{{record.qb_id}}_{{i.model_id}}" value="y" class="radio_button">
                                                                                 <span class="checkmark c_b_g">                                                                                    
                                                                                 </span>
                                                                                 <span class="tooltip-content2">yes</span>
                                                                               </label>
                                                                               <label class="custom_radio mytooltip tooltip-effect-8">
-                                                                                <input type="radio" ng-click="radiovalue(record.fid,i.vehicle_model_mapping_id,'n')" name="f{{record.fid}}_{{i.vehicle_model_mapping_id}}" value="n" class="radio_button">
+                                                                                <input type="radio" ng-click="radiovalue(record.qb_id,i.model_id,'n')" name="f{{record.qb_id}}_{{i.model_id}}" value="n" class="radio_button">
                                                                                 <span class="checkmark c_b_r"></span>
                                                                                 <span class="tooltip-content2">no</span>
                                                                               </label>
                                                                               <label class="custom_radio mytooltip tooltip-effect-8">
-                                                                                <input type="radio" ng-click="radiovalue(record.fid,i.vehicle_model_mapping_id,'o')" name="f{{record.fid}}_{{i.vehicle_model_mapping_id}}" value="o" class="radio_button">    
+                                                                                <input type="radio" ng-click="radiovalue(record.qb_id,i.model_id,'o')" name="f{{record.qb_id}}_{{i.model_id}}" value="o" class="radio_button">    
                                                                                 <span class="checkmark c_b_b"></span>
                                                                                 <span class="tooltip-content2">optional</span>
                                                                               </label>
@@ -157,14 +152,14 @@
                          <div class="modal-content text-left">
 
                              <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
-                             <textarea class="col-md-12 m-b-10" ng-model="data.pdb_manual_comment"></textarea>
+                             <textarea class="col-md-12 m-b-10" ng-model="data.legislation_manual_comment"></textarea>
                              <div ng-if="create_type == true">
                                  <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">Major
                                  &nbsp;<input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">Minor
                              </div>
                              <div class="text-right">
-                                 <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('save')" name="save">Save</button>
-                                 <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('submit')" name="submit">Submit</button>
+                                 <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createlegislationversion('save')" name="save">Save</button>
+                                 <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createlegislationversion('submit')" name="submit">Submit</button>
                              </div>
                          </div>
                      </div>
@@ -229,11 +224,23 @@
     <script>
 //        var app = angular.module('angularTable', ['angularUtils.directives.dirPagination']);
 
-        app.controller('RecordCtrl1', function($scope, $http)
+        app.controller('RecordCtrl1', function($scope, $http, $window, $location, $element, $rootScope)
         {
+            this.data=[];
+            var notification_to;
+            $scope.features = [];
+            $scope.list = [];
+            $scope.Demo.dt = [];
+            $scope.vehicleresults = {};
+            $scope.vercompare_results = {};            
+            $scope.truefalse = false;
+            $scope.records = [];
+            $scope.create_type = false;
             $scope.showSave =true;
             $scope.showProceed =true;
             $scope.showSubmit =true;
+            $scope.data = {};
+            
              var data = '{"group": {"operator": "AND","rules": []}}';
              var action;
              $scope.records = [];
@@ -278,7 +285,7 @@
                     method : "POST",
                     data : {"vehicle_id":$scope.data.vehicle, "action":ac}
                 }).then(function (response, status, headers, config){
-                    alert(JSON.stringify(response.data.maps_object.pdbversion));
+//                    alert(JSON.stringify(response.data.maps_object.pdbversion));
                     $scope.array_result = [];
                     $scope.status_value = "";
                     var pdbLength = response.data.maps_object.pdbversion.length;
@@ -296,8 +303,40 @@
                          }
                          $scope.data.pdbversion = $scope.array_result[0];
                          $scope.LoadVehicleModels();
+                         if($scope.data.pdbversion != undefined){
+                            $http({
+                                url : 'loadlegislationversion_data',
+                                method : "POST",
+                                data : {"vehicle_id":$scope.data.vehicle, "action":ac}
+                            }).then(function (response, status, headers, config){
+//                                alert("response");
+//                                alert(JSON.stringify(response.data.maps_object.legversion));
+                                $scope.legarray_result = [];
+                                $scope.status_value = "";
+                                var legLength = response.data.maps_object.legversion.length;
+                                if (legLength > 0) {
+                                    for(var i = 0; i < legLength; i++)
+                                    {
+                                         var data= response.data.maps_object.legversion[i];
+                 //                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
+                 //                        $window.alert($scope.data.pdbversion);
+                                         $scope.legarray_result.push({
+                                             "legid":data.lid,
+                                             "legversion_name":parseFloat(data.lversion).toFixed(1),
+                                             "status":data.status
+                                         });
+                                     }
+                                     $scope.data.legislationversion = $scope.legarray_result[0];
+                                } else {
+                                    alert("No active Legislation version found for this vehicle");
+                                }
+                                if($scope.data.legislationversion != undefined)
+                                    $scope.create_type = true;
+                //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
+                            });
+                        }   
                     } else {
-                        $window.alert("The Selected Vehicle is now Inactive.");
+                        alert("No active PDB version found for this vehicle");
                     }
     //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                 });
@@ -320,14 +359,14 @@
                     });
                 });
             };
-            $scope.removeRow = function(lid)
+            $scope.removeRow = function(qb_id)
             {		
 //                alert(fid);
 		var index = -1;		
 		var comArr = eval( $scope.legislation );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].lid === lid ) 
+                    if( comArr[i].qb_id === qb_id ) 
                     {
                         index = i;
                         break;
@@ -356,6 +395,110 @@
 //                if(list_index != 1)
 //                    $scope.list.splice( list_index, 1 );
             };
+            $scope.radiovalue = function(qb_id,model_id,status)
+            {		
+//                alert("enter");
+                if($scope.list.length === 0)
+                {
+                    $scope.list.push({model_id:model_id,qb_id:qb_id,status:status});
+                }
+                else
+                {
+                    var temp=0;
+                    for(var i=0; i<$scope.list.length; i++)
+                    {
+                        if(($scope.list[i].model_id === model_id) && ($scope.list[i].qb_id === qb_id))
+                        {
+                            $scope.list[i].status=status;
+                            temp=1;
+                        }
+                        
+                    }
+                    if(temp==0)
+                    {
+                        $scope.list.push({model_id:model_id,qb_id:qb_id,status:status});
+                    }
+                }
+//                alert(JSON.stringify($scope.list))
+            };
+            $scope.$on('notifyValue', function (event, args) {
+                notification_to = args;
+                $scope.createlegislationAjax("submit");
+            });
+            $scope.createlegislationAjax = function (event){
+//                alert("createlegislationAjax");
+                var status = $scope.data.status;
+                if(status == undefined || status == false)
+                    notification_to = undefined;
+                var data = {};
+//                $scope.data.vehicle_id = $scope.data.vehicle;
+                data['legislationversion'] = $scope.data;
+                data['legislationdata_list'] = $scope.list;
+                data['button_type'] = event;
+                data['notification_to'] = notification_to+"";
+//                alert(JSON.stringify(data));
+                $http({
+                    url: 'createlegislationversion',
+                    method: "POST",
+                    data: data,
+                }).then(function (response, status, headers, config) {
+//                    $scope.vercompare_results = {"removed_features":"(d1) feature3, (d1) feature5", 
+//                                                 "added_features":"(d1) feature4", 
+//                                                 "removed_models":"m2,m4", "added_models":"m3", 
+//                                                 "previous_version":"1.0", "current_version":"1.1"
+//                                                };
+//                      alert(JSON.stringify(response.data.maps_object));
+//                      alert(JSON.stringify(response.data.maps_string));
+                      alert(response.data.maps_string.status);
+                      var vercompare_res = response.data.maps_object.pdb_previous_data_result;
+//                      if(vercompare_res != undefined){
+//                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
+//                            alert(JSON.stringify($scope.vercompare_results));    
+//                      }
+//                      else{
+//                            alert("No any previous version found to compare");
+//                      }
+                      $('#modal-comment').closeModal();
+    //                                    $window.alert(JSON.stringify(data));
+    //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
+    //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
+    //            //                        Materialize.toast(data['maps']["status"], 4000);
+                });
+            };
+            
+            $scope.createlegislationversion = function (event)
+            {
+//              alert("createpdbversion");
+//            var status = true;
+            var status = $scope.data.status;
+            if(status == undefined )
+                status = false;
+//            if (!$scope.doSubmit) 
+//            {
+//                return;
+//            }
+//            alert("before do submit");
+//            $scope.doSubmit = false;  
+//            alert(JSON.stringify($scope.records));
+//            alert(JSON.stringify($scope.list));
+//            alert($scope.list.length);
+//            alert($scope.records.length * $scope.features.length);
+            if($scope.list.length > 0){
+                if($scope.list.length === $scope.records.length * $scope.legislation.length){
+                    if(status && event === "submit"){
+                        $(".notifyPopup").click();
+                    } else {
+                        $scope.createlegislationAjax(event);
+                    }
+//                    $scope.createpdbAjax(event);
+                }
+                else
+                    alert("Please fill all the legislation status to create PDB version");
+            }
+            else{
+                alert("Please fill the legislation status to create PDB version");
+            }
+          };
 
     });
     var queryBuilder = angular.module('queryBuilder', []);

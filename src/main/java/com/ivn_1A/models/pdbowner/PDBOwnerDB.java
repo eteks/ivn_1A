@@ -918,5 +918,18 @@ public class PDBOwnerDB {
             return null;
         }
     }
+    public static Pdbversion getPdbversion(int id) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            Pdbversion pdbversion = s.get(Pdbversion.class, id);
+            tx.commit();
+            s.clear();
+            return pdbversion;
+        } catch (Exception e) {
+            System.err.println("Error in \"getPdbversion\" : " + e.getMessage());
+            return null;
+        }
+    }
 
 }
