@@ -169,7 +169,7 @@
                                                 <input type="hidden" id="combid" ng-model="combid" />
                                                 <input type="hidden" id="button_status" ng-model="button_status" />
                                             </div>
-                                            <query-builder group="filter.group"></query-builder>
+                                            <query-builder group="filter.group" ></query-builder>
                                             <div class="col-md-12 col-lg-offset-1">
                                                 <div id="builder-basic" style="display: block;"></div>
                                                 <div class="btn-group float-right">                                                    
@@ -216,7 +216,7 @@
                             {
                                 this.data = [];
                                 $scope.legislation = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-                                $window.alert(JSON.stringify($scope.legislation));
+//                                $window.alert(JSON.stringify($scope.legislation));
                                 
                                  var data = '{"group": {"operator": "AND","rules": []}}';
 
@@ -243,18 +243,18 @@
                                             computed(group.rules[i].group) :
                                             " "+group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
                                     }
-
+//                                    alert(str);
                                     return str;
                                 }
 
                                 $scope.json = null;
 
                                 $scope.filter = JSON.parse(data);
-
+//                                alert(JSON.stringify($scope.filter));
                                 $scope.$watch('filter', function (newValue) {
                                     $scope.json = JSON.stringify(newValue, null, 2);
                                     $scope.output = computed(newValue.group);
-//                                    alert(JSON.stringify($scope.output));
+//                                    alert("2121212121 "+computed(newValue.group));
                                 }, true);                            
 //                                $scope.getAllLegislation = function(){
 //                                    //                alert("getall");
@@ -301,9 +301,17 @@
                                 }
                             }
                             $scope.view_and_edit = function() {
-                                alert("hai");
-                                $scope.output = $scope.record.combination;
-                                $scope.rule.field = $scope.record.combination;
+//                                alert(JSON.stringify($scope.legislation));
+                                for (var item in $scope.legislation) {
+                                    $scope.output = $scope.legislation[item].combination;
+                                    var cob = $scope.legislation[item].combination.trim().split(/[\s+/.\=/_]/g);
+//                                    alert(cob[0]);
+                                    $scope.combname = $scope.legislation[item].leg;
+                                    $scope.operator = [{ name: 'AND' }];
+                                    $scope.field = [{ name: 'f1' }];
+                                    $scope.condition = [{ name: 'true' }];
+                                    $scope.filter = {"group":{"operator":"AND","condition": 'true', "field": 'f1', "field_id": '1',"rules":["f1=1 true"]}};
+                                }
                             }
                             
                             });
