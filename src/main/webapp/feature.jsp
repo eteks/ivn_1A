@@ -23,7 +23,12 @@
                                     <li class="breadcrumb-item">
                                         <a href="index.html"> <i class="icofont icofont-home"></i> </a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#!">Version</a> </li>
+                                    <li class="breadcrumb-item">
+                                        <s:url action="feature.action" var="aURL" />
+                                        <s:a href="%{aURL}">
+                                            Back
+                                        </s:a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

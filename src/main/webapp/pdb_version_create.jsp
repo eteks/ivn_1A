@@ -342,7 +342,7 @@
             
             $scope.validateVehicle = function() 
             {
-                if ($scope.Demo.dt.vehiclename && $scope.data.new_vehicle=="new_vehicle") {
+                if ($scope.Demo.dt.vehiclename!="" && $scope.data.new_vehicle=="new_vehicle") {
                     
                     //Checks the vehicle is existing or not
                     $http({
@@ -357,20 +357,20 @@
                         console.log(JSON.stringify(response.data.maps_string.status));
                     });
                  } else {
-                     
+                     $window.alert("Choose CheckBox and Enter Vehicle Name");
                     //If the checkbox not selected then checked and Checks the vehicle is existing or not
-                    $scope.data.new_vehicle="new_vehicle";
-                    $http({
-                        url: 'verifyVehicle',
-                        method: "POST",
-                        data: {"vehiclename":$scope.Demo.dt.vehiclename},
-                    }).then(function (response, status, headers, config){
-                        if(response.data.maps_string.failed){
-                            $window.alert("Your Entered Vehicle Already Exisit");
-//                            $window.document.getElementById('model').focus();
-                        }
-                        console.log(JSON.stringify(response.data.maps_string.status));
-                    });
+//                    $scope.data.new_vehicle="new_vehicle";
+//                    $http({
+//                        url: 'verifyVehicle',
+//                        method: "POST",
+//                        data: {"vehiclename":$scope.Demo.dt.vehiclename},
+//                    }).then(function (response, status, headers, config){
+//                        if(response.data.maps_string.failed){
+//                            $window.alert("Your Entered Vehicle Already Exisit");
+////                            $window.document.getElementById('model').focus();
+//                        }
+//                        console.log(JSON.stringify(response.data.maps_string.status));
+//                    });
                 }
             }
             
@@ -381,7 +381,6 @@
             $scope.tabstep2 = function() 
             {
                 if ($scope.data.new_vehicle=="select_vehicle") {
-                    
                     var vehiclename = $scope.Demo.dt.vehiclename;
                     var vn = {vehiclename};
                     var m = [];
@@ -396,7 +395,7 @@
                         method: "POST",
                         data: vn,
                     }).then(function (response, status, headers, config){
-                        
+
                         $scope.vehicleresults = response.data.maps_object.vehicleAndModel;
                         $scope.records = response.data.maps_object.vehicleAndModel.models;
 //                        $window.alert("$scope.records1 "+JSON.stringify($scope.records));
@@ -406,29 +405,35 @@
 //                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
                 } else if ($scope.data.new_vehicle=="new_vehicle") {
                     
-                    var vehiclename = $scope.Demo.dt.vehiclename;
-                    var vn = {vehiclename};
-                    var m = [];
-                    var arr = $scope.Demo.dt.modelname;
-                    for (var item in arr) {
-                        m.push({"modelname":arr[item],});    
+                    if ($scope.Demo.dt.vehiclename != "" && $scope.Demo.dt.modelname) {
+                        var vehiclename = $scope.Demo.dt.vehiclename;
+                        var vn = {vehiclename};
+                        var m = [];
+                        var arr = $scope.Demo.dt.modelname;
+                        for (var item in arr) {
+                            m.push({"modelname":arr[item],});    
+                        }
+                        vn.models = m;
+        //                    $window.alert(JSON.stringify(vn));
+                        $http({
+                            url: 'checkvehicleandmodel',
+                            method: "POST",
+                            data: vn,
+                        }).then(function (response, status, headers, config){
+                            alert(JSON.stringify(response.data.maps_object.vehicleAndModel));
+                            $scope.vehicleresults = response.data.maps_object.vehicleAndModel;
+                            $scope.records = response.data.maps_object.vehicleAndModel.models;
+        //                        $window.alert("$scope.records "+JSON.stringify($scope.records));
+                        });
+                    } else {
+                        alert("Vehicle and Model Missing");
+                        location.reload();
                     }
-                    vn.models = m;
-//                    $window.alert(JSON.stringify(vn));
-                    $http({
-                        url: 'checkvehicleandmodel',
-                        method: "POST",
-                        data: vn,
-                    }).then(function (response, status, headers, config){
-                        alert(JSON.stringify(response.data.maps_object.vehicleAndModel));
-                        $scope.vehicleresults = response.data.maps_object.vehicleAndModel;
-                        $scope.records = response.data.maps_object.vehicleAndModel.models;
-//                        $window.alert("$scope.records "+JSON.stringify($scope.records));
-                    });
 //                    var ck = document.getElementById("vehiclename").options[document.getElementById("vehiclename").selectedIndex].text;
 //                    alert(JSON.stringify($scope.data));
                 } else {
-                    $window.alert("Please fill all the vehicle details");
+                    alert("Please fill all the vehicle details");
+                    location.reload();
                 }
             }
             

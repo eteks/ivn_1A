@@ -62,15 +62,15 @@
                                                                 <div class="panel-heading">
                                                                   <h5 class="panel-title">List of {{list.label}} </h5>
                                                                 </div>
-                                                                <ul dnd-list="list.people"
+                                                                <ul dnd-list="list.version"
                                                                           dnd-allowed-types="list.allowedTypes"
-                                                                          dnd-disable-if="list.people.length == list.max-1">
+                                                                          dnd-disable-if="list.version.length == list.max-1">
 
-                                                                          <li ng-repeat="person in list.people"
+                                                                          <li ng-repeat="person in list.version"
                                                                               dnd-draggable="person"
                                                                               dnd-type="person.type"
                                                                               dnd-disable-if="person.type == 'unknown'"
-                                                                              dnd-moved="list.people.splice($index, 1)"
+                                                                              dnd-moved="list.version.splice($index, 1)"
                                                                               class="background-{{person.type}}"
                                                                               >
                                                                               {{person.name}}
@@ -133,8 +133,6 @@
                         <input type="checkbox" ng-model="data.status">
                         <span class="slider round"></span>
                      </label>
-                     
-
                     <a class="feature_add_tip modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" >Proceed</a>
                     <div id="modal-comment" class="modal">
                          <div class="modal-content text-left">
@@ -201,7 +199,7 @@
                           label: "PDB",
                           allowedTypes: ['man'],
                           max: 3,
-                          people: [
+                          version: [
                               {name: "PDB 1.0", type: "pdb"},
                               {name: "PDB 2.0", type: "pdb"},
                               {name: "PDB 3.0", type: "pdb"}
@@ -211,7 +209,7 @@
                           label: "Safety",
                           allowedTypes: ['safety'],
                           max: 3,
-                          people: [
+                          version: [
                               {name: "Safety 1.0", type: "safety"},
                               {name: "Safety 2.0", type: "safety"},
                               {name: "Safety 3.0", type: "safety"}
@@ -221,7 +219,7 @@
                           label: "Legislation",
                           allowedTypes: ['legislation'],
                           max: 3,
-                          people: [
+                          version: [
                               {name: "Legislation 1.0", type: "legislation"},
                               {name: "Legislation 2.0", type: "legislation"},
                               {name: "Legislation 3.0", type: "legislation"}
@@ -231,7 +229,7 @@
                           label: "Feature version",
                           allowedTypes: ['pdb', 'safety','legislation'],
                           max: 4,
-                          people: []
+                          version: []
                       }
                   ]
                 }
