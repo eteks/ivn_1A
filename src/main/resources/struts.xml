@@ -98,6 +98,9 @@
         <action name="loadlegislationversion_data" class="com.ivn_1A.controllers.pdbowner.Safety_and_Legislation" method="LoadLegislationversionData">
             <result type="json" />
         </action>
+         <action name="loadpdb_safety_leg_version" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="LoadPdbSafetyLeg_version">
+            <result type="json" />
+        </action>
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">
@@ -172,7 +175,7 @@
             <!--<result name="session">index.jsp</result>--> 
             <result>feature_version_listing.jsp</result>
         </action>
-        <action name="feature_version_create" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+        <action name="feature_version_create" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="FeatureversionPage">
             <!--<result name="session">index.jsp</result>--> 
             <result>feature_version_create.jsp</result>
         </action>

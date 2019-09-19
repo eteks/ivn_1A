@@ -46,9 +46,11 @@
                                                             
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle"> Select Vehicle:</label>
-                                                                <select ng-hide="data.vehicleversion"></select>
-                                                                <select ng-change="LoadVehicleModels(data.vehiclename)" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
-                                                                        <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
+                                                                <select id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()" >
+                                                                    <option value="">Select Vehicle</option>
+                                                                    <s:iterator value="vehicleversion_result" var="data" >
+                                                                        <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
+                                                                    </s:iterator>
                                                                 </select>
                                                             </div>
                                                             
@@ -164,6 +166,20 @@
 
         app.controller('RecordCtrl1', function($scope, $http)
         {
+            this.data=[];
+            var notification_to;
+            $scope.features = [];
+            $scope.list = [];
+            $scope.Demo.dt = [];
+            $scope.vehicleresults = {};
+            $scope.vercompare_results = {};            
+            $scope.truefalse = false;
+            $scope.records = [];
+            $scope.create_type = false;
+            $scope.showSave =true;
+            $scope.showProceed =true;
+            $scope.showSubmit =true;
+            $scope.data = {};
              $scope.dropCallback = function(index, item, external, type) {
                 // Return false here to cancel drop. Return true if you insert the item yourself.
                 // roll down and delete any empty columns//
@@ -234,10 +250,66 @@
                   ]
                 }
               };
+              alert(JSON.stringify($scope.models.dropzones.B[0].version));
 
               $scope.$watch('models.dropzones', function(model) {
                 $scope.modelAsJson = angular.toJson(model, true);
-              }, true);                            
+              }, true);      
+              
+            //getting pdb version and id
+            $scope.LoadPreviousVersion = function()
+            {
+                alert($scope.data.vehicle);
+                $http({
+                    url : 'loadpdb_safety_leg_version',
+                    method : "POST",
+                    data : {"vehicle_id":$scope.data.vehicle}
+                }).then(function (response, status, headers, config){
+                    
+//                    $scope.array_result = [];
+//                    $scope.status_value = "";
+//                    var pdbLength = response.data.maps_object.pdbversion.length;
+////                    alert(JSON.stringify(response.data.maps_object.pdbversion));
+//                    if (pdbLength > 0) {
+//                        for(var i = 0; i < pdbLength; i++)
+//                        {
+//                             var data= response.data.maps_object.pdbversion[i];
+//     //                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
+//     //                        $window.alert($scope.data.pdbversion);
+//                             $scope.array_result.push({
+//                                 "pdbid":data.pid,
+//                                 "pdbversion_name":parseFloat(data.pversion).toFixed(1),
+//                                 "status":data.status
+//                             });
+//                         }
+////                         alert(JSON.stringfy($scope.array_result));
+////                         alert($location.absUrl());
+//                         if($location.absUrl().includes("?")){
+//                            var pdb_id = $location.absUrl().split("?")[1].split("&")[0].split("=")[1];
+////                             alert(pdb_id);                             
+//                            for (var i = 0; i < $scope.array_result.length; i++){
+//                                // here jsonObject['sync_contact_list'][i] is your current "bit"
+////                                alert($scope.array_result[i].pdbid==pdb_id);
+//                                if ($scope.array_result[i].pdbid==pdb_id) {
+////                                    alert(JSON.stringify($scope.array_result[i]));
+//                                    $scope.data.pdbversion = $scope.array_result[i];
+//                                }
+//                            }
+////                             alert(JSON.stringify($scope.array_result['pdbid']));
+////                             $scope.data.pdbversion = {"pdbid":2,"pdbversion_name":"1.1","status":true};
+//                         }
+//                         else{
+//                             alert(JSON.stringify($scope.array_result[0]));
+//                             $scope.data.pdbversion = $scope.array_result[0];
+//                         }    
+////                         $scope.data.pdbversion = {"pdbid":5,"pdbversion_name":"2.1","status":true};
+//                         $scope.LoadVehicleModels();
+//                    } else {
+//                        $window.alert("The Selected Vehicle is now Inactive.");
+//                    }
+    //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
+                });
+            };
 
         });
                            
