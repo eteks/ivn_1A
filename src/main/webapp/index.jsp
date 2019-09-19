@@ -41,7 +41,7 @@
                                             <s:a href="%{aURL}">   
                                                     <div class="card-block">
                                                         <span>PDB Owner</span></br>
-                                                        <span class="count"><s:property value="dashboard_result.vehicleversion_count"/></span>
+                                                        <span class="count"><s:property value="dashboard_result.vehicleversion_count"/>+</span>
                                                         <i class="icofont  icofont-car-alt-1 text-c-red"></i>  
                                                         <div class="clearfix"></div>
                                                     </div>

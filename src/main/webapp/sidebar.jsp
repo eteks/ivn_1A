@@ -121,10 +121,10 @@
                             </div>
                             <ul class="pcoded-item pcoded-left-item">
                                 <li class="active">
-                                    <s:url action="dashboard.action" var="aURL" />
+                                    <s:url action="#" var="aURL" />
                                     <s:a href="%{aURL}">   
                                         <i class="icofont icofont-throne"></i>
-                                        Dashboard
+                                        Feature version
                                     </s:a> 
                                  </li>
                                  <!--{{groups}}-->
