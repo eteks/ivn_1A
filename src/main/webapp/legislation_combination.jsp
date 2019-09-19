@@ -173,7 +173,7 @@
                                             <div class="col-md-12 col-lg-offset-1">
                                                 <div id="builder-basic" style="display: block;"></div>
                                                 <div class="btn-group float-right">                                                    
-                                                    <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="safety" ng-click="addCombination($element.target)" >Submit</button>                                                        
+                                                    <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="legislation" ng-click="addCombination($element.target)" >Submit</button>                                                        
                                                 </div>
                                             </div>
                             </div>
@@ -270,10 +270,12 @@
 //                                    var result = $('#builder-basic').queryBuilder('getSQL', false);
                                     result['qb_name'] = $scope.combname;
                                     result['sql'] = $scope.output;
-//                                    var ctype = btn.getAttribute('data-ctype').value;
-                                    var ctype = $(this).attr('data-ctype');
+    //                                    var ctype = btn.getAttribute('data-ctype').value;
+//                                        var myButton = angular.element(document.querySelector('.btn-primary'));
+                                    result['ctype'] = angular.element(document.querySelector('.btn-primary')).data('ctype');
+//                                        $window.alert(ctype);
                                     var url_link = "";
-                                    if(ctype === "safety")
+                                    if(result['ctype'] === "safety")
                                         url_link = "createsafety_comb";
                                     else
                                         url_link = "createlegislation_comb";
@@ -310,7 +312,9 @@
                                     $scope.operator = [{ name: 'AND' }];
                                     $scope.field = [{ name: 'f1' }];
                                     $scope.condition = [{ name: 'true' }];
-                                    $scope.filter = {"group":{"operator":"AND","condition": 'true', "field": 'f1', "field_id": '1',"rules":["f1=1 true"]}};
+                                    scope.group.rules=[{"condition":"1","field":"f1","data":"","$$hashKey":"005"},{"condition":"0","field":"f1","data":"","$$hashKey":"008"}];
+//                                    scope.group={"operator":"AND","condition": 'true', "field": 'f1', "field_id": '1',"rules":[{"condition":"true","field":"f1","data":"","$$hashKey":"005"},{"condition":"false","field":"f1","data":"","$$hashKey":"008"}]};
+                                    $scope.filter = {"group":{"operator":"AND","condition": 'true', "field": 'f1', "field_id": '1',"rules":[{"condition":"true","field":"f1","data":"","$$hashKey":"005"},{"condition":"false","field":"f1","data":"","$$hashKey":"008"}]}};
                                 }
                             }
                             

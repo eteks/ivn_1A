@@ -55,6 +55,11 @@
                                                                     <th ng-click="sort('version')" class="">No</th>
                                                                     <th ng-click="sort('version')" class="">Safety Version</th>
                                                                     <th ng-click="sort('vehicle')" class="">Vehicle Details</th>
+                                                                    <th ng-click="sort('vehicle')" class="">PDB Details</th>
+                                                                        <th ng-click="sort('status')" class="text-center">Status</th>
+                                                                        <th ng-click="sort('status')" class="text-center">Version Type</th>
+                                                                    <th ng-click="sort('vehicle')" class="">Created Date</th>
+                                                                    <th ng-click="sort('vehicle')" class="">Modified Date</th>
                                                                     <th ng-click="sort('action')" class="text-center">Action</th>
                                                                     
                                                                 </tr>
@@ -88,11 +93,45 @@
                                                                                 </span>
                                                                             </a>
                                                                         </td>
-                                                                        <td class="text-center">
+                                                                        
+                                                                        <td class="">
+                                                                           
+                                                                                {{record.version}}
+                                                                                
+                                                                        </td>
+                                                                        <td class="text-center"> 
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status === true">Active
+                                                                            </button>
+                                                                            <button class="btn btn-default btn-bg-c-yellow btn-outline-default btn-round btn-action" ng-if="record.status === false">Inactive
+                                                                            </button>
+                                                                        </td>                                                                        
+                                                                        <td class="text-center">                                                                             
+                                                                            <span ng-if="record.flag === false">Temporary</span>
+                                                                            <span ng-if="record.flag === true">Permanent</span>
+                                                                        </td>
+                                                                        <td class="">
+                                                                           
+                                                                                {{record.created_date}}
+                                                                                
+                                                                        </td>
+                                                                        <td class="">
+                                                                           
+                                                                                {{record.modified_date}}
+                                                                                
+                                                                        </td>
+                                                                        <td class="text-center"> 
+
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.id}}" ng-click="View_and_edit($event)" name="edit" ng-if="record.flag === false || record.status === false">Edit</button>
+
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-id="{{record.id}}" ng-click="View_and_edit($event)" name="view" ng-if="record.status === true && record.flag === true">view</button>
+
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.id}}" ng-click="delete($event)" name="delete" ng-if="record.delBut === 1">Delete</button>
+                                                                        </td>
+<!--                                                                        <td class="text-center">
                                                                            
                                                                                 <a href="#" ng-click="removeRow(record.fid)"><i class="icofont icofont-ui-close text-c-red"></i></a>
                                                                                 
-                                                                        </td>
+                                                                        </td>-->
                                                                         
                                                                     </tr>
 
@@ -120,8 +159,7 @@
         {
             
                this.data = [];
-              $scope.safety = [{"saf":"1.0","model":"v1,v2","version":"1.0","vehicle":"Xuv"},
-                                    {"saf":"2.0","model":"v1,v2","version":"2.0","vehicle":"Scorpio"}]; 
+              $scope.safety = [{"flag":true,"saf_id":1,"model":"a1,a2,a3","created_date":"Sep 19, 2019 4:27:38 PM","modified_date":"Sep 19, 2019 4:27:38 PM","version":"1.0","saf":"1.0","vehicle":"audi","status":true}]; 
           
         });
         app.filter('customSplitString', function() 

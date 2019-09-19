@@ -68,7 +68,11 @@
             <result type="json" />
         </action>
         
-        <action name="createlegislation_comb" class="com.ivn_1A.controllers.legislation.Legislation_Combination" method="CreateLegComb">
+        <action name="createlegislation_comb" class="com.ivn_1A.controllers.legislation_safty.Legislation_Combination" method="CreateLegComb">
+            <result type="json" />
+        </action>
+        
+        <action name="createsafety_comb" class="com.ivn_1A.controllers.legislation_safty.Safty_Combination" method="CreateSafComb">
             <result type="json" />
         </action>
         
@@ -132,7 +136,7 @@
             <result>legislation_combination.jsp</result>
         </action>
         
-        <action name="legislate_list" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+        <action name="legislate_list" class="com.ivn_1A.controllers.legislation.Legislation_Combination" method="GetLegislationListing">
             <!--<result name="session">index.jsp</result>--> 
             <result>legislate_list.jsp</result>
         </action>

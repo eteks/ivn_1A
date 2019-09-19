@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ivn_1A.controllers.legislation;
+package com.ivn_1A.controllers.legislation_safty;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.models.legislation.LegislationDB;
+import com.ivn_1A.models.pdbowner.Legislationversion_group;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.pdbowner.Querybuilder;
 import java.time.LocalDateTime;
@@ -85,7 +86,7 @@ public class Legislation_Combination {
 
                 System.out.println("Ready to update");
                 boolean r_status = readValue.get("qb_status").asBoolean();
-                Querybuilder lc = new Querybuilder(comb_id, readValue.get("qb_name").asText(), "legislation", readValue.get("sql").asText(), r_status, new Date(), new Date(), PDBOwnerDB.getUser(1));
+                Querybuilder lc = new Querybuilder(comb_id, readValue.get("qb_name").asText(), readValue.get("ctype").asText(), readValue.get("sql").asText(), r_status, new Date(), new Date(), PDBOwnerDB.getUser(1));
                 //int result = VehicleversionDB.insertVehicleVersion(v);
                 long lc_res = LegislationDB.insertLegislationCombination(lc);
                 if (lc_res > 0) {
@@ -97,7 +98,7 @@ public class Legislation_Combination {
 
                 System.out.println("Ready to insert");
                 boolean r_status = readValue.get("qb_status").asBoolean();
-                Querybuilder lc = new Querybuilder(comb_id, readValue.get("qb_name").asText(), "legislation", readValue.get("sql").asText(), r_status, new Date(), new Date(), PDBOwnerDB.getUser(1));
+                Querybuilder lc = new Querybuilder(comb_id, readValue.get("qb_name").asText(), readValue.get("ctype").asText(), readValue.get("sql").asText(), r_status, new Date(), new Date(), PDBOwnerDB.getUser(1));
                 //int result = VehicleversionDB.insertVehicleVersion(v);
                 long lc_res = LegislationDB.insertLegislationCombination(lc);
                 if (lc_res > 0) {
@@ -111,6 +112,42 @@ public class Legislation_Combination {
             System.out.println("entered into catch \'CreateLegComb\': " + e);
             maps.put("status", "Some error occurred !!");
         }
+        return "success";
+    }
+
+    public String GetLegislationListing() {
+        System.out.println("GetLegislationListing");
+        Querybuilder lc = new Querybuilder();
+        try {
+            tuple_result = LegislationDB.GetLegislationListing();
+            tuple_result.stream().map((legislationversion_group) -> {
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("leg_id", legislationversion_group.get("leg_id"));
+                columns.put("leg", String.format("%.1f", legislationversion_group.get("leg")));
+                columns.put("created_date", legislationversion_group.get("created_date"));
+                columns.put("modified_date", legislationversion_group.get("modified_date"));
+                columns.put("model", legislationversion_group.get("modelname"));
+                columns.put("vehicle", legislationversion_group.get("vehiclename"));
+                columns.put("version", String.format("%.1f", legislationversion_group.get("pdb_versionname")));
+                columns.put("status", legislationversion_group.get("status"));
+                columns.put("flag", legislationversion_group.get("flag"));
+                return columns;
+            }).map((columns) -> {
+                result_data.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums" + columns);
+            });
+            result_data_obj = new Gson().toJson(result_data);
+//            vehmod_map_result_obj = new Gson().toJson(vehmod_map_result);
+//                vehmod_map_result_obj =  Gson().toJSON(vehmod_map_result);
+            System.out.println("oject" + result_data_obj);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            maps.put("status", "Some error occurred !!");
+        }
+//            return vehmod_map_result;
+//            System.out.println("Result"+vehmod_map_result);
         return "success";
     }
 
