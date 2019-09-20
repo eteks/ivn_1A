@@ -260,6 +260,7 @@ public class Pdbversion_Group {
                     maps_string.put("status", "New Permanent PDB Version Created Successfully");
                 }
             }
+            maps_string.put("status_code", "1");
             
 //            //Old code
 ////            if (pdbversion_value.has("pdbversion") && status == false) {
@@ -339,6 +340,7 @@ public class Pdbversion_Group {
             System.out.println("entered into catch");
             System.out.println(ex.getMessage());
             maps_string.put("status", "Some error occurred !!");
+            maps_string.put("status_code", "0");
         }
         return "success";
     }

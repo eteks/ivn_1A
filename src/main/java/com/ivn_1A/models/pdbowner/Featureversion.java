@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -28,6 +30,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class Featureversion implements Serializable {
     
     private int id;
+    private float feature_versionname;
+    private String feature_manual_comment;
     private Vehicle vehicle_id;
     private Pdbversion pdbversion_id;
     private Safetyversion safetyversion_id;
@@ -39,6 +43,8 @@ public class Featureversion implements Serializable {
     private User created_or_updated_by;
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
     public int getId() {
         return id;
     }
@@ -46,6 +52,25 @@ public class Featureversion implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+    
+    @Column(name = "feature_versionname", nullable = false, columnDefinition="Float(10,1)")
+    public float getFeature_versionname() {
+            return feature_versionname;
+    }
+
+    public void setFeature_versionname(float feature_versionname) {
+            this.feature_versionname = feature_versionname;
+    }
+    
+    @Column(name = "feature_manual_comment", nullable = false, columnDefinition ="Text")
+    public String getFeature_manual_comment() {
+            return feature_manual_comment;
+    }
+
+    public void setFeature_manual_comment(String feature_manual_comment) {
+            this.feature_manual_comment = feature_manual_comment;
+    }
+    
     @OneToOne
     @JoinColumn(name = "vehicle_id", nullable = false)
     public Vehicle getVehicle_id() {

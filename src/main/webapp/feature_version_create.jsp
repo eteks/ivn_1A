@@ -140,14 +140,14 @@
                          <div class="modal-content text-left">
 
                              <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
-                             <textarea class="col-md-12 m-b-10" ng-model="data.pdb_manual_comment"></textarea>
+                             <textarea class="col-md-12 m-b-10" ng-model="data.featureversion_manual_comment"></textarea>
                              <div ng-if="create_type == true">
                                  <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">Major
                                  &nbsp;<input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">Minor
                              </div>
                              <div class="text-right">
-                                 <button  type="submit" class="btn btn-primary"  name="save">Save</button>
-                                 <button  type="submit" class="btn btn-primary"  name="submit">Submit</button>
+                                 <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createfeatureversion('save')" name="save">Save</button>
+                                 <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createfeatureversion('submit')" name="submit">Submit</button>
                              </div>
                          </div>
                      </div>
@@ -164,7 +164,7 @@
     <script>
 //        var app = angular.module('angularTable', ['angularUtils.directives.dirPagination']);
 
-        app.controller('RecordCtrl1', function($scope, $http)
+        app.controller('RecordCtrl1', function($scope, $http, $window)
         {
             this.data=[];
             var notification_to;
@@ -215,31 +215,34 @@
                           label: "PDB",
                           allowedTypes: ['man'],
                           max: 3,
-                          version: [
-                              {name: "PDB 1.0", type: "pdb"},
-                              {name: "PDB 2.0", type: "pdb"},
-                              {name: "PDB 3.0", type: "pdb"}
-                          ]
+//                          version: [
+//                              {name: "PDB 1.0", type: "pdb"},
+//                              {name: "PDB 2.0", type: "pdb"},
+//                              {name: "PDB 3.0", type: "pdb"}
+//                          ]
+                          version:[]
                       },
                       {
                           label: "Safety",
                           allowedTypes: ['safety'],
                           max: 3,
-                          version: [
-                              {name: "Safety 1.0", type: "safety"},
-                              {name: "Safety 2.0", type: "safety"},
-                              {name: "Safety 3.0", type: "safety"}
-                          ]
+//                          version: [
+//                              {name: "Safety 1.0", type: "safety"},
+//                              {name: "Safety 2.0", type: "safety"},
+//                              {name: "Safety 3.0", type: "safety"}
+//                          ]
+                          version:[]
                       },
                       {
                           label: "Legislation",
                           allowedTypes: ['legislation'],
                           max: 3,
-                          version: [
-                              {name: "Legislation 1.0", type: "legislation"},
-                              {name: "Legislation 2.0", type: "legislation"},
-                              {name: "Legislation 3.0", type: "legislation"}
-                          ]
+//                          version: [
+//                              {name: "Legislation 1.0", type: "legislation"},
+//                              {name: "Legislation 2.0", type: "legislation"},
+//                              {name: "Legislation 3.0", type: "legislation"}
+//                          ]
+                         version:[]
                       },
                       {
                           label: "Feature version",
@@ -250,64 +253,86 @@
                   ]
                 }
               };
-              alert(JSON.stringify($scope.models.dropzones.B[0].version));
+//              alert(JSON.stringify($scope.models.dropzones.B[0].version));
 
               $scope.$watch('models.dropzones', function(model) {
                 $scope.modelAsJson = angular.toJson(model, true);
               }, true);      
               
-            //getting pdb version and id
             $scope.LoadPreviousVersion = function()
             {
-                alert($scope.data.vehicle);
                 $http({
                     url : 'loadpdb_safety_leg_version',
                     method : "POST",
                     data : {"vehicle_id":$scope.data.vehicle}
                 }).then(function (response, status, headers, config){
-                    
-//                    $scope.array_result = [];
-//                    $scope.status_value = "";
-//                    var pdbLength = response.data.maps_object.pdbversion.length;
-////                    alert(JSON.stringify(response.data.maps_object.pdbversion));
-//                    if (pdbLength > 0) {
-//                        for(var i = 0; i < pdbLength; i++)
-//                        {
-//                             var data= response.data.maps_object.pdbversion[i];
-//     //                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
-//     //                        $window.alert($scope.data.pdbversion);
-//                             $scope.array_result.push({
-//                                 "pdbid":data.pid,
-//                                 "pdbversion_name":parseFloat(data.pversion).toFixed(1),
-//                                 "status":data.status
-//                             });
-//                         }
-////                         alert(JSON.stringfy($scope.array_result));
-////                         alert($location.absUrl());
-//                         if($location.absUrl().includes("?")){
-//                            var pdb_id = $location.absUrl().split("?")[1].split("&")[0].split("=")[1];
-////                             alert(pdb_id);                             
-//                            for (var i = 0; i < $scope.array_result.length; i++){
-//                                // here jsonObject['sync_contact_list'][i] is your current "bit"
-////                                alert($scope.array_result[i].pdbid==pdb_id);
-//                                if ($scope.array_result[i].pdbid==pdb_id) {
-////                                    alert(JSON.stringify($scope.array_result[i]));
-//                                    $scope.data.pdbversion = $scope.array_result[i];
-//                                }
-//                            }
-////                             alert(JSON.stringify($scope.array_result['pdbid']));
-////                             $scope.data.pdbversion = {"pdbid":2,"pdbversion_name":"1.1","status":true};
-//                         }
-//                         else{
-//                             alert(JSON.stringify($scope.array_result[0]));
-//                             $scope.data.pdbversion = $scope.array_result[0];
-//                         }    
-////                         $scope.data.pdbversion = {"pdbid":5,"pdbversion_name":"2.1","status":true};
-//                         $scope.LoadVehicleModels();
-//                    } else {
-//                        $window.alert("The Selected Vehicle is now Inactive.");
-//                    }
-    //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
+                    $scope.models.dropzones.B[0].version = response.data.maps_object.pdb_results;
+                    $scope.models.dropzones.B[1].version = response.data.maps_object.saf_results;
+                    $scope.models.dropzones.B[2].version = response.data.maps_object.leg_results;
+                });
+            };
+            
+            $scope.$on('notifyValue', function (event, args) {
+                notification_to = args;
+                $scope.createfeatureAjax("submit");
+            });
+            
+            $scope.createfeatureversion = function (event)
+            {
+//                alert("createfeatureversion");
+                var status = $scope.data.status;
+                if(status == undefined )
+                    status = false;
+                if($scope.models.dropzones.B[3].version.length > 0){
+                    if(status && event === "submit"){
+                        $(".notifyPopup").click();
+                    } else {
+                        $scope.createfeatureAjax(event);
+                    }
+                }
+                else{
+                    alert("Please drop the versions to create feature version");
+                }
+            };
+            
+            $scope.createfeatureAjax = function (event){
+                var status = $scope.data.status;
+                if(status == undefined || status == false)
+                    notification_to = undefined;
+                var data = {};
+//                $scope.data.vehicle_id = $scope.vehicleresults.vehicle_id;
+                data['featureversion'] = $scope.data;
+//                data['pdbdata_list'] = $scope.list;
+                data['featuredata_list'] = $scope.models.dropzones.B[3].version;
+                data['button_type'] = event;
+                data['notification_to'] = notification_to+"";
+//                alert(JSON.stringify(data));
+                $http({
+                    url: 'createfeatureversion',
+                    method: "POST",
+                    data: data,
+                }).then(function (response, status, headers, config) {
+////                    $scope.vercompare_results = {"removed_features":"(d1) feature3, (d1) feature5", 
+////                                                 "added_features":"(d1) feature4", 
+////                                                 "removed_models":"m2,m4", "added_models":"m3", 
+////                                                 "previous_version":"1.0", "current_version":"1.1"
+////                                                };
+                      alert(response.data.maps_string.status);
+//                      var vercompare_res = response.data.maps_object.pdb_previous_data_result;
+//                      if(vercompare_res != undefined){
+//                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
+//                            alert(JSON.stringify($scope.vercompare_results));    
+//                      }
+//                      else{
+//                            alert("No any previous version found to compare");
+//                      }
+                      $('#modal-comment').closeModal();
+                      if(response.data.maps_string.status_code == "1")
+                          $window.open("feature_version_listing.action","_self");
+//    //                                    $window.alert(JSON.stringify(data));
+//    //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
+//    //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
+//    //            //                        Materialize.toast(data['maps']["status"], 4000);
                 });
             };
 

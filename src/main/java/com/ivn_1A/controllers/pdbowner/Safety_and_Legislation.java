@@ -234,11 +234,12 @@ public class Safety_and_Legislation {
                     maps_string.put("status", "New Permanent Legislation Version Created Successfully");
                 }
             }
-            
+            maps_string.put("status_code", "1");
         } catch (Exception ex) {
             System.out.println("entered into catch");
             System.out.println(ex.getMessage());
             maps_string.put("status", "Some error occurred !!");
+            maps_string.put("status_code", "0");
         }
         return "success";
     }

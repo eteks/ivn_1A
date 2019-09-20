@@ -169,4 +169,30 @@ public class SafetyLegDB {
             return null;
         }
     }
+    public static Safetyversion getSafetyversion(int id) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            Safetyversion safversion = s.get(Safetyversion.class, id);
+            tx.commit();
+            s.clear();
+            return safversion;
+        } catch (Exception e) {
+            System.err.println("Error in \"getSafetyversion\" : " + e.getMessage());
+            return null;
+        }
+    }
+    public static Legislationversion getLegislationversion(int id) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            Legislationversion legversion = s.get(Legislationversion.class, id);
+            tx.commit();
+            s.clear();
+            return legversion;
+        } catch (Exception e) {
+            System.err.println("Error in \"getLegislationversion\" : " + e.getMessage());
+            return null;
+        }
+    }
 }

@@ -469,7 +469,7 @@
                 data['notification_to'] = notification_to+"";
 //                alert(JSON.stringify($scope.features));
                 data['dfm_set'] = ["1","2","3"];
-                alert(JSON.stringify(data));
+//                alert(JSON.stringify(data));
                 $http({
                     url: 'createpdbversion',
                     method: "POST",
@@ -490,6 +490,8 @@
                             alert("No any previous version found to compare");
                       }
                       $('#modal-comment').closeModal();
+                      if(response.data.maps_string.status_code == "1")
+                          $window.open("pdb_listing.action","_self");
     //                                    $window.alert(JSON.stringify(data));
     //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
     //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
@@ -920,7 +922,7 @@
 //                             $scope.data.pdbversion = {"pdbid":2,"pdbversion_name":"1.1","status":true};
                          }
                          else{
-                             alert(JSON.stringify($scope.array_result[0]));
+//                             alert(JSON.stringify($scope.array_result[0]));
                              $scope.data.pdbversion = $scope.array_result[0];
                          }    
 //                         $scope.data.pdbversion = {"pdbid":5,"pdbversion_name":"2.1","status":true};
