@@ -7,22 +7,22 @@ package com.ivn_1A.controllers.pdbowner;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
-import com.ivn_1A.models.pdbowner.Domain_and_Features_Mapping;
+import com.ivn_1A.controllers.notification.NotificationController;
+import com.ivn_1A.models.pdbowner.Featureversion;
 import com.ivn_1A.models.pdbowner.FeatureversionDB;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
-import com.ivn_1A.models.pdbowner.Pdbversion_group;
+import com.ivn_1A.models.pdbowner.SafetyLegDB;
 import com.ivn_1A.models.pdbowner.Vehicle;
-import com.opensymphony.xwork2.ActionContext;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Tuple;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -35,6 +35,7 @@ public class Featureversion_Group {
     private Map<String, Object> maps_object = new HashMap<>();
 //    Session session = HibernateUtil.getThreadLocalSession();
     private List<Vehicle> vehicleversion_result;
+    private List<Tuple> tuple_result = new ArrayList<>();
     private List<Tuple> tupleObjects = new ArrayList<>();
     Gson gson = new Gson();
     private String result_data_obj;
@@ -96,22 +97,157 @@ public class Featureversion_Group {
         final ObjectMapper mapper = new ObjectMapper();
         String jsonValues = JSONConfigure.getAngularJSONFile();
         final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
-        System.out.println("readValue" + readValue);
-        Map<String, Object> result_data = FeatureversionDB.GetPdbSafetyLeg_version(readValue.get("vehicle_id").asInt());
-        System.out.println("result_data" + result_data.get("pdb_results"));
-//        JSONArray version_results = new JSONArray();
-//        result_data.get("pdb_results").stream().map((ver) -> {
-//            JSONObject vr = new JSONObject();
-//            vr.put("id", ver.get("pid"));
-//            vr.put("name", "PDB "+ver.get("name"));
-//            vr.put("type","pdb");
-//            return vr;
-//        }).forEachOrdered((vr) -> {
-//            version_results.add(vr);
-//        });
+//        System.out.println("readValue" + readValue);
+
+        List<Tuple> pdb_result_data = FeatureversionDB.GetPdbversion(readValue.get("vehicle_id").asInt());
+        System.out.println("pdb_result_data" + pdb_result_data);
+        JSONArray pdb_results = new JSONArray();
+        pdb_result_data.stream().map((ver) -> {
+            JSONObject vr = new JSONObject();
+            vr.put("id", ver.get("pid"));
+            vr.put("name", "PDB "+ver.get("name"));
+            vr.put("type","pdb");
+            return vr;
+        }).forEachOrdered((vr) -> {
+            pdb_results.add(vr);
+        });
+        maps_object.put("pdb_results", pdb_results);
+        
+        List<Tuple> leg_result_data = FeatureversionDB.GetLegversion(readValue.get("vehicle_id").asInt());
+        System.out.println("pdb_result_data" + leg_result_data);
+        JSONArray leg_results = new JSONArray();
+        leg_result_data.stream().map((ver) -> {
+            JSONObject vr = new JSONObject();
+            vr.put("id", ver.get("lid"));
+            vr.put("name", "Legislation "+ver.get("name"));
+            vr.put("type","legislation");
+            return vr;
+        }).forEachOrdered((vr) -> {
+            leg_results.add(vr);
+        });
+        maps_object.put("leg_results", leg_results);
+        
+        List<Tuple> saf_result_data = FeatureversionDB.GetSafetyversion(readValue.get("vehicle_id").asInt());
+        System.out.println("saf_result_data" + saf_result_data);
+        JSONArray saf_results = new JSONArray();
+        saf_result_data.stream().map((ver) -> {
+            JSONObject vr = new JSONObject();
+            vr.put("id", ver.get("sid"));
+            vr.put("name", "Safety "+ver.get("name"));
+            vr.put("type","safety");
+            return vr;
+        }).forEachOrdered((vr) -> {
+            saf_results.add(vr);
+        });
+        maps_object.put("saf_results", saf_results);
+        
         return "success";
     }
     
+    public String CreateFeatureVersion() throws IOException {
+        NotificationController notificationController = new NotificationController();
+        System.out.println("CreateFeatureVersion");
+        final ObjectMapper mapper = new ObjectMapper();
+        String jsonValues = JSONConfigure.getAngularJSONFile();
+        final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+        System.out.println("readValue" + readValue);
+        boolean status = (boolean) false;
+        float version_name = 1.0f;
+        String version_type = "new";
+        boolean flag;
+        int prevfea_id = 0;
+        try {
+            JsonNode featureversion_value = (JsonNode) readValue.get("featureversion");
+            System.out.println("featureversion_value" + featureversion_value);
+            String notification_to = readValue.get("notification_to").asText();
+            System.out.println("notification_to" + notification_to);
+            ArrayNode featuredata_list = (ArrayNode) readValue.get("featuredata_list");
+            System.out.println("featuredata_list" + featuredata_list);
+            String button_type = readValue.get("button_type").asText();
+            System.out.println("button_type" + button_type);
+//            String notification_to = (String) json.get("notification_to");
+
+            if (button_type.equals("save")) {
+                flag = false;
+            } else {
+                flag = true;
+            }
+            if (featureversion_value.has("status")) {
+                status = featureversion_value.get("status").asBoolean();
+            }
+            System.out.println("before if");
+            if (featureversion_value.has("legislationversion") && featureversion_value.get("legislationversion").get("status").asBoolean() == false) {
+                System.out.println("Ready to update in same version");
+            } else {
+                System.out.println("Ready to create");
+                //Create PDB version               
+                List<Featureversion> version_data = FeatureversionDB.GetVersionname();
+                if(!version_data.isEmpty()){
+                    version_name = (float) 1.0 + version_data.get(0).getFeature_versionname();
+                }
+                Featureversion featureversion = new Featureversion();
+                featureversion.setFeature_versionname(version_name);
+                featureversion.setFeature_manual_comment(featureversion_value.get("featureversion_manual_comment").asText());
+                featureversion.setVehicle_id(PDBOwnerDB.getVehicle(featureversion_value.get("vehicle").asInt()));
+                featureversion.setPdbversion_id(PDBOwnerDB.getPdbversion(featuredata_list.get(2).get("id").asInt()));
+                featureversion.setSafetyversion_id(SafetyLegDB.getSafetyversion(featuredata_list.get(0).get("id").asInt()));
+                featureversion.setLegislationversion_id(SafetyLegDB.getLegislationversion(featuredata_list.get(1).get("id").asInt()));
+                featureversion.setStatus(status);
+                featureversion.setFlag(flag);
+                featureversion.setCreated_date(new Date());
+                featureversion.setModified_date(new Date());
+                featureversion.setCreated_or_updated_by(PDBOwnerDB.getUser(1));
+                Featureversion curfea_id = FeatureversionDB.insertFeatureVersion(featureversion);
+                if (button_type.equals("save")) {
+                    maps_string.put("status", "New Temporary Legislation Version Created Successfully");
+                } else {
+//                    notificationController.createNotification(VersionType.Pdbversion.getVersionCode(), curleg_id.getLegislation_versionname(), new Date().toString(), notification_to);
+                    maps_string.put("status", "New Permanent Legislation Version Created Successfully");
+                }
+            }
+            maps_string.put("status_code", "1");
+            
+        } catch (Exception ex) {
+            System.out.println("entered into catch");
+            System.out.println(ex.getMessage());
+            maps_string.put("status", "Some error occurred !!");
+            maps_string.put("status_code", "0");
+        }
+        return "success";
+    }
+    
+    public String GetFeaturesListing() {
+        System.out.println("GetLegislationCombinationListing controller");
+   /*     try {
+            //tuple_result = LegislationDB.GetLegislationCombinationListing();
+           // tuple_result.stream().map((tuple) -> {
+               // Map<String, Object> columns = new HashMap<>();
+               // columns.put("leg_id", tuple.get("leg_id"));
+                columns.put("leg", tuple.get("leg"));
+                columns.put("created_date", tuple.get("created_date"));
+                columns.put("modified_date", tuple.get("modified_date"));
+                columns.put("combination", tuple.get("combination"));
+                columns.put("status", tuple.get("status"));
+                return columns;
+            }).map((columns) -> {
+                result_data.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums" + columns);
+            });
+            result_data_obj = new Gson().toJson(result_data);
+//            vehmod_map_result_obj = new Gson().toJson(vehmod_map_result);
+//                vehmod_map_result_obj =  Gson().toJSON(vehmod_map_result);
+            System.out.println("oject" + result_data_obj);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            maps.put("status", "Some error occurred !!");
+        }
+            return vehmod_map_result;
+            System.out.println("Result"+vehmod_map_result);*/
+        return "success";
+    }
+
     public Map<String, Object> getMaps_object() {
         return maps_object;
     }

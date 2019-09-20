@@ -96,6 +96,58 @@ public class SafetyLegDB {
         }
     }
     
+    public static List<Safetyversion> GetSafetyVersionname(int vehicle_id, String version_type) {
+        System.out.println("Entered GetSafetyVersionname");
+        System.out.println("vehicle_id"+vehicle_id);
+        try {
+//            Query pdbversion = s.createQuery("FROM Pdbversion p order by p.pdb_versionname desc").setParameter("pdb_reference_version", "1.0");
+//            pdbversion.setMaxResults(1);
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            // create Criteria
+//            CriteriaQuery<Pdbversion> criteriaQuery = s.getCriteriaBuilder().createQuery(Pdbversion.class);           
+//            criteriaQuery.from(Pdbversion.class); 
+            //Working code
+            CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery<Safetyversion> criteriaQuery = criteriaBuilder.createQuery(Safetyversion.class);
+            // The root of our search is sku
+            Root<Safetyversion> test = criteriaQuery.from(Safetyversion.class);
+            List<Predicate> restrictions = new ArrayList<>();
+            restrictions.add(criteriaBuilder.isNull(test.get("safety_reference_version")));
+//            criteriaQuery.where(restrictions.toArray(new Predicate[restrictions.size()]));
+            if(version_type.equals("new")){
+                criteriaQuery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(
+                                        test.get("vehicle_id"), vehicle_id
+                                ),
+                                criteriaBuilder.equal(
+                                        test.get("version_type"),version_type
+                                )
+                        )
+                );
+            }
+            else{
+                criteriaQuery.where(
+                        criteriaBuilder.equal(
+                                test.get("vehicle_id"), vehicle_id
+                        )
+                );
+            }
+            criteriaQuery.orderBy(criteriaBuilder.desc(test.get("safety_versionname")));
+            //create resultset as list
+            Query safetyversion = s.createQuery(criteriaQuery).setMaxResults(1);
+
+            tx.commit();
+            s.clear();
+            return safetyversion.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"GetSafetyVersionname\" : " + e.getMessage());
+            return null;
+        }
+    }
+    
     //Pdbversion group Data
     public static List<Tuple> loadLegislationversion_groupByVehicleId(int id, String action) {
         try {
@@ -126,6 +178,37 @@ public class SafetyLegDB {
             return null;
         }
     }
+    
+    public static List<Tuple> loadSafetyversion_groupByVehicleId(int id, String action) {
+        try {
+            System.err.println("loadSafetyversion_groupByVehicleId");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<Safetyversion> safetyversion = criteriaQuery.from(Safetyversion.class);
+
+            criteriaQuery.multiselect(safetyversion.get("id").alias("sid"), safetyversion.get("safety_versionname").alias("sversion"), 
+                    safetyversion.get("status").alias("status"));
+            if (action.equals("edit")) {
+                criteriaQuery.where(criteriaBuilder.equal(safetyversion.get("vehicle_id").get("id"), id));
+            } else {
+                criteriaQuery.where(criteriaBuilder.equal(safetyversion.get("status"), true), criteriaBuilder.equal(safetyversion.get("flag"), true),
+                        criteriaBuilder.equal(safetyversion.get("vehicle_id").get("id"), id));
+            }
+            criteriaQuery.orderBy(criteriaBuilder.desc(safetyversion.get("safety_versionname")));
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error \"loadSafetyversion_groupByVehicleId\" : " + e);
+            return null;
+        }
+    }
+    
     public static Legislationversion insertLegilsationVersion(Legislationversion legislationversion) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
@@ -142,6 +225,25 @@ public class SafetyLegDB {
             return null;
         }
     }
+    
+    public static Safetyversion insertSafetyVersion(Safetyversion safetyversion) {
+        System.out.println("insertSafetyVersion");
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            s.save(safetyversion);
+
+            tx.commit();
+            s.clear();
+            return safetyversion;
+//            return pdbversion.getId();
+        } catch (Exception e) {
+            System.err.println("Error in \"insertSafetyVersion\" : " + e.getMessage());
+            return null;
+        }
+    }
+    
     public static Querybuilder getQuerybuilder(Long id) {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
@@ -166,6 +268,48 @@ public class SafetyLegDB {
 //            return pdbversion.getId();
         } catch (Exception e) {
             System.err.println("Error in \"insertPDBVersionGroup\" : " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public static Safetyversion_group insertSafetyVersionGroup(Safetyversion_group saf_gp) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            s.save(saf_gp);
+            tx.commit();
+            s.clear();
+            return saf_gp;
+//            return pdbversion.getId();
+        } catch (Exception e) {
+            System.err.println("Error in \"insertSafetyVersionGroup\" : " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public static Safetyversion getSafetyversion(int id) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            Safetyversion safversion = s.get(Safetyversion.class, id);
+            tx.commit();
+            s.clear();
+            return safversion;
+        } catch (Exception e) {
+            System.err.println("Error in \"getSafetyversion\" : " + e.getMessage());
+            return null;
+        }
+    }
+    public static Legislationversion getLegislationversion(int id) {
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+            Legislationversion legversion = s.get(Legislationversion.class, id);
+            tx.commit();
+            s.clear();
+            return legversion;
+        } catch (Exception e) {
+            System.err.println("Error in \"getLegislationversion\" : " + e.getMessage());
             return null;
         }
     }

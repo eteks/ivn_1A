@@ -458,7 +458,9 @@
 //                      else{
 //                            alert("No any previous version found to compare");
 //                      }
-                      $('#modal-comment').closeModal();
+                      $('#modal-comment').closeModal(); 
+                      if(response.data.maps_string.status_code == "1")
+                          $window.open("legislate_list.action","_self");
     //                                    $window.alert(JSON.stringify(data));
     //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
     //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);

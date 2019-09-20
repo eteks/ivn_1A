@@ -95,10 +95,19 @@
         <action name="createlegislationversion" class="com.ivn_1A.controllers.pdbowner.Safety_and_Legislation" method="CreateLegislationVersion">
             <result type="json" />
         </action>
+        <action name="createsafetyversion" class="com.ivn_1A.controllers.pdbowner.Safety_and_Legislation" method="CreateSafetyVersion">
+            <result type="json" />
+        </action>
         <action name="loadlegislationversion_data" class="com.ivn_1A.controllers.pdbowner.Safety_and_Legislation" method="LoadLegislationversionData">
             <result type="json" />
         </action>
+        <action name="loadsafetyversion_data" class="com.ivn_1A.controllers.pdbowner.Safety_and_Legislation" method="LoadSafetyversionData">
+            <result type="json" />
+        </action>
          <action name="loadpdb_safety_leg_version" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="LoadPdbSafetyLeg_version">
+            <result type="json" />
+        </action>
+        <action name="createfeatureversion" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="CreateFeatureVersion">
             <result type="json" />
         </action>
     </package>
@@ -134,12 +143,12 @@
             <result>legislation.jsp</result>
         </action>
         
-        <action name="legislation_combination" class="com.ivn_1A.controllers.legislation.Legislation_Combination" method="GetLegislationCombinationListing">
+        <action name="legislation_combination" class="com.ivn_1A.controllers.legislation_safty.Legislation_Combination" method="GetLegislationCombinationListing">
             <!--<result name="session">index.jsp</result>--> 
             <result>legislation_combination.jsp</result>
         </action>
         
-        <action name="legislate_list" class="com.ivn_1A.controllers.legislation.Legislation_Combination" method="GetLegislationListing">
+        <action name="legislate_list" class="com.ivn_1A.controllers.legislation_safty.Legislation_Combination" method="GetLegislationListing">
             <!--<result name="session">index.jsp</result>--> 
             <result>legislate_list.jsp</result>
         </action>
@@ -162,7 +171,7 @@
             <!--<result name="session">index.jsp</result>--> 
             <result>safety_list.jsp</result>
         </action>
-        <action name="safety_ver_create" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+        <action name="safety_ver_create" class="com.ivn_1A.controllers.pdbowner.Safety_and_Legislation" method="SafetyPage">
             <!--<result name="session">index.jsp</result>--> 
             <result>safety_ver_create.jsp</result>
         </action>
