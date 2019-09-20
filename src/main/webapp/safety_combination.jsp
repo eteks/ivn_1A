@@ -68,7 +68,7 @@
                                                 <th ng-click="sort('version')" class="text-center">Status</th>
                                                 <th ng-click="sort('created_date')" class="text-center">Created Date</th>
                                                 <th ng-click="sort('modified_date')" class="text-center">Modified Date</th>
-                                                <th ng-click="sort('action')" class="text-center">Action</th>
+                                                <!--<th ng-click="sort('action')" class="text-center">Action</th>-->
 
                                             </tr>
                                         </thead>
@@ -76,7 +76,7 @@
 
                                             <tr dir-paginate="record in safety|orderBy:sortKey:reverse|filter:search|itemsPerPage:5">
                                                 <td style="display:none;" class="combination">{{record.combination}}</td>
-                                                <td style="display:none;" class="combination_id">{{record.safety_id}}</td>
+                                                <td style="display:none;" class="combination_id">{{record.saf_id}}</td>
                                                 <td class="text-center">
 
                                                     {{$index + 1}}
@@ -84,17 +84,14 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <a id="leg_name" class="mytooltip p-l-10 p-r-10 blink" href="javascript:void(0)"> 
-                                                        {{record.safety}}
-<!--                                                        <span class="tooltip-content5">
+                                                        {{record.saf}}
+                                                        <span class="tooltip-content5">
                                                             <span class="tooltip-text3">
                                                                 <span class="tooltip-inner2">
-                                                                    <ul class="model-list">
-                                                                        <li ng-repeat="mod in (record.yes| customSplitString)"><i class="icofont icofont-hand-right"></i> {{mod}}</li>
-                                                                        <li>{{record.combination}}</li>
-                                                                    </ul>
+                                                                    {{record.combination}}
                                                                 </span>
                                                             </span>
-                                                        </span>-->
+                                                        </span>
                                                     </a>    
                                                 </td>
                                                 <td class="text-center">                           
@@ -111,12 +108,12 @@
                                                 </td>-->
                                                 <td class="text-center">{{record.created_date}}</td>
                                                 <td class="text-center">{{record.modified_date}}</td>
-                                                <td class="text-center"> 
+<!--                                                <td class="text-center"> 
                                                     <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round modal-trigger" id="edit_or_view" name="edit" ng-if="record.status === false" data-target="modal-product-form">Edit</button>
                                                     <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round modal-trigger" id="edit_or_view" name="view" ng-if="record.status === true" data-target="modal-product-form">view</button>
-<!--                                                    <button class="btn btn-success set-sql" data-target="import_export" id="btn-set1">Set rules from SQL</button>
-                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-target="import_export" id="btn-set1">Set rules from SQL</button>-->
-                                                </td>
+                                                    <button class="btn btn-success set-sql" data-target="import_export" id="btn-set1">Set rules from SQL</button>
+                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-target="import_export" id="btn-set1">Set rules from SQL</button>
+                                                </td>-->
 
                                             </tr>
 
@@ -134,32 +131,30 @@
                         <!-- Marketing End -->
                         <div id="modal-product-form" class="modal">
                             <div class="modal-content">
-                                <h5 class="text-c-red m-b-25">Feature Combination <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>                                
-                                
-                                           <div class="alert alert-info">
-                                                <strong>Output</strong><br>
-                                                <span ng-bind-html="output"></span>
-                                            </div>
-                                            <div class="col-md-12 col-lg-offset-1">
-                                                <input type="text" id="combname" name="combname" ng-model="combname" placeholder="Name" class="col-md-12"/>
-                                                <input type="hidden" id="combid"/>
-                                                <input type="hidden" id="button_status"/>
-                                            </div></br>
-                                            <query-builder group="filter.group"></query-builder>
-                                            <div class="col-md-12 col-lg-offset-1">
-                                                <div id="builder-basic" style="display: block;"></div>
-                                                <div class="btn-group float-right">                                                    
-                                                        <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="safety" ng-click="addCombination($element.target)" >Submit</button>                                                        
-                                                </div>
-                                            </div>
-                                
+                                <h5 class="text-c-red m-b-25">Feature Combination <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
+                                <div class="alert alert-info">
+                                     <strong>Output</strong><br>
+                                     <span ng-bind-html="output"></span>
+                                 </div>
+                                 <div class="col-md-12 col-lg-offset-1">
+                                     <input type="text" id="combname" ng-model="combname" name="combname" placeholder="Name" class="col-md-12"/>
+                                     <input type="hidden" id="combid" ng-model="combid" />
+                                     <input type="hidden" id="button_status" ng-model="button_status" />
+                                 </div>
+                                 <query-builder group="filter.group" ></query-builder>
+                                 <div class="col-md-12 col-lg-offset-1">
+                                     <div id="builder-basic" style="display: block;"></div>
+                                     <div class="btn-group float-right">                                                    
+                                         <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="safety" ng-click="addCombination($element.target)" >Submit</button>                                                        
+                                     </div>
+                                 </div>
                             </div>
                         </div>
              
                         <%@include file="footer.jsp" %>
                         <!--<script src="js/lib/materialize.min.js"></script>-->
                         <!--<script src="js/dirPagination.js"></script>-->
-                        <script type="text/ng-template" id="/queryBuilderDirective.html">
+                        <script type="text/ng-template" id="/queryBuilderDirective.html" >
                         <div class="alert alert-warning alert-group">
                             <div class="form-inline">
                                 <select ng-options="o.name as o.name for o in operators" ng-model="group.operator" class="form-control input-sm"></select>
@@ -175,7 +170,7 @@
                                         </div>
                                         <div ng-switch-default="ng-switch-default">
                                             <div class="form-inline">
-                                                <select ng-options="t.name as t.name for t in fields" ng-model="rule.field" class="form-control input-sm"></select>
+                                                <select ng-options="t as t.name for t in fields" ng-model="rule.field" class="form-control input-sm"></select>
                                                 <select style="margin-left: 5px" ng-options="c.name as c.name for c in conditions" ng-model="rule.condition" class="form-control input-sm"></select>
                                                 <!-- <input style="margin-left: 5px" type="text" ng-model="rule.data" class="form-control input-sm"/> -->
                                                 <button style="margin-left: 5px" ng-click="removeCondition($index)" class="btn btn-sm btn-danger">X</button>
@@ -191,8 +186,8 @@
 
                             app.controller('RecordCtrl1', function($scope, $http, $window)
                             {
-//                                this.data = [];
-//                                $scope.legislation = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                                this.data = [];
+                                $scope.safety = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
                                 
                                  var data = '{"group": {"operator": "AND","rules": []}}';
 
@@ -271,6 +266,23 @@
                                         alert("Fill the Data");
                                     }
                                 }
+                                
+                            $scope.view_and_edit = function() {
+//                                alert(JSON.stringify($scope.legislation));
+                                for (var item in $scope.legislation) {
+                                    $scope.output = $scope.legislation[item].combination;
+                                    var cob = $scope.legislation[item].combination.trim().split(/[\s+/.\=/_]/g);
+//                                    alert(cob[0]);
+                                    $scope.combname = $scope.legislation[item].leg;
+                                    $scope.operator = [{ name: 'AND' }];
+                                    $scope.field = [{ name: 'f1' }];
+                                    $scope.condition = [{ name: 'true' }];
+                                    scope.group.rules=[{"condition":"1","field":"f1","data":"","$$hashKey":"005"},{"condition":"0","field":"f1","data":"","$$hashKey":"008"}];
+//                                    scope.group={"operator":"AND","condition": 'true', "field": 'f1', "field_id": '1',"rules":[{"condition":"true","field":"f1","data":"","$$hashKey":"005"},{"condition":"false","field":"f1","data":"","$$hashKey":"008"}]};
+                                    $scope.filter = {"group":{"operator":"AND","condition": 'true', "field": 'f1', "field_id": '1',"rules":[{"condition":"true","field":"f1","data":"","$$hashKey":"005"},{"condition":"false","field":"f1","data":"","$$hashKey":"008"}]}};
+                                }
+                            }
+                            
                             });
                             var queryBuilder = angular.module('queryBuilder', []);
                             queryBuilder.directive('queryBuilder', ['$compile','$http', function ($compile, $http) {

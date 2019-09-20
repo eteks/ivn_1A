@@ -155,24 +155,23 @@
                         <!-- Marketing End -->
                         <div id="modal-product-form" class="modal">
                             <div class="modal-content">
-                                <h5 class="text-c-red m-b-25">Feature Combination <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>                                
-                                
-                                           <div class="alert alert-info">
-                                                <strong>Output</strong><br>
-                                                <span ng-bind-html="output"></span>
-                                            </div>
-                                            <div class="col-md-12 col-lg-offset-1">
-                                                <input type="text" id="combname" ng-model="combname" name="combname" placeholder="Name" class="col-md-12"/>
-                                                <input type="hidden" id="combid" ng-model="combid" />
-                                                <input type="hidden" id="button_status" ng-model="button_status" />
-                                            </div>
-                                            <query-builder group="filter.group" ></query-builder>
-                                            <div class="col-md-12 col-lg-offset-1">
-                                                <div id="builder-basic" style="display: block;"></div>
-                                                <div class="btn-group float-right">                                                    
-                                                    <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="legislation" ng-click="addCombination($element.target)" >Submit</button>                                                        
-                                                </div>
-                                            </div>
+                                <h5 class="text-c-red m-b-25">Feature Combination <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
+                                <div class="alert alert-info">
+                                     <strong>Output</strong><br>
+                                     <span ng-bind-html="output"></span>
+                                 </div>
+                                 <div class="col-md-12 col-lg-offset-1">
+                                     <input type="text" id="combname" ng-model="combname" name="combname" placeholder="Name" class="col-md-12"/>
+                                     <input type="hidden" id="combid" ng-model="combid" />
+                                     <input type="hidden" id="button_status" ng-model="button_status" />
+                                 </div>
+                                 <query-builder group="filter.group" ></query-builder>
+                                 <div class="col-md-12 col-lg-offset-1">
+                                     <div id="builder-basic" style="display: block;"></div>
+                                     <div class="btn-group float-right">                                                    
+                                         <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="legislation" ng-click="addCombination($element.target)" >Submit</button>                                                        
+                                     </div>
+                                 </div>
                             </div>
                         </div>
              

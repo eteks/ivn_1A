@@ -340,4 +340,28 @@ public class SafetyLegDB {
             return null;
         }
     }
+        public static List<Tuple> GetSafetyCombinationListing() {
+        try {
+
+            System.out.println("GetLegislationCombinationListing");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<Querybuilder> qBRoot = criteriaQuery.from(Querybuilder.class);
+            criteriaQuery.multiselect(qBRoot.get("id").alias("saf_id"), qBRoot.get("querybuilder_name").alias("saf"), qBRoot.get("created_date").alias("created_date"),
+                    qBRoot.get("modified_date").alias("modified_date"), qBRoot.get("querybuilder_condition").alias("combination"), qBRoot.get("querybuilder_status").alias("status"))
+                    .distinct(true).where(criteriaBuilder.equal(qBRoot.get("querybuilder_type"), "safety"))
+                    .orderBy(criteriaBuilder.desc(qBRoot.get("id")));
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"GetLegislationCombinationListing\" : " + e);
+            return null;
+        }
+    }
 }

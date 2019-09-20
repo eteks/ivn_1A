@@ -13,6 +13,7 @@ import com.ivn_1A.models.legislation.LegislationDB;
 import com.ivn_1A.models.pdbowner.Legislationversion_group;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.pdbowner.Querybuilder;
+import com.ivn_1A.models.pdbowner.SafetyLegDB;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -151,15 +152,15 @@ public class Safty_Combination {
         return "success";
     }
 
-    public String GetLegislationCombinationListing() {
-        System.out.println("GetLegislationCombinationListing controller");
+    public String GetSafetyCombinationListing() {
+        System.out.println("GetSaftyCombinationListing");
         Querybuilder lc = new Querybuilder();
         try {
-            tuple_result = LegislationDB.GetLegislationCombinationListing();
+            tuple_result = SafetyLegDB.GetSafetyCombinationListing();
             tuple_result.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
-                columns.put("leg_id", tuple.get("leg_id"));
-                columns.put("leg", tuple.get("leg"));
+                columns.put("saf_id", tuple.get("saf_id"));
+                columns.put("saf", tuple.get("saf"));
                 columns.put("created_date", tuple.get("created_date"));
                 columns.put("modified_date", tuple.get("modified_date"));
                 columns.put("combination", tuple.get("combination"));
