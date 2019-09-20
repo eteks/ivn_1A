@@ -92,7 +92,7 @@
                                                 <th ng-click="sort('version')" class="text-center">Status</th>
                                                 <th ng-click="sort('created_date')" class="text-center">Created Date</th>
                                                 <th ng-click="sort('modified_date')" class="text-center">Modified Date</th>
-                                                <th ng-click="sort('action')" class="text-center">Action</th>
+                                                <!--<th ng-click="sort('action')" class="text-center">Action</th>-->
 
                                             </tr>
                                         </thead>
@@ -109,16 +109,13 @@
                                                 <td class="text-center">
                                                     <a id="leg_name" class="mytooltip p-l-10 p-r-10 blink" href="javascript:void(0)"> 
                                                         {{record.leg}}
-<!--                                                        <span class="tooltip-content5">
+                                                        <span class="tooltip-content5">
                                                             <span class="tooltip-text3">
                                                                 <span class="tooltip-inner2">
-                                                                    <ul class="model-list">
-                                                                        <li ng-repeat="mod in (record.yes| customSplitString)"><i class="icofont icofont-hand-right"></i> {{mod}}</li>
-                                                                        <li>{{record.combination}}</li>
-                                                                    </ul>
+                                                                    {{record.combination}}
                                                                 </span>
                                                             </span>
-                                                        </span>-->
+                                                        </span>
                                                     </a>    
                                                 </td>
                                                 <td class="text-center">                           
@@ -135,12 +132,12 @@
                                                 </td>-->
                                                 <td class="text-center">{{record.created_date}}</td>
                                                 <td class="text-center">{{record.modified_date}}</td>
-                                                <td class="text-center"> 
+<!--                                                <td class="text-center"> 
                                                     <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round modal-trigger" id="edit_or_view" name="edit" ng-click="view_and_edit()" ng-if="record.status === false" data-target="modal-product-form">Edit</button>
                                                     <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round modal-trigger" id="edit_or_view" name="view" ng-click="view_and_edit()" ng-if="record.status === true" data-target="modal-product-form">view</button>
-<!--                                                    <button class="btn btn-success set-sql" data-target="import_export" id="btn-set1">Set rules from SQL</button>
-                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-target="import_export" id="btn-set1">Set rules from SQL</button>-->
-                                                </td>
+                                                    <button class="btn btn-success set-sql" data-target="import_export" id="btn-set1">Set rules from SQL</button>
+                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-target="import_export" id="btn-set1">Set rules from SQL</button>
+                                                </td>-->
 
                                             </tr>
 

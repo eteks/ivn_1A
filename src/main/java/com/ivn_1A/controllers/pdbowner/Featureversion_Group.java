@@ -11,17 +11,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.controllers.notification.NotificationController;
-import com.ivn_1A.models.pdbowner.Domain_and_Features_Mapping;
 import com.ivn_1A.models.pdbowner.Featureversion;
 import com.ivn_1A.models.pdbowner.FeatureversionDB;
-import com.ivn_1A.models.pdbowner.Legislationversion;
-import com.ivn_1A.models.pdbowner.Legislationversion_group;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
-import com.ivn_1A.models.pdbowner.Pdbversion;
-import com.ivn_1A.models.pdbowner.Pdbversion_group;
 import com.ivn_1A.models.pdbowner.SafetyLegDB;
 import com.ivn_1A.models.pdbowner.Vehicle;
-import com.opensymphony.xwork2.ActionContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Tuple;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -43,6 +35,7 @@ public class Featureversion_Group {
     private Map<String, Object> maps_object = new HashMap<>();
 //    Session session = HibernateUtil.getThreadLocalSession();
     private List<Vehicle> vehicleversion_result;
+    private List<Tuple> tuple_result = new ArrayList<>();
     private List<Tuple> tupleObjects = new ArrayList<>();
     Gson gson = new Gson();
     private String result_data_obj;
@@ -223,6 +216,38 @@ public class Featureversion_Group {
         return "success";
     }
     
+    public String GetFeaturesListing() {
+        System.out.println("GetLegislationCombinationListing controller");
+   /*     try {
+            //tuple_result = LegislationDB.GetLegislationCombinationListing();
+           // tuple_result.stream().map((tuple) -> {
+               // Map<String, Object> columns = new HashMap<>();
+               // columns.put("leg_id", tuple.get("leg_id"));
+                columns.put("leg", tuple.get("leg"));
+                columns.put("created_date", tuple.get("created_date"));
+                columns.put("modified_date", tuple.get("modified_date"));
+                columns.put("combination", tuple.get("combination"));
+                columns.put("status", tuple.get("status"));
+                return columns;
+            }).map((columns) -> {
+                result_data.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums" + columns);
+            });
+            result_data_obj = new Gson().toJson(result_data);
+//            vehmod_map_result_obj = new Gson().toJson(vehmod_map_result);
+//                vehmod_map_result_obj =  Gson().toJSON(vehmod_map_result);
+            System.out.println("oject" + result_data_obj);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            maps.put("status", "Some error occurred !!");
+        }
+            return vehmod_map_result;
+            System.out.println("Result"+vehmod_map_result);*/
+        return "success";
+    }
+
     public Map<String, Object> getMaps_object() {
         return maps_object;
     }
