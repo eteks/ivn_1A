@@ -167,7 +167,7 @@
             <result>safety_combination.jsp</result>
         </action>
         
-        <action name="safety_list" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+        <action name="safety_list" class="com.ivn_1A.controllers.pdbowner.Safety_and_Legislation" method="GetSafetyListing">
             <!--<result name="session">index.jsp</result>--> 
             <result>safety_list.jsp</result>
         </action>

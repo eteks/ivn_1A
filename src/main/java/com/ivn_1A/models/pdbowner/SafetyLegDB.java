@@ -313,4 +313,31 @@ public class SafetyLegDB {
             return null;
         }
     }
+    public static List<Tuple> GetSafetyListing() {
+        try {
+
+            System.out.println("GetSafetyListing");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<Safetyversion_group> svg = criteriaQuery.from(Safetyversion_group.class);
+//            criteriaQuery.distinct(true);
+            criteriaQuery.multiselect(svg.get("safetyversion_id").get("id").alias("saf_id"), svg.get("safetyversion_id").get("safety_versionname").alias("saf"), 
+                    svg.get("safetyversion_id").get("created_date").alias("created_date"), svg.get("safetyversion_id").get("modified_date").alias("modified_date"),
+                    svg.get("safetyversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), svg.get("safetyversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"), 
+                    svg.get("safetyversion_id").get("flag").alias("flag"), svg.get("safetyversion_id").get("status").alias("status"),
+                    criteriaBuilder.function("group_concat", String.class, svg.get("vehiclemodel_id").get("modelname")).alias("modelname"))
+                    .distinct(true).orderBy(criteriaBuilder.desc(svg.get("safetyversion_id").get("id")));
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"GetSafetyListing\" : " + e);
+            return null;
+        }
+    }
 }

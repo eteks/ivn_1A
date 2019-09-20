@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.configs.VersionType;
 import com.ivn_1A.controllers.notification.NotificationController;
+import com.ivn_1A.models.legislation.LegislationDB;
 import com.ivn_1A.models.pdbowner.Domain_and_Features_Mapping;
 import com.ivn_1A.models.pdbowner.Legislationversion;
 import com.ivn_1A.models.pdbowner.Legislationversion_group;
@@ -48,6 +49,8 @@ public class Safety_and_Legislation {
     private List<Tuple> tupleObjects = new ArrayList<>();
     Gson gson = new Gson();
     private String result_data_obj;
+    private List<Tuple> tuple_result = new ArrayList<>();
+    private List<Map<String, Object>> result_data = new ArrayList<>();
 
     public String LegislationPage() {
 
@@ -487,6 +490,42 @@ public class Safety_and_Legislation {
         }
         return "success";
     };
+    
+    public String GetSafetyListing() {
+        System.out.println("GetSafetyListing");
+        Querybuilder lc = new Querybuilder();
+        try {
+            tuple_result = SafetyLegDB.GetSafetyListing();
+            tuple_result.stream().map((safetyversion_group) -> {
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("saf_id", safetyversion_group.get("saf_id"));
+                columns.put("saf", String.format("%.1f", safetyversion_group.get("saf")));
+                columns.put("created_date", safetyversion_group.get("created_date"));
+                columns.put("modified_date", safetyversion_group.get("modified_date"));
+                columns.put("model", safetyversion_group.get("modelname"));
+                columns.put("vehicle", safetyversion_group.get("vehiclename"));
+                columns.put("version", String.format("%.1f", safetyversion_group.get("pdb_versionname")));
+                columns.put("status", safetyversion_group.get("status"));
+                columns.put("flag", safetyversion_group.get("flag"));
+                return columns;
+            }).map((columns) -> {
+                result_data.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums" + columns);
+            });
+            result_data_obj = new Gson().toJson(result_data);
+//            vehmod_map_result_obj = new Gson().toJson(vehmod_map_result);
+//                vehmod_map_result_obj =  Gson().toJSON(vehmod_map_result);
+            System.out.println("oject" + result_data_obj);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            maps_object.put("status", "Some error occurred !!");
+        }
+//            return vehmod_map_result;
+//            System.out.println("Result"+vehmod_map_result);
+        return "success";
+    }
     
     public Map<String, Object> getMaps_object() {
         return maps_object;

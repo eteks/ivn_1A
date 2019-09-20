@@ -265,7 +265,7 @@
 //                                }
                             $scope.addCombination = function(btn){
                                 if ($scope.combname) {
-                                    $window.alert("hai");
+//                                    $window.alert("hai");
                                     var result = {};
 //                                    var result = $('#builder-basic').queryBuilder('getSQL', false);
                                     result['qb_name'] = $scope.combname;

@@ -206,10 +206,10 @@ public class Featureversion_Group {
                 featureversion.setCreated_or_updated_by(PDBOwnerDB.getUser(1));
                 Featureversion curfea_id = FeatureversionDB.insertFeatureVersion(featureversion);
                 if (button_type.equals("save")) {
-                    maps_string.put("status", "New Temporary Legislation Version Created Successfully");
+                    maps_string.put("status", "New Temporary Feature Version Created Successfully");
                 } else {
 //                    notificationController.createNotification(VersionType.Pdbversion.getVersionCode(), curleg_id.getLegislation_versionname(), new Date().toString(), notification_to);
-                    maps_string.put("status", "New Permanent Legislation Version Created Successfully");
+                    maps_string.put("status", "New Permanent Feature Version Created Successfully");
                 }
             }
             maps_string.put("status_code", "1");
