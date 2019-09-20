@@ -130,7 +130,7 @@ public class FeatureversionDB {
     public static List<Tuple> GetFeatureversionListing() {
         try {
 
-            System.out.println("GetLegislationListing");
+            System.out.println("GetFeatureversionListing");
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
 

@@ -180,7 +180,7 @@
             <!--<result name="session">index.jsp</result>--> 
             <result>feature.jsp</result>
         </action>
-        <action name="feature_version_listing" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="GetPDBVersion_Listing">
+        <action name="feature_version_listing" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="GetFeaturesListing">
             <!--<result name="session">index.jsp</result>--> 
             <result>feature_version_listing.jsp</result>
         </action>
