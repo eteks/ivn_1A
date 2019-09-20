@@ -191,6 +191,9 @@
 
                             app.controller('RecordCtrl1', function($scope, $http, $window)
                             {
+//                                this.data = [];
+//                                $scope.legislation = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                                
                                  var data = '{"group": {"operator": "AND","rules": []}}';
 
                                 function htmlEntities(str) {
@@ -373,5 +376,3 @@
                             });
                         </script>   
                         </body>
-
-                        </html>                                            
