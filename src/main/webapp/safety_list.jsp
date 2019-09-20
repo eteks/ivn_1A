@@ -48,11 +48,12 @@
                                                                 <input type="text" ng-model="search" class="form-control" placeholder="Search">
                                                             </div>
                                                         </form>
+                                                        <div class="ng-table-scrollcontainer">
                                                         <table st-table="rowCollection" class="table table-striped">
                                                                 <thead>
                                                                 <tr>
                                                                     
-                                                                    <th ng-click="sort('version')" class="">No</th>
+                                                                    <th ng-click="sort('version')" class="text-center  ng-table-fixedcolumn">No</th>
                                                                     <th ng-click="sort('version')" class="">Safety Version</th>
                                                                     <th ng-click="sort('vehicle')" class="">Vehicle Details</th>
                                                                     <th ng-click="sort('vehicle')" class="">PDB Details</th>
@@ -68,7 +69,7 @@
                                                                     
                                                                     <tr dir-paginate="record in safety|orderBy:sortKey:reverse|filter:search|itemsPerPage:5">
                                                                         
-                                                                       <td class="">
+                                                                       <td class="text-center  ng-table-fixedcolumn">
                                                                            
                                                                                 {{$index+1}}
                                                                                 
@@ -137,6 +138,7 @@
 
                                                                 </tbody>
                                                             </table>
+                                                        </div>
                                                             <dir-pagination-controls
                                                                 max-size="5"
                                                                 direction-links="true"
@@ -159,7 +161,9 @@
         {
             
                this.data = [];
-              $scope.safety = [{"flag":true,"saf_id":1,"model":"a1,a2,a3","created_date":"Sep 19, 2019 4:27:38 PM","modified_date":"Sep 19, 2019 4:27:38 PM","version":"1.0","saf":"1.0","vehicle":"audi","status":true}]; 
+               $scope.safety = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+//               alert(JSON.stringify($scope.safety));
+//              $scope.safety = [{"flag":true,"saf_id":1,"model":"a1,a2,a3","created_date":"Sep 19, 2019 4:27:38 PM","modified_date":"Sep 19, 2019 4:27:38 PM","version":"1.0","saf":"1.0","vehicle":"audi","status":true}]; 
           
         });
         app.filter('customSplitString', function() 
