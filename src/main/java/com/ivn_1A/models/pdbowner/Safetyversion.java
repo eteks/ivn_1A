@@ -34,6 +34,7 @@ public class Safetyversion implements Serializable{
     private float safety_versionname;
     private String safety_manual_comment;
     private Float safety_reference_version;
+    private String version_type;
     private Vehicle vehicle_id;
     private Pdbversion pdbversion_id;
     private boolean status;  
@@ -76,6 +77,17 @@ public class Safetyversion implements Serializable{
     public void setSafety_reference_version(Float safety_reference_version) {
         this.safety_reference_version = safety_reference_version;
     }
+    
+    @Column(name = "version_type", nullable = false, length =50)
+    // version type data will be stored as new, minor_changes, major_changes
+    public String getVersion_type() {
+        return version_type;
+    }
+
+    public void setVersion_type(String version_type) {
+        this.version_type = version_type;
+    }
+    
     @OneToOne
     @JoinColumn(name = "vehicle_id", nullable = false)
     public Vehicle getVehicle_id() {
