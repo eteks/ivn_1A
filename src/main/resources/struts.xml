@@ -104,12 +104,21 @@
         <action name="loadsafetyversion_data" class="com.ivn_1A.controllers.pdbowner.Safety_and_Legislation" method="LoadSafetyversionData">
             <result type="json" />
         </action>
-         <action name="loadpdb_safety_leg_version" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="LoadPdbSafetyLeg_version">
+        <action name="loadpdb_safety_leg_version" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="LoadPdbSafetyLeg_version">
             <result type="json" />
         </action>
         <action name="createfeatureversion" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="CreateFeatureVersion">
             <result type="json" />
         </action>
+        
+        <action name="fetch_safety_combination" class="com.ivn_1A.controllers.legislation_safty.Safty_Combination" method="GetSafetyCombinationListing">
+            <result type="json" />
+        </action>
+        
+        <action name="fetch_legislation_combination" class="com.ivn_1A.controllers.legislation_safty.Legislation_Combination" method="GetLegislationCombinationListing">
+            <result type="json" />
+        </action>
+        
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">
@@ -143,7 +152,7 @@
             <result>legislation.jsp</result>
         </action>
         
-        <action name="legislation_combination" class="com.ivn_1A.controllers.legislation_safty.Legislation_Combination" method="GetLegislationCombinationListing">
+        <action name="legislation_combination" class="com.ivn_1A.controllers.legislation_safty.Legislation_Combination" method="GetLegislationCombinationListingPage">
             <!--<result name="session">index.jsp</result>--> 
             <result>legislation_combination.jsp</result>
         </action>
@@ -162,7 +171,7 @@
             <result>safety.jsp</result>
         </action>
         
-        <action name="safety_combination" class="com.ivn_1A.controllers.legislation_safty.Safty_Combination" method="GetSafetyCombinationListing">
+        <action name="safety_combination" class="com.ivn_1A.controllers.legislation_safty.Safty_Combination" method="GetSafetyCombinationListingPage">
             <!--<result name="session">index.jsp</result>--> 
             <result>safety_combination.jsp</result>
         </action>

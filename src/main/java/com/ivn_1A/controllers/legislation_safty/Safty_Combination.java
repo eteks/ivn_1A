@@ -8,12 +8,15 @@ package com.ivn_1A.controllers.legislation_safty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.ivn_1A.configs.JSONConfigure;
-import com.ivn_1A.models.legislation.LegislationDB;
+import com.ivn_1A.models.legislation_safty.LegislationDB;
+import com.ivn_1A.models.legislation_safty.SafetyDB;
 import com.ivn_1A.models.pdbowner.Legislationversion_group;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.pdbowner.Querybuilder;
 import com.ivn_1A.models.pdbowner.SafetyLegDB;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -21,9 +24,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Tuple;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -32,11 +39,14 @@ import org.apache.struts2.ServletActionContext;
 public class Safty_Combination {
 
     private Map<String, String> maps = new HashMap<>();
+    private Map<String, Object> maps_obj = new HashMap<>();
     private List<Tuple> tuple_result = new ArrayList<>();
     private List<Map<String, Object>> safcomb_result = new ArrayList<>();
     private List<Map<String, Object>> result_data = new ArrayList<>();
-    public String result_data_obj;
+    public String result_data_obj, result_data_str;
 //    static HttpServletRequest request;
+
+    final ObjectMapper mapper = new ObjectMapper();
 
     public String CreateSafComb() {
 
@@ -47,7 +57,6 @@ public class Safty_Combination {
             String previousversion_status = "true";
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
-            final ObjectMapper mapper = new ObjectMapper();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             System.out.println("readValue" + readValue);
@@ -65,7 +74,7 @@ public class Safty_Combination {
                 //Get the data of previous vehicle version by id
                 long c_id = comb_id;
                 Querybuilder lc = new Querybuilder(c_id);
-                tuple_result = LegislationDB.LoadPreviousLegislationCombinationData(lc);
+                tuple_result = SafetyDB.LoadPreviousSafetyCombinationData(lc);
                 tuple_result.stream().map((tuple) -> {
                     Map<String, Object> columns = new HashMap<>();
                     columns.put("querybuilder_name", tuple.get("querybuilder_name"));
@@ -87,9 +96,9 @@ public class Safty_Combination {
 
                 System.out.println("Ready to update");
                 boolean r_status = readValue.get("qb_status").asBoolean();
-                Querybuilder lc = new Querybuilder(comb_id, readValue.get("qb_name").asText(), readValue.get("ctype").asText(), readValue.get("sql").asText(), r_status, new Date(), new Date(), PDBOwnerDB.getUser(1));
+                Querybuilder lc = new Querybuilder(comb_id, readValue.get("qb_name").asText(), readValue.get("ctype").asText(), readValue.get("sql").toString(), r_status, new Date(), new Date(), PDBOwnerDB.getUser(1));
                 //int result = VehicleversionDB.insertVehicleVersion(v);
-                long lc_res = LegislationDB.insertLegislationCombination(lc);
+                long lc_res = SafetyDB.insertSafetyCombination(lc);
                 if (lc_res > 0) {
                     maps.put("status", "Safty Combination Updated Successfully");
                 } else {
@@ -99,9 +108,9 @@ public class Safty_Combination {
 
                 System.out.println("Ready to insert");
                 boolean r_status = readValue.get("qb_status").asBoolean();
-                Querybuilder lc = new Querybuilder(comb_id, readValue.get("qb_name").asText(), readValue.get("ctype").asText(), readValue.get("sql").asText(), r_status, new Date(), new Date(), PDBOwnerDB.getUser(1));
+                Querybuilder lc = new Querybuilder(comb_id, readValue.get("qb_name").asText(), readValue.get("ctype").asText(), readValue.get("sql").toString(), r_status, new Date(), new Date(), PDBOwnerDB.getUser(1));
                 //int result = VehicleversionDB.insertVehicleVersion(v);
-                long lc_res = LegislationDB.insertLegislationCombination(lc);
+                long lc_res = SafetyDB.insertSafetyCombination(lc);
                 if (lc_res > 0) {
                     maps.put("status", "Safty Combination Created Successfully");
                 } else {
@@ -116,11 +125,12 @@ public class Safty_Combination {
         return "success";
     }
 
-    public String GetLegislationListing() {
+    public String GetSafetyListing() {
+
         System.out.println("GetLegislationListing");
         Querybuilder lc = new Querybuilder();
         try {
-            tuple_result = LegislationDB.GetLegislationListing();
+            tuple_result = SafetyDB.GetSafetyListing();
             tuple_result.stream().map((legislationversion_group) -> {
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("leg_id", legislationversion_group.get("leg_id"));
@@ -152,36 +162,71 @@ public class Safty_Combination {
         return "success";
     }
 
+    public String GetSafetyCombinationListingPage() {
+        System.out.println("GetSaftyCombinationListing");
+//        try {
+//            tuple_result = SafetyLegDB.GetSafetyCombinationListing();
+//            tuple_result.stream().map((tuple) -> {
+//                try {
+//                    Map<String, Object> columns = new HashMap<>();
+//                    columns.put("saf_id", tuple.get("saf_id"));
+//                    columns.put("saf", tuple.get("saf"));
+//                    columns.put("created_date", tuple.get("created_date"));
+//                    columns.put("modified_date", tuple.get("modified_date"));
+//                    System.err.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + tuple.get("combination"));
+//                    columns.put("combination", tuple.get("combination"));
+//                    maps_obj.put("combination", mapper.readValue(tuple.get("combination").toString(), JsonNode.class));
+//                    columns.put("status", tuple.get("status"));
+//                    return columns;
+//                } catch (Exception ex) {
+//                    maps.put("status", "Parsing Error");
+//                    return null;
+//                }
+//            }).map((columns) -> {
+//                result_data.add(columns);
+//                return columns;
+//            }).forEachOrdered((columns) -> {
+//                System.out.println("colums" + columns);
+//            });
+//            result_data_obj = new Gson().toJson(result_data);
+//            System.out.println("oject" + result_data_obj);
+//        } catch (Exception ex) {
+//            System.out.println(ex.getMessage());
+//            maps.put("status", "Some error occurred !!");
+//        }
+        return "success";
+    }
+
     public String GetSafetyCombinationListing() {
         System.out.println("GetSaftyCombinationListing");
-        Querybuilder lc = new Querybuilder();
         try {
             tuple_result = SafetyLegDB.GetSafetyCombinationListing();
             tuple_result.stream().map((tuple) -> {
-                Map<String, Object> columns = new HashMap<>();
-                columns.put("saf_id", tuple.get("saf_id"));
-                columns.put("saf", tuple.get("saf"));
-                columns.put("created_date", tuple.get("created_date"));
-                columns.put("modified_date", tuple.get("modified_date"));
-                columns.put("combination", tuple.get("combination"));
-                columns.put("status", tuple.get("status"));
-                return columns;
+                try {
+                    Map<String, Object> columns = new HashMap<>();
+                    columns.put("saf_id", tuple.get("saf_id"));
+                    columns.put("saf", tuple.get("saf"));
+                    columns.put("created_date", tuple.get("created_date"));
+                    columns.put("modified_date", tuple.get("modified_date"));
+//                    System.err.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + tuple.get("combination"));
+                    columns.put("combination", tuple.get("combination").toString());
+                    columns.put("status", tuple.get("status"));
+                    return columns;
+                } catch (Exception ex) {
+                    maps.put("status", "Parsing Error");
+                    return null;
+                }
             }).map((columns) -> {
                 result_data.add(columns);
                 return columns;
             }).forEachOrdered((columns) -> {
                 System.out.println("colums" + columns);
             });
-            result_data_obj = new Gson().toJson(result_data);
-//            vehmod_map_result_obj = new Gson().toJson(vehmod_map_result);
-//                vehmod_map_result_obj =  Gson().toJSON(vehmod_map_result);
-            System.out.println("oject" + result_data_obj);
+            System.out.println("oject" + result_data);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             maps.put("status", "Some error occurred !!");
         }
-//            return vehmod_map_result;
-//            System.out.println("Result"+vehmod_map_result);
         return "success";
     }
 
@@ -207,6 +252,22 @@ public class Safty_Combination {
 
     public void setResult_data_obj(String result_data_obj) {
         this.result_data_obj = result_data_obj;
+    }
+
+    public String getResult_data_str() {
+        return result_data_str;
+    }
+
+    public void setResult_data_str(String result_data_str) {
+        this.result_data_str = result_data_str;
+    }
+
+    public Map<String, Object> getMaps_obj() {
+        return maps_obj;
+    }
+
+    public void setMaps_obj(Map<String, Object> maps_obj) {
+        this.maps_obj = maps_obj;
     }
 
 }

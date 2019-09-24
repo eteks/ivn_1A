@@ -1,0 +1,37 @@
+{
+    "qb_name": "car",
+    "ctype": "safety",
+    "sql": {
+        "group": {
+            "operator": "AND",
+            "rules": [{
+                    "condition": true,
+                    "field": {
+                        "id": 1,
+                        "name": "feature1",
+                        "$$hashKey": "object:32"
+                    },
+                    "field_id": "",
+                    "data": "",
+                    "$$hashKey": "object:29"
+                }, {
+                    "group": {
+                        "operator": "OR",
+                        "rules": [{
+                                "condition": true,
+                                "field": {
+                                    "id": 2,
+                                    "name": "feature2",
+                                    "$$hashKey": "object:46"
+                                },
+                                "field_id": "",
+                                "data": "",
+                                "$$hashKey": "object:42"
+                            }]
+                    },
+                    "$$hashKey": "object:36"
+                }]
+        }
+    },
+    "qb_status": true
+}
