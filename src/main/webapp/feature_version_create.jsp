@@ -213,7 +213,7 @@
                   "B": [
                         {
                           label: "PDB",
-                          allowedTypes: ['man'],
+                          allowedTypes: ['pdb'],
                           max: 3,
 //                          version: [
 //                              {name: "PDB 1.0", type: "pdb"},
