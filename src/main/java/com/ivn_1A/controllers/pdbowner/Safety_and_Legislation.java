@@ -274,7 +274,7 @@ public class Safety_and_Legislation {
                 if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary Legislation Version Created Successfully");
                 } else {
-//                    notificationController.createNotification(VersionType.Pdbversion.getVersionCode(), curleg_id.getLegislation_versionname(), new Date().toString(), notification_to);
+                    notificationController.createNotification(VersionType.Legislationversion.getVersionCode(), curleg_id.getLegislation_versionname(), new Date().toString(), notification_to, VersionType.Legislationversion.name());
                     maps_string.put("status", "New Permanent Legislation Version Created Successfully");
                 }
             }
@@ -401,7 +401,7 @@ public class Safety_and_Legislation {
                 if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary Safety Version Created Successfully");
                 } else {
-//                    notificationController.createNotification(VersionType.Pdbversion.getVersionCode(), curleg_id.getLegislation_versionname(), new Date().toString(), notification_to);
+                    notificationController.createNotification(VersionType.Safetyversion.getVersionCode(), cursaf_id.getSafety_versionname(), new Date().toString(), notification_to, VersionType.Safetyversion.name());
                     maps_string.put("status", "New Permanent Safety Version Created Successfully");
                 }
             }

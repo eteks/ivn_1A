@@ -6,7 +6,6 @@
 package com.ivn_1A.models.notification;
 
 import com.ivn_1A.models.admin.User;
-import com.ivn_1A.models.pdbowner.Pdbversion;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -33,17 +32,19 @@ public class Notification implements Serializable {
     private User sender_id;
     private String receiver_id;
     private int version_type_id;
-    private Pdbversion version_id;
+    private float version_id;
+    private String version_classname;
     private Date created_date;
 
     public Notification() {
     }
 
-    public Notification(User sender_id, String receiver_id, int version_type_id, Pdbversion version_id, Date created_date) {
+    public Notification(User sender_id, String receiver_id, int version_type_id, float version_id, String version_classname, Date created_date) {
         this.sender_id = sender_id;
         this.receiver_id = receiver_id;
         this.version_type_id = version_type_id;
         this.version_id = version_id;
+        this.version_classname = version_classname;
         this.created_date = created_date;
     }
 
@@ -86,13 +87,12 @@ public class Notification implements Serializable {
         this.version_type_id = version_type_id;
     }
 
-    @OneToOne
-    @JoinColumn(name = "version_id", nullable = false)
-    public Pdbversion getVersion_id() {
+    @Column(name = "version_id", nullable = false)
+    public float getVersion_id() {
         return version_id;
     }
 
-    public void setVersion_id(Pdbversion version_id) {
+    public void setVersion_id(float version_id) {
         this.version_id = version_id;
     }
         
@@ -107,8 +107,19 @@ public class Notification implements Serializable {
         this.created_date = created_date;
     }
 
+    @Column(name = "version_classname", nullable = false)
+    public String getVersion_classname() {
+        return version_classname;
+    }
+
+    public void setVersion_classname(String version_classname) {
+        this.version_classname = version_classname;
+    }
+
     @Override
     public String toString() {
-        return "Notification{" + "id=" + id + ", sender_id=" + sender_id + ", receiver_id=" + receiver_id + ", version_type_id=" + version_type_id + ", version_id=" + version_id + ", created_date=" + created_date + '}';
+        return "Notification{" + "id=" + id + ", sender_id=" + sender_id + ", receiver_id=" + receiver_id + ", version_type_id=" + version_type_id + ", version_id=" + version_id + ", version_classname=" + version_classname + ", created_date=" + created_date + '}';
     }
+
+    
 }

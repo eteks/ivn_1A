@@ -226,6 +226,7 @@
                             }
                        });
                        $('#modal-product-form').closeModal();
+                       location.reload();
                 }
                 else
                 {

@@ -3,7 +3,6 @@ package com.ivn_1A.configs;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
 public class HibernateUtil {
 
@@ -11,7 +10,7 @@ public class HibernateUtil {
     private static ThreadLocal session = new ThreadLocal();
 
     static {
-        sessionFactory = (SessionFactory) ServletActionContext.getServletContext().getAttribute(HibernateServletContextListener.KEY_NAME);
+        sessionFactory = (SessionFactory) ServletActionContext.getServletContext().getAttribute(HibernateServletContextListener.class.getName());
     }
 
     public static Session getThreadLocalSession() {

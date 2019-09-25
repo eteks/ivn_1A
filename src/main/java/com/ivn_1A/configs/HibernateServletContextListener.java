@@ -1,40 +1,34 @@
 package com.ivn_1A.configs;
 
-import java.net.URL;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
 
 public class HibernateServletContextListener implements ServletContextListener {
 
-    private Configuration config;
-    private SessionFactory factory;
-    private static Class clazz = HibernateServletContextListener.class;
-
-    public static final String KEY_NAME = clazz.getName();
-
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        factory = (SessionFactory) event.getServletContext().getAttribute(KEY_NAME);
-        factory.close();
+        try {
+            SessionFactory factory = (SessionFactory) event.getServletContext().getAttribute(HibernateServletContextListener.class.getName());
+            factory.close();
+        } catch (Exception e) {
+            System.out.println("Error in \"HibernateServletContextListener\" contextDestroyed : " + e);
+        }
     }
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
 
         try {
-            config = new Configuration().configure();
-            factory = config.buildSessionFactory();
+            Configuration config = new Configuration().configure();
+            SessionFactory factory = config.buildSessionFactory();
 
             //save the Hibernate session factory into serlvet context
-            event.getServletContext().setAttribute(KEY_NAME, factory);
+            event.getServletContext().setAttribute(HibernateServletContextListener.class.getName(), factory);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error in \"HibernateServletContextListener\" contextInitialized : " + e);
         }
     }
 }

@@ -244,7 +244,7 @@ public class Featureversion_Group {
 //                vehmod_map_result_obj =  Gson().toJSON(vehmod_map_result);
             System.out.println("oject" + result_data_obj);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("Error in \"Featureversion_Group\" \'GetFeaturesListing\' : "+ ex);
             maps_object.put("status", "Some error occurred !!");
         }
         return "success";
