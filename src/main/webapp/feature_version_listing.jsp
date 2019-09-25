@@ -76,9 +76,13 @@
                                                                                     <span class="tooltip-content5">
                                                                                         <span class="tooltip-text3">
                                                                                             <span class="tooltip-inner2">
-                                                                                                <h3>Models:</h3>
+                                                                                                <h3>Version</h3>
                                                                                                 <ul class="model-list">
-                                                                                                    <li ng-repeat="mod in (record.combine | customSplitString)"><i class="icofont icofont-hand-right"></i> {{mod}}</li>
+                                                                                                    
+                                                                                                    <!--<li ng-repeat="mod in (record.combine | customSplitString)"><i class="icofont icofont-hand-right"></i> {{mod}}</li>-->
+                                                                                                    <li><i class="icofont icofont-hand-right"></i> PDB_{{record.pdb_versionname}}</li>
+                                                                                                    <li><i class="icofont icofont-hand-right"></i> LEG_{{record.legislation_versionname}}</li>
+                                                                                                    <li><i class="icofont icofont-hand-right"></i> SAF_{{record.safety_versionname}}</li>
                                                                                                 </ul>
                                                                                             </span>
                                                                                         </span>
@@ -86,12 +90,11 @@
                                                                                 </a>     
                                                                             </td>
                                                                             <td class="text-center">                                                                           
-                                                                                    {{record.feature_version}}                                                                                
-                                                                            </td
+                                                                                    {{record.feature_versionname}}                                                                                
+                                                                            </td>
                                                                             <td class="text-center ">                                                                           
-                                                                                    {{record.vehicle}}                                                                                
-                                                                            </td> 
-                                                                            
+                                                                                    {{record.vehiclename}}                                                                                
+                                                                            </td>                                                                            
                                                                             <td class="text-center"> 
 
                                                                                 <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status === true">Active
@@ -182,11 +185,13 @@
 
         app.controller('RecordCtrl1',function($scope, $http, $window)
         {
-             $scope.records = [
-                        { feature_version: '1.0', vehicle: 'Scorpio',combine:'PDB_1.0,safety_1.0,legislation_1.0', status: 'Active'},
-                        { feature_version: '2.0', vehicle: 'Xuv',combine:'PDB_2.0,safety_2.0,legislation_2.0', status: 'Inactive'},
-                        { feature_version: '3.0', vehicle: 'Scorpio',combine:'PDB_3.0,safety_3.0,legislation_3.0', status: 'Active'}
-                    ];
+//             $scope.records = [
+//                        { feature_version: '1.0', vehicle: 'Scorpio',combine:'PDB_1.0,safety_1.0,legislation_1.0', status: 'Active'},
+//                        { feature_version: '2.0', vehicle: 'Xuv',combine:'PDB_2.0,safety_2.0,legislation_2.0', status: 'Inactive'},
+//                        { feature_version: '3.0', vehicle: 'Scorpio',combine:'PDB_3.0,safety_3.0,legislation_3.0', status: 'Active'}
+//                    ];
+             $scope.records = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+             alert(JSON.stringify($scope.records));
 //            alert("<s:property value="result_data_obj"/>");
 //            var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"')); 
 ////            $window.alert(JSON.stringify(data));

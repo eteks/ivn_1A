@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ivn_1A.models.legislation;
+package com.ivn_1A.models.legislation_safty;
 
 import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.models.pdbowner.Legislationversion_group;

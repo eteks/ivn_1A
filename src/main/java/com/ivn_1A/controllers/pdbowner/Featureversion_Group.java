@@ -31,12 +31,13 @@ import org.json.simple.JSONObject;
  * @author ets-poc
  */
 public class Featureversion_Group {
+
     private Map<String, String> maps_string = new HashMap<>();
     private Map<String, Object> maps_object = new HashMap<>();
 //    Session session = HibernateUtil.getThreadLocalSession();
     private List<Vehicle> vehicleversion_result;
     private List<Tuple> tuple_result = new ArrayList<>();
-    private List<Tuple> tupleObjects = new ArrayList<>();
+    private List<Map<String, Object>> result_data = new ArrayList<>();
     Gson gson = new Gson();
     private String result_data_obj;
 
@@ -82,7 +83,6 @@ public class Featureversion_Group {
 //        }
         try {
             vehicleversion_result = PDBOwnerDB.loadVehicleVersion();
-            
 
 //            maps_object.put("removed_features", StringUtils.join(",", pdb_previous_data.get("removed_features")));
         } catch (Exception ex) {
@@ -91,8 +91,8 @@ public class Featureversion_Group {
         }
         return "success";
     }
-    
-    public String LoadPdbSafetyLeg_version() throws IOException{
+
+    public String LoadPdbSafetyLeg_version() throws IOException {
         System.out.println("LoadPdbSafetyLeg_version");
         final ObjectMapper mapper = new ObjectMapper();
         String jsonValues = JSONConfigure.getAngularJSONFile();
@@ -105,45 +105,45 @@ public class Featureversion_Group {
         pdb_result_data.stream().map((ver) -> {
             JSONObject vr = new JSONObject();
             vr.put("id", ver.get("pid"));
-            vr.put("name", "PDB "+ver.get("name"));
-            vr.put("type","pdb");
+            vr.put("name", "PDB " + ver.get("name"));
+            vr.put("type", "pdb");
             return vr;
         }).forEachOrdered((vr) -> {
             pdb_results.add(vr);
         });
         maps_object.put("pdb_results", pdb_results);
-        
+
         List<Tuple> leg_result_data = FeatureversionDB.GetLegversion(readValue.get("vehicle_id").asInt());
         System.out.println("pdb_result_data" + leg_result_data);
         JSONArray leg_results = new JSONArray();
         leg_result_data.stream().map((ver) -> {
             JSONObject vr = new JSONObject();
             vr.put("id", ver.get("lid"));
-            vr.put("name", "Legislation "+ver.get("name"));
-            vr.put("type","legislation");
+            vr.put("name", "Legislation " + ver.get("name"));
+            vr.put("type", "legislation");
             return vr;
         }).forEachOrdered((vr) -> {
             leg_results.add(vr);
         });
         maps_object.put("leg_results", leg_results);
-        
+
         List<Tuple> saf_result_data = FeatureversionDB.GetSafetyversion(readValue.get("vehicle_id").asInt());
         System.out.println("saf_result_data" + saf_result_data);
         JSONArray saf_results = new JSONArray();
         saf_result_data.stream().map((ver) -> {
             JSONObject vr = new JSONObject();
             vr.put("id", ver.get("sid"));
-            vr.put("name", "Safety "+ver.get("name"));
-            vr.put("type","safety");
+            vr.put("name", "Safety " + ver.get("name"));
+            vr.put("type", "safety");
             return vr;
         }).forEachOrdered((vr) -> {
             saf_results.add(vr);
         });
         maps_object.put("saf_results", saf_results);
-        
+
         return "success";
     }
-    
+
     public String CreateFeatureVersion() throws IOException {
         NotificationController notificationController = new NotificationController();
         System.out.println("CreateFeatureVersion");
@@ -182,7 +182,7 @@ public class Featureversion_Group {
                 System.out.println("Ready to create");
                 //Create PDB version               
                 List<Featureversion> version_data = FeatureversionDB.GetVersionname();
-                if(!version_data.isEmpty()){
+                if (!version_data.isEmpty()) {
                     version_name = (float) 1.0 + version_data.get(0).getFeature_versionname();
                 }
                 Featureversion featureversion = new Featureversion();
@@ -206,7 +206,7 @@ public class Featureversion_Group {
                 }
             }
             maps_string.put("status_code", "1");
-            
+
         } catch (Exception ex) {
             System.out.println("entered into catch");
             System.out.println(ex.getMessage());
@@ -215,18 +215,22 @@ public class Featureversion_Group {
         }
         return "success";
     }
-    
+
     public String GetFeaturesListing() {
-        System.out.println("GetLegislationCombinationListing controller");
-   /*     try {
-            //tuple_result = LegislationDB.GetLegislationCombinationListing();
-           // tuple_result.stream().map((tuple) -> {
-               // Map<String, Object> columns = new HashMap<>();
-               // columns.put("leg_id", tuple.get("leg_id"));
-                columns.put("leg", tuple.get("leg"));
+        System.out.println("GetFeaturesListing");
+        try {
+            tuple_result = FeatureversionDB.GetFeatureversionListing();
+            tuple_result.stream().map((tuple) -> {
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("feature_versionname", String.format("%.1f", tuple.get("feature_versionname")));
+                columns.put("vehiclename", tuple.get("vehiclename"));
                 columns.put("created_date", tuple.get("created_date"));
                 columns.put("modified_date", tuple.get("modified_date"));
-                columns.put("combination", tuple.get("combination"));
+//                columns.put("combine", "PDB_"+tuple.get("pdb_versionname")+"\n"+"LEG_"+tuple.get("legislation_versionname")+"\n"+"SAF_"+tuple.get("safety_versionname"));
+                columns.put("pdb_versionname", String.format("%.1f", tuple.get("pdb_versionname")));
+                columns.put("legislation_versionname", String.format("%.1f", tuple.get("legislation_versionname")));
+                columns.put("safety_versionname", String.format("%.1f", tuple.get("safety_versionname")));
+                columns.put("flag", tuple.get("flag"));
                 columns.put("status", tuple.get("status"));
                 return columns;
             }).map((columns) -> {
@@ -241,10 +245,8 @@ public class Featureversion_Group {
             System.out.println("oject" + result_data_obj);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            maps.put("status", "Some error occurred !!");
+            maps_object.put("status", "Some error occurred !!");
         }
-            return vehmod_map_result;
-            System.out.println("Result"+vehmod_map_result);*/
         return "success";
     }
 

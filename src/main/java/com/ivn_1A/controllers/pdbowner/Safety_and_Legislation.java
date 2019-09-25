@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.configs.VersionType;
 import com.ivn_1A.controllers.notification.NotificationController;
-import com.ivn_1A.models.legislation.LegislationDB;
+import com.ivn_1A.models.legislation_safty.LegislationDB;
 import com.ivn_1A.models.pdbowner.Domain_and_Features_Mapping;
 import com.ivn_1A.models.pdbowner.Legislationversion;
 import com.ivn_1A.models.pdbowner.Legislationversion_group;

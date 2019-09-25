@@ -75,8 +75,8 @@
                                         <tbody ng-init="getAllDomain_and_Features()">
 
                                             <tr dir-paginate="record in safety|orderBy:sortKey:reverse|filter:search|itemsPerPage:5">
-                                                <td style="display:none;" class="combination">{{record.combination}}</td>
-                                                <td style="display:none;" class="combination_id">{{record.safety_id}}</td>
+                                                <td style="display:none;" class="td_combination">{{record.combination}}</td>
+                                                <td style="display:none;" class="combination_id">{{record.saf_id}}</td>
                                                 <td class="text-center">
 
                                                     {{$index + 1}}
@@ -84,17 +84,14 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <a id="leg_name" class="mytooltip p-l-10 p-r-10 blink" href="javascript:void(0)"> 
-                                                        {{record.safety}}
-<!--                                                        <span class="tooltip-content5">
+                                                        {{record.saf}}
+                                                        <span class="tooltip-content5">
                                                             <span class="tooltip-text3">
                                                                 <span class="tooltip-inner2">
-                                                                    <ul class="model-list">
-                                                                        <li ng-repeat="mod in (record.yes| customSplitString)"><i class="icofont icofont-hand-right"></i> {{mod}}</li>
-                                                                        <li>{{record.combination}}</li>
-                                                                    </ul>
+                                                                    {{record.combination}}
                                                                 </span>
                                                             </span>
-                                                        </span>-->
+                                                        </span>
                                                     </a>    
                                                 </td>
                                                 <td class="text-center">                           
@@ -111,9 +108,11 @@
                                                 </td>-->
                                                 <td class="text-center">{{record.created_date}}</td>
                                                 <td class="text-center">{{record.modified_date}}</td>
-                                                <td class="text-center"> 
-                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round modal-trigger" id="edit_or_view" name="edit" ng-if="record.status === false" data-target="modal-product-form">Edit</button>
-                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round modal-trigger" id="edit_or_view" name="view" ng-if="record.status === true" data-target="modal-product-form">view</button>
+                                                <td class="text-center" id="Btns"> 
+<!--                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round modal-trigger" id="edit_or_view" name="edit" ng-if="record.status === false" data-target="modal-product-form">Edit</button>
+                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round modal-trigger" id="edit_or_view" name="view" ng-if="record.status === true" data-target="modal-product-form">view</button>-->
+                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round modal-trigger" data-ng-click="view_and_edit('edit', record.combination, record.saf)" id="edit_or_view" name="edit" ng-if="record.status === false" data-target="modal-product-form">Edit</button>
+                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round modal-trigger" data-ng-click="view_and_edit('view', record.combination, record.saf)" id="edit_or_view" name="view" ng-if="record.status === true" data-target="modal-product-form">view</button>
 <!--                                                    <button class="btn btn-success set-sql" data-target="import_export" id="btn-set1">Set rules from SQL</button>
                                                     <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-target="import_export" id="btn-set1">Set rules from SQL</button>-->
                                                 </td>
@@ -134,32 +133,30 @@
                         <!-- Marketing End -->
                         <div id="modal-product-form" class="modal">
                             <div class="modal-content">
-                                <h5 class="text-c-red m-b-25">Feature Combination <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>                                
-                                
-                                           <div class="alert alert-info">
-                                                <strong>Output</strong><br>
-                                                <span ng-bind-html="output"></span>
-                                            </div>
-                                            <div class="col-md-12 col-lg-offset-1">
-                                                <input type="text" id="combname" name="combname" ng-model="combname" placeholder="Name" class="col-md-12"/>
-                                                <input type="hidden" id="combid"/>
-                                                <input type="hidden" id="button_status"/>
-                                            </div></br>
-                                            <query-builder group="filter.group"></query-builder>
-                                            <div class="col-md-12 col-lg-offset-1">
-                                                <div id="builder-basic" style="display: block;"></div>
-                                                <div class="btn-group float-right">                                                    
-                                                        <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="safety" ng-click="addCombination($element.target)" >Submit</button>                                                        
-                                                </div>
-                                            </div>
-                                
+                                <h5 class="text-c-red m-b-25">Feature Combination <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
+                                <div class="alert alert-info">
+                                     <strong>Output</strong><br>
+                                     <span ng-bind-html="output"></span>
+                                 </div>
+                                 <div class="col-md-12 col-lg-offset-1">
+                                     <input type="text" id="combname" ng-model="combname" name="combname" placeholder="Name" class="col-md-12"/>
+                                     <input type="hidden" id="combid" ng-model="combid" />
+                                     <input type="hidden" id="button_status" ng-model="button_status" />
+                                 </div>
+                                 <query-builder group="filter.group" ></query-builder>
+                                 <div class="col-md-12 col-lg-offset-1">
+                                     <div id="builder-basic" style="display: block;"></div>
+                                     <div class="btn-group float-right">                                                    
+                                         <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="safety" ng-click="addCombination($element.target)" >Submit</button>                                                        
+                                     </div>
+                                 </div>
                             </div>
                         </div>
              
                         <%@include file="footer.jsp" %>
                         <!--<script src="js/lib/materialize.min.js"></script>-->
                         <!--<script src="js/dirPagination.js"></script>-->
-                        <script type="text/ng-template" id="/queryBuilderDirective.html">
+                        <script type="text/ng-template" id="/queryBuilderDirective.html" >
                         <div class="alert alert-warning alert-group">
                             <div class="form-inline">
                                 <select ng-options="o.name as o.name for o in operators" ng-model="group.operator" class="form-control input-sm"></select>
@@ -175,7 +172,7 @@
                                         </div>
                                         <div ng-switch-default="ng-switch-default">
                                             <div class="form-inline">
-                                                <select ng-options="t.name as t.name for t in fields" ng-model="rule.field" class="form-control input-sm"></select>
+                                                <select ng-options="t as t.name for t in fields track by t.name" ng-model="rule.field" myval="{{rule.field}}" class="form-control input-sm"></select>
                                                 <select style="margin-left: 5px" ng-options="c.name as c.name for c in conditions" ng-model="rule.condition" class="form-control input-sm"></select>
                                                 <!-- <input style="margin-left: 5px" type="text" ng-model="rule.data" class="form-control input-sm"/> -->
                                                 <button style="margin-left: 5px" ng-click="removeCondition($index)" class="btn btn-sm btn-danger">X</button>
@@ -191,37 +188,49 @@
 
                             app.controller('RecordCtrl1', function($scope, $http, $window)
                             {
-//                                this.data = [];
-//                                $scope.legislation = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-                                
-                                 var data = '{"group": {"operator": "AND","rules": []}}';
+                                $http.get("fetch_safety_combination.action").then(function (data, status, headers, config)
+                                {
+                                    for (var item in data.data.result_data) {
+//                                    alert(JSON.stringify(JSON.parse(data.data.result_data[item]['combination'].replace(/&quot;\&quot;/g,'"'))));
+                                        data.data.result_data[item]['combination'] = JSON.parse(data.data.result_data[item]['combination'].replace(/&quot;\&quot;/g,'"'));
+                                    }
+                                    $scope.safety = data.data.result_data;
+//                                    alert(JSON.stringify(data.data.result_data));
+                                });
+                                this.data = [];
+//                                alert("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+//                                $scope.safety = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+//                                alert("<s:property value="maps_obj"/>".replace(/&quot;/g,'"'));
+//                                $scope.safety.combination="<s:property value="maps_obj"/>".replace(/&quot;/g,'"');
+//                                alert(JSON.stringify($scope.safety));
+                                var data = '{"group": {"operator": "AND","rules": []}}';
 
                                 function htmlEntities(str) {
                                     return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
                                 }
 
-//                                function computed(group) {
-//                                    if (!group) return "";
-//                                    for (var str = "(", i = 0; i < group.rules.length; i++) {
-//                                        i > 0 && (str += " <strong>" + group.operator + "</strong> ");
-//                                        str += group.rules[i].group ?
-//                                            computed(group.rules[i].group) :
-//                                            group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
-//                                    }
-//
-//                                    return str + ")";
-//                                }
                                 function computed(group) {
                                     if (!group) return "";
-                                    for (var str = "", i = 0; i < group.rules.length; i++) {
-                                        i > 0 && (str += group.operator);
+                                    for (var str = "(", i = 0; i < group.rules.length; i++) {
+                                        i > 0 && (str += " <strong>" + group.operator + "</strong> ");
                                         str += group.rules[i].group ?
                                             computed(group.rules[i].group) :
-                                            " "+group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+                                            group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
                                     }
-//                                    alert(str);
-                                    return str;
+
+                                    return str + ")";
                                 }
+//                                function computed(group) {
+//                                    if (!group) return "";
+//                                    for (var str = "", i = 0; i < group.rules.length; i++) {
+//                                        i > 0 && (str += group.operator);
+//                                        str += group.rules[i].group ?
+//                                            computed(group.rules[i].group) :
+//                                            " "+group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+//                                    }
+////                                    alert(str);
+//                                    return str;
+//                                }
 
                                 $scope.json = null;
 
@@ -238,12 +247,15 @@
                                         var result = {};
     //                                    var result = $('#builder-basic').queryBuilder('getSQL', false);
                                         result['qb_name'] = $scope.combname;
-                                        result['sql'] = $scope.output;
     //                                    var ctype = btn.getAttribute('data-ctype').value;
 //                                        var myButton = angular.element(document.querySelector('.btn-primary'));
                                         result['ctype'] = angular.element(document.querySelector('.btn-primary')).data('ctype');
 //                                        $window.alert(ctype);
                                         var url_link = "";
+                                        
+                                        result['sql'] = $scope.filter;
+//                                        result['sql'] = $scope.output;
+                                        
                                         if(result['ctype'] === "safety")
                                             url_link = "createsafety_comb";
                                         else
@@ -253,7 +265,8 @@
                                             result['cid'] = $scope.combid;
 
                                         result['qb_status'] = true;
-                                        alert(JSON.stringify(result) + url_link);
+                                        
+                                        alert(JSON.stringify(result) +" "+url_link);
 
                                         if (result && url_link !== "") {
                                             $http({
@@ -271,6 +284,30 @@
                                         alert("Fill the Data");
                                     }
                                 }
+                                
+                            $scope.view_and_edit = function(element, combination, saf) {
+//                                var btnName = element.name;
+                                if (element === "view") {
+                                    $scope.combname = saf;
+//                                    for (var i = 0, max = combination.group.rules.length; i < max; i++) {
+//                                        if (combination.group.rules[i].group) {
+//                                            var name = combination.group.rules[i].group.rules[i].field.name;
+//                                            combination.group.rules[i].group.rules[i].field = name;
+//                                            alert("DSADASD"+combination.group.rules[i].field);
+//                                        } else {
+//                                            var name = combination.group.rules[i].field.name;
+//                                            combination.group.rules[i].field = name;
+//                                            alert("DSADdfdsfdsASD"+combination.group.rules[i].field);
+//                                        }
+//                                    }
+                                    $scope.filter = combination;
+                                    alert(JSON.stringify($scope.filter));
+                                } else {
+                                    $scope.filter = combination;
+                                    alert(JSON.stringify($scope.filter));
+                                }
+                            }
+                            
                             });
                             var queryBuilder = angular.module('queryBuilder', []);
                             queryBuilder.directive('queryBuilder', ['$compile','$http', function ($compile, $http) {
