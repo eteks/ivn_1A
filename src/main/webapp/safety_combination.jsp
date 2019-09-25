@@ -39,7 +39,7 @@
                                         </s:a>
                                     </li>
                                     <li class="breadcrumb-item">
-                                        <a class="waves-effect waves-light modal-trigger" href="#modal-product-form" ng-click="showCreateForm()">Add Combination</a> 
+                                        <a class="waves-effect waves-light modal-trigger" href="#modal-product-form" ng-click="resets();showCreateForm()">Add Combination</a> 
                                     </li>
                                 </ul>
                             </div>
@@ -204,7 +204,14 @@
 //                                $scope.safety.combination="<s:property value="maps_obj"/>".replace(/&quot;/g,'"');
 //                                alert(JSON.stringify($scope.safety));
                                 var data = '{"group": {"operator": "AND","rules": []}}';
-
+                                
+                                $scope.resets = function() {
+//                                    alert('Hai');
+                                    $scope.filter = JSON.parse(data);
+                                    $scope.combname = "";
+                                    $scope.combid = "";
+                                    $scope.button_status = "";
+                                }
                                 function htmlEntities(str) {
                                     return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
                                 }
@@ -301,11 +308,13 @@
 //                                        }
 //                                    }
                                     $scope.filter = combination;
-                                    alert(JSON.stringify($scope.filter));
+//                                    alert(JSON.stringify($scope.filter));
                                 } else {
                                     $scope.filter = combination;
-                                    alert(JSON.stringify($scope.filter));
+//                                    alert(JSON.stringify($scope.filter));
                                 }
+                                // initialize modal
+                                $('.modal-trigger').leanModal();
                             }
                             
                             });
