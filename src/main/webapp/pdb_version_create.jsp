@@ -995,6 +995,7 @@
 //                    $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].model_id,featuredetail_list[i].status);
 ////                        alert(JSON.stringify($scope.list));  
 //                }
+                alert("DSDSDSD   "+JSON.stringify($scope.list));
                 angular.element(function () {
                     var result = document.getElementsByClassName("radio_button");
                     angular.forEach(result, function(value) {
