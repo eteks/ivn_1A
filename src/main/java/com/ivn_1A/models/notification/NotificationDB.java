@@ -116,7 +116,7 @@ public class NotificationDB {
 
             criteriaQuery.multiselect(notificationRoot.get("id").alias("id"), notificationRoot.get("sender_id").get("username").alias("firstname"),
                     notificationRoot.get("version_type_id").alias("version_type_id"), notificationRoot.get("version_id").alias("version_id"),
-                    notificationRoot.get("version_classname").alias("version_classname"), notificationRoot.get("created_date").alias("created_date")).distinct(true)
+                    notificationRoot.get("version_name").alias("version_name"), notificationRoot.get("created_date").alias("created_date")).distinct(true)
                     .where(
                             criteriaBuilder.and(
                                     criteriaBuilder.not(notificationRoot.get("id").in(subquery)),
@@ -163,7 +163,7 @@ public class NotificationDB {
 
             criteriaQuery.multiselect(notificationRoot.get("id").alias("id"), notificationRoot.get("sender_id").get("username").alias("firstname"),
                     notificationRoot.get("version_type_id").alias("version_type_id"), notificationRoot.get("version_id").alias("version_id"),
-                    notificationRoot.get("version_classname").alias("version_classname"), notificationRoot.get("created_date").alias("created_date")).distinct(true)
+                    notificationRoot.get("version_name").alias("version_name"), notificationRoot.get("created_date").alias("created_date")).distinct(true)
                     //                    .where(
                     //                            criteriaBuilder.and(
                     //                                    criteriaBuilder.notEqual(notificationRoot.get("sender_id").get("id"), user_id),

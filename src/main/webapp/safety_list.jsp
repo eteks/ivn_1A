@@ -122,11 +122,11 @@
                                                                         </td>
                                                                         <td class="text-center"> 
 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.id}}" ng-click="View_and_edit($event)" name="edit" ng-if="record.flag === false || record.status === false">Edit</button>
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.saf_id}}" ng-click="View_and_edit($event)" name="edit" ng-if="record.flag === false || record.status === false">Edit</button>
 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-id="{{record.id}}" ng-click="View_and_edit($event)" name="view" ng-if="record.status === true && record.flag === true">view</button>
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-id="{{record.saf_id}}" ng-click="View_and_edit($event)" name="view" ng-if="record.status === true && record.flag === true">view</button>
 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.id}}" ng-click="delete($event)" name="delete" ng-if="record.delBut === 1">Delete</button>
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.saf_id}}" ng-click="delete($event)" name="delete" ng-if="record.delBut === 1">Delete</button>
                                                                         </td>
 <!--                                                                        <td class="text-center">
                                                                            
@@ -157,14 +157,46 @@
     <script>
 //        var app = angular.module('angularTable', ['angularUtils.directives.dirPagination']);
 
-        app.controller('RecordCtrl1',function($scope, $http)
+        app.controller('RecordCtrl1',function($scope, $http, $window, $location, $element, $rootScope)
         {
-            
-               this.data = [];
-               $scope.safety = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+
+            this.data = [];
+            $scope.safety = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
 //               alert(JSON.stringify($scope.safety));
 //              $scope.safety = [{"flag":true,"saf_id":1,"model":"a1,a2,a3","created_date":"Sep 19, 2019 4:27:38 PM","modified_date":"Sep 19, 2019 4:27:38 PM","version":"1.0","saf":"1.0","vehicle":"audi","status":true}]; 
           
+            $scope.View_and_edit = function(event){
+//                alert("view_and_edit");
+//                alert(event.target.id);
+                var id = event.target.attributes['data-id'].value;
+//                $window.alert(id.toString());
+                var name = event.target.name;
+//                alert(id+" "+name+" ");
+//                $http.get("vehicle_add.action", {
+//                    params: { "id": id }
+//                });
+                $window.open("safety_ver_create.action?id="+id+"&action="+name,"_self");
+            }
+            $scope.delete = function(event){
+//                alert("view_and_edit");
+//                alert(event.target.id);
+                var id = event.target.attributes['data-id'].value;
+                var data = {id : id};
+                $http({
+                url : 'deletepdbversion',
+                method : "POST",
+                data : data
+                })
+                .then(function (data, status, headers, config){
+                     if(data.data.dlStatus.status === 1){
+                         alert("PDB Version Deleted Succesfully");
+                         $window.location.reload();
+                    }else{
+                        alert("Error while deleting PDB Version");
+                    }
+            });
+            }
+            
         });
         app.filter('customSplitString', function() 
         {

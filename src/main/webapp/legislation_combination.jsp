@@ -112,7 +112,7 @@
                                                         <span class="tooltip-content5">
                                                             <span class="tooltip-text3">
                                                                 <span class="tooltip-inner2">
-                                                                    {{record.combination}}
+                                                                    {{record.gp}}
                                                                 </span>
                                                             </span>
                                                         </span>
@@ -217,6 +217,7 @@
                                     for (var item in data.data.result_data) {
 //                                    alert(JSON.stringify(JSON.parse(data.data.result_data[item]['combination'].replace(/&quot;\&quot;/g,'"'))));
                                         data.data.result_data[item]['combination'] = JSON.parse(data.data.result_data[item]['combination'].replace(/&quot;\&quot;/g,'"'));
+                                        data.data.result_data[item]['gp'] = computed(data.data.result_data[item]['combination'].group, "listing");
                                     }
                                     $scope.legislation = data.data.result_data;
 //                                    alert(JSON.stringify(data.data.result_data));
@@ -238,27 +239,25 @@
                                     return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
                                 }
 
-//                                function computed(group) {
-//                                    if (!group) return "";
-//                                    for (var str = "(", i = 0; i < group.rules.length; i++) {
-//                                        i > 0 && (str += " <strong>" + group.operator + "</strong> ");
-//                                        str += group.rules[i].group ?
-//                                            computed(group.rules[i].group) :
-//                                            group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
-//                                    }
-//
-//                                    return str + ")";
-//                                }
-                                function computed(group) {
+                                function computed(group, forWhat) {
                                     if (!group) return "";
-                                    for (var str = "(", i = 0; i < group.rules.length; i++) {
-                                        i > 0 && (str += " <strong>" + group.operator + "</strong> ");
-                                        str += group.rules[i].group ?
-                                            computed(group.rules[i].group) :
-                                            group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+                                    if (forWhat === "output") {
+                                        for (var str = "(", i = 0; i < group.rules.length; i++) {
+                                            i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+                                            str += group.rules[i].group ?
+                                                computed(group.rules[i].group, "output") :
+                                                group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+                                        }
+                                        return str + ")";
+                                    } else if (forWhat === "listing") {
+                                        for (var str = "(", i = 0; i < group.rules.length; i++) {
+                                            i > 0 && (str += " " + group.operator + " ");
+                                            str += group.rules[i].group ?
+                                                computed(group.rules[i].group, "listing") :
+                                                group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+                                        }
+                                        return str + ")";
                                     }
-
-                                    return str + ")";
                                 }
 
                                 $scope.json = null;
@@ -267,7 +266,7 @@
 //                                alert(JSON.stringify($scope.filter));
                                 $scope.$watch('filter', function (newValue) {
                                     $scope.json = JSON.stringify(newValue, null, 2);
-                                    $scope.output = computed(newValue.group);
+                                    $scope.output = computed(newValue.group, "output");
 //                                    alert("2121212121 "+computed(newValue.group));
                                 }, true);                            
 //                                $scope.getAllLegislation = function(){

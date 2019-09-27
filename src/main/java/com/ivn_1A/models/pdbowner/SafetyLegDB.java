@@ -12,6 +12,7 @@ import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
@@ -40,7 +41,7 @@ public class SafetyLegDB {
             s.clear();
             return qb_result.getResultList();
         } catch (Exception e) {
-            System.err.println("Error in \"LoadCombinationList\" : " + e);
+            System.err.println("Error in \"SafetyLegDB\" \"LoadCombinationList\" : " + e);
             return null;
         }
     }
@@ -91,7 +92,7 @@ public class SafetyLegDB {
             s.clear();
             return pdbversion.getResultList();
         } catch (Exception e) {
-            System.err.println("Error in \"GetVersionname\" : " + e.getMessage());
+            System.err.println("Error in \"SafetyLegDB\" \"GetVersionname\" : " + e.getMessage());
             return null;
         }
     }
@@ -143,7 +144,7 @@ public class SafetyLegDB {
             s.clear();
             return safetyversion.getResultList();
         } catch (Exception e) {
-            System.err.println("Error in \"GetSafetyVersionname\" : " + e.getMessage());
+            System.err.println("Error in \"SafetyLegDB\" \"GetSafetyVersionname\" : " + e.getMessage());
             return null;
         }
     }
@@ -174,7 +175,7 @@ public class SafetyLegDB {
             session.clear();
             return typedQuery.getResultList();
         } catch (Exception e) {
-            System.err.println("Error \"loadLegislationversion_groupByVehicleId\" : " + e);
+            System.err.println("Error in \"SafetyLegDB\" \"loadLegislationversion_groupByVehicleId\" : " + e);
             return null;
         }
     }
@@ -204,7 +205,7 @@ public class SafetyLegDB {
             session.clear();
             return typedQuery.getResultList();
         } catch (Exception e) {
-            System.err.println("Error \"loadSafetyversion_groupByVehicleId\" : " + e);
+            System.err.println("Error in \"SafetyLegDB\" \"loadSafetyversion_groupByVehicleId\" : " + e);
             return null;
         }
     }
@@ -221,7 +222,7 @@ public class SafetyLegDB {
             return legislationversion;
 //            return pdbversion.getId();
         } catch (Exception e) {
-            System.err.println("Error in \"insertLegilsationVersion\" : " + e.getMessage());
+            System.err.println("Error in \"SafetyLegDB\" \"insertLegilsationVersion\" : " + e.getMessage());
             return null;
         }
     }
@@ -239,7 +240,7 @@ public class SafetyLegDB {
             return safetyversion;
 //            return pdbversion.getId();
         } catch (Exception e) {
-            System.err.println("Error in \"insertSafetyVersion\" : " + e.getMessage());
+            System.err.println("Error in \"SafetyLegDB\" \"insertSafetyVersion\" : " + e.getMessage());
             return null;
         }
     }
@@ -253,7 +254,7 @@ public class SafetyLegDB {
             s.clear();
             return qb;
         } catch (Exception e) {
-            System.err.println("Error in \"getQuerybuilder\" : " + e.getMessage());
+            System.err.println("Error in \"SafetyLegDB\" \"getQuerybuilder\" : " + e.getMessage());
             return null;
         }
     }
@@ -267,7 +268,7 @@ public class SafetyLegDB {
             return leg_gp;
 //            return pdbversion.getId();
         } catch (Exception e) {
-            System.err.println("Error in \"insertPDBVersionGroup\" : " + e.getMessage());
+            System.err.println("Error in \"SafetyLegDB\" \"insertPDBVersionGroup\" : " + e.getMessage());
             return null;
         }
     }
@@ -282,7 +283,7 @@ public class SafetyLegDB {
             return saf_gp;
 //            return pdbversion.getId();
         } catch (Exception e) {
-            System.err.println("Error in \"insertSafetyVersionGroup\" : " + e.getMessage());
+            System.err.println("Error in \"SafetyLegDB\" \"insertSafetyVersionGroup\" : " + e.getMessage());
             return null;
         }
     }
@@ -296,7 +297,7 @@ public class SafetyLegDB {
             s.clear();
             return safversion;
         } catch (Exception e) {
-            System.err.println("Error in \"getSafetyversion\" : " + e.getMessage());
+            System.err.println("Error in \"SafetyLegDB\" \"getSafetyversion\" : " + e.getMessage());
             return null;
         }
     }
@@ -309,7 +310,7 @@ public class SafetyLegDB {
             s.clear();
             return legversion;
         } catch (Exception e) {
-            System.err.println("Error in \"getLegislationversion\" : " + e.getMessage());
+            System.err.println("Error in \"SafetyLegDB\" \"getLegislationversion\" : " + e.getMessage());
             return null;
         }
     }
@@ -336,7 +337,7 @@ public class SafetyLegDB {
             session.clear();
             return typedQuery.getResultList();
         } catch (Exception e) {
-            System.err.println("Error in \"GetSafetyListing\" : " + e);
+            System.err.println("Error in \"SafetyLegDB\" \"GetSafetyListing\" : " + e);
             return null;
         }
     }
@@ -360,7 +361,83 @@ public class SafetyLegDB {
             session.clear();
             return typedQuery.getResultList();
         } catch (Exception e) {
-            System.err.println("Error in \"GetLegislationCombinationListing\" : " + e);
+            System.err.println("Error in \"SafetyLegDB\" \"GetLegislationCombinationListing\" : " + e);
+            return null;
+        }
+    }
+    public static List<Safetyversion_group> LoadSafetyversion_groupData(int safety_version_id, String actionString) {
+
+        System.out.println("LoadPDBPreviousVehicleversionData");
+        try {
+            System.err.println("GetVehicleVersion_Listing");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Safetyversion_group> criteriaQuery = criteriaBuilder.createQuery(Safetyversion_group.class);
+
+            Root<Safetyversion_group> pRoot = criteriaQuery.from(Safetyversion_group.class);
+            pRoot.join("safetyversion_id", JoinType.INNER);
+            pRoot.join("querybuilder_id", JoinType.INNER);
+            pRoot.join("vehiclemodel_id", JoinType.INNER);
+
+            criteriaQuery.distinct(true);
+            
+            if (actionString.equals("edit")) {
+                criteriaQuery.where(criteriaBuilder.equal(pRoot.get("safetyversion_id").get("id"), safety_version_id));
+            } else {
+                criteriaQuery.where(criteriaBuilder.equal(pRoot.get("safetyversion_id").get("status"), true), 
+                        criteriaBuilder.equal(pRoot.get("safetyversion_id").get("flag"), true),
+                        criteriaBuilder.equal(pRoot.get("safetyversion_id").get("id"), safety_version_id));
+            }
+            
+            criteriaQuery.groupBy(pRoot.get("vehiclemodel_id").get("modelname"), pRoot.get("vehiclemodel_id").get("id"))
+                    .orderBy(criteriaBuilder.desc(pRoot.get("safetyversion_id").get("id")));
+            TypedQuery<Safetyversion_group> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"SafetyLegDB\" \'LoadSafetyversion_groupData\' : " + e);
+            return null;
+        }
+    }
+    public static List<Legislationversion_group> LoadLegislationversion_groupData(int safety_version_id, String actionString) {
+
+        System.out.println("LoadPDBPreviousVehicleversionData");
+        try {
+            System.err.println("GetVehicleVersion_Listing");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Legislationversion_group> criteriaQuery = criteriaBuilder.createQuery(Legislationversion_group.class);
+
+            Root<Legislationversion_group> pRoot = criteriaQuery.from(Legislationversion_group.class);
+            pRoot.join("legislationversion_id", JoinType.INNER);
+            pRoot.join("querybuilder_id", JoinType.INNER);
+            pRoot.join("vehiclemodel_id", JoinType.INNER);
+
+            criteriaQuery.distinct(true);
+            
+            if (actionString.equals("edit")) {
+                criteriaQuery.where(criteriaBuilder.equal(pRoot.get("legislationversion_id").get("id"), safety_version_id));
+            } else {
+                criteriaQuery.where(criteriaBuilder.equal(pRoot.get("legislationversion_id").get("status"), true), 
+                        criteriaBuilder.equal(pRoot.get("legislationversion_id").get("flag"), true),
+                        criteriaBuilder.equal(pRoot.get("legislationversion_id").get("id"), safety_version_id));
+            }
+            
+            criteriaQuery.groupBy(pRoot.get("vehiclemodel_id").get("modelname"), pRoot.get("vehiclemodel_id").get("id"))
+                    .orderBy(criteriaBuilder.desc(pRoot.get("legislationversion_id").get("id")));
+            TypedQuery<Legislationversion_group> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"SafetyLegDB\" \'LoadLegislationversion_groupData\' : " + e);
             return null;
         }
     }

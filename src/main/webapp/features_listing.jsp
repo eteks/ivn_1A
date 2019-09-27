@@ -225,11 +225,12 @@
                                 $scope.features.push({fid:result_data[i].fid,fea:result_data[i].fea,domain:result_data[i].domain});
                             }
                        });
-                       $('#modal-product-form').closeModal();
                        location.reload();
+                       $('#modal-product-form').closeModal();
                 }
                 else
                 {
+                    location.reload();
                     alert("Please create atleast one features");
                 }
             }

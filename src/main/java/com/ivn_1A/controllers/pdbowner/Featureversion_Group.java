@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
+import com.ivn_1A.configs.VersionType;
 import com.ivn_1A.controllers.notification.NotificationController;
 import com.ivn_1A.models.pdbowner.Featureversion;
 import com.ivn_1A.models.pdbowner.FeatureversionDB;
@@ -201,7 +202,7 @@ public class Featureversion_Group {
                 if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary Feature Version Created Successfully");
                 } else {
-//                    notificationController.createNotification(VersionType.Pdbversion.getVersionCode(), curleg_id.getLegislation_versionname(), new Date().toString(), notification_to);
+                    notificationController.createNotification(VersionType.Featureversion.getVersionCode(), curfea_id.getFeature_versionname(), new Date().toString(), notification_to, curfea_id.getId());
                     maps_string.put("status", "New Permanent Feature Version Created Successfully");
                 }
             }

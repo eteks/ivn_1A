@@ -13,7 +13,7 @@ public enum VersionType {
     Pdbversion(1),
     Legislationversion(2),
     Safetyversion(3),
-    acbVersion(4),
+    Featureversion(4),
     SystemVersion(5),
     ModelVersion(6);
 

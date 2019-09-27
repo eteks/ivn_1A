@@ -44,21 +44,21 @@ public class NotificationController {
         return url + ctxPath;
     }
 
-    public void createNotification(int version_type_id, float version_name, String creation_date, String receiverId, String versionClassName) throws UnsupportedEncodingException {
+    public void createNotification(int version_type_id, float version_name, String creation_date, String receiverId, int version_id) throws UnsupportedEncodingException {
 
         try {
             System.err.println("createNotification");
 //            int senderId = CookieRead.getUserIdFromSession();
 //            HttpServletRequest request = ServletActionContext.getRequest();
 //            System.err.println(PDBOwnerDB.getUser(1) + " " + receiverId + " " + version_type_id + " " + PDBOwnerDB.getPdbversionByName(version_name) + " " + creation_date);
-            System.err.println(PDBOwnerDB.getUser(1) + " " + receiverId + " " + version_type_id + " " + version_name + " " + creation_date + " " + versionClassName);
+            System.err.println(PDBOwnerDB.getUser(1) + " " + receiverId + " " + version_type_id + " " + version_name + " " + creation_date + " " + version_id);
             Notification notification = new Notification();
             notification.setSender_id(PDBOwnerDB.getUser(1));
             notification.setReceiver_id(receiverId);
             notification.setVersion_type_id(version_type_id);
-            notification.setVersion_id(version_name);
             notification.setCreated_date(new Date());
-            notification.setVersion_classname(versionClassName);
+            notification.setVersion_name(version_name);
+            notification.setVersion_id(version_id);
             int a = NotificationDB.insertNotification(notification);
             System.err.println("createdNotification res : " + a);
             maps_string.put("success", "Notification Created");
@@ -113,7 +113,25 @@ public class NotificationController {
             tempTuples = NotificationDB.readNotification(getNotification_id());
             tempTuples.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
-                columns.put("version_type", VersionType.fromId(Integer.parseInt(tuple.get("version_type_id").toString())));
+                String vType = VersionType.fromId(Integer.parseInt(tuple.get("version_type_id").toString())).toString();
+                if (vType.equals("Pdbversion")) {
+
+                    columns.put("version_type", "create_pdb");
+
+                } else if (vType.equals("Legislationversion")) {
+
+                    columns.put("version_type", "legi_ver_create");
+
+                } else if (vType.equals("Safetyversion")) {
+
+                    columns.put("version_type", "safety_ver_create");
+
+                } else if (vType.equals("Featureversion")) {
+
+                    columns.put("version_type", "feature_version_create");
+                } else {
+                    columns.put("version_type", vType);
+                }
                 columns.put("version_id", tuple.get("version_id"));
                 return columns;
             }).map((columns) -> {
