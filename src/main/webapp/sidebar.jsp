@@ -120,11 +120,18 @@
                                 </div>
                             </div>
                             <ul class="pcoded-item pcoded-left-item">
-                                <li class="active">
+                                <li class="">
                                     <s:url action="#" var="aURL" />
                                     <s:a href="%{aURL}">   
                                         <i class="icofont icofont-throne"></i>
                                         Feature version
+                                    </s:a> 
+                                 </li>
+                                 <li class="">
+                                    <s:url action="ivn" var="aURL" />
+                                    <s:a href="%{aURL}">   
+                                        <i class="icofont icofont-throne"></i>
+                                        IVN Version
                                     </s:a> 
                                  </li>
                                  <!--{{groups}}-->
