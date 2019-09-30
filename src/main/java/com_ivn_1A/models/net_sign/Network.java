@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 /**
@@ -72,7 +73,8 @@ public class Network implements Serializable {
         this.network_name = network_name;
     }
 
-    @Column(name = "network_description", nullable = false)
+    @Type(type = "text")
+    @Column(name = "network_description", nullable = false, columnDefinition = "Text")
     public String getNetwork_description() {
         return network_description;
     }

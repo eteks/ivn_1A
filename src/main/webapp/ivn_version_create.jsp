@@ -425,7 +425,7 @@
             this.data=[];
             var notification_to;
             $scope.features = [];
-            $scope.list = [];
+//            $scope.list = [];
             $scope.Demo.dt = [];
             $scope.vehicleresults = {};
             $scope.vercompare_results = {};            
@@ -436,7 +436,146 @@
             $scope.showProceed =true;
             $scope.showSubmit =true;
             $scope.data = {};
+            $scope.$on('notifyValue', function (event, args) {
+                notification_to = args;
+                $scope.createIVNVersionAjax("submit");
+            });
             
+            $scope.list = {};
+            network_list = JSON.parse("<s:property value="network_list_obj"/>".replace(/&quot;/g,'"'));
+            $scope.cans = network_list.can_list;
+            $scope.lin = network_list.lin_list;
+            $scope.hw = network_list.hardware_list;
+            
+            $scope.signal = [];
+              
+            $scope.ecu = [];
+            ecu_list = JSON.parse("<s:property value="eculist_result_obj"/>".replace(/&quot;/g,'"'));
+            $scope.ecu_list = ecu_list;
+
+            signal_list = JSON.parse("<s:property value="signallist_result_obj"/>".replace(/&quot;/g,'"'));
+            $scope.signal_list = signal_list;
+            alert("network_list  "+JSON.stringify(network_list)+" eculist_list  "+JSON.stringify(ecu_list)+" signal_list  "+JSON.stringify(signal_list));
+                     
+            $scope.sort = function(keyname)
+            {
+                $scope.sortKey = keyname;   //set the sortKey to the param passed
+                $scope.reverse = !$scope.reverse; //if true make it false and vice versa
+            }
+            
+            $scope.add_signal_tab = function(sid)
+            {
+		var index = -1;		
+		var comArr = eval( $scope.signal_list );
+		for( var i = 0; i < comArr.length; i++ ) 
+                {
+//                    alert(sid+" and "+comArr[i].sid);
+                    if( comArr[i].sid === sid ) 
+                    {
+                        index = i;
+                        break;
+                    }
+		}
+		if( index === -1 ) 
+                {
+			alert( "Something gone wrong" );
+		}
+//                angular.element( document.querySelector( '.tab-pane' ) ).css('display','none');
+//                var idr = '#signals';
+//                var myEl = angular.element( document.querySelector( idr ) );
+//                myEl.css('display','block');
+                $scope.signal.push({sid:comArr[index].sid,listitem:comArr[index].listitem,description: comArr[index].description})
+                if($scope.list.signal == undefined){
+                    $scope.list.signal = [];
+                }
+                $scope.list.signal.push(comArr[index].sid);
+                $scope.signal_list.splice( index, 1 );
+//                alert(JSON.stringify($scope.list));
+            };
+            
+            $scope.removeSignalRow = function(sid)
+            {
+		var index = -1;		
+		var comArr = eval( $scope.signal );
+		for( var i = 0; i < comArr.length; i++ ) 
+                {
+                    if( comArr[i].sid === sid ) 
+                    {
+                        index = i;
+                        break;
+                    }
+		}
+		if( index === -1 ) 
+                {
+			alert( "Something gone wrong" );
+		} 
+                $scope.signal_list.push({sid:comArr[index].sid,listitem:comArr[index].listitem,description: comArr[index].description})
+                $scope.signal.splice( index, 1 );
+                $scope.list.signal.splice(index,1);
+//                alert(JSON.stringify($scope.list));
+            };
+            
+            $scope.add_ecu_tab = function(eid)
+            {
+		var index = -1;		
+		var comArr = eval( $scope.ecu_list );
+		for( var i = 0; i < comArr.length; i++ ) 
+                {
+                    if( comArr[i].eid === eid ) 
+                    {
+                        index = i;
+                        break;
+                    }
+		}
+		if( index === -1 ) 
+                {
+			alert( "Something gone wrong" );
+		}
+//                angular.element( document.querySelector( '.tab-pane' ) ).css('display','none');
+//                var idr = '#ecu';
+//                var myEl = angular.element( document.querySelector( idr ) );
+//                myEl.css('display','block');
+
+                $scope.ecu.push({eid:comArr[index].eid,listitem:comArr[index].listitem,description: comArr[index].description})
+		if($scope.list.ecu == undefined){
+                    $scope.list.ecu = [];
+                }
+                $scope.list.ecu.push(comArr[index].eid);
+                $scope.ecu_list.splice( index, 1 );
+//                alert(JSON.stringify($scope.list));
+                
+            };
+            
+            $scope.removeEcuRow = function(eid)
+            {
+		var index = -1;		
+		var comArr = eval( $scope.ecu);
+		for( var i = 0; i < comArr.length; i++ ) 
+                {
+                    if( comArr[i].eid === eid ) 
+                    {
+                        index = i;
+                        break;
+                    }
+		}
+		if( index === -1 ) 
+                {
+			alert( "Something gone wrong" );
+		}
+                $scope.ecu_list.push({eid:comArr[index].eid,listitem:comArr[index].listitem,description: comArr[index].description})
+                $scope.ecu.splice( index, 1 );	
+                $scope.list.ecu.splice(index,1);
+//                alert(JSON.stringify($scope.list));
+            };
+            
+            $scope.SelectNetwork = function()
+            {
+                Object.keys($scope.Demo.data).forEach(function(itm){
+                    alert(itm);
+                    if(itm != "network") delete $scope.Demo.data[itm];
+                });
+                $scope.Demo.data = [];
+            };
             
             $scope.create_ivn_required_attributes = function (event) 
             {
@@ -506,14 +645,22 @@
                 }
             }
             
-            $scope.SelectNetwork = function()
+            var can = [];
+            var lin = [];
+            var hardware = [];
+            $scope.checkboxvalue = function(network_type,network_id)
             {
-                Object.keys($scope.Demo.data).forEach(function(itm){
-                    alert(itm);
-                    if(itm != "network") delete $scope.Demo.data[itm];
-                });
-                $scope.Demo.data = [];
+                network_type = eval(network_type);
+                if(network_type.indexOf(network_id) !== -1)
+                    network_type.splice(can.indexOf(network_id), 1);     
+                else
+                    network_type.push(network_id);
+                $scope.data.can = can.toString();
+                $scope.data.lin = lin.toString();
+                $scope.data.hardware = hardware.toString();                              
             };
+            
+            
         });
         
         app.directive('fileModel', ['$parse', function ($parse) {

@@ -19,7 +19,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 /**
@@ -27,30 +26,27 @@ import org.hibernate.annotations.UpdateTimestamp;
  * @author ETS06
  */
 @Entity
-@Table(name = "ecu")
-public class ECU implements Serializable {
+@Table(name = "signaltags")
+public class SignalTags implements Serializable {
 
-    //id, network_name, network_description, network_type, modified_date, created_date, created_or_updated_by, status
     private int id;
-    private String ecu_name;
-    private String ecu_description;
+    private String tagname;
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
     private boolean status;
 
-    public ECU() {
+    public SignalTags() {
     }
 
-    public ECU(String ecu_name, String ecu_description, Date modified_date, Date created_date, User created_or_updated_by, boolean status) {
-        this.ecu_name = ecu_name;
-        this.ecu_description = ecu_description;
+    public SignalTags(String tagname, Date modified_date, Date created_date, User created_or_updated_by, boolean status) {
+        this.tagname = tagname;
         this.modified_date = modified_date;
         this.created_date = created_date;
         this.created_or_updated_by = created_or_updated_by;
         this.status = status;
     }
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -62,23 +58,13 @@ public class ECU implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "ecu_name", nullable = false)
-    public String getEcu_name() {
-        return ecu_name;
+    @Column(name = "tagname", unique = true, nullable = false)
+    public String getTagname() {
+        return tagname;
     }
 
-    public void setEcu_name(String ecu_name) {
-        this.ecu_name = ecu_name;
-    }
-
-    @Type(type = "text")
-    @Column(name = "ecu_description", nullable = false, columnDefinition = "Text")
-    public String getEcu_description() {
-        return ecu_description;
-    }
-
-    public void setEcu_description(String ecu_description) {
-        this.ecu_description = ecu_description;
+    public void setTagname(String tagname) {
+        this.tagname = tagname;
     }
 
     @UpdateTimestamp
@@ -102,7 +88,7 @@ public class ECU implements Serializable {
     public void setCreated_date(Date created_date) {
         this.created_date = created_date;
     }
-
+    
     @OneToOne
     @JoinColumn(name = "created_or_updated_by", nullable = false)
     public User getCreated_or_updated_by() {
@@ -121,6 +107,10 @@ public class ECU implements Serializable {
     public void setStatus(boolean status) {
         this.status = status;
     }
-    
+
+    @Override
+    public String toString() {
+        return "SignalTags{" + "id=" + id + ", tagname=" + tagname + ", modified_date=" + modified_date + ", created_date=" + created_date + ", created_or_updated_by=" + created_or_updated_by + ", status=" + status + '}';
+    }
     
 }
