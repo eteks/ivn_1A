@@ -437,6 +437,83 @@
             $scope.showSubmit =true;
             $scope.data = {};
             
+            
+            $scope.create_ivn_required_attributes = function (event) 
+            {
+                if (!$scope.doSubmit) 
+                {
+                    return;
+                }
+                $scope.doSubmit = false; 
+                var ivn_attribute_data = {};
+                ivn_attribute_data['network'] = $scope.data.network;
+                if($scope.data.network == "signals")
+                    ivn_attribute_data['ivn_attribute_data'] = $scope.data;
+                else
+                    ivn_attribute_data['ivn_attribute_data'] = $scope.Demo.data;
+                if(($scope.data.network != "signals" && $scope.Demo.data.length > 0 && $scope.Demo.data[0].name != undefined  && $scope.Demo.data[0].description != undefined)||
+                        ($scope.data.network == "signals" && $scope.data.name != undefined  && $scope.data.description != undefined && $scope.data.alias != undefined))
+                {
+                    alert(JSON.stringify($scope.data)+"   "+JSON.stringify(ivn_attribute_data));
+                    $http({
+                        url : 'create_ivn_required_attributes',
+                        method : "POST",
+                        data : ivn_attribute_data
+                    })
+                   .then(function (data, status, headers, config)
+                    {
+                        alert(data.data.maps.status);
+//                        alert(JSON.stringify(data.data.result_data));
+                        angular.forEach(data.data.result_data, function(value, key) {
+                            if($scope.data.network == "can")
+                                $scope.cans.push(value);
+                            else if($scope.data.network == "lin")
+                                $scope.lin.push(value);
+                            else if($scope.data.network == "hardware")
+                                $scope.hw.push(value);
+                            else if($scope.data.network == "ecu"){
+                                if($scope.list.ecu == undefined){
+                                    $scope.list.ecu = [];
+                                }
+                                $scope.list.ecu.push(value.eid);
+                                $scope.ecu.push(value);
+                            }
+                            else if($scope.data.network == "signals")
+                            {
+                                if($scope.list.signal == undefined)
+                                {
+                                    $scope.list.signal = [];
+                                }
+                                $scope.list.signal.push(value.sid);
+                                $scope.signal.push(value);
+                            }
+                        });
+                    });
+                    $('#modal-product-form').closeModal();
+                    can = [];
+                    lin = [];
+                    hardware = [];
+//                    $scope.data.network="";
+//                    $scope.Demo.data=[];
+//                    $scope.data=[];
+                }
+                else
+                {
+                    if($scope.data.network == "signals")
+                        alert("Please fill the name and description and alias");
+                    else
+                        alert("Please fill all the fields");
+                }
+            }
+            
+            $scope.SelectNetwork = function()
+            {
+                Object.keys($scope.Demo.data).forEach(function(itm){
+                    alert(itm);
+                    if(itm != "network") delete $scope.Demo.data[itm];
+                });
+                $scope.Demo.data = [];
+            };
         });
         
         app.directive('fileModel', ['$parse', function ($parse) {

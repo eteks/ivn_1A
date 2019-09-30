@@ -26,32 +26,30 @@ import org.hibernate.annotations.UpdateTimestamp;
  * @author ETS06
  */
 @Entity
-@Table(name = "network")
-public class Network implements Serializable {
+@Table(name = "ecu")
+public class ECU implements Serializable {
 
     //id, network_name, network_description, network_type, modified_date, created_date, created_or_updated_by, status
     private int id;
-    private String network_name;
-    private String network_description;
-    private String network_type;
+    private String ecu_name;
+    private String ecu_description;
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
     private boolean status;
 
-    public Network() {
+    public ECU() {
     }
 
-    public Network(String network_name, String network_description, String network_type, Date modified_date, Date created_date, User created_or_updated_by, boolean status) {
-        this.network_name = network_name;
-        this.network_description = network_description;
-        this.network_type = network_type;
+    public ECU(String ecu_name, String ecu_description, Date modified_date, Date created_date, User created_or_updated_by, boolean status) {
+        this.ecu_name = ecu_name;
+        this.ecu_description = ecu_description;
         this.modified_date = modified_date;
         this.created_date = created_date;
         this.created_or_updated_by = created_or_updated_by;
         this.status = status;
-    }    
-
+    }
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -63,31 +61,22 @@ public class Network implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "network_name", nullable = false)
-    public String getNetwork_name() {
-        return network_name;
+    @Column(name = "ecu_name", nullable = false)
+    public String getEcu_name() {
+        return ecu_name;
     }
 
-    public void setNetwork_name(String network_name) {
-        this.network_name = network_name;
+    public void setEcu_name(String ecu_name) {
+        this.ecu_name = ecu_name;
     }
 
-    @Column(name = "network_description", nullable = false)
-    public String getNetwork_description() {
-        return network_description;
+    @Column(name = "ecu_description", nullable = false)
+    public String getEcu_description() {
+        return ecu_description;
     }
 
-    public void setNetwork_description(String network_description) {
-        this.network_description = network_description;
-    }
-
-    @Column(name = "network_type", nullable = false)
-    public String getNetwork_type() {
-        return network_type;
-    }
-
-    public void setNetwork_type(String network_type) {
-        this.network_type = network_type;
+    public void setEcu_description(String ecu_description) {
+        this.ecu_description = ecu_description;
     }
 
     @UpdateTimestamp
@@ -130,10 +119,6 @@ public class Network implements Serializable {
     public void setStatus(boolean status) {
         this.status = status;
     }
-
-    @Override
-    public String toString() {
-        return "Network{" + "id=" + id + ", network_name=" + network_name + ", network_description=" + network_description + ", network_type=" + network_type + ", modified_date=" + modified_date + ", created_date=" + created_date + ", created_or_updated_by=" + created_or_updated_by + ", status=" + status + '}';
-    }
-
+    
+    
 }

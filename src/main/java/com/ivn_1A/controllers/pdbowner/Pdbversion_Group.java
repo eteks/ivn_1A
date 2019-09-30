@@ -444,8 +444,8 @@ public class Pdbversion_Group {
 
             String domain_name = readValue.get("domain_name").asText();
             ArrayNode features_and_description = (ArrayNode) readValue.get("features_and_description");
-            System.out.println("vehiclename" + domain_name);
-            System.out.println("vehicle_and_model_value" + features_and_description);
+            System.out.println("domain_name " + domain_name);
+            System.out.println("features_and_description " + features_and_description);
 
             Domain domainId = PDBOwnerDB.getDomainByName(domain_name);
             if (domainId == null) {

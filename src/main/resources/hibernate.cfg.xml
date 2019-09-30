@@ -38,5 +38,8 @@
     <mapping class="com.ivn_1A.models.Groups" />
     <mapping class="com.ivn_1A.models.notification.StatusNotification" />
     <mapping class="com.ivn_1A.models.notification.Notification" />
+    <mapping class="com.ivn_1A.models.notification.Notification" />
+    <mapping class="com_ivn_1A.models.net_sign.Network" />
+    <mapping class="com_ivn_1A.models.net_sign.ECU" />
 </session-factory>
 </hibernate-configuration>
