@@ -390,6 +390,7 @@ public class SafetyLegDB {
                     pRoot.get("safetyversion_id").get("flag").alias("flag"), pRoot.get("safetyversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"),
                     criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
                     criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("model_id"),
+                    criteriaBuilder.function("group_concat", String.class, pRoot.get("available_status")).alias("available_status"),
                     pRoot.get("safetyversion_id").get("vehicle_id").get("id").alias("vehicle_id"),
                     pRoot.get("querybuilder_id").get("id").alias("qb_id"), pRoot.get("querybuilder_id").get("querybuilder_name").alias("qb_name"),
                     pRoot.get("safetyversion_id").get("pdbversion_id").get("id").alias("pdb_versionid"), pRoot.get("safetyversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname")).distinct(true);
@@ -402,8 +403,7 @@ public class SafetyLegDB {
                         criteriaBuilder.equal(pRoot.get("safetyversion_id").get("id"), safety_version_id));
             }
 
-            criteriaQuery.groupBy(pRoot.get("vehiclemodel_id").get("modelname"), pRoot.get("vehiclemodel_id").get("id"))
-                    .orderBy(criteriaBuilder.desc(pRoot.get("safetyversion_id").get("id")));
+            criteriaQuery.orderBy(criteriaBuilder.desc(pRoot.get("safetyversion_id").get("id")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();
