@@ -82,7 +82,7 @@
 <script type="text/javascript" src="js/select2-custom.js"></script>
 <script src="js/tabs.js"></script>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.18/angular-sanitize.min.js"></script>
+<script src="js/angular-sanitize.min.js"></script>
 <script src="js/angular-query-builder.js"></script>
 <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
