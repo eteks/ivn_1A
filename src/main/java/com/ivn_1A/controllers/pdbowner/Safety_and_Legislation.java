@@ -58,31 +58,37 @@ public class Safety_and_Legislation {
         System.out.println("LegislationPage");
 
 //        This will execute if url contains parameter(id and action-edit, view)
-        try {
-            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
-            System.out.println("request" + request);
-            System.out.println("id_value" + request.getParameter("id"));
-            System.out.println("action_value" + request.getParameter("action"));
-            List<Pdbversion_group> pdbversion_group_List = PDBOwnerDB.LoadPDBPreviousVehicleversionData(Integer.parseInt(request.getParameter("id")));
-            List<Map<String, Object>> pdb_map_result = new ArrayList<>();
-            pdbversion_group_List.stream().map((pdbversion_group) -> {
-                Map<String, Object> vehicleMap = new HashMap<>();
-//                vehicleMap.put("vehver_id", pdbversion_group.getVehicle_id().getId());
-//                vehicleMap.put("vehiclename", pdbversion_group.getVehicle_id().getVehiclename());
-                vehicleMap.put("modelname", pdbversion_group.getVehiclemodel_id().getModelname());
-                vehicleMap.put("pdbversion_group_id", pdbversion_group.getId());
-                vehicleMap.put("pdbversion_id", pdbversion_group.getPdbversion_id().getId());
-                vehicleMap.put("pdbversion_name", pdbversion_group.getPdbversion_id().getPdb_versionname());
-                vehicleMap.put("status", pdbversion_group.getPdbversion_id().getStatus());
-                return vehicleMap;
-            }).forEachOrdered((vehicleMap) -> {
-                pdb_map_result.add(vehicleMap);
-            });
-            result_data_obj = new Gson().toJson(pdb_map_result);
-            System.err.println("result_data_obj " + result_data_obj);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
+//        try {
+//            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
+//            System.out.println("request" + request);
+//            System.out.println("id_value" + request.getParameter("id"));
+//            System.out.println("action_value" + request.getParameter("action"));
+//            List<Safetyversion_group> safetyversion_groups = SafetyLegDB.LoadLegislationversion_groupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
+//            List<Map<String, Object>> pdb_map_result = new ArrayList<>();
+//            safetyversion_groups.stream().map((safetyversion_group) -> {
+//                Map<String, Object> safetyMap = new HashMap<>();
+//                safetyMap.put("qb_name", safetyversion_group.getQuerybuilder_id().getQuerybuilder_name());
+//                safetyMap.put("qb_id", safetyversion_group.getQuerybuilder_id().getId());
+//                safetyMap.put("pdbversion_id", safetyversion_group.getSafetyversion_id().getPdbversion_id().getId());
+//                safetyMap.put("pdbversion_name", safetyversion_group.getSafetyversion_id().getPdbversion_id().getPdb_versionname());
+//                safetyMap.put("modelname", safetyversion_group.getVehiclemodel_id().getModelname());
+//                safetyMap.put("model_id", safetyversion_group.getVehiclemodel_id().getId());
+//                safetyMap.put("vehiclename", safetyversion_group.getSafetyversion_id().getVehicle_id().getVehiclename());
+//                safetyMap.put("vehicle_id", safetyversion_group.getSafetyversion_id().getVehicle_id().getId());
+//                safetyMap.put("legisversion_group_id", safetyversion_group.getId());
+//                safetyMap.put("legisversion_id", safetyversion_group.getSafetyversion_id().getId());
+//                safetyMap.put("legisversion_name", safetyversion_group.getSafetyversion_id().getSafety_versionname());
+//                safetyMap.put("status", safetyversion_group.getSafetyversion_id().getStatus());
+//                safetyMap.put("flag", safetyversion_group.getSafetyversion_id().getFlag());
+//                return safetyMap;
+//            }).forEachOrdered((safetyMap) -> {
+//                pdb_map_result.add(safetyMap);
+//            });
+//            result_data_obj = new Gson().toJson(pdb_map_result);
+//            System.err.println("result_data_obj " + result_data_obj);
+//        } catch (Exception ex) {
+//            System.out.println(ex.getMessage());
+//        }
         try {
             List<Querybuilder> legcomb_list = SafetyLegDB.LoadCombinationList("legislation");
 
@@ -111,32 +117,38 @@ public class Safety_and_Legislation {
         System.out.println("Entered");
         System.out.println("SafetyPage");
 
-//        This will execute if url contains parameter(id and action-edit, view)
-//        try {
-//            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
-//            System.out.println("request" + request);
-//            System.out.println("id_value" + request.getParameter("id"));
-//            System.out.println("action_value" + request.getParameter("action"));
-//            List<Pdbversion_group> pdbversion_group_List = PDBOwnerDB.LoadPDBPreviousVehicleversionData(Integer.parseInt(request.getParameter("id")));
-//            List<Map<String, Object>> pdb_map_result = new ArrayList<>();
-//            pdbversion_group_List.stream().map((pdbversion_group) -> {
-//                Map<String, Object> vehicleMap = new HashMap<>();
-////                vehicleMap.put("vehver_id", pdbversion_group.getVehicle_id().getId());
-////                vehicleMap.put("vehiclename", pdbversion_group.getVehicle_id().getVehiclename());
-//                vehicleMap.put("modelname", pdbversion_group.getVehiclemodel_id().getModelname());
-//                vehicleMap.put("pdbversion_group_id", pdbversion_group.getId());
-//                vehicleMap.put("pdbversion_id", pdbversion_group.getPdbversion_id().getId());
-//                vehicleMap.put("pdbversion_name", pdbversion_group.getPdbversion_id().getPdb_versionname());
-//                vehicleMap.put("status", pdbversion_group.getPdbversion_id().getStatus());
-//                return vehicleMap;
-//            }).forEachOrdered((vehicleMap) -> {
-//                pdb_map_result.add(vehicleMap);
-//            });
-//            result_data_obj = new Gson().toJson(pdb_map_result);
-//            System.err.println("result_data_obj " + result_data_obj);
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        }
+        //This will execute if url contains parameter(id and action-edit, view)
+        try {
+            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
+            System.out.println("request" + request);
+            System.out.println("id_value" + request.getParameter("id"));
+            System.out.println("action_value" + request.getParameter("action"));
+            List<Tuple> safetyversion_groups = SafetyLegDB.LoadSafetyversion_groupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
+            List<Map<String, Object>> pdb_map_result = new ArrayList<>();
+            safetyversion_groups.stream().map((tuple) -> {
+                Map<String, Object> safetyMap = new HashMap<>();
+                safetyMap.put("qb_name", tuple.get("qb_name"));
+                safetyMap.put("qb_id", tuple.get("qb_id"));
+                safetyMap.put("pdbversion_id", tuple.get("pdb_versionid"));
+                safetyMap.put("pdbversion_name", tuple.get("pdb_versionname"));
+                safetyMap.put("modelname", tuple.get("modelname"));
+                safetyMap.put("model_id", tuple.get("model_id"));
+                safetyMap.put("vehiclename", tuple.get("vehiclename"));
+                safetyMap.put("vehicle_id", tuple.get("vehicle_id"));
+                safetyMap.put("safetyversion_group_id", tuple.get("safetyversion_group_id"));
+                safetyMap.put("saf_id", tuple.get("saf_id"));
+                safetyMap.put("saf", tuple.get("saf"));
+                safetyMap.put("status", tuple.get("status"));
+                safetyMap.put("flag", tuple.get("flag"));
+                return safetyMap;
+            }).forEachOrdered((safetyMap) -> {
+                pdb_map_result.add(safetyMap);
+            });
+            result_data_obj = new Gson().toJson(pdb_map_result);
+            System.err.println("result_data_obj " + result_data_obj);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
         try {
             List<Querybuilder> safcomb_list = SafetyLegDB.LoadCombinationList("safety");
 
@@ -274,7 +286,7 @@ public class Safety_and_Legislation {
                 if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary Legislation Version Created Successfully");
                 } else {
-//                    notificationController.createNotification(VersionType.Pdbversion.getVersionCode(), curleg_id.getLegislation_versionname(), new Date().toString(), notification_to);
+                    notificationController.createNotification(VersionType.Legislationversion.getVersionCode(), curleg_id.getLegislation_versionname(), new Date().toString(), notification_to, curleg_id.getId());
                     maps_string.put("status", "New Permanent Legislation Version Created Successfully");
                 }
             }
@@ -401,7 +413,7 @@ public class Safety_and_Legislation {
                 if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary Safety Version Created Successfully");
                 } else {
-//                    notificationController.createNotification(VersionType.Pdbversion.getVersionCode(), curleg_id.getLegislation_versionname(), new Date().toString(), notification_to);
+                    notificationController.createNotification(VersionType.Safetyversion.getVersionCode(), cursaf_id.getSafety_versionname(), new Date().toString(), notification_to, cursaf_id.getId());
                     maps_string.put("status", "New Permanent Safety Version Created Successfully");
                 }
             }

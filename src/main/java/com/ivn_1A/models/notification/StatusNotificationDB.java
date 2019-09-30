@@ -6,7 +6,6 @@
 package com.ivn_1A.models.notification;
 
 import com.ivn_1A.configs.HibernateUtil;
-import com.ivn_1A.models.pdbowner.Vehiclemodel;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,8 +23,8 @@ public class StatusNotificationDB {
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
-            
-            StatusNotification statusNotification1 = getVehicleModelByName(statusNotification);
+
+            StatusNotification statusNotification1 = getStatusNotificationByID(s, statusNotification);
             if (statusNotification1 == null) {
                 s.save(statusNotification);
             }
@@ -35,26 +34,21 @@ public class StatusNotificationDB {
             System.out.println("Notification creation error message" + e.getMessage());
         }
     }
-    
-    
+
     //StatusNotification Data by Name
-    public static StatusNotification getVehicleModelByName(StatusNotification statusNotification) {
+    public static StatusNotification getStatusNotificationByID(Session s, StatusNotification statusNotification) {
         try {
-            Session s = HibernateUtil.getThreadLocalSession();
-            Transaction tx = s.beginTransaction();
 
             final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
             CriteriaQuery<StatusNotification> criteriaQuery = criteriaBuilder.createQuery(StatusNotification.class);
 
             Root<StatusNotification> vehicleModelRoot = criteriaQuery.from(StatusNotification.class);
-            criteriaQuery.where(criteriaBuilder.equal(vehicleModelRoot.get("receiver_id"),  statusNotification.getReceiver_id()));
+            criteriaQuery.where(criteriaBuilder.equal(vehicleModelRoot.get("receiver_id"), statusNotification.getReceiver_id()));
             TypedQuery<StatusNotification> dfm_result = s.createQuery(criteriaQuery);
 
-            tx.commit();
-            s.clear();
             return dfm_result.getSingleResult();
         } catch (Exception e) {
-            System.err.println("Error : \"getVehicleModelByName\"" + e);
+            System.err.println("Error : \"getStatusNotificationByID\"" + e);
             return null;
         }
     }

@@ -6,7 +6,6 @@
 package com.ivn_1A.models.notification;
 
 import com.ivn_1A.configs.HibernateUtil;
-import com.ivn_1A.configs.VersionType;
 import com.ivn_1A.models.admin.User;
 import java.util.List;
 import javax.persistence.Tuple;
@@ -116,8 +115,8 @@ public class NotificationDB {
             subquery.select(statusNotificationRoot.get("notification_id")).distinct(true);
 
             criteriaQuery.multiselect(notificationRoot.get("id").alias("id"), notificationRoot.get("sender_id").get("username").alias("firstname"),
-                    notificationRoot.get("version_type_id").alias("version_type_id"), notificationRoot.get("version_id").get("pdb_versionname").alias("version_id"),
-                    notificationRoot.get("created_date").alias("created_date")).distinct(true)
+                    notificationRoot.get("version_type_id").alias("version_type_id"), notificationRoot.get("version_id").alias("version_id"),
+                    notificationRoot.get("version_name").alias("version_name"), notificationRoot.get("created_date").alias("created_date")).distinct(true)
                     .where(
                             criteriaBuilder.and(
                                     criteriaBuilder.not(notificationRoot.get("id").in(subquery)),
@@ -163,8 +162,8 @@ public class NotificationDB {
             Root<Notification> notificationRoot = criteriaQuery.from(Notification.class);
 
             criteriaQuery.multiselect(notificationRoot.get("id").alias("id"), notificationRoot.get("sender_id").get("username").alias("firstname"),
-                    notificationRoot.get("version_type_id").alias("version_type_id"), notificationRoot.get("version_id").get("pdb_versionname").alias("version_id"),
-                    notificationRoot.get("created_date").alias("created_date")).distinct(true)
+                    notificationRoot.get("version_type_id").alias("version_type_id"), notificationRoot.get("version_id").alias("version_id"),
+                    notificationRoot.get("version_name").alias("version_name"), notificationRoot.get("created_date").alias("created_date")).distinct(true)
                     //                    .where(
                     //                            criteriaBuilder.and(
                     //                                    criteriaBuilder.notEqual(notificationRoot.get("sender_id").get("id"), user_id),
@@ -195,7 +194,7 @@ public class NotificationDB {
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
 
             Root<Notification> notificationRoot = criteriaQuery.from(Notification.class);
-            criteriaQuery.multiselect(notificationRoot.get("version_type_id").alias("version_type_id"), notificationRoot.get("version_id").get("id").alias("version_id"))
+            criteriaQuery.multiselect(notificationRoot.get("version_type_id").alias("version_type_id"), notificationRoot.get("version_id").alias("version_id"))
                     .where(criteriaBuilder.equal(notificationRoot.get("id"), notification_id));
             TypedQuery<Tuple> dfm_result = s.createQuery(criteriaQuery);
 

@@ -6,7 +6,6 @@
 package com.ivn_1A.models.notification;
 
 import com.ivn_1A.models.admin.User;
-import com.ivn_1A.models.pdbowner.Pdbversion;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -33,16 +32,18 @@ public class Notification implements Serializable {
     private User sender_id;
     private String receiver_id;
     private int version_type_id;
-    private Pdbversion version_id;
+    private float version_name;
+    private int version_id;
     private Date created_date;
 
     public Notification() {
     }
 
-    public Notification(User sender_id, String receiver_id, int version_type_id, Pdbversion version_id, Date created_date) {
+    public Notification(User sender_id, String receiver_id, int version_type_id, float version_name, int version_id, Date created_date) {
         this.sender_id = sender_id;
         this.receiver_id = receiver_id;
         this.version_type_id = version_type_id;
+        this.version_name = version_name;
         this.version_id = version_id;
         this.created_date = created_date;
     }
@@ -68,7 +69,7 @@ public class Notification implements Serializable {
         this.sender_id = sender_id;
     }
 
-    @Column(name = "receiver_id", nullable = false, columnDefinition ="Text")
+    @Column(name = "receiver_id", nullable = false, columnDefinition = "Text")
     public String getReceiver_id() {
         return receiver_id;
     }
@@ -76,7 +77,7 @@ public class Notification implements Serializable {
     public void setReceiver_id(String receiver_id) {
         this.receiver_id = receiver_id;
     }
-    
+
     @Column(name = "version_type_id", nullable = false)
     public int getVersion_type_id() {
         return version_type_id;
@@ -86,16 +87,6 @@ public class Notification implements Serializable {
         this.version_type_id = version_type_id;
     }
 
-    @OneToOne
-    @JoinColumn(name = "version_id", nullable = false)
-    public Pdbversion getVersion_id() {
-        return version_id;
-    }
-
-    public void setVersion_id(Pdbversion version_id) {
-        this.version_id = version_id;
-    }
-        
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = false)
@@ -107,8 +98,27 @@ public class Notification implements Serializable {
         this.created_date = created_date;
     }
 
+    @Column(name = "version_name", nullable = false)
+    public float getVersion_name() {
+        return version_name;
+    }
+
+    public void setVersion_name(float version_name) {
+        this.version_name = version_name;
+    }
+
+    @Column(name = "version_id", nullable = false)
+    public int getVersion_id() {
+        return version_id;
+    }
+
+    public void setVersion_id(int version_id) {
+        this.version_id = version_id;
+    }
+
     @Override
     public String toString() {
-        return "Notification{" + "id=" + id + ", sender_id=" + sender_id + ", receiver_id=" + receiver_id + ", version_type_id=" + version_type_id + ", version_id=" + version_id + ", created_date=" + created_date + '}';
+        return "Notification{" + "id=" + id + ", sender_id=" + sender_id + ", receiver_id=" + receiver_id + ", version_type_id=" + version_type_id + ", version_name=" + version_name + ", version_id=" + version_id + ", created_date=" + created_date + '}';
     }
+
 }

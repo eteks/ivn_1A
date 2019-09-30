@@ -1,37 +1,43 @@
-{
-    "qb_name": "car",
-    "ctype": "safety",
-    "sql": {
-        "group": {
-            "operator": "AND",
-            "rules": [{
-                    "condition": true,
-                    "field": {
-                        "id": 1,
-                        "name": "feature1",
-                        "$$hashKey": "object:32"
-                    },
-                    "field_id": "",
-                    "data": "",
-                    "$$hashKey": "object:29"
-                }, {
-                    "group": {
-                        "operator": "OR",
-                        "rules": [{
-                                "condition": true,
-                                "field": {
-                                    "id": 2,
-                                    "name": "feature2",
-                                    "$$hashKey": "object:46"
-                                },
-                                "field_id": "",
-                                "data": "",
-                                "$$hashKey": "object:42"
-                            }]
-                    },
-                    "$$hashKey": "object:36"
-                }]
-        }
-    },
-    "qb_status": true
-}
+[{
+        "safetyversion_group_id": 1,
+        "flag": true,
+        "modelname": "a1",
+        "safetyversion_name": 1,
+        "pdbversion_name": 1,
+        "model_id": 1,
+        "safetyversion_id": 1,
+        "qb_id": 2,
+        "qb_name": "Audi",
+        "vehiclename": "Audi",
+        "pdbversion_id": 1,
+        "vehicle_id": 1,
+        "status": true
+    }, {
+        "safetyversion_group_id": 2,
+        "flag": true,
+        "modelname": "a2",
+        "safetyversion_name": 1,
+        "pdbversion_name": 1,
+        "model_id": 2,
+        "safetyversion_id": 1,
+        "qb_id": 2,
+        "qb_name": "Audi",
+        "vehiclename": "Audi",
+        "pdbversion_id": 1,
+        "vehicle_id": 1,
+        "status": true
+    }, {
+        "safetyversion_group_id": 3,
+        "flag": true,
+        "modelname": "a3",
+        "safetyversion_name": 1,
+        "pdbversion_name": 1,
+        "model_id": 3,
+        "safetyversion_id": 1,
+        "qb_id": 2,
+        "qb_name": "Audi",
+        "vehiclename": "Audi",
+        "pdbversion_id": 1,
+        "vehicle_id": 1,
+        "status": true
+    }]
