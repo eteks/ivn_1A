@@ -44,7 +44,9 @@
                                                     <div class="card-block marketing-card p-t-0">
                                                          
                                                         <div class="col-lg-12  p-t-30">
-                                                                
+                                                                <div class="text-right">
+                                                                    <a class="feature_add_tip waves-effect waves-light btn modal-trigger btn-floating btn-large red" href="#modal-product-form" ng-click="showCreateForm()">Add</a>
+                                                                </div>
                                                                 <!-- Nav tabs -->
                                                                 <ul class="nav nav-tabs  tabs" role="tablist">
                                                                     <li class="nav-item">
@@ -223,7 +225,7 @@
                                             <!-- Marketing End -->
             <!--<form class=""  name="myForm">-->
                 <!-- modal for for creating new product -->
-                <div id="modal-product-form" class="modal">
+                    <div id="modal-product-form" class="modal">
                     <div class="modal-content">
                         <h5 class="text-c-red m-b-25">Add Network / Signal / ECU
                             <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" >
@@ -233,8 +235,8 @@
                        
                             <div class="form-group">
                                 <!--<label for="name">Domain</label>-->
-                                <select ng-model="network" ng-change="SelectNetwork()" class="col-lg-12">
-                                    <option value="" disabled selected>Select your Network</option>
+                                <select ng-model="data.network" ng-change="SelectNetwork()" class="col-lg-12">
+                                    <option value="" selected>Select your Network</option>
                                     <option value="can">CAN</option>
                                     <option value="lin">LIN</option>
                                     <option value="hardware">H/W</option>
@@ -242,11 +244,11 @@
                                     <option value="ecu">ECU</option>
                                 </select>
                             </div>
-                                <div class="" ng-if="network != 'signals'">
+                                <div class="" ng-if="data.network != 'signals'">
                                      <div ng-repeat="data in Demo.data">              
                                         <div class="form-group">
                                         <!--<label for="name">Feature</label>-->
-                                        <input ng-model="name" type="text" class="validate col-lg-12" id="form-name" placeholder="Name"/>
+                                        <input ng-model="data.name" type="text" class="validate col-lg-12" id="form-name" placeholder="Name"/>
                                         </div>
                                         <div class="form-group">
                                         <textarea ng-model="data.description" type="text" class="validate materialize-textarea  col-lg-12" placeholder="Description"></textarea>
@@ -265,34 +267,34 @@
                                          </a>
                                     </p>
                             </div>
-                            <div class="signal_attr row" ng-if="network === 'signals'">              
+                            <div class="signal_attr row" ng-if="data.network === 'signals'">              
                                 
                                 <div class="form-group col-lg-6">
                                     <!--<label for="name">Feature</label>-->
-                                    <input ng-model="name" type="text" class="validate" id="form-name" placeholder="Name"/>
+                                    <input ng-model="data.name" type="text" class="validate" id="form-name" placeholder="Name"/>
                                 </div>
                                  <div class="form-group col-lg-6">
                                     <!--<label for="name">Feature</label>-->
-                                    <input ng-model="alias" type="text" class="validate" id="form-name" placeholder="alias"/>
+                                    <input ng-model="data.alias" type="text" class="validate" id="form-name" placeholder="alias"/>
                                 </div> 
                                 <div class="form-group col-lg-6">
                                     <!--<label for="name">Feature</label>-->
-                                    <input ng-model="length" type="text" class="validate" id="form-name" placeholder="Length"/>
+                                    <input ng-model="data.length" type="text" class="validate" id="form-name" placeholder="Length"/>
                                 </div>
                                  
                                 <div class="form-group col-lg-6">
                                     <!--<label for="name">Feature</label>-->
-                                    <input ng-model="byte" type="text" class="validate" id="form-name" placeholder="Byte Order"/>
+                                    <input ng-model="data.byteorder" type="text" class="validate" id="form-name" placeholder="Byte Order"/>
                                 </div>
                                  
                                 <div class="form-group col-lg-6">
                                     <!--<label for="name">Feature</label>-->
-                                    <input ng-model="unit" type="text" class="validate" id="form-name" placeholder="Unit"/>
+                                    <input ng-model="data.unit" type="text" class="validate" id="form-name" placeholder="Unit"/>
                                 </div>
                                 
                                 <div class="form-group col-lg-6">
-                                    <select ng-model="selectvalue" ng-change="Selectvalue()">
-                                        <option value="" disabled selected>Select your Value</option>
+                                    <select ng-model="data.valuetype" ng-change="Selectvalue()">
+                                        <option value="" selected>Select your Value</option>
                                         <option value="unsign">Unsigned</option>
                                         <option value="sign">Signed</option>
                                     </select>
@@ -300,45 +302,49 @@
                                 
                                 <div class="form-group col-lg-6">
                                     <!--<label for="name">Feature</label>-->
-                                    <input ng-model="initvalue" type="text" class="validate" id="form-name" placeholder="Init Value"/>
+                                    <input ng-model="data.initvalue" type="text" class="validate" id="form-name" placeholder="Init Value"/>
                                 </div>
                                  
                                 <div class="form-group col-lg-6">
                                     <!--<label for="name">Feature</label>-->
-                                    <input ng-model="factor" type="text" class="validate" id="form-name" placeholder="factor"/>
+                                    <input ng-model="data.factor" type="text" class="validate" id="form-name" placeholder="factor"/>
                                 </div>
                                  
                                 <div class="form-group col-lg-6">
                                     <!--<label for="name">Feature</label>-->
-                                    <input ng-model="offset" type="text" class="validate" id="form-name" placeholder="Offset"/>
+                                    <input ng-model="data.offset" type="text" class="validate" id="form-name" placeholder="Offset"/>
                                 </div>
                                  
                                 <div class="form-group col-lg-6">
                                     <!--<label for="name">Feature</label>-->
-                                    <input ng-model="minimum" type="text" class="validate" id="form-name" placeholder="Minimum"/>
+                                    <input ng-model="data.minimum" type="text" class="validate" id="form-name" placeholder="Minimum"/>
                                 </div> 
                                 
                                 <div class="form-group col-lg-6">
                                     <!--<label for="name">Feature</label>-->
-                                    <input ng-model="maximum" type="text" class="validate" id="form-name" placeholder="Maximum"/>
+                                    <input ng-model="data.maximum" type="text" class="validate" id="form-name" placeholder="Maximum"/>
                                 </div>
                                  
                                  <div class="form-group col-lg-6">
-                                    <select ng-model="valuetable" ng-change="">
-                                        <option value="" disabled selected>Select your Value Table</option>
+                                    <select ng-model="data.valuetable" ng-change="">
+                                        <option value="" selected>Select your Value Table</option>
                                         <option value="valuetable_1">valuetable_1</option>
                                         <option value="valuetable_2">valuetable_2</option>
                                     </select>
                                 </div> 
                                 
                                 <div class="form-group col-lg-6">                                    
-                                    <input ng-model="maximum" type="checkbox" class="validate"/>
+<!--                                    <input ng-model="data.maximum" type="checkbox" class="validate"/>-->
+                                    <input type="checkbox" class="validate"/>
                                     <label for="name">Automatic Min-Max Calculation</label>
                                 </div>
                                  
                                 <div class="form-group col-lg-12">
                                     <textarea ng-model="data.description" type="text" class="validate materialize-textarea  col-lg-12" placeholder="Description"></textarea>
-                                    <label for="description">Description</label>
+                                    <!--<label for="description">Description</label>-->
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <tags-input ng-model="data.tags"  use-strings="true"></tags-input>
                                 </div>
                                 
                                 <div class="form-group col-lg-12 pdb_sig_assign">
@@ -347,7 +353,7 @@
                                         <label>{{c.listitem}}</label>
                                         <div class="border-checkbox-section check_pan">                                                                                    
                                             <div class="border-checkbox-group border-checkbox-group-success">
-                                                <input class="border-checkbox" type="checkbox" id="checkbox_ca_{{s.sid}}_{{c.cid}}">
+                                                <input class="border-checkbox" type="checkbox" id="checkbox_ca_{{s.sid}}_{{c.cid}}" ng-click="checkboxvalue('can',c.cid)">
                                                 <label class="border-checkbox-label" for="checkbox_ca_{{s.sid}}_{{c.cid}}"></label>
                                             </div>
                                         </div>
@@ -360,7 +366,7 @@
                                         <label>{{l.listitem}}</label>
                                         <div class="border-checkbox-section check_pan">                                                                                    
                                             <div class="border-checkbox-group border-checkbox-group-success">
-                                                <input class="border-checkbox" type="checkbox" id="checkbox_li_{{s.sid}}_{{l.lid}}">
+                                                <input class="border-checkbox" type="checkbox" id="checkbox_li_{{s.sid}}_{{l.lid}}" ng-click="checkboxvalue('lin',l.lid)">
                                                 <label class="border-checkbox-label" for="checkbox_li_{{s.sid}}_{{l.lid}}"></label>
                                             </div>
                                         </div>
@@ -373,18 +379,17 @@
                                         <label>{{h.listitem}}</label>
                                         <div class="border-checkbox-section check_pan">                                                                                    
                                             <div class="border-checkbox-group border-checkbox-group-success">
-                                                <input class="border-checkbox" type="checkbox" id="checkbox_hw_{{s.sid}}_{{h.hid}}">
+                                                <input class="border-checkbox" type="checkbox" id="checkbox_hw_{{s.sid}}_{{h.hid}}" ng-click="checkboxvalue('hardware',h.hid)">
                                                 <label class="border-checkbox-label" for="checkbox_hw_{{s.sid}}_{{h.hid}}"></label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                
                             </div>
                             
                             <div class="input-field text-right">
                                 <!--<a id="btn-create-product" class="waves-effect waves-light btn margin-bottom-1em float-right" ng-click="createfeature()">Add</a>-->
-                                <button id="btn-create-product" class="waves-effect waves-light btn margin-bottom-1em float-right" ng-click="createfeature_and_domain()" ng-mousedown='doSubmit=true' name="add">Add</button>
+                                <button id="btn-create-product" class="waves-effect waves-light btn margin-bottom-1em float-right" ng-click="create_ivn_required_attributes()" ng-mousedown='doSubmit=true' name="add">Add</button>
                             </div>
                             
                     </div>
@@ -392,47 +397,7 @@
                 <!-- floating button for creating product -->
             <!--</form>-->
             
-            <div id="modal-signal-list" class="modal modal-feature-list">
-                <div class="modal-content">
-                    <h5 class="text-c-red m-b-10">Signals <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
-                    
-                    <ul>
-                        <li ng-repeat="fil in signal_list">
-                            <a href="#" class="text-c-green" ng-click="add_signal_tab(fil.sid)">
-                                <i class="icofont icofont-ui-add"></i>
-                            </a>&nbsp;{{fil.listitem}}&nbsp;({{fil.description}})
-                        </li>
-                    </ul>
-                    
-                </div>
-            </div>
-           
-             <div id="modal-ecu-list" class="modal modal-feature-list">
-                <div class="modal-content">
-                    
-                    <h5 class="text-c-red m-b-10">ECU <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
-                    
-                    <ul>
-                        <li ng-repeat="fil in ecu_list">
-                            <a href="#" class="text-c-green" ng-click="add_ecu_tab(fil.eid)">
-                                <i class="icofont icofont-ui-add"></i></a>&nbsp;{{fil.listitem}}&nbsp;({{fil.description}})
-                        </li>
-                    </ul>
-                    
-                </div>
-            </div>
-            
-            <div class="col-lg-12 text-right">
-                <label for="status" style="vertical-align:middle">Status:</label>
-                <label class="switch m-r-50"  style="vertical-align:middle">
-                    <input type="checkbox" ng-model="data.status">
-                    <span class="slider round"></span>
-                 </label>
-                
-                <button type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion($event)" name="save">Save</button>
-                <button type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion($event)" name="submit">Submit</button>
-                
-            </div>  
+             
             
             <!--<pre>list={{list}}</pre>-->
 <%@include file="footer.jsp" %>
@@ -441,9 +406,21 @@
     <script>
 //        var app = angular.module('angularTable', ['angularUtils.directives.dirPagination']);
 
-        app.controller('RecordCtrl1',function($scope, $http, $window)
+        app.controller('RecordCtrl1',function($scope, $http, $window, $location)
         {
-            this.data=[];
+//            var notification_to;
+            $scope.features = [];
+            $scope.list = [];
+            $scope.Demo.dt = [];
+            $scope.vehicleresults = {};
+            $scope.vercompare_results = {};            
+            $scope.truefalse = false;
+            $scope.records = [];
+            $scope.create_type = false;
+            $scope.showSave =true;
+            $scope.showProceed =true;
+            $scope.showSubmit =true;
+            $scope.data = {};
 
             network_list = JSON.parse("<s:property value="network_list_obj"/>".replace(/&quot;/g,'"'));
             $scope.cans = network_list.can_list;
@@ -557,189 +534,8 @@
                 $scope.ecu_list.push({eid:comArr[index].eid,listitem:comArr[index].listitem,description: comArr[index].description})
 		$scope.ecu.splice( index, 1 );		
             };
-            $scope.SelectNetwork = function()
-            {
-                
-//                if($scope.data.network === 'can')
-//                {
-//                    
-//                }
-//                else if($scope.data.network === 'lin')
-//                {
-////                   var myEl = angular.element( document.querySelector( '#lin' ) );
-////                    myEl.css('display','block');
-//                }
-//                else if($scope.data.network === 'hardware')
-//                {
-//                    
-//                }
-//                else if($scope.data.network === 'signals')
-//                {
-////                    $scope.signal.push({sid:comArr[index].sid,listitem:comArr[index].listitem,desc: comArr[index].desc})
-//                }
-//                else if($scope.data.network === 'ecu')
-//                {
-////                    $scope.ecu.push({eid:comArr[index].eid,listitem:comArr[index].listitem,desc: comArr[index].desc})
-//                }
-//                else
-//                {   
-//                   
-////                    $scope.ecu.push({eid:comArr[index].sid,listitem:comArr[index].listitem,desc: comArr[index].desc})
-//                }
-//                var cls=angular.element( document.getElementsByClassName('tab-pane'));
-//                cls.css('display','none');
-//                var idr = '#' + $scope.data.network;
-//                var myEl = angular.element( document.querySelector( idr ) );
-//                myEl.css('display','block');
-            };
-            $scope.LoadSelectedVehicleVersionData = function() 
-            {
-                $http({
-                    url : 'loadpreviousvehicleversion_data',
-                    method : "POST",
-                    data : {"vehicleversion_id":$scope.data.vehicleversion}
-                })
-                .then(function (response, status, headers, config){
-                    result_data = JSON.stringify(response.data.vehmod_map_result);
-//                    alert(result_data);
-                    $scope.vehicle_list = []; 
-                    $scope.model_list = [];
-//                    var vm_id =[];
-//                    $scope.vehicle_list.push({"vehicle_id":"","vehiclename":"Select"});
-                    for(var i = 0; i < response.data.vehmod_map_result.length; i++) 
-                    {
-                         var data= response.data.vehmod_map_result[i];
-                         $scope.vehicle_list.push({
-                             "vehicle_id":data.vehicle_id,
-                             "vehiclename":data.vehiclename,
-                         });          
-                         $scope.model_list.push({
-                             "vehicle_id":data.vehicle_id,
-                             "mod":data.modelname.split(","),
-                             "model_id":data.model_id.split(","),
-                             "vehicle_mapping_id":data.vehicle_mapping_id.split(","),
-                         });                         
-//                         vm_id.push({"vehicle_mapping_id": data.vehicle_mapping_id.split(",")});
-//                         angular.forEach(data.modelname.split(","), function(value, key) {
-//                            $scope.model_list.push({
-//                             "vehicle_id":data.vehicle_id,
-//                             "mod":value,
-//                            }); 
-//                         })
-                    }
-//                    alert(JSON.stringify($scope.model_list));
-                });
-            };
-            
-            $scope.LoadVehicleModels= function(selected_vehicleid)
-            {
-                $scope.models = [];
-                for(var i = 0; i < $scope.model_list.length; i++) 
-                {
-                   var data = $scope.model_list[i];
-                   if(data.vehicle_id == selected_vehicleid)
-                   {
-//                       alert(data.vehicle_mapping_id);
-                        angular.forEach(data.mod, function(value, key) {
-                            $scope.models.push({
-                             "mod":value,
-                             "id":data.vehicle_mapping_id[key],
-                            }); 
-                        })
-                   }
-                }
-//                alert(JSON.stringify($scope.records));
-//                var cls=angular.element( document.getElementsByClassName( 'tab-pane' ) );
-//                cls.css('display','none');
-//                var idr = '#can';
-//                var myEl = angular.element( document.querySelector( idr ) );
-//                myEl.css('display','block');
-            }
             
             
-            
-            $scope.createpdbversion = function (event) 
-            {           
-                if (!$scope.doSubmit) 
-                {
-                    return;
-                }
-                $scope.doSubmit = false;         
-//                alert(event);
-//                $scope.list.push(this.text);
-//                alert(JSON.stringify($scope.list));
-                var data = {};
-                data['pdbversion'] = $scope.data;
-                data['pdbdata_list'] = $scope.list;
-                data['button_type'] = event.target.name;
-                if($scope.list.length > 0)
-                {
-                    $http({
-                        url : 'createpdbversion',
-                        method : "POST",
-                        data : data,
-                        })
-                        .then(function (data, status, headers, config){               
-                              alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-                              $window.open("pdb_assign.action","_self"); //                alert(data.maps);
-    //            //                Materialize.toast(data['maps']["status"], 4000);
-                    });
-                }
-                else
-                {
-                    alert("Please fill the domain and feature status to create PDB version");
-                }
-            };
-            
-            $scope.radiovalue = function(vmm_id,dfm_id,status)
-            {		
-                //alert();
-                if($scope.list.length === 0)
-                {
-                    $scope.list.push({vmm_id:vmm_id,dfm_id:dfm_id,status:status});
-                }
-                else
-                {
-                    var temp=0;
-                    for(var i=0; i<$scope.list.length; i++)
-                    {
-                        if(($scope.list[i].vmm_id === vmm_id) && ($scope.list[i].dfm_id === dfm_id))
-                        {
-                            $scope.list[i].status=status;
-                            temp=1;
-                        }
-                    }
-                    if(temp==0)
-                    {
-                        $scope.list.push({vmm_id:vmm_id,dfm_id:dfm_id,status:status});
-                    }
-                }
-                
-            };
-            $scope.LoadPDBPreviousVersion = function() 
-            {
-//                alert("LoadPDBPreviousVersion");
-//                alert($scope.data.pdbversion);
-                $http({
-                    url : 'loadpdbpreviousvehicleversion_data',
-                    method : "POST",
-                    data : {"pdbversion_id":$scope.data.pdbversion}
-                })
-                .then(function (response, status, headers, config){
-//                    alert(JSON.stringify(response.data.pdb_map_result));
-                    var result_data = response.data.pdb_map_result;
-                    var vehicledetail=result_data.vehicledetail_list[0].modelname;
-                    var pdbdetail=result_data.featuredetail_list;
-//                        vehicledetail=vehicledetail.slice(1, -1); 
-                    for(var i=0; i<pdbdetail.length; i++)
-                    {
-                        $scope.features.push({fid:pdbdetail[i].dfm_id,fea:pdbdetail[i].featurename,domain:pdbdetail[i].domainname});
-                        $scope.list.push({vmm_id:pdbdetail[i].vmm_id,dfm_id:pdbdetail[i].dfm_id,status:pdbdetail[i].status});
-                    }
-                        
-//                   $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
-                });
-            };
         });
 
     $(document).ready(function(){
