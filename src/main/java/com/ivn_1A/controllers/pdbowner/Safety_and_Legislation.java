@@ -139,6 +139,7 @@ public class Safety_and_Legislation {
                 safetyMap.put("saf_id", tuple.get("saf_id"));
                 safetyMap.put("saf", tuple.get("saf"));
                 safetyMap.put("status", tuple.get("status"));
+                safetyMap.put("available_status", tuple.get("available_status"));
                 safetyMap.put("flag", tuple.get("flag"));
                 return safetyMap;
             }).forEachOrdered((safetyMap) -> {

@@ -119,6 +119,10 @@
             <result type="json" />
         </action>
         
+        <action name="create_ivn_required_attributes" class="com.ivn_1A.controllers.net_sign.Network_Group" method="CreateIVNVersion_Attributes">
+            <result type="json" />
+        </action>
+        
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">
@@ -214,7 +218,7 @@
             <!--<result name="session">index.jsp</result>--> 
             <result>ivn_signals.jsp</result>
         </action>
-        <action name="ivn_version_create" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="FeatureversionPage">
+        <action name="ivn_version_create" class="com.ivn_1A.controllers.net_sign.Network_Group" method="IVNVersionCreationPage">
             <!--<result name="session">index.jsp</result>--> 
             <result>ivn_version_create.jsp</result>
         </action>

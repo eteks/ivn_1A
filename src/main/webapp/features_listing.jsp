@@ -199,7 +199,7 @@
                 });
             }
             $scope.createfeature_and_domain = function (event) 
-            {        
+            {
                 if (!$scope.doSubmit) 
                 {
                     return;
