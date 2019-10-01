@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
+import com.ivn_1A.models.pdbowner.Featureversion;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com_ivn_1A.models.net_sign.ECU;
 import com_ivn_1A.models.net_sign.IVNEngineerDB;
@@ -44,6 +45,23 @@ public class Network_Group {
     public String IVNVersionCreationPage() {
 
         try {
+
+            List<Map<String, Object>> raw = new ArrayList<>();
+            tupleObjects = IVNEngineerDB.LoadFeatureVersion("active");
+            tupleObjects.stream().map((tuple) -> {
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("id", tuple.get("id"));
+                columns.put("versionname", String.format("%.1f", tuple.get("versionname")));
+                columns.put("status", tuple.get("status"));
+                return columns;
+            }).map((columns) -> {
+                raw.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums" + columns);
+            });
+            result_data_obj = new Gson().toJson(raw);
+            System.out.println("result_data_obj  " + result_data_obj);
 
             List<Map<String, Object>> row = new ArrayList<>(), row1 = new ArrayList<>(), row2 = new ArrayList<>();
             Map<String, Object> column = new HashMap<>();
@@ -148,7 +166,6 @@ public class Network_Group {
                     }
                     result_data_obj = new Gson().toJson(networkName_Result);
                     System.out.println("result_data" + networkName_Result);
-                    ServletActionContext.getResponse().getWriter().println("<script>alert('This is Network');</script>");
                 } else {
 
                     for (Object o : ivn_attribute_data) {
@@ -166,8 +183,7 @@ public class Network_Group {
                         }
                     }
                     result_data_obj = new Gson().toJson(networkName_Result);
-                    System.out.println("result_data" + networkName_Result);
-                    ServletActionContext.getResponse().getWriter().println("<script>alert('This is ECU');</script>");
+                    System.out.println("result_data  " + networkName_Result);
                 }
             } else {
 
@@ -208,8 +224,8 @@ public class Network_Group {
                             signal_factor, signal_offset, signal_minimum, signal_maximum,
                             signal_valuetable, IVNEngineerDB.getNetworkById(Integer.parseInt(signal_can_id)), IVNEngineerDB.getNetworkById(Integer.parseInt(signal_lin_id)),
                             IVNEngineerDB.getNetworkById(Integer.parseInt(signal_hw_id)), new Date(), new Date(), PDBOwnerDB.getUser(1), true));
-                last_inserted_id = s1.getId();
-                System.err.println("Singnal Id    " + last_inserted_id);
+                    last_inserted_id = s1.getId();
+                    System.err.println("Singnal Id    " + last_inserted_id);
                 }
                 for (JsonNode signal_tag : signal_tags) {
 
@@ -228,9 +244,62 @@ public class Network_Group {
                     tag_id = stm.getId();
                     System.err.println("tag_id   " + tag_id);
                 }
+
+                List<Map<String, Object>> row = new ArrayList<>();
+                Map<String, Object> col = new HashMap<>();
+                Signals signals = IVNEngineerDB.getSignalDataByID(last_inserted_id);
+                if (signals != null) {
+                    col.put("listitem", signals.getSignal_name());
+                    col.put("sid", Integer.toString(signals.getId()));
+                    col.put("description", signals.getSignal_description());
+                    col.put("salias", signals.getSignal_alias());
+                    col.put("can", signals.getCan_id_group().getId());
+                    col.put("lin", signals.getLin_id_group().getId());
+                    col.put("hardware", signals.getHw_id_group().getId());
+                    row.add(col);
+                }
+                result_data_obj = new Gson().toJson(row);
             }
+            maps_object.put("status", "Work is done");
         } catch (Exception e) {
             System.err.println("Error in \"Network_Group\" \'createNetwork\' " + e);
+            maps_object.put("status", "Error in \"Network_Group\" \'loadSelectedFeatureVersionData\' " + e);
+        }
+        return "success";
+    }
+
+    public String loadSelectedFeatureVersionData() {
+
+        try {
+
+            final ObjectMapper mapper = new ObjectMapper();
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            int featureID = readValue.get("id").asInt();
+
+            List<Map<String, Object>> features_result = new ArrayList<>();
+            System.out.println(featureID);
+            tupleObjects = IVNEngineerDB.LoadFeatureVersionById(featureID);
+            tupleObjects.stream().map((tuple) -> {
+                Map<String, Object> columns = new HashMap<>();
+//                columns.put("id", tuple.get("id"));
+//                columns.put("pdbversionname", String.format("%.1f", tuple.get("pdbversionname")));
+                columns.put("vid", tuple.get("vid"));
+                columns.put("vname", tuple.get("vname"));
+                columns.put("status", tuple.get("status"));
+                columns.put("flag", tuple.get("flag"));
+                return columns;
+            }).map((columns) -> {
+                features_result.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums" + columns);
+            });
+            result_data_obj = new Gson().toJson(features_result);
+            System.out.println("result_data_obj  " + result_data_obj);
+        } catch (Exception e) {
+            System.err.println("Error in \"Network_Group\" \'loadSelectedFeatureVersionData\' " + e);
+            maps_object.put("status", "Error in \"Network_Group\" \'loadSelectedFeatureVersionData\' " + e);
         }
         return "success";
     }

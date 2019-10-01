@@ -6,8 +6,11 @@
 package com_ivn_1A.models.net_sign;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.ivn_1A.configs.HibernateUtil;
+import com.ivn_1A.configs.JSONConfigure;
+import com.ivn_1A.models.pdbowner.Featureversion;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import java.util.Date;
 import java.util.List;
@@ -317,6 +320,33 @@ public class IVNEngineerDB {
         }
     }
 
+    //Signal Data by ID
+    public static Signals getSignalDataByID(int id) {
+        try {
+            System.err.println("getSignalDataByID");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Signals> criteriaQuery = criteriaBuilder.createQuery(Signals.class);
+            
+            Root<Signals> signalRoot = criteriaQuery.from(Signals.class);
+//            signalRoot.join("can_id_group", JoinType.INNER).on(criteriaBuilder.greaterThan(
+//                    criteriaBuilder.function("find_in_set", Integer.class, signalRoot.get("can_id_group").get("id")
+//                    ), 0));
+//            signalRoot.join("vehiclemodel_id", JoinType.INNER);
+            criteriaQuery.where(criteriaBuilder.equal(signalRoot.get("id"), id));
+            TypedQuery<Signals> dfm_result = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return dfm_result.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'getSignalDataByID\' " + e);
+            return null;
+        }
+    }
+
     //Insert Network Data
     public static SignalTags_Mapping insertsignalTags_MappingData(SignalTags_Mapping signalTags_Mapping) {
 
@@ -336,4 +366,62 @@ public class IVNEngineerDB {
         }
     }
 
+    public static List<Tuple> LoadFeatureVersion(String filter) {
+
+        try {
+            System.err.println("LoadFeatureVersion");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<Featureversion> fvRoot = criteriaQuery.from(Featureversion.class);
+
+            criteriaQuery.multiselect(fvRoot.get("id").alias("id"), fvRoot.get("feature_versionname").alias("versionname"),
+                    fvRoot.get("status").alias("status")).distinct(true);
+            if (filter.equals("active")) {
+                criteriaQuery.where(criteriaBuilder.equal(fvRoot.get("status"), true), criteriaBuilder.equal(fvRoot.get("flag"), true));
+            }
+            criteriaQuery.orderBy(criteriaBuilder.desc(fvRoot.get("feature_versionname")));
+
+            TypedQuery<Tuple> dfm_result = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return dfm_result.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'LoadFeatureVersion\' " + e);
+            return null;
+        }
+    }
+    
+    public static List<Tuple> LoadFeatureVersionById(int id) {
+
+        try {
+            System.err.println("LoadFeatureVersion");
+                        
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<Featureversion> fvRoot = criteriaQuery.from(Featureversion.class);
+
+            criteriaQuery.multiselect(fvRoot.get("id").alias("id"), fvRoot.get("pdbversion_id").get("pdb_versionname").alias("pdbversionname"),
+                    fvRoot.get("vehicle_id").get("id").alias("vid"), fvRoot.get("vehicle_id").get("vehiclename").alias("vname"), fvRoot.get("status").alias("status"), 
+                    fvRoot.get("flag").alias("flag")).distinct(true)
+                    .where(criteriaBuilder.equal(fvRoot.get("status"), true), criteriaBuilder.equal(fvRoot.get("flag"), true), criteriaBuilder.equal(fvRoot.get("id"), id))
+                    .orderBy(criteriaBuilder.desc(fvRoot.get("feature_versionname")));
+
+            TypedQuery<Tuple> dfm_result = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return dfm_result.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'LoadFeatureVersion\' " + e);
+            return null;
+        }
+    }
+    
 }
