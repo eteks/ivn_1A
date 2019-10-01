@@ -45,9 +45,9 @@
                                                          <div class="row p-t-30">
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Feature version :</label>
-                                                                <select ng-model="data.vehicleversion" ng-options="arr as arr.versionname for arr in array_result" ng-change="LoadSelectedFeatureVersionData()">
+                                                                <select ng-model="data.featureversion" ng-options="arr as arr.versionname for arr in array_result" ng-change="LoadSelectedFeatureVersionData()">
                                                                 </select>
-<!--                                                                <select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">
+<!--                                                                <select ng-model="data.featureversion" ng-change="LoadSelectedVehicleVersionData()">
                                                                     <s:iterator value="vehicleversion_result" >
                                                                         <option value="<s:property value="id"/>">
                                                                             <s:property value="versionname"/>
@@ -679,7 +679,7 @@
                 $http({
                     url : 'loadSelectedFeatureVersionData',
                     method : "POST",
-                    data : {"id":$scope.data.vehicleversion.id}
+                    data : {"id":$scope.data.featureversion.id}
                 }).then(function (response, status, headers, config){
                     
                     var vm_result = [];
@@ -717,15 +717,17 @@
                 data['ivnversion'] = $scope.data;
                 data['ivndata_list'] = $scope.list;
                 data['button_type'] = event;
-                data['notification_to'] = notification_to+"";
+                data['notification_to'] = notification_to+"";                
+                alert(JSON.stringify(data));
+//                console.log(JSON.stringify(data));
                 $http({
                     url : 'createivnversion',
                     method : "POST",
                     data : data,
                 })
                 .then(function (data, status, headers, config){               
-                          alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-                          $window.open("ivn_version_listing.action","_self"); //                alert(data.maps);
+                    alert(JSON.stringify(data.data.maps_object.status).slice(1, -1));
+                    $window.open("ivn_version_listing.action","_self"); //                alert(data.maps);
 //            //                Materialize.toast(data['maps']["status"], 4000);
                 });
             };
@@ -742,23 +744,22 @@
 //                $scope.list.push(this.text);
 //                alert(JSON.stringify($scope.list));
                 list_count = Object.keys($scope.list).length;
-                alert(JSON.stringify($scope.data));
-//                if(list_count > 0 && $scope.list.can != undefined && $scope.list.lin != undefined && $scope.list.hardware != undefined
-//                         && $scope.list.signal != undefined && $scope.list.ecu != undefined) {
-//                     alert(JSON.stringify($scope.list));
-//                    if($scope.list.can.length > 0 && $scope.list.lin.length > 0 && $scope.list.hardware.length > 0
-//                             && $scope.list.signal.length > 0 && $scope.list.ecu.length > 0) {
-//                         alert(JSON.stringify($scope.list));
-////                        if(status && event === "submit")
-////                            $(".notifyPopup").click();
-////                        else
-////                            $scope.createIVNVersionAjax(event);
-//                    } else{
-//                        alert("Please fill all the details to create IVN version");
-//                    }
-//                } else{
-//                    alert("Please fill all the details to create IVN version");
-//                }
+//                alert(JSON.stringify($scope.data)+" "+JSON.stringify($scope.list));
+                
+                if(list_count > 0 && $scope.data.featureversion != undefined && $scope.data.vehiclename != undefined && $scope.data.status != undefined
+                         && $scope.list.signal != undefined && $scope.list.ecu != undefined) {
+                     
+                    if($scope.list.signal.length > 0 && $scope.list.ecu.length > 0) {
+                        if(status && event === "submit")
+                            $(".notifyPopup").click();
+                        else
+                            $scope.createIVNVersionAjax(event);
+                    } else{
+                        alert("Please fill all the details to create IVN version");
+                    }
+                } else{
+                    alert("Please fill all the details to create IVN version");
+                }
             };
             
         });

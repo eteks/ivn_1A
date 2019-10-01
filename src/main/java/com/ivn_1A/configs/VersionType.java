@@ -14,7 +14,7 @@ public enum VersionType {
     Legislationversion(2),
     Safetyversion(3),
     Featureversion(4),
-    SystemVersion(5),
+    IVN_Version(5),
     ModelVersion(6);
 
     private Integer versionCode;

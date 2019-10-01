@@ -12,6 +12,7 @@ import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.models.pdbowner.Featureversion;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
+import com.ivn_1A.models.pdbowner.Querybuilder;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
@@ -149,6 +151,29 @@ public class IVNEngineerDB {
             return dfm_result.getSingleResult();
         } catch (Exception e) {
             System.err.println("Error in \"IVNEngineerDB\" \'getECUByName\' " + e);
+            return null;
+        }
+    }
+
+    //ECU Data by ID
+    public static ECU getECUById(int id) {
+        try {
+            System.err.println("getECUById");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<ECU> criteriaQuery = criteriaBuilder.createQuery(ECU.class);
+
+            Root<ECU> networkRoot = criteriaQuery.from(ECU.class);
+            criteriaQuery.where(criteriaBuilder.equal(networkRoot.get("id"), id));
+            TypedQuery<ECU> dfm_result = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return dfm_result.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'getECUById\' " + e);
             return null;
         }
     }
@@ -329,7 +354,7 @@ public class IVNEngineerDB {
 
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Signals> criteriaQuery = criteriaBuilder.createQuery(Signals.class);
-            
+
             Root<Signals> signalRoot = criteriaQuery.from(Signals.class);
 //            signalRoot.join("can_id_group", JoinType.INNER).on(criteriaBuilder.greaterThan(
 //                    criteriaBuilder.function("find_in_set", Integer.class, signalRoot.get("can_id_group").get("id")
@@ -394,12 +419,12 @@ public class IVNEngineerDB {
             return null;
         }
     }
-    
+
     public static List<Tuple> LoadFeatureVersionById(int id) {
 
         try {
             System.err.println("LoadFeatureVersion");
-                        
+
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
 
@@ -408,7 +433,7 @@ public class IVNEngineerDB {
             Root<Featureversion> fvRoot = criteriaQuery.from(Featureversion.class);
 
             criteriaQuery.multiselect(fvRoot.get("id").alias("id"), fvRoot.get("pdbversion_id").get("pdb_versionname").alias("pdbversionname"),
-                    fvRoot.get("vehicle_id").get("id").alias("vid"), fvRoot.get("vehicle_id").get("vehiclename").alias("vname"), fvRoot.get("status").alias("status"), 
+                    fvRoot.get("vehicle_id").get("id").alias("vid"), fvRoot.get("vehicle_id").get("vehiclename").alias("vname"), fvRoot.get("status").alias("status"),
                     fvRoot.get("flag").alias("flag")).distinct(true)
                     .where(criteriaBuilder.equal(fvRoot.get("status"), true), criteriaBuilder.equal(fvRoot.get("flag"), true), criteriaBuilder.equal(fvRoot.get("id"), id))
                     .orderBy(criteriaBuilder.desc(fvRoot.get("feature_versionname")));
@@ -423,5 +448,86 @@ public class IVNEngineerDB {
             return null;
         }
     }
-    
+
+    public static IVN_Version LoadIVNPreviousVehicleversionStatus(int id) {
+
+        try {
+
+            System.err.println("LoadIVNPreviousVehicleversionStatus");
+
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<IVN_Version> criteriaQuery = criteriaBuilder.createQuery(IVN_Version.class);
+            Root<IVN_Version> ivnRoot = criteriaQuery.from(IVN_Version.class);
+
+            criteriaQuery.distinct(true).where(criteriaBuilder.equal(ivnRoot.get("id"), id));
+
+            TypedQuery<IVN_Version> dfm_result = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return dfm_result.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'LoadIVNPreviousVehicleversionStatus\' " + e);
+            return null;
+        }
+    }
+
+    public static IVN_Version insertIVNVersion(IVN_Version ivnv, String level) {
+        try {
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+            if (level.equals("create")) {
+
+                session.save(ivnv);
+                tx.commit();
+                session.clear();
+                return ivnv;
+            } else {
+
+                final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+                // create update
+                CriteriaUpdate<Querybuilder> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Querybuilder.class);
+                // set the root class
+                Root<Querybuilder> qRoot = criteriaUpdate.from(Querybuilder.class);
+                // set update and where clause
+//                criteriaUpdate.set("querybuilder_name", querybuilder.getQuerybuilder_name())
+//                        .set("querybuilder_type", querybuilder.getQuerybuilder_type())
+//                        .set("querybuilder_condition", querybuilder.getQuerybuilder_condition())
+//                        .set("querybuilder_status", querybuilder.getQuerybuilder_status())
+//                        .set("created_date", querybuilder.getCreated_date())
+//                        .where(criteriaBuilder.equal(qRoot.get("id"), querybuilder.getId()));
+                // perform update
+                int a = session.createQuery(criteriaUpdate).executeUpdate();
+                tx.commit();
+                session.clear();
+                if (a > 0) {
+                    return ivnv;
+                } else {
+                    return null;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'insertIVNVersion\' " + e);
+            return null;
+        }
+    }
+
+    public static IVN_Version_Group insertIVNVersionGroup(IVN_Version_Group iVN_Version_Group) {
+
+        try {
+
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+            session.save(iVN_Version_Group);
+            tx.commit();
+            session.clear();
+            return iVN_Version_Group;
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'insertIVNVersionGroup\' " + e);
+            return null;
+        }
+    }
 }

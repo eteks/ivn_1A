@@ -10,11 +10,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
+import com.ivn_1A.configs.VersionType;
+import com.ivn_1A.controllers.notification.NotificationController;
 import com.ivn_1A.models.pdbowner.Featureversion;
+import com.ivn_1A.models.pdbowner.FeatureversionDB;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
+import com.ivn_1A.models.pdbowner.SafetyLegDB;
 import com_ivn_1A.models.net_sign.ECU;
 import com_ivn_1A.models.net_sign.IVNEngineerDB;
 import static com_ivn_1A.models.net_sign.IVNEngineerDB.getSignalTagsByName;
+import com_ivn_1A.models.net_sign.IVN_Version;
+import com_ivn_1A.models.net_sign.IVN_Version_Group;
 import com_ivn_1A.models.net_sign.Network;
 import com_ivn_1A.models.net_sign.SignalTags;
 import com_ivn_1A.models.net_sign.SignalTags_Mapping;
@@ -297,6 +303,105 @@ public class Network_Group {
             });
             result_data_obj = new Gson().toJson(features_result);
             System.out.println("result_data_obj  " + result_data_obj);
+        } catch (Exception e) {
+            System.err.println("Error in \"Network_Group\" \'loadSelectedFeatureVersionData\' " + e);
+            maps_object.put("status", "Error in \"Network_Group\" \'loadSelectedFeatureVersionData\' " + e);
+        }
+        return "success";
+    }
+
+    public String CreateIVNVersion() {
+
+        try {
+
+            System.out.println("CreateIVNVersion");
+            final ObjectMapper mapper = new ObjectMapper();
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            boolean status = false;
+            int ivnversion_id = 0;
+            float version_name;
+            String previousversion_status = null;
+            String previousversion_flag = null;
+            boolean flag;
+            List<Map<String, Object>> network_data = new ArrayList<>();
+
+            JsonNode ivnversion = readValue.get("ivnversion");
+            JsonNode ivndata_list = readValue.get("ivndata_list");
+            String button_type = readValue.get("button_type").asText();
+            String notification_to = readValue.get("notification_to").asText();
+            if (button_type.equals("save")) {
+                flag = false;
+            } else {
+                flag = true;
+            }
+            if (ivnversion != null && ivnversion.get("featureversion").has("ivnversion")) {
+                ivnversion_id = Integer.parseInt(ivnversion.get("featureversion").get("ivnversion").asText());
+            }
+
+            if (ivnversion != null && ivnversion.has("status") && button_type.equals("submit")) {
+                status = ivnversion.get("status").asBoolean();
+            }
+            if (ivnversion_id != 0) {
+
+                IVN_Version iVN_Version = IVNEngineerDB.LoadIVNPreviousVehicleversionStatus(ivnversion_id);
+                if (iVN_Version != null) {
+                    previousversion_status = String.valueOf(iVN_Version.isStatus());
+                    previousversion_flag = String.valueOf(iVN_Version.isFlag());
+                }
+            }
+            System.out.println(previousversion_status);
+            System.out.println(previousversion_status);
+            System.out.println(button_type);
+            System.out.println(ivnversion_id);
+
+            if (previousversion_status.equals("false") && ivnversion_id != 0) {
+
+                maps_object.put("status", "Ready to update");
+                IVN_Version iVN_Version = IVNEngineerDB.insertIVNVersion(new IVN_Version((float) ivnversion_id, new Date(), new Date(), ivnversion.get("version_name").asText(), ivnversion.get("pdb_manual_comment").asText(), true, true), "update");
+                if (iVN_Version != null) {
+
+                    int ivn_id = iVN_Version.getId();
+                    version_name = iVN_Version.getIvn_version();
+                    IVN_Version_Group iVN_Version_Group = IVNEngineerDB.insertIVNVersionGroup(new IVN_Version_Group(iVN_Version, PDBOwnerDB.getVehicle(ivnversion.get("vehiclename").get("vid").asInt()), new Featureversion(), ivnversion.get("ivndata_list").get("signal").asText(), ivnversion.get("ivndata_list").get("ecu").asText(), new Date()));
+                    if (iVN_Version_Group != null && button_type.equals("save")) {
+                        if (previousversion_flag == "true") {
+                            maps_object.put("status", "Record updated in same version and stored as Temporary");
+                        } else {
+                            maps_object.put("status", "Record updated successfully in same Temporary version");
+                        }
+                    } else {
+                        System.out.println("previousversion_flag" + previousversion_flag);
+                        if (status) {
+                            new NotificationController().createNotification(VersionType.IVN_Version.getVersionCode().intValue(), version_name, new Date().toString(), notification_to, ivn_id);
+                        }
+                        if (previousversion_flag == "false") {
+                            maps_object.put("status", "Record updated in same version and stored as permanent");
+                        } else {
+                            maps_object.put("status", "Record updated successfully in same Permanent version");
+                        }
+                    }
+                }
+            } else {
+                System.out.println("else");
+                IVN_Version iVN_Version = IVNEngineerDB.insertIVNVersion(new IVN_Version((float) ivnversion_id, new Date(), new Date(), ivnversion.get("version_name").asText(), ivnversion.get("pdb_manual_comment").asText(), true, true), "create");
+                if (iVN_Version != null) {
+
+                    int ivn_id = iVN_Version.getId();
+                    version_name = iVN_Version.getIvn_version();
+                    IVN_Version_Group iVN_Version_Group = IVNEngineerDB.insertIVNVersionGroup(new IVN_Version_Group(iVN_Version, PDBOwnerDB.getVehicle(ivnversion.get("vehiclename").get("vid").asInt()), new Featureversion(), ivnversion.get("ivndata_list").get("signal").asText(), ivnversion.get("ivndata_list").get("ecu").asText(), new Date()));
+                    if (iVN_Version_Group != null && button_type.equals("save")) {
+                        maps_object.put("status", "New Temporary IVN Version Created Successfully");
+                    } else {
+                        System.out.println("previousversion_flag" + previousversion_flag);
+                        if (status) {
+                            new NotificationController().createNotification(VersionType.IVN_Version.getVersionCode().intValue(), version_name, new Date().toString(), notification_to, ivn_id);
+                        }
+                        maps_object.put("status", "New Permanent IVN Version Created Successfully");
+                    }
+                }
+            }
+
         } catch (Exception e) {
             System.err.println("Error in \"Network_Group\" \'loadSelectedFeatureVersionData\' " + e);
             maps_object.put("status", "Error in \"Network_Group\" \'loadSelectedFeatureVersionData\' " + e);
