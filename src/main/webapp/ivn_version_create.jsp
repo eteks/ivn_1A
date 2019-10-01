@@ -44,7 +44,7 @@
                                                     <div class="card-block marketing-card p-t-0">
                                                          <div class="row p-t-30">
                                                             <div class="form-group col-md-3">
-                                                                <label for="vehicle">Vehicle version :</label>
+                                                                <label for="vehicle">Feature version :</label>
                                                                 <select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">
                                                                     <s:iterator value="vehicleversion_result" >
                                                                         <option value="<s:property value="id"/>">
@@ -60,7 +60,7 @@
                                                                         <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
                                                                 </select>
                                                             </div>
-                                                               <div class="form-group col-md-3">
+<!--                                                            <div class="form-group col-md-3">
                                                                 <label for="vehicle">IVN version :</label>
                                                                 <select ng-model="data.ivnversion" ng-change="LoadIVNPreviousVersion()">
                                                                     <s:iterator value="ivnversion_result" >
@@ -69,7 +69,7 @@
                                                                         </option>
                                                                     </s:iterator>
                                                                 </select>
-                                                            </div>
+                                                            </div>-->
                                                              
                                                             <a class="feature_add sig_add modal-trigger" href="#modal-signal-list">
                                                                 <i class="icofont icofont-drag text-c-green"></i>
