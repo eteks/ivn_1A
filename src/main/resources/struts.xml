@@ -218,6 +218,19 @@
             <!--<result name="session">index.jsp</result>--> 
             <result>ivn_version_create.jsp</result>
         </action>
+        
+        <action name="acb" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="FeatureversionPage">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>acb.jsp</result>
+        </action>
+        <action name="acb_listing" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="FeatureversionPage">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>acb_listing.jsp</result>
+        </action>
+        <action name="acb_version_create" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="FeatureversionPage">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>acb_version_create.jsp</result>
+        </action>
         <!--This is for testing--> 
         <action name="inserts" class="com.ivn_1A.controllers.repositories.TestInsert" method="execute">
             <result name="success">test.jsp</result>
