@@ -55,7 +55,7 @@ public class Signals implements Serializable {
     public Signals() {
     }
 
-    public Signals(String signal_name, String signal_alias, String signal_description, int signal_length, String signal_byteorder, String signal_unit, String signal_valuetype, int signal_initvalue, double signal_factor, int signal_offset, int signal_minimum, int signal_maximum, String signal_valuetable, Network can_id_group, Network lin_id_group, Network hw_id_group, Date created_date, User created_or_updated_by) {
+    public Signals(String signal_name, String signal_alias, String signal_description, int signal_length, String signal_byteorder, String signal_unit, String signal_valuetype, int signal_initvalue, double signal_factor, int signal_offset, int signal_minimum, int signal_maximum, String signal_valuetable, Network can_id_group, Network lin_id_group, Network hw_id_group, Date modified_date, Date created_date, User created_or_updated_by, boolean status) {
         this.signal_name = signal_name;
         this.signal_alias = signal_alias;
         this.signal_description = signal_description;
@@ -72,11 +72,14 @@ public class Signals implements Serializable {
         this.can_id_group = can_id_group;
         this.lin_id_group = lin_id_group;
         this.hw_id_group = hw_id_group;
+        this.modified_date = modified_date;
         this.created_date = created_date;
         this.created_or_updated_by = created_or_updated_by;
+        this.status = status;
     }
 
     
+        
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)

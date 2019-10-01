@@ -233,58 +233,19 @@ public class IVNEngineerDB {
         }
     }
 
-    public static List<Tuple> insertSignalData(Signals signals, ArrayNode signal_tags) {
+    //Insert Network Data
+    public static Signals insertSignalData(Signals signals) {
 
         try {
-
-            System.err.println("insertSignalData");
-            Signals signals1 = getSignalByName(signals);
+            System.err.println("insertNetworkData");
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
 
-            if (signals1 == null) {
-                session.save(signals);
-                signals1 = signals;
-                int last_inserted_id = signals1.getId();
-                int tag_id = 0;
-                for (JsonNode signal_tag : signal_tags) {
-                    String tagname = signal_tag.asText();
-                    SignalTags st = getSignalTagsByName(tagname);
-                    if (st == null) {
-                        st = new SignalTags(tagname, new Date(), new Date(), PDBOwnerDB.getUser(1), true);
-                        session.save(st);
-                        tag_id = st.getId();
-                    } else {
-                        tag_id = st.getId();
-                    }
-                    SignalTags_Mapping stm = new SignalTags_Mapping(signals1, st, new Date());
-                    session.save(stm);
-                    tag_id = stm.getId();
-                }
-//                final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-//                CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
-//                Root<SignalTags_Mapping> stmRoot = criteriaQuery.from(SignalTags_Mapping.class);
-//                stmRoot.join("signal_id", JoinType.INNER);
-//                stmRoot.join("signalTag_id", JoinType.INNER);
-//                
-//                criteriaQuery.multiselect(stmRoot.get("id").alias("sid"), stmRoot.get("signal_name").alias("listitem"),
-//                    stmRoot.get("signal_alias").alias("salias"), stmRoot.get("signal_description").alias("description"),
-//                    criteriaBuilder.function("group_concat", String.class, pRoot.get("feature_id").get("created_date")).alias("created_date"),
-//                    criteriaBuilder.function("group_concat", String.class, pRoot.get("feature_id").get("created_date")).alias("created_date")).distinct(true)
-//                    .where(criteriaBuilder.equal(stmRoot.get("status"), true))
-//                    .orderBy(criteriaBuilder.desc(stmRoot.get("id")));
-//
-//            TypedQuery<Tuple> dfm_result = session.createQuery(criteriaQuery);
-                
-                System.err.println("!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@@@######################Null Values");
-                
-            } else {
-                System.err.println("Null Values");
-            }
+            session.save(signals);
 
             tx.commit();
             session.clear();
-            return null;
+            return signals;
         } catch (Exception e) {
             System.err.println("Error in \"IVNEngineerDB\" \'insertSignalData\' " + e);
             return null;
@@ -292,7 +253,7 @@ public class IVNEngineerDB {
     }
 
     //Signal Data by Name
-    public static Signals getSignalByName(Signals signals) {
+    public static Signals getSignalByName(String signals) {
         try {
             System.err.println("getECUByName");
             Session session = HibernateUtil.getThreadLocalSession();
@@ -302,7 +263,7 @@ public class IVNEngineerDB {
             CriteriaQuery<Signals> criteriaQuery = criteriaBuilder.createQuery(Signals.class);
 
             Root<Signals> networkRoot = criteriaQuery.from(Signals.class);
-            criteriaQuery.where(criteriaBuilder.equal(networkRoot.get("signal_name"), signals.getSignal_name()));
+            criteriaQuery.where(criteriaBuilder.equal(networkRoot.get("signal_name"), signals));
             TypedQuery<Signals> dfm_result = session.createQuery(criteriaQuery);
 
             tx.commit();
@@ -310,6 +271,25 @@ public class IVNEngineerDB {
             return dfm_result.getSingleResult();
         } catch (Exception e) {
             System.err.println("Error in \"IVNEngineerDB\" \'getSignalByName\' " + e);
+            return null;
+        }
+    }
+
+    //Insert Network Data
+    public static SignalTags insertSignalTagsData(SignalTags signalTags) {
+
+        try {
+            System.err.println("insertNetworkData");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            session.save(signalTags);
+
+            tx.commit();
+            session.clear();
+            return signalTags;
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'insertSignalTagsData\' " + e);
             return null;
         }
     }
@@ -333,6 +313,25 @@ public class IVNEngineerDB {
             return dfm_result.getSingleResult();
         } catch (Exception e) {
             System.err.println("Error in \"IVNEngineerDB\" \'getSignalTagsByName\' " + e);
+            return null;
+        }
+    }
+
+    //Insert Network Data
+    public static SignalTags_Mapping insertsignalTags_MappingData(SignalTags_Mapping signalTags_Mapping) {
+
+        try {
+            System.err.println("insertNetworkData");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            session.save(signalTags_Mapping);
+
+            tx.commit();
+            session.clear();
+            return signalTags_Mapping;
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'insertsignalTags_MappingData\' " + e);
             return null;
         }
     }

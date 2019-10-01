@@ -13,7 +13,10 @@ import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com_ivn_1A.models.net_sign.ECU;
 import com_ivn_1A.models.net_sign.IVNEngineerDB;
+import static com_ivn_1A.models.net_sign.IVNEngineerDB.getSignalTagsByName;
 import com_ivn_1A.models.net_sign.Network;
+import com_ivn_1A.models.net_sign.SignalTags;
+import com_ivn_1A.models.net_sign.SignalTags_Mapping;
 import com_ivn_1A.models.net_sign.Signals;
 import java.util.ArrayList;
 import java.util.Date;
@@ -196,15 +199,36 @@ public class Network_Group {
                 int signal_maximum = (jsonNode.get("minimum") != null) ? Integer.parseInt(jsonNode.get("maximum").asText()) : 0;
                 System.out.println("signal_maximum" + signal_maximum);
 
-                Signals s = new Signals(signal_name, signal_alias, signal_description, signal_length,
-                        signal_byteorder, signal_unit, signal_valuetype, signal_initvalue,
-                        signal_factor, signal_offset, signal_minimum, signal_maximum,
-                        signal_valuetable, IVNEngineerDB.getNetworkById(Integer.parseInt(signal_can_id)), IVNEngineerDB.getNetworkById(Integer.parseInt(signal_lin_id)), 
-                        IVNEngineerDB.getNetworkById(Integer.parseInt(signal_hw_id)), new Date(), PDBOwnerDB.getUser(1));
-                
-                ServletActionContext.getResponse().getWriter().println("<script>alert('This is Signal');</script>");
-            }
+                int last_inserted_id = 0;
+                int tag_id = 0;
+                Signals s1 = IVNEngineerDB.getSignalByName(signal_name);
+                if (s1 == null) {
+                    s1 = IVNEngineerDB.insertSignalData(new Signals(signal_name, signal_alias, signal_description, signal_length,
+                            signal_byteorder, signal_unit, signal_valuetype, signal_initvalue,
+                            signal_factor, signal_offset, signal_minimum, signal_maximum,
+                            signal_valuetable, IVNEngineerDB.getNetworkById(Integer.parseInt(signal_can_id)), IVNEngineerDB.getNetworkById(Integer.parseInt(signal_lin_id)),
+                            IVNEngineerDB.getNetworkById(Integer.parseInt(signal_hw_id)), new Date(), new Date(), PDBOwnerDB.getUser(1), true));
+                last_inserted_id = s1.getId();
+                System.err.println("Singnal Id    " + last_inserted_id);
+                }
+                for (JsonNode signal_tag : signal_tags) {
 
+                    String tagname = signal_tag.asText();
+                    System.err.println("tagname   " + tagname);
+                    SignalTags st = getSignalTagsByName(tagname);
+                    if (st == null) {
+                        st = IVNEngineerDB.insertSignalTagsData(new SignalTags(tagname, new Date(), new Date(), PDBOwnerDB.getUser(1), true));
+                        tag_id = st.getId();
+                        System.err.println("tag_id   " + tag_id);
+                    } else {
+                        tag_id = st.getId();
+                        System.err.println("tag_id   " + tag_id);
+                    }
+                    SignalTags_Mapping stm = IVNEngineerDB.insertsignalTags_MappingData(new SignalTags_Mapping(s1, st, new Date()));
+                    tag_id = stm.getId();
+                    System.err.println("tag_id   " + tag_id);
+                }
+            }
         } catch (Exception e) {
             System.err.println("Error in \"Network_Group\" \'createNetwork\' " + e);
         }
