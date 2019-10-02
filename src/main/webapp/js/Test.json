@@ -1,8 +1,26 @@
 {
-    "network": "can",
-    "ivn_attribute_data": [{
-            "$$hashKey": "object:28",
-            "name": "fsad",
-            "description": "fsda"
-        }]
+    "ivnversion": {
+        "featureversion": {
+            "id": 2,
+            "versionname": "2.0",
+            "status": true,
+            "$$hashKey": "object:10"
+        },
+        "vehiclename": {
+            "vid": 1,
+            "vname": "Audi",
+            "status": true,
+            "flag": true,
+            "$$hashKey": "object:54"
+        },
+        "status": true,
+        "version_name": "wew",
+        "pdb_manual_comment": "wsw"
+    },
+    "ivndata_list": {
+        "signal": [6, 5, 4, 3, 2, 1],
+        "ecu": [3, 2, 1]
+    },
+    "button_type": "submit",
+    "notification_to": "1"
 }

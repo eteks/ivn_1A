@@ -45,20 +45,23 @@
                                                          <div class="row p-t-30">
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Feature version :</label>
-                                                                <select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">
+                                                                <select ng-model="data.featureversion" ng-options="arr as arr.versionname for arr in array_result" ng-change="LoadSelectedFeatureVersionData()">
+                                                                </select>
+<!--                                                                <select ng-model="data.featureversion" ng-change="LoadSelectedVehicleVersionData()">
                                                                     <s:iterator value="vehicleversion_result" >
                                                                         <option value="<s:property value="id"/>">
                                                                             <s:property value="versionname"/>
                                                                         </option>
                                                                     </s:iterator>
-                                                                </select>
+                                                                </select>-->
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Vehicle:</label>
-                                                                <select ng-hide="data.vehicleversion"></select>
-                                                                <select ng-change="LoadVehicleModels(data.vehiclename)" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
-                                                                        <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
+                                                                <select ng-model="data.vehiclename" ng-options="arr as arr.vname for arr in arr_res" ng-change="LoadVehicleModels(data.vehiclename)">
                                                                 </select>
+<!--                                                                <select ng-change="LoadVehicleModels(data.vehiclename)" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
+                                                                        <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
+                                                                </select>-->
                                                             </div>
 <!--                                                            <div class="form-group col-md-3">
                                                                 <label for="vehicle">IVN version :</label>
@@ -133,7 +136,7 @@
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>                                                                                           
+                                                                            </div>
 
                                                                         </div>
                                                                         
@@ -142,12 +145,12 @@
                                                                            <h5 class="m-t-10">Select or Add ECU</h5>
                                                                           <div ng-repeat="e in ecu">
                                                                                 <a href="#" ng-click="removeEcuRow(e.eid)" class="removeEcuRow"><i class="icofont icofont-ui-close text-c-red"></i></a>
-                                                                                <div class="border-checkbox-section check_pan">                                                                                    
+<!--                                                                                <div class="border-checkbox-section check_pan">                                                                                    
                                                                                     <div class="border-checkbox-group border-checkbox-group-success">
                                                                                         <input class="border-checkbox" type="checkbox" id="checkbox_eu_{{e.eid}}">
                                                                                         <label class="border-checkbox-label" for="checkbox_eu_{{e.eid}}"></label>
                                                                                     </div>
-                                                                                </div>
+                                                                                </div>-->
                                                                                 <label>{{e.listitem}} ({{e.description}})</label>           
                                                                             </div>                                                                    
                                                                     </div>
@@ -399,14 +402,15 @@
                      <div class="modal-content text-left">
 
                          <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
-                         <textarea class="col-md-12 m-b-10" ng-model="data.pdb_manual_comment"></textarea>
+                         <input type="text" class="col-md-12 m-b-10" ng-model="data.version_name" placeholder="Version Name" />
+                         <textarea class="col-md-12 m-b-10" ng-model="data.pdb_manual_comment" placeholder="Your Comment" ></textarea>
                          <div ng-if="create_type == true">
                              <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">Major
                              &nbsp;<input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">Minor
                          </div>
                          <div class="text-right">
-                             <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('save')" name="save">Save</button>
-                             <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('submit')" name="submit">Submit</button>
+                             <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createIvnVersion('save')" name="save">Save</button>
+                             <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createIvnVersion('submit')" name="submit">Submit</button>
                          </div>
                      </div>
                  </div>
@@ -442,6 +446,10 @@
             });
             
             $scope.list = {};
+            
+            result_data_obj = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+            $scope.array_result = result_data_obj;
+            
             network_list = JSON.parse("<s:property value="network_list_obj"/>".replace(/&quot;/g,'"'));
             $scope.cans = network_list.can_list;
             $scope.lin = network_list.lin_list;
@@ -455,7 +463,8 @@
 
             signal_list = JSON.parse("<s:property value="signallist_result_obj"/>".replace(/&quot;/g,'"'));
             $scope.signal_list = signal_list;
-            alert("network_list  "+JSON.stringify(network_list)+" eculist_list  "+JSON.stringify(ecu_list)+" signal_list  "+JSON.stringify(signal_list));
+//            alert(JSON.stringify($scope.signal_list));
+//            alert("feature_list  "+JSON.stringify(result_data_obj)+"network_list  "+JSON.stringify(network_list)+" eculist_list  "+JSON.stringify(ecu_list)+" signal_list  "+JSON.stringify(signal_list));
                      
             $scope.sort = function(keyname)
             {
@@ -601,9 +610,10 @@
                     })
                    .then(function (data, status, headers, config)
                     {
-                        alert(data.data.maps.status);
+                        result_data_obj = JSON.parse(data.data.result_data_obj.replace(/&quot;/g,'"'));
+                        alert(data.data.maps_object.status+"   "+result_data_obj);
 //                        alert(JSON.stringify(data.data.result_data));
-                        angular.forEach(data.data.result_data, function(value, key) {
+                        angular.forEach(result_data_obj, function(value, key) {
                             if($scope.data.network == "can")
                                 $scope.cans.push(value);
                             else if($scope.data.network == "lin")
@@ -616,6 +626,7 @@
                                 }
                                 $scope.list.ecu.push(value.eid);
                                 $scope.ecu.push(value);
+                                $scope.ecu_list = $scope.ecu;
                             }
                             else if($scope.data.network == "signals")
                             {
@@ -625,8 +636,10 @@
                                 }
                                 $scope.list.signal.push(value.sid);
                                 $scope.signal.push(value);
+                                $scope.signal_list = $scope.signal;
                             }
                         });
+                        alert(JSON.stringify($scope.signal));
                     });
                     $('#modal-product-form').closeModal();
                     can = [];
@@ -660,6 +673,94 @@
                 $scope.data.hardware = hardware.toString();                              
             };
             
+            //Load Selected Feature Version Data
+            $scope.LoadSelectedFeatureVersionData= function()
+            {
+                $http({
+                    url : 'loadSelectedFeatureVersionData',
+                    method : "POST",
+                    data : {"id":$scope.data.featureversion.id}
+                }).then(function (response, status, headers, config){
+                    
+                    var vm_result = [];
+                    $scope.status_value = "";
+                    $scope.vehicleresults = "";
+                    result_data_obj = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
+//                    $window.alert(JSON.stringify(result_data_obj));
+                    var arr_res = [];
+                   for(var i = 0; i < result_data_obj.length; i++)
+                   {
+                        arr_res.push({
+                           //"id":data.id,
+                            //"pdbversionname":data.pdbversionname,
+                            "vid":result_data_obj[i].vid,
+                            "vname":result_data_obj[i].vname,
+                            "status":result_data_obj[i].status,
+                            "flag":result_data_obj[i].flag
+                        });
+//                        status_value = data.status;  
+//                       $scope.vehicleresults = response.data.maps_object.pdbversion[i];
+//                       $window.alert(JSON.stringify(result_data_obj[i]));
+                    }
+                    $scope.data.vehiclename = arr_res[0];
+                    $scope.arr_res = arr_res;
+//                    $window.alert(JSON.stringify($scope.arr_res));
+                });
+            };
+            
+            $scope.createIVNVersionAjax = function (event){
+                var status = $scope.data.status;
+                if(status == undefined || status == false)
+                    notification_to = undefined;
+                var data = {};
+//                alert(JSON.stringify($scope.data));
+                data['ivnversion'] = $scope.data;
+                data['ivndata_list'] = $scope.list;
+                data['button_type'] = event;
+                data['notification_to'] = notification_to+"";                
+                alert(JSON.stringify(data));
+//                console.log(JSON.stringify(data));
+                $http({
+                    url : 'createivnversion',
+                    method : "POST",
+                    data : data,
+                })
+                .then(function (data, status, headers, config){               
+                    alert(JSON.stringify(data.data.maps_object.status).slice(1, -1));
+                    $window.open("ivn_version_listing.action","_self"); //                alert(data.maps);
+//            //                Materialize.toast(data['maps']["status"], 4000);
+                });
+            };
+            
+            $scope.createIvnVersion = function (event)
+            {
+                var status = $scope.data.status;
+                if(status == undefined)
+                    status = false;
+                if (!$scope.doSubmit)
+                    return;
+                $scope.doSubmit = false;         
+//                alert(event);
+//                $scope.list.push(this.text);
+//                alert(JSON.stringify($scope.list));
+                list_count = Object.keys($scope.list).length;
+//                alert(JSON.stringify($scope.data)+" "+JSON.stringify($scope.list));
+                
+                if(list_count > 0 && $scope.data.featureversion != undefined && $scope.data.vehiclename != undefined && $scope.data.status != undefined
+                         && $scope.list.signal != undefined && $scope.list.ecu != undefined) {
+                     
+                    if($scope.list.signal.length > 0 && $scope.list.ecu.length > 0) {
+                        if(status && event === "submit")
+                            $(".notifyPopup").click();
+                        else
+                            $scope.createIVNVersionAjax(event);
+                    } else{
+                        alert("Please fill all the details to create IVN version");
+                    }
+                } else{
+                    alert("Please fill all the details to create IVN version");
+                }
+            };
             
         });
         

@@ -123,6 +123,14 @@
             <result type="json" />
         </action>
         
+        <action name="loadSelectedFeatureVersionData" class="com.ivn_1A.controllers.net_sign.Network_Group" method="loadSelectedFeatureVersionData">
+            <result type="json" />
+        </action>
+        
+        <action name="createivnversion" class="com.ivn_1A.controllers.net_sign.Network_Group" method="CreateIVNVersion">
+            <result type="json" />
+        </action>
+        
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">
