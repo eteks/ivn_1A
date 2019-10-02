@@ -530,4 +530,58 @@ public class IVNEngineerDB {
             return null;
         }
     }
+
+    public static List<IVN_Version_Group> GetIVNVersion_Listing() {
+        try {
+
+            System.err.println("DB GetIVNVersion_Listing");
+
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<IVN_Version_Group> criteriaQuery = criteriaBuilder.createQuery(IVN_Version_Group.class);
+            Root<IVN_Version_Group> ivnRoot = criteriaQuery.from(IVN_Version_Group.class);
+
+            criteriaQuery.distinct(true);
+
+            TypedQuery<IVN_Version_Group> dfm_result = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return dfm_result.getResultList();
+
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'GetIVNVersion_Listing\' " + e);
+            return null;
+        }
+    }
+
+    public static List<Tuple> loadIVNVersion_ListingByVehicleId(int id) {
+        try {
+
+            System.err.println("loadIVNVersion_ListingByVehicleId");
+            System.err.println("VehicleId       " + id);
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<IVN_Version_Group> ivnRoot = criteriaQuery.from(IVN_Version_Group.class);
+
+            criteriaQuery.multiselect(criteriaBuilder.function("group_concat", String.class, ivnRoot.get("ivnVersionId").get("id")).alias("id"),
+                    criteriaBuilder.function("group_concat", String.class, ivnRoot.get("ivnVersionId").get("ivn_version")).alias("ivn_version"))
+                    .where(criteriaBuilder.equal(ivnRoot.get("vehicleId"), id)).distinct(true);
+
+            TypedQuery<Tuple> dfm_result = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return dfm_result.getResultList();
+
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'loadIVNVersion_ListingByVehicleId\' " + e);
+            return null;
+        }
+    }
 }

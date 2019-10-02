@@ -1,26 +1,56 @@
 {
-    "ivnversion": {
-        "featureversion": {
-            "id": 2,
-            "versionname": "2.0",
+    "pdbversion": {
+        "new_vehicle": "select_vehicle",
+        "vehicle": "1",
+        "pdbversion": {
+            "pdbid": 1,
+            "pdbversion_name": "1.0",
             "status": true,
-            "$$hashKey": "object:10"
-        },
-        "vehiclename": {
-            "vid": 1,
-            "vname": "Audi",
-            "status": true,
-            "flag": true,
-            "$$hashKey": "object:54"
+            "$$hashKey": "object:50"
         },
         "status": true,
-        "version_name": "wew",
-        "pdb_manual_comment": "wsw"
+        "pdb_manual_comment": "fdsaf",
+        "version_change": "minor",
+        "vehicle_id": 1
     },
-    "ivndata_list": {
-        "signal": [6, 5, 4, 3, 2, 1],
-        "ecu": [3, 2, 1]
-    },
+    "pdbdata_list": [{
+            "model_id": 1,
+            "dfm_id": 1,
+            "status": "y"
+        }, {
+            "model_id": 1,
+            "dfm_id": 2,
+            "status": "o"
+        }, {
+            "model_id": 1,
+            "dfm_id": 3,
+            "status": "n"
+        }, {
+            "model_id": 2,
+            "dfm_id": 3,
+            "status": "y"
+        }, {
+            "model_id": 2,
+            "dfm_id": 2,
+            "status": "n"
+        }, {
+            "model_id": 2,
+            "dfm_id": 1,
+            "status": "o"
+        }, {
+            "model_id": 3,
+            "dfm_id": 1,
+            "status": "n"
+        }, {
+            "model_id": 3,
+            "dfm_id": 2,
+            "status": "y"
+        }, {
+            "model_id": 3,
+            "dfm_id": 3,
+            "status": "o"
+        }],
     "button_type": "submit",
-    "notification_to": "1"
+    "notification_to": "1",
+    "dfm_set": ["1", "2", "3"]
 }

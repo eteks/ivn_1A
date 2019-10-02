@@ -204,7 +204,7 @@ public class Pdbversion_Group {
                         }
                         pdbversion.setPdb_reference_version(Float.valueOf(pdbversion_value.get("pdbversion").get("pdbversion_name").asText()));
                     }
-                }                
+                }
                 System.out.println("version_name"+version_name);
                 System.out.println("prevpdb_id"+prevpdb_id);
                 //To find and store removed id's and new feature'ids 

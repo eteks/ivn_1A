@@ -131,6 +131,10 @@
             <result type="json" />
         </action>
         
+        <action name="LoadIVNVersion" class="com.ivn_1A.controllers.net_sign.Network_Group" method="LoadIVNVersion">
+            <result type="json" />
+        </action>
+        
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">
@@ -214,11 +218,11 @@
             <!--<result name="session">index.jsp</result>--> 
             <result>ivn_engineer.jsp</result>
         </action>
-        <action name="ivn_version_listing" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="FeatureversionPage">
+        <action name="ivn_version_listing" class="com.ivn_1A.controllers.net_sign.Network_Group" method="GetIVNVersion_Listing">
             <!--<result name="session">index.jsp</result>--> 
             <result>ivn_version_listing.jsp</result>
         </action>
-        <action name="hw_ecu_listing" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="FeatureversionPage">
+        <action name="hw_ecu_listing" class="com.ivn_1A.controllers.net_sign.Network_Group" method="IVNVersionCreationPage">
             <!--<result name="session">index.jsp</result>--> 
             <result>hw_ecu_listing.jsp</result>
         </action>

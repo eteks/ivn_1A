@@ -268,8 +268,8 @@ public class Network_Group {
             }
             maps_object.put("status", "Work is done");
         } catch (Exception e) {
-            System.err.println("Error in \"Network_Group\" \'createNetwork\' " + e);
-            maps_object.put("status", "Error in \"Network_Group\" \'loadSelectedFeatureVersionData\' " + e);
+            System.err.println("Error in \"Network_Group\" \'CreateIVNVersion_Attributes\' " + e);
+            maps_object.put("status", "Error in \"Network_Group\" \'CreateIVNVersion_Attributes\' " + e);
         }
         return "success";
     }
@@ -320,9 +320,9 @@ public class Network_Group {
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             boolean status = false;
             int ivnversion_id = 0;
-            float version_name;
-            String previousversion_status = null;
-            String previousversion_flag = null;
+            float version_name = 1.0f;
+            String previousversion_status = "none";
+            String previousversion_flag = "none";
             boolean flag;
             List<Map<String, Object>> network_data = new ArrayList<>();
 
@@ -346,6 +346,7 @@ public class Network_Group {
 
                 IVN_Version iVN_Version = IVNEngineerDB.LoadIVNPreviousVehicleversionStatus(ivnversion_id);
                 if (iVN_Version != null) {
+                    version_name = iVN_Version.getIvn_version();
                     previousversion_status = String.valueOf(iVN_Version.isStatus());
                     previousversion_flag = String.valueOf(iVN_Version.isFlag());
                 }
@@ -358,14 +359,14 @@ public class Network_Group {
             if (previousversion_status.equals("false") && ivnversion_id != 0) {
 
                 maps_object.put("status", "Ready to update");
-                IVN_Version iVN_Version = IVNEngineerDB.insertIVNVersion(new IVN_Version((float) ivnversion_id, new Date(), new Date(), ivnversion.get("version_name").asText(), ivnversion.get("pdb_manual_comment").asText(), true, true), "update");
+                IVN_Version iVN_Version = IVNEngineerDB.insertIVNVersion(new IVN_Version(version_name, new Date(), new Date(), ivnversion.get("version_name").asText(), ivnversion.get("pdb_manual_comment").asText(), flag, status), "update");
                 if (iVN_Version != null) {
 
                     int ivn_id = iVN_Version.getId();
                     version_name = iVN_Version.getIvn_version();
                     IVN_Version_Group iVN_Version_Group = IVNEngineerDB.insertIVNVersionGroup(new IVN_Version_Group(iVN_Version, PDBOwnerDB.getVehicle(ivnversion.get("vehiclename").get("vid").asInt()), new Featureversion(), ivnversion.get("ivndata_list").get("signal").asText(), ivnversion.get("ivndata_list").get("ecu").asText(), new Date()));
                     if (iVN_Version_Group != null && button_type.equals("save")) {
-                        if (previousversion_flag == "true") {
+                        if (previousversion_flag.equals("true")) {
                             maps_object.put("status", "Record updated in same version and stored as Temporary");
                         } else {
                             maps_object.put("status", "Record updated successfully in same Temporary version");
@@ -375,7 +376,7 @@ public class Network_Group {
                         if (status) {
                             new NotificationController().createNotification(VersionType.IVN_Version.getVersionCode().intValue(), version_name, new Date().toString(), notification_to, ivn_id);
                         }
-                        if (previousversion_flag == "false") {
+                        if (previousversion_flag.equals("false")) {
                             maps_object.put("status", "Record updated in same version and stored as permanent");
                         } else {
                             maps_object.put("status", "Record updated successfully in same Permanent version");
@@ -384,13 +385,22 @@ public class Network_Group {
                 }
             } else {
                 System.out.println("else");
-                IVN_Version iVN_Version = IVNEngineerDB.insertIVNVersion(new IVN_Version((float) ivnversion_id, new Date(), new Date(), ivnversion.get("version_name").asText(), ivnversion.get("pdb_manual_comment").asText(), true, true), "create");
+                IVN_Version iVN_Version = IVNEngineerDB.insertIVNVersion(new IVN_Version(version_name, new Date(), new Date(), ivnversion.get("version_name").asText(), ivnversion.get("pdb_manual_comment").asText(), true, true), "create");
                 if (iVN_Version != null) {
 
                     int ivn_id = iVN_Version.getId();
                     version_name = iVN_Version.getIvn_version();
-                    IVN_Version_Group iVN_Version_Group = IVNEngineerDB.insertIVNVersionGroup(new IVN_Version_Group(iVN_Version, PDBOwnerDB.getVehicle(ivnversion.get("vehiclename").get("vid").asInt()), new Featureversion(), ivnversion.get("ivndata_list").get("signal").asText(), ivnversion.get("ivndata_list").get("ecu").asText(), new Date()));
-                    if (iVN_Version_Group != null && button_type.equals("save")) {
+                    IVN_Version_Group iVN_Version_Group = new IVN_Version_Group();
+                    iVN_Version_Group.setIvnVersionId(iVN_Version);
+                    iVN_Version_Group.setVehicleId(PDBOwnerDB.getVehicle(ivnversion.get("vehiclename").get("vid").asInt()));
+                    iVN_Version_Group.setFeatureVersionId(FeatureversionDB.GetVersionnameById(ivnversion.get("featureversion").get("id").asInt()));
+                    iVN_Version_Group.setSignalsId(ivndata_list.get("signal").asText());
+                    iVN_Version_Group.setEcuId(ivndata_list.get("ecu").asText());
+                    iVN_Version_Group.setCreated_date(new Date());
+
+                    IVN_Version_Group iVN_Version_Groups = IVNEngineerDB.insertIVNVersionGroup(iVN_Version_Group);
+
+                    if (iVN_Version_Groups != null && button_type.equals("save")) {
                         maps_object.put("status", "New Temporary IVN Version Created Successfully");
                     } else {
                         System.out.println("previousversion_flag" + previousversion_flag);
@@ -403,12 +413,83 @@ public class Network_Group {
             }
 
         } catch (Exception e) {
-            System.err.println("Error in \"Network_Group\" \'loadSelectedFeatureVersionData\' " + e);
-            maps_object.put("status", "Error in \"Network_Group\" \'loadSelectedFeatureVersionData\' " + e);
+            System.err.println("Error in \"Network_Group\" \'CreateIVNVersion\' " + e);
+            maps_object.put("status", "Error in \"Network_Group\" \'CreateIVNVersion\' " + e);
         }
         return "success";
     }
 
+    public String GetIVNVersion_Listing() {
+
+        try {
+
+            System.err.println("GetIVNVersion_Listing");
+            List<Map<String, Object>> row = new ArrayList<>();
+            List<IVN_Version_Group> iVN_Version_Groups = IVNEngineerDB.GetIVNVersion_Listing();
+            
+            iVN_Version_Groups.stream().map((iVN_Version_Group) -> {
+                
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("id", iVN_Version_Group.getIvnVersionId().getId());
+                columns.put("ivn_version", String.format("%.1f", iVN_Version_Group.getIvnVersionId().getIvn_version()));
+                columns.put("alias_version", iVN_Version_Group.getIvnVersionId().getVersion_name());
+                columns.put("vehicle", iVN_Version_Group.getVehicleId().getVehiclename());
+                columns.put("fea_version", String.format("%.1f", iVN_Version_Group.getFeatureVersionId().getFeature_versionname()));
+                columns.put("model", iVN_Version_Group.getFeatureVersionId().getLegislationversion_id().getId());
+                columns.put("created_date", iVN_Version_Group.getIvnVersionId().getCreated_date());
+                columns.put("modified_date", iVN_Version_Group.getIvnVersionId().getModified_date());
+                columns.put("status", iVN_Version_Group.getIvnVersionId().isStatus());
+                columns.put("flag", iVN_Version_Group.getIvnVersionId().isFlag());
+                return columns;
+            }).map((columns) -> {
+                
+                row.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums" + columns);
+            });
+            result_data_obj = new Gson().toJson(row);
+            System.out.println("result_data_obj  " + result_data_obj);
+
+        } catch (Exception e) {
+            System.err.println("Error in \"Network_Group\" \'GetIVNVersion_Listing\' " + e);
+            maps_object.put("status", "Error in \"Network_Group\" \'GetIVNVersion_Listing\' " + e);
+        }
+        return "success";
+    }
+    
+    public String LoadIVNVersion() {
+        
+        try {
+            System.err.println("LoadIVNVersion");
+            final ObjectMapper mapper = new ObjectMapper();
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            
+            List<Map<String, Object>> row = new ArrayList<>();
+            tupleObjects = IVNEngineerDB.loadIVNVersion_ListingByVehicleId(readValue.get("vid").asInt());
+            
+            tupleObjects.stream().map((tupleObject) -> {
+                
+                Map<String, Object> columns = new HashMap<>();
+                columns.put("id", tupleObject.get("id"));
+                columns.put("ivn_version", String.format("%.1f", tupleObject.get("ivn_version")));
+                return columns;
+            }).map((columns) -> {
+                
+                row.add(columns);
+                return columns;
+            }).forEachOrdered((columns) -> {
+                System.out.println("colums" + columns);
+            });
+            result_data_obj = new Gson().toJson(row);
+            System.out.println("result_data_obj  " + result_data_obj);
+        } catch (Exception e) {
+            System.err.println("Error in \"Network_Group\" \'LoadIVNVersion\' " + e);
+            maps_object.put("status", "Error in \"Network_Group\" \'LoadIVNVersion\' " + e);
+        }
+        return "success";
+    }
     public Map<String, String> getMaps_string() {
         return maps_string;
     }

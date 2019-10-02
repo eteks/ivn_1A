@@ -290,7 +290,7 @@
                      }
                      $scope.data.pdbversion = $scope.array_result[0];
                      $scope.LoadVehicleModels();
-                     if($scope.data.pdbversion != undefined){
+                     if($scope.data.pdbversion !== undefined){
                         $http({
                             url : 'loadsafetyversion_data',
                             method : "POST",

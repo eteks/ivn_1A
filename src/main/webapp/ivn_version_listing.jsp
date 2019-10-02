@@ -66,9 +66,10 @@
                                                                 <tr>
                                                                     
                                                                     <th ng-click="sort('pdb_version')" class="text-center">IVN Version</th>
-                                                                    <th ng-click="sort('veh_version')" class="text-center">Vehicle Version</th>
+                                                                    <th ng-click="sort('alias_version')" class="text-center">Alias Version</th>
+                                                                    <th ng-click="sort('fea_version')" class="text-center">Feature Version</th>
                                                                     <th ng-click="sort('vehicle')" class="text-center">Vehicle</th>
-                                                                    <th ng-click="sort('model')" class="text-center">Model</th>
+                                                                    <!--<th ng-click="sort('model')" class="text-center">Model</th>-->
                                                                     <th ng-click="sort('status')" class="text-center">Status</th>
                                                                     <th ng-click="sort('flag')" class="text-center">Version Type</th>
                                                                     <th ng-click="sort('created_date')" class="text-center">Created Date</th>
@@ -88,7 +89,7 @@
                                                                         </td>
                                                                         <td class="text-center">
                                                                            
-                                                                                {{record.veh_version}}
+                                                                                {{record.fea_version}}
                                                                                 
                                                                         </td>
                                                                         <td class="text-center">
@@ -97,6 +98,11 @@
                                                                                 
                                                                         </td>
                                                                         <td class="text-center">
+                                                                           
+                                                                                {{record.aversionname}}
+                                                                                
+                                                                        </td>
+<!--                                                                        <td class="text-center">
                                                                            <a class="mytooltip p-l-10 p-r-10 blink" href="javascript:void(0)"> 
                                                                                 <i class="icofont icofont-hand-drawn-up"></i>
                                                                                 <span class="tooltip-content5">
@@ -110,7 +116,7 @@
                                                                                     </span>
                                                                                 </span>
                                                                             </a>     
-                                                                        </td>
+                                                                        </td>-->
                                                                         <td class="text-center"> 
                                                                             
                                                                             <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status === true">Active
@@ -175,7 +181,7 @@
             <div><label>Version</label>:{{record.versionname}}</div>
             <div ng-repeat="r in record.vehicledetails">
                  <div><label>Vehicle Name</label>:{{r.vehiclename}}</div>
-                <div><label>Vehicle Version</label>:{{r.vehicleversion}}</div>
+                <div><label>Feature Version</label>:{{r.featureversion}}</div>
                 <div><label>Models Name</label>:{{r.modelname}}</div>
             </div>
         </div>
@@ -183,7 +189,7 @@
             <div><label>Version</label>:{{record.versionname}}</div>
             <div ng-repeat="r in record.vehicledetails">
                  <div><label>Vehicle Name</label>:{{r.vehiclename}}</div>
-                <div><label>Vehicle Version</label>:{{r.vehicleversion}}</div>
+                <div><label>Feature Version</label>:{{r.featureversion}}</div>
                 <div><label>Models Name</label>:{{r.modelname}}</div>
             </div>
         </div>
@@ -200,25 +206,25 @@
         app.controller('RecordCtrl1',function($scope, $http, $window)
         {
 //             $scope.records = [
-//                        { pdb_version: '1.0',veh_version: '1.0', vehicle: 'Scorpio',model:'m1,m2,m3', status: 'Active'},
-//                        { pdb_version: '2.0',veh_version: '2.0', vehicle: 'Xuv',model:'m2,m5,m6', status: 'Inactive'},
-//                        { pdb_version: '3.0',veh_version: '3.0', vehicle: 'Scorpio',model:'m2,m1,m3', status: 'Active'},
-//                        { pdb_version: '1.0',veh_version: '4.0', vehicle: 'Scorpio',model:'m6,m4,m8', status: 'Active'},
-//                        { pdb_version: '4.0',veh_version: '5.0', vehicle: 'Xuv',model:'m5,m6,m9', status: 'Inactive'},
-//                        { pdb_version: '5.0',veh_version: '6.0', vehicle: 'Scorpio',model:'m6,m2,m4', status: 'Active'},
-//                        { pdb_version: '6.0',veh_version: '1.0', vehicle: 'XUV',model:'m4,m5,m7', status: 'Active'}
+//                        { pdb_version: '1.0',fea_version: '1.0', vehicle: 'Scorpio',model:'m1,m2,m3', status: 'Active'},
+//                        { pdb_version: '2.0',fea_version: '2.0', vehicle: 'Xuv',model:'m2,m5,m6', status: 'Inactive'},
+//                        { pdb_version: '3.0',fea_version: '3.0', vehicle: 'Scorpio',model:'m2,m1,m3', status: 'Active'},
+//                        { pdb_version: '1.0',fea_version: '4.0', vehicle: 'Scorpio',model:'m6,m4,m8', status: 'Active'},
+//                        { pdb_version: '4.0',fea_version: '5.0', vehicle: 'Xuv',model:'m5,m6,m9', status: 'Inactive'},
+//                        { pdb_version: '5.0',fea_version: '6.0', vehicle: 'Scorpio',model:'m6,m2,m4', status: 'Active'},
+//                        { pdb_version: '6.0',fea_version: '1.0', vehicle: 'XUV',model:'m4,m5,m7', status: 'Active'}
 //                    ];
 //            alert("<s:property value="result_data_obj"/>");
 
             var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-//            alert(JSON.stringify(data));
+            alert(JSON.stringify(data));
             $scope.records = data;
             $scope.compare_records = [];
             console.log(data);
             angular.forEach(data, function (value, key) {
                 if(key==0){
-                    $scope.compare_records.push({"id":value.id,"versionname":value.ivn_version,
-                        "vehicledetails":[{"vehiclename":value.vehicle,"vehicleversion":value.veh_version,"modelname":value.model}],
+                    $scope.compare_records.push({"id":value.id,"versionname":value.ivn_version, "aversionname":value.alias_version,
+                        "vehicledetails":[{"vehiclename":value.vehicle,"featureversion":value.fea_version,"modelname":value.model}],
                         "status":value.status,"flag":value.flag});
                 }
                 else{                                
@@ -226,8 +232,8 @@
                     {
                         return i.id == value.id;
                     });
-                    $scope.compare_records.push({"id":value.id,"versionname":value.ivn_version,
-                    "vehicledetails":[{"vehiclename":value.vehicle,"vehicleversion":value.veh_version,"modelname":value.model}],
+                    $scope.compare_records.push({"id":value.id,"versionname":value.ivn_version, "aversionname":value.alias_version,
+                    "vehicledetails":[{"vehiclename":value.vehicle,"featureversion":value.fea_version,"modelname":value.model}],
                     "status":value.status,"flag":value.flag});
                 }
             });
