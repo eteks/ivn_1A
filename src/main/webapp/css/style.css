@@ -215,10 +215,11 @@ p {
   background-color: #fff;
   border-top: none;
 }
-.card .card-header {
+.card .card-header 
+{
   background-color: transparent;
   border-bottom: none;
-  padding: 25px 20px;
+  padding: 10px 20px;
 }
 .card .card-header .card-header-left {
   display: inline-block;
@@ -643,7 +644,8 @@ button.close {
 .mytooltip:hover .tooltip-item::after {
   pointer-events: auto;
 }
-.mytooltip:hover .tooltip-content {
+.mytooltip:hover .tooltip-content 
+{
   pointer-events: auto;
   opacity: 1;
   -webkit-transform: translate3d(0, 0, 0) rotate3d(0, 0, 0, 0);
@@ -25039,3 +25041,14 @@ body.dark #styleSelector .form-control
 }
 
 /*# sourceMappingURL=style.css.map */
+/********task************/
+.task_content
+{
+    
+}
+.task_content span
+{
+    width: 125px;
+    display: inline-block;
+    font-weight: 600;
+}

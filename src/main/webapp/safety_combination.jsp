@@ -64,7 +64,7 @@
                                             <tr>
 
                                                 <th ng-click="sort('version')" class="text-center">No</th>
-                                                <th ng-click="sort('version')" class="text-center">Legislation</th>
+                                                <th ng-click="sort('version')" class="text-center">Rule</th>
                                                 <th ng-click="sort('version')" class="text-center">Status</th>
                                                 <th ng-click="sort('created_date')" class="text-center">Created Date</th>
                                                 <th ng-click="sort('modified_date')" class="text-center">Modified Date</th>
@@ -88,7 +88,7 @@
                                                         <span class="tooltip-content5">
                                                             <span class="tooltip-text3">
                                                                 <span class="tooltip-inner2">
-                                                                    {{record.gp}}
+                                                                    <span>{{record.gp}}</span>
                                                                 </span>
                                                             </span>
                                                         </span>

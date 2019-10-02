@@ -756,6 +756,7 @@ a
 {
     text-align:left !important;    
 }
+
 .ng-table-scrollcontainer 
 {
     overflow-x:scroll;  
@@ -778,6 +779,18 @@ a
     transition: 0.5s ease-in; 
 }
 .compresslength:hover
+{
+    -webkit-transition: 4s ease-in;  
+    -moz-transition: 4s ease-in;  
+    -o-transition: 4s ease-in;  
+    transition: 4s ease-in;  
+    text-indent: -300px;
+}
+.mytooltip .tooltip-content5
+{
+    
+}
+.mytooltip:hover .tooltip-content5 .tooltip-inner2 span
 {
     -webkit-transition: 4s ease-in;  
     -moz-transition: 4s ease-in;  
