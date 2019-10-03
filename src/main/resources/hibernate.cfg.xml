@@ -46,5 +46,7 @@
         <mapping class="com_ivn_1A.models.net_sign.SignalTags_Mapping" />
         <mapping class="com_ivn_1A.models.net_sign.IVN_Version" />
         <mapping class="com_ivn_1A.models.net_sign.IVN_Version_Group" />
+        <mapping class="com_ivn_1A.models.task.Tasks" />
+        <mapping class="com_ivn_1A.models.task.Tasks_Group" />
     </session-factory>
 </hibernate-configuration>

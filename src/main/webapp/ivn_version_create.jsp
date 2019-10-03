@@ -65,7 +65,7 @@
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Version:</label>
-                                                                <select ng-model="data.version_name" ng-options="arr as arr.vname for arr in arr_res" >
+                                                                <select ng-model="data.vername" ng-options="arr as arr.ivn_version for arr in records track by arr.ivn_version" >
                                                                 </select>
 <!--                                                                <select ng-change="LoadVehicleModels(data.vehiclename)" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
                                                                         <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
@@ -437,6 +437,7 @@
             this.data=[];
             var notification_to;
             $scope.features = [];
+            $scope.ivn_version = "";
 //            $scope.list = [];
             $scope.Demo.dt = [];
             $scope.vehicleresults = {};
@@ -611,44 +612,44 @@
                         ($scope.data.network == "signals" && $scope.data.name != undefined  && $scope.data.description != undefined && $scope.data.alias != undefined))
                 {
                     alert(JSON.stringify($scope.data)+"   "+JSON.stringify(ivn_attribute_data));
-//                    $http({
-//                        url : 'create_ivn_required_attributes',
-//                        method : "POST",
-//                        data : ivn_attribute_data
-//                    })
-//                   .then(function (data, status, headers, config)
-//                    {
-//                        result_data_obj = JSON.parse(data.data.result_data_obj.replace(/&quot;/g,'"'));
-//                        alert(data.data.maps_object.status+"   "+result_data_obj);
-////                        alert(JSON.stringify(data.data.result_data));
-//                        angular.forEach(result_data_obj, function(value, key) {
-//                            if($scope.data.network == "can")
-//                                $scope.cans.push(value);
-//                            else if($scope.data.network == "lin")
-//                                $scope.lin.push(value);
-//                            else if($scope.data.network == "hardware")
-//                                $scope.hw.push(value);
-//                            else if($scope.data.network == "ecu"){
-//                                if($scope.list.ecu == undefined){
-//                                    $scope.list.ecu = [];
-//                                }
-//                                $scope.list.ecu.push(value.eid);
-//                                $scope.ecu.push(value);
-//                                $scope.ecu_list = $scope.ecu;
-//                            }
-//                            else if($scope.data.network == "signals")
-//                            {
-//                                if($scope.list.signal == undefined)
-//                                {
-//                                    $scope.list.signal = [];
-//                                }
-//                                $scope.list.signal.push(value.sid);
-//                                $scope.signal.push(value);
-//                                $scope.signal_list = $scope.signal;
-//                            }
-//                        });
-//                        alert(JSON.stringify($scope.signal));
-//                    });
+                    $http({
+                        url : 'create_ivn_required_attributes',
+                        method : "POST",
+                        data : ivn_attribute_data
+                    })
+                   .then(function (data, status, headers, config)
+                    {
+                        result_data_obj = JSON.parse(data.data.result_data_obj.replace(/&quot;/g,'"'));
+                        alert(data.data.maps_object.status+"   "+result_data_obj);
+//                        alert(JSON.stringify(data.data.result_data));
+                        angular.forEach(result_data_obj, function(value, key) {
+                            if($scope.data.network == "can")
+                                $scope.cans.push(value);
+                            else if($scope.data.network == "lin")
+                                $scope.lin.push(value);
+                            else if($scope.data.network == "hardware")
+                                $scope.hw.push(value);
+                            else if($scope.data.network == "ecu"){
+                                if($scope.list.ecu == undefined){
+                                    $scope.list.ecu = [];
+                                }
+                                $scope.list.ecu.push(value.eid);
+                                $scope.ecu.push(value);
+                                $scope.ecu_list = $scope.ecu;
+                            }
+                            else if($scope.data.network == "signals")
+                            {
+                                if($scope.list.signal == undefined)
+                                {
+                                    $scope.list.signal = [];
+                                }
+                                $scope.list.signal.push(value.sid);
+                                $scope.signal.push(value);
+                                $scope.signal_list = $scope.signal;
+                            }
+                        });
+                        alert(JSON.stringify($scope.signal));
+                    });
                     can = [];
                     lin = [];
                     hardware = [];
@@ -722,15 +723,15 @@
                         method : "POST",
                         data : {"vid":$scope.data.vehiclename.vid}
                     }).then(function (response, status, headers, config){
-                        $scope.records = [];                        
-                        alert(JSON.stringify(response.data));
-                        var result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));;
-                        var id = result_data.id.split(",");
-                        var ivn_version = result_data.ivn_version.split(",");
-                        angular.forEach(id, function (value, key) {
-                            $scope.records.push({"model_id":value,"modelname":ivn_version[key]});  
-                        });
-                        alert(JSON.stringify($scope.records));
+                        
+                        var result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
+                        $scope.data.vername = result_data[0];
+                        $scope.records = result_data;
+                        if ($scope.data.vername) {
+                            $scope.create_type = true;
+//                            alert($scope.create_type);
+                        }
+//                        alert(JSON.stringify($scope.records)+" "+$scope.data.vername);
                 });
             };
             $scope.createIVNVersionAjax = function (event){
@@ -742,18 +743,33 @@
                 data['ivnversion'] = $scope.data;
                 data['ivndata_list'] = $scope.list;
                 data['button_type'] = event;
-                data['notification_to'] = notification_to+"";                
+                data['notification_to'] = notification_to+"";
                 alert(JSON.stringify(data));
-//                console.log(JSON.stringify(data));
+                console.log(JSON.stringify(data));
                 $http({
                     url : 'createivnversion',
                     method : "POST",
                     data : data,
                 })
-                .then(function (data, status, headers, config){               
-                    alert(JSON.stringify(data.data.maps_object.status).slice(1, -1));
-                    $window.open("ivn_version_listing.action","_self"); //                alert(data.maps);
-//            //                Materialize.toast(data['maps']["status"], 4000);
+                .then(function (response, status, headers, config){
+//                    $scope.vercompare_results = {"removed_features":"(d1) feature3, (d1) feature5", 
+//                                                 "added_features":"(d1) feature4", 
+//                                                 "removed_models":"m2,m4", "added_models":"m3", 
+//                                                 "previous_version":"1.0", "current_version":"1.1"
+//                                                };
+                    alert(response.data.maps_object.status);
+                    var vercompare_res = response.data.maps_object.ivn_previous_data_result;
+                    if(vercompare_res != undefined){
+                        
+                          $scope.vercompare_results = response.data.maps_object.ivn_previous_data_result;
+                          alert(JSON.stringify($scope.vercompare_results));    
+                    }
+                    else{
+                          alert("No any previous version found to compare");
+                    }
+                    $('#modal-comment').closeModal();
+                    if(response.data.maps_string.status_code == "1")
+                        $window.open("ivn_version_listing.action","_self");
                 });
             };
             

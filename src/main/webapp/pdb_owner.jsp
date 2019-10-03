@@ -34,8 +34,34 @@
                         <div class="col-md-12">
                             <div class="card">
                                <div class="card-block marketing-card p-t-20 row">
-                                   
-                                   <div class="col-md-3 col-lg-3">
+<!--                                   <div class="col-md-12">
+                                        <div class="card-header">
+                                            <h5 class="card-header-text">Task</h5>
+                                        </div>
+                                       <div id="accordion" role="tablist" aria-multiselectable="true">
+                                            <div class="accordion-panel">
+                                                <div class="accordion-heading" role="tab" id="headingOne">
+                                                <h3 class="card-title accordion-title">
+                                                    <a class="accordion-msg" data-toggle="collapse"
+                                                       data-parent="#accordion" href="#collapseOne"
+                                                       aria-expanded="true" aria-controls="collapseOne">
+                                                        View
+                                                    </a>
+                                                </h3>
+                                                </div>
+                                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                                    <div class="accordion-content accordion-desc">
+                                                        <p>
+                                                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has
+                                                            survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
+                                                            sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                   </div>-->
+                                   <div class="col-md-3 col-lg-3 p-t-10">
                                         <div class="card visitor-card">
                                             <s:url action="pdb_listing.action" var="aURL" />
                                             <s:a href="%{aURL}">   
@@ -123,6 +149,63 @@
 //                    $scope.pdbfeatures_count = data['pdbfeatures_count'];
 //                });
 //            }
+            $scope.task = [
+                            {
+                                type:"pdb"
+                                name: "pdb version 1.0",
+                                created_date: "2019-03-12 10:03:03",
+                                created_by: "Anand",
+                                acceptance_status: "Yes",
+                                accepted_date: "2019-03-12 10:03:03",
+                                accepted_by: "Anand",
+                                completion_status: "Yes",
+                                completion_date: "2019-03-12 10:03:03",
+                            },
+                            {
+                                type:"safety"
+                                name: "safety version 1.0",
+                                created_date: "2019-03-12 10:03:03",
+                                created_by: "Anand",
+                                acceptance_status: "Yes",
+                                accepted_date: "2019-03-12 10:03:03",
+                                accepted_by: "Anand",
+                                completion_status: "Yes",
+                                completion_date: "2019-03-12 10:03:03",
+                            },
+                            {
+                                type:"legislation"
+                                name: "legislation version 1.0",
+                                created_date: "2019-03-12 10:03:03",
+                                created_by: "Anand",
+                                acceptance_status: "Yes",
+                                accepted_date: "2019-03-12 10:03:03",
+                                accepted_by: "Anand",
+                                completion_status: "Yes",
+                                completion_date: "2019-03-12 10:03:03",
+                            },
+                            {
+                                type:"ivn"
+                                name: "ivn version 1.0",
+                                created_date: "2019-03-12 10:03:03",
+                                created_by: "Anand",
+                                acceptance_status: "Yes",
+                                accepted_date: "2019-03-12 10:03:03",
+                                accepted_by: "Anand",
+                                completion_status: "Yes",
+                                completion_date: "2019-03-12 10:03:03",
+                            },
+                            {
+                                type:"acb"
+                                name: "acb version 1.0",
+                                created_date: "2019-03-12 10:03:03",
+                                created_by: "Anand",
+                                acceptance_status: "Yes",
+                                accepted_date: "2019-03-12 10:03:03",
+                                accepted_by: "Anand",
+                                completion_status: "Yes",
+                                completion_date: "2019-03-12 10:03:03",
+                            }
+                        ];
         });
     </script> 
      

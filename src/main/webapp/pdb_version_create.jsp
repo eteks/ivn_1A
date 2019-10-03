@@ -61,31 +61,38 @@
 
                                                                 </div>                
                                                                 <div>
-                                                                    <div ng-if="Demo.data">
-                                                                        <div class="form-group">
-                                                                            <label for="vehicle">Select vehicle:</label>
-                                                                            <input type="radio" ng-click="formRest()" id="select_vehicle" name="new_vehicle" ng-model="data.new_vehicle" value="select_vehicle" required=""/>
+                                                                    <div ng-if="Demo.data" class="">
+                                                                        <div class="form-radio">
+                                                                            <div class="radio radio-inline">
+                                                                                <label>
+                                                                                    <input type="radio" ng-click="formRest()" id="select_vehicle" name="new_vehicle" ng-model="data.new_vehicle" value="select_vehicle" required=""/>
+                                                                                    <i class="helper"></i>Select vehicle
+                                                                                </label>
+                                                                            </div>
                                                                         </div>
                                                                         <div class="form-group"  ng-if="data.new_vehicle=='select_vehicle'">
-                                                                            <label for="vehiclename">Vehicle:</label>
-                                                                            <select id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()" >
-                                                                                <s:iterator value="vehicleversion_result" var="data" >
-                                                                                    <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
-                                                                                </s:iterator>
-                                                                            </select>
-                                                                            <label for="vehicle">Version:</label>
-                                                                            <!--<select ng-hide="data.vehicle"></select>-->
-                                                                            <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversion_name for arr in array_result" ng-change="LoadVehicleModels()" disabled>
-                                                                            </select>
-                                                                            <!--<select ng-init="arr[arr.length-1]" ng-model="data.pdbversion" ng-options="y.pdbversion for (x, y) in array_result track by arr | orderBy:'-'" ng-change="LoadVehicleModels()" ></select>-->
-<!--                                                                            <select ng-change="LoadVehicleModels()" ng-model="data.pdbversion" id="pdbversion">
-                                                                                <option ng-repeat="arr in array_result | orderBy:'-'" ng-selected="arr.pdbid == data.pdbversion" value="{{arr.pdbid}}" >{{arr.pdbversion}}</option>
-                                                                            </select>-->
+                                                                            <div class="col-xl-6">    
+                                                                                <label for="vehiclename">Vehicle:</label>
+                                                                                <select class="form-control form-control-primary" id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()" >
+                                                                                    <s:iterator value="vehicleversion_result" var="data" >
+                                                                                        <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
+                                                                                    </s:iterator>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col-xl-6">
+                                                                                <label for="vehicle">Version:</label>
+                                                                                <select class="form-control form-control-primary" ng-model="data.pdbversion" ng-options="arr as arr.pdbversion_name for arr in array_result" ng-change="LoadVehicleModels()" disabled>
+                                                                                </select>
+                                                                            </div>                                                                            
                                                                         </div>
-                                                                        <div class="form-group">
-                                                                            <label for="vehicle">New vehicle:</label>
-                                                                            <input type="radio" ng-click="formRest()" id="new_vehicle" name="new_vehicle" ng-model="data.new_vehicle" value="new_vehicle" required=""/>
-                                                                        </div>
+                                                                        <div class="form-radio">
+                                                                            <div class="radio radio-inline">
+                                                                                <label>
+                                                                                    <input type="radio" ng-click="formRest()" id="new_vehicle" name="new_vehicle" ng-model="data.new_vehicle" value="new_vehicle" required=""/>
+                                                                                    <i class="helper"></i>New vehicle
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>    
                                                                         <div class="form-group">
                                                                             <label for="vehicle">Vehicle:</label>
                                                                             <input type="text" ng-blur="validateVehicle()" class="form-control" placeholder="Enter vehicle" id="vehicle" name="vehicle" ng-model="Demo.dt.vehiclename" ng-readonly="truefalse" required>
@@ -196,9 +203,20 @@
                                                         
                                                         <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
                                                         <textarea class="col-md-12 m-b-10" ng-model="data.pdb_manual_comment"></textarea>
-                                                        <div ng-if="create_type == true">
-                                                            <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">Major
-                                                            &nbsp;<input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">Minor
+                                                        
+                                                        <div ng-if="create_type == true" class="form-radio">
+                                                            <div class="radio radio-inline">
+                                                                <label>
+                                                                    <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">
+                                                                    <i class="helper"></i>Major
+                                                                </label>
+                                                            </div>
+                                                            <div class="radio radio-inline">
+                                                                <label>
+                                                                    <input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">
+                                                                    <i class="helper"></i>Minor
+                                                                </label>
+                                                            </div>                                                            
                                                         </div>
                                                         <div class="text-right">
                                                             <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createpdbversion('save')" name="save">Save</button>
@@ -469,35 +487,34 @@
                 data['notification_to'] = notification_to+"";
 //                alert(JSON.stringify($scope.features));
                 data['dfm_set'] = ["1","2","3"];
-                alert(JSON.stringify(data));
-                console.log(JSON.stringify(data));
-//                $http({
-//                    url: 'createpdbversion',
-//                    method: "POST",
-//                    data: data,
-//                }).then(function (response, status, headers, config) {
-////                    $scope.vercompare_results = {"removed_features":"(d1) feature3, (d1) feature5", 
-////                                                 "added_features":"(d1) feature4", 
-////                                                 "removed_models":"m2,m4", "added_models":"m3", 
-////                                                 "previous_version":"1.0", "current_version":"1.1"
-////                                                };
-//                      alert(response.data.maps_string.status);
-//                      var vercompare_res = response.data.maps_object.pdb_previous_data_result;
-//                      if(vercompare_res != undefined){
-//                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
-//                            alert(JSON.stringify($scope.vercompare_results));    
-//                      }
-//                      else{
-//                            alert("No any previous version found to compare");
-//                      }
-//                      $('#modal-comment').closeModal();
-//                      if(response.data.maps_string.status_code == "1")
-//                          $window.open("pdb_listing.action","_self");
-//    //                                    $window.alert(JSON.stringify(data));
-//    //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-//    //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
-//    //            //                        Materialize.toast(data['maps']["status"], 4000);
-//                });
+//                alert(JSON.stringify(data));
+                $http({
+                    url: 'createpdbversion',
+                    method: "POST",
+                    data: data,
+                }).then(function (response, status, headers, config) {
+//                    $scope.vercompare_results = {"removed_features":"(d1) feature3, (d1) feature5", 
+//                                                 "added_features":"(d1) feature4", 
+//                                                 "removed_models":"m2,m4", "added_models":"m3", 
+//                                                 "previous_version":"1.0", "current_version":"1.1"
+//                                                };
+                      alert(response.data.maps_string.status);
+                      var vercompare_res = response.data.maps_object.pdb_previous_data_result;
+                      if(vercompare_res != undefined){
+                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
+                            alert(JSON.stringify($scope.vercompare_results));    
+                      }
+                      else{
+                            alert("No any previous version found to compare");
+                      }
+                      $('#modal-comment').closeModal();
+                      if(response.data.maps_string.status_code == "1")
+                          $window.open("pdb_listing.action","_self");
+    //                                    $window.alert(JSON.stringify(data));
+    //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
+    //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
+    //            //                        Materialize.toast(data['maps']["status"], 4000);
+                });
             }
             
             $scope.createpdbversion = function (event)
@@ -518,7 +535,6 @@
 //            alert($scope.list.length);
 //            alert($scope.records.length * $scope.features.length);
             if($scope.list.length > 0){
-                
                 if($scope.list.length === $scope.records.length * $scope.features.length){
                     if(status && event === "submit"){
                         $(".notifyPopup").click();

@@ -112,7 +112,7 @@
                                                         <span class="tooltip-content5">
                                                             <span class="tooltip-text3">
                                                                 <span class="tooltip-inner2">
-                                                                    {{record.gp}}
+                                                                    <span>{{record.gp}}</span>
                                                                 </span>
                                                             </span>
                                                         </span>

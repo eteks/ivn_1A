@@ -466,7 +466,7 @@ public class PDBOwnerDB {
         try {
 //            Session s = HibernateUtil.getThreadLocalSession();
 //            Transaction tx = s.beginTransaction();
-            Map<String, Object> results = new HashMap<String, Object>();
+            Map<String, Object> results = new HashMap<>();
 
             String removed = "removed";
             String added = "added";

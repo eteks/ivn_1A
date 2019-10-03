@@ -13,7 +13,9 @@ import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.models.pdbowner.Featureversion;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.pdbowner.Querybuilder;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Tuple;
@@ -21,8 +23,12 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -475,40 +481,16 @@ public class IVNEngineerDB {
         }
     }
 
-    public static IVN_Version insertIVNVersion(IVN_Version ivnv, String level) {
+    public static IVN_Version insertIVNVersion(IVN_Version ivnv) {
         try {
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
-            if (level.equals("create")) {
 
-                session.save(ivnv);
-                tx.commit();
-                session.clear();
-                return ivnv;
-            } else {
+            session.save(ivnv);
 
-                final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-                // create update
-                CriteriaUpdate<Querybuilder> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Querybuilder.class);
-                // set the root class
-                Root<Querybuilder> qRoot = criteriaUpdate.from(Querybuilder.class);
-                // set update and where clause
-//                criteriaUpdate.set("querybuilder_name", querybuilder.getQuerybuilder_name())
-//                        .set("querybuilder_type", querybuilder.getQuerybuilder_type())
-//                        .set("querybuilder_condition", querybuilder.getQuerybuilder_condition())
-//                        .set("querybuilder_status", querybuilder.getQuerybuilder_status())
-//                        .set("created_date", querybuilder.getCreated_date())
-//                        .where(criteriaBuilder.equal(qRoot.get("id"), querybuilder.getId()));
-                // perform update
-                int a = session.createQuery(criteriaUpdate).executeUpdate();
-                tx.commit();
-                session.clear();
-                if (a > 0) {
-                    return ivnv;
-                } else {
-                    return null;
-                }
-            }
+            tx.commit();
+            session.clear();
+            return ivnv;
         } catch (Exception e) {
             System.err.println("Error in \"IVNEngineerDB\" \'insertIVNVersion\' " + e);
             return null;
@@ -567,11 +549,15 @@ public class IVNEngineerDB {
 
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
-            Root<IVN_Version_Group> ivnRoot = criteriaQuery.from(IVN_Version_Group.class);
+            Root<IVN_Version> ivnRoot = criteriaQuery.from(IVN_Version.class);
 
-            criteriaQuery.multiselect(criteriaBuilder.function("group_concat", String.class, ivnRoot.get("ivnVersionId").get("id")).alias("id"),
-                    criteriaBuilder.function("group_concat", String.class, ivnRoot.get("ivnVersionId").get("ivn_version")).alias("ivn_version"))
-                    .where(criteriaBuilder.equal(ivnRoot.get("vehicleId"), id)).distinct(true);
+//            criteriaQuery.multiselect(criteriaBuilder.function("group_concat", String.class, ivnRoot.get("ivnVersionId").get("id")).alias("id"),
+//                    criteriaBuilder.function("group_concat", String.class, ivnRoot.get("ivnVersionId").get("ivn_version")).alias("ivn_version"))
+//                    .where(criteriaBuilder.equal(ivnRoot.get("vehicleId"), id)).distinct(true);
+            criteriaQuery.multiselect(ivnRoot.get("id").alias("id"), ivnRoot.get("ivn_version").alias("ivn_version"),
+                    ivnRoot.get("status").alias("status")).distinct(true)
+                    .where(criteriaBuilder.equal(ivnRoot.get("vehicleId").get("id"), id))
+                    .orderBy(criteriaBuilder.desc(ivnRoot.get("id")));
 
             TypedQuery<Tuple> dfm_result = session.createQuery(criteriaQuery);
 
@@ -581,6 +567,189 @@ public class IVNEngineerDB {
 
         } catch (Exception e) {
             System.err.println("Error in \"IVNEngineerDB\" \'loadIVNVersion_ListingByVehicleId\' " + e);
+            return null;
+        }
+    }
+
+    public static IVN_Version GetVersionname(int vehicle_id, String version_type) {
+
+        System.out.println("Entered GetVersionname");
+        System.out.println("vehicle_id" + vehicle_id);
+        try {
+//            Query pdbversion = s.createQuery("FROM Pdbversion p order by p.pdb_versionname desc").setParameter("pdb_reference_version", "1.0");
+//            pdbversion.setMaxResults(1);
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            // create Criteria
+//            CriteriaQuery<Pdbversion> criteriaQuery = s.getCriteriaBuilder().createQuery(Pdbversion.class);           
+//            criteriaQuery.from(Pdbversion.class); 
+            //Working code
+            CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery<IVN_Version> criteriaQuery = criteriaBuilder.createQuery(IVN_Version.class);
+            // The root of our search is sku
+            Root<IVN_Version> test = criteriaQuery.from(IVN_Version.class);
+            List<Predicate> restrictions = new ArrayList<>();
+            restrictions.add(criteriaBuilder.isNull(test.get("ivn_reference_version")));
+//            criteriaQuery.where(restrictions.toArray(new Predicate[restrictions.size()]));
+            if (version_type.equals("new")) {
+                criteriaQuery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(
+                                        test.get("vehicleId").get("id"), vehicle_id
+                                ),
+                                criteriaBuilder.equal(
+                                        test.get("version_type"), version_type
+                                )
+                        )
+                );
+            } else {
+                criteriaQuery.where(
+                        criteriaBuilder.equal(
+                                test.get("vehicleId").get("id"), vehicle_id
+                        )
+                );
+            }
+            criteriaQuery.orderBy(criteriaBuilder.desc(test.get("ivn_version")));
+            //create resultset as list
+            TypedQuery<IVN_Version> pdbversion = s.createQuery(criteriaQuery).setMaxResults(1);
+
+            tx.commit();
+            s.clear();
+            return pdbversion.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Error in \"GetVersionname\" : " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static Map<String, Object> GetIVNPreviousVersion_SigEcu(int prevpdb_id, int curpdb_id) {
+
+        try {
+//            Session s = HibernateUtil.getThreadLocalSession();
+//            Transaction tx = s.beginTransaction();
+            Map<String, Object> results = new HashMap<>();
+
+            String removed = "removed";
+            String added = "added";
+
+            List<IVN_Version_Group> removed_features = GetComparedSignals(prevpdb_id, curpdb_id, removed);
+            results.put("removed_signals", StringUtils.join(removed_features, ","));
+
+            List<IVN_Version_Group> added_features = GetComparedSignals(prevpdb_id, curpdb_id, added);
+            results.put("added_signals", StringUtils.join(added_features, ","));
+
+            List<IVN_Version_Group> removed_models = GetComparedECUs(prevpdb_id, curpdb_id, removed);
+            results.put("removed_ecus", StringUtils.join(removed_models, ","));
+
+            List<IVN_Version_Group> added_models = GetComparedECUs(prevpdb_id, curpdb_id, added);
+            results.put("added_ecus", StringUtils.join(added_models, ","));
+
+            return results;
+        } catch (Exception e) {
+            System.err.println("Error in \"GetIVNPreviousVersion_SigEcu\" : " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static List<IVN_Version_Group> GetComparedSignals(int prevpdb_id, int curpdb_id, String network_type) {
+
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            //Working code
+            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
+            Root<IVN_Version_Group> ivnversion_groupRoot = criteriaQuery.from(IVN_Version_Group.class);
+            Join<IVN_Version_Group, Signals> sigRoot = ivnversion_groupRoot.join("signalsId", JoinType.INNER);
+            criteriaQuery.select(sigRoot.get("signal_name")).distinct(true);
+
+            Subquery<IVN_Version_Group> subquery = criteriaQuery.subquery(IVN_Version_Group.class);
+            Root<IVN_Version_Group> subQueryRoot = subquery.from(IVN_Version_Group.class);
+            subquery.select(subQueryRoot.get("signalsId").get("id")).distinct(true);
+
+            if (network_type.equals("removed")) {
+                System.out.println("entered into removed");
+                subquery.where(criteriaBuilder.equal(subQueryRoot.get("ivnVersionId").get("id"), curpdb_id));
+                criteriaQuery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(
+                                        ivnversion_groupRoot.get("ivnVersionId").get("id"), prevpdb_id
+                                ),
+                                criteriaBuilder.not(ivnversion_groupRoot.get("signalsId").get("id").in(subquery))
+                        )
+                );
+            } else {
+                subquery.where(criteriaBuilder.equal(subQueryRoot.get("ivnVersionId").get("id"), prevpdb_id));
+                criteriaQuery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(
+                                        ivnversion_groupRoot.get("ivnVersionId").get("id"), curpdb_id
+                                ),
+                                criteriaBuilder.not(ivnversion_groupRoot.get("signalsId").get("id").in(subquery))
+                        )
+                );
+            }
+
+//            criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"), prevpdb_id)),criteriaBuilder.not(criteriaBuilder.exists(subquery))); 
+            TypedQuery<IVN_Version_Group> feature_results = s.createQuery(criteriaQuery);
+            tx.commit();
+            s.clear();
+            return feature_results.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"GetComparedSignals\" : " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static List<IVN_Version_Group> GetComparedECUs(int prevpdb_id, int curpdb_id, String network_type) {
+        
+        try {
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            //Working code
+            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
+            Root<IVN_Version_Group> ivnversion_groupRoot = criteriaQuery.from(IVN_Version_Group.class);
+            Join<IVN_Version_Group, Signals> sigRoot = ivnversion_groupRoot.join("ecuId", JoinType.INNER);
+            criteriaQuery.select(sigRoot.get("ecu_name")).distinct(true);
+
+            Subquery<IVN_Version_Group> subquery = criteriaQuery.subquery(IVN_Version_Group.class);
+            Root<IVN_Version_Group> subQueryRoot = subquery.from(IVN_Version_Group.class);
+            subquery.select(subQueryRoot.get("ecuId").get("id")).distinct(true);
+
+            if (network_type.equals("removed")) {
+                System.out.println("entered into removed");
+                subquery.where(criteriaBuilder.equal(subQueryRoot.get("ivnVersionId").get("id"), curpdb_id));
+                criteriaQuery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(
+                                        ivnversion_groupRoot.get("ivnVersionId").get("id"), prevpdb_id
+                                ),
+                                criteriaBuilder.not(ivnversion_groupRoot.get("ecuId").get("id").in(subquery))
+                        )
+                );
+            } else {
+                subquery.where(criteriaBuilder.equal(subQueryRoot.get("ivnVersionId").get("id"), prevpdb_id));
+                criteriaQuery.where(
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(
+                                        ivnversion_groupRoot.get("ivnVersionId").get("id"), curpdb_id
+                                ),
+                                criteriaBuilder.not(ivnversion_groupRoot.get("ecuId").get("id").in(subquery))
+                        )
+                );
+            }
+
+//            criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(pdbversion_groupRoot.get("pdbversion_id").get("id"), prevpdb_id)),criteriaBuilder.not(criteriaBuilder.exists(subquery))); 
+            TypedQuery<IVN_Version_Group> feature_results = s.createQuery(criteriaQuery);
+            tx.commit();
+            s.clear();
+            return feature_results.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"GetComparedECUs\" : " + e.getMessage());
             return null;
         }
     }
