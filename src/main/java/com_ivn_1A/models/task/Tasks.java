@@ -27,15 +27,15 @@ public class Tasks implements Serializable {
     private int id;
     private String task_name;
     private Vehicle vehicle_id;
-    private int created_id;
+    private String created_name;
 
     public Tasks() {
     }
 
-    public Tasks(String task_name, Vehicle vehicle_id, int created_id) {
+    public Tasks(String task_name, Vehicle vehicle_id, String created_name) {
         this.task_name = task_name;
         this.vehicle_id = vehicle_id;
-        this.created_id = created_id;
+        this.created_name = created_name;
     }
 
     @Id
@@ -68,13 +68,13 @@ public class Tasks implements Serializable {
         this.vehicle_id = vehicle_id;
     }
 
-    @Column(name = "created_id", nullable = false)
-    public int getCreated_id() {
-        return created_id;
+    @Column(name = "created_name", nullable = false)
+    public String getCreated_name() {
+        return created_name;
     }
 
-    public void setCreated_id(int created_id) {
-        this.created_id = created_id;
+    public void setCreated_name(String created_name) {
+        this.created_name = created_name;
     }
     
     

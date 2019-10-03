@@ -135,6 +135,14 @@
             <result type="json" />
         </action>
         
+        <action name="insertTasks" class="com.ivn_1A.controllers.task.TasksController" method="CreateTasks">
+            <result type="json" />
+        </action>
+        
+        <action name="getTasks" class="com.ivn_1A.controllers.task.TasksController" method="getTasks">
+            <result type="json" />
+        </action>
+        
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">

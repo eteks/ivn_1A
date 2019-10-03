@@ -40,7 +40,7 @@
                                         </div>
                                        
                                        <div id="accordion" role="tablist" aria-multiselectable="true">
-                                            <div class="accordion-panel" ng-if="task.pdb.completion_status == 'yes'">
+                                            <div class="accordion-panel" ng-if="task.pdb.completion_status == true">
                                                 <div class="accordion-heading" role="tab" id="headingOne">
                                                     <h3 class="card-title accordion-title">
                                                         <a class="accordion-msg text-success" data-toggle="collapse"
@@ -55,7 +55,7 @@
                                                         <p><span>Name</span>: {{task.pdb.name}} </p>
                                                         <p><span>Created Date</span>: {{task.pdb.created_date}} </p>
                                                         <p><span>Created By</span>: {{task.pdb.created_by}} </p>
-                                                        <div ng-if="task.legislation.acceptance_status == ''" class="text-center">
+                                                        <div class="text-center">
                                                             <a href="#" ng-click="task_accept()" class="btn-round btn btn-primary">Accept</a>&nbsp;&nbsp;
                                                             <a href="#" ng-click="task_reject()" class="btn-round btn btn-danger">Reject</a>
                                                         </div>
@@ -134,7 +134,7 @@
 <script>
 //        var app = angular.module('angularTable', []);
 
-        app.controller('MyCtrl',function($scope, $http)
+        app.controller('MyCtrl',function($scope, $http, $window, $location, $element, $rootScope)
         {      
 //            alert("MyCtrl");
 //            $scope.getAllCount = function()
@@ -146,74 +146,90 @@
 //                    $scope.pdbfeatures_count = data['pdbfeatures_count'];
 //                });
 //            }
-$scope.task = 
-                            {
-                                pdb:{
-                                        name: "pdb version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "yes",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "yes",
-                                        completion_date: "2019-03-12 10:03:03"
-                                    },
-                                    safety:
-                                    {
-                                        name: "safety version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "",
-                                        completion_date: "2019-03-12 10:03:03"
-                                    },
-                                    legislation:
-                                    {
-                                        name: "legislation version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "",
-                                        completion_date: "2019-03-12 10:03:03"
-                                    },
-                                    feature:
-                                    {
-                                        name: "legislation version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "",
-                                        completion_date: "2019-03-12 10:03:03"
-                                    },
-                                    ivn:
-                                    {
-                                        name: "ivn version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "yes",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "",
-                                        completion_date: "2019-03-12 10:03:03"
-                                    },
-                                    acb:
-                                    {
-                                        name: "ivn version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "",
-                                        completion_date: "2019-03-12 10:03:03"
-                                    }
-                            };
+//            $scope.task = {};
+            $http({
+                url: 'getTasks',
+                method: "POST",
+                data: {"froms":"leg"},
+            }).then(function (response, status, headers, config){
+                if(response.data.maps_string.success){
+                    $window.alert(JSON.stringify(response.data.maps_object));
+                    $window.alert(JSON.stringify(response.data.maps_object.tasks));
+                    console.log(JSON.stringify(response.data.maps_object.tasks))
+                    $scope.task = response.data.maps_object.tasks;
+//                            $window.document.getElementById('model').focus();
+                } else {
+                    $window.alert(JSON.stringify(response.data.maps_string));
+                }
+            });
+//$scope.task = 
+//                            {
+//                                "pdb": {
+//                                    "name": "PDB version 2.5",
+//                                    "completion_status": "true",
+//                                    "accepted_date": "2019-10-03T12:33:49",
+//                                    "accepted_by": "khan",
+//                                    "completion_date": "2019-10-03T12:33:49",
+//                                    "created_date": "2019-10-03T12:33:49",
+//                                    "created_by": "khan",
+//                                    "acceptance_status": "true"
+//                                },
+//                                    safety:
+//                                    {
+//                                        name: "safety version 1.0",
+//                                        created_date: "2019-03-12 10:03:03",
+//                                        created_by: "Anand",
+//                                        acceptance_status: "",
+//                                        accepted_date: "2019-03-12 10:03:03",
+//                                        accepted_by: "Anand",
+//                                        completion_status: "",
+//                                        completion_date: "2019-03-12 10:03:03"
+//                                    },
+//                                    legislation:
+//                                    {
+//                                        name: "legislation version 1.0",
+//                                        created_date: "2019-03-12 10:03:03",
+//                                        created_by: "Anand",
+//                                        acceptance_status: "",
+//                                        accepted_date: "2019-03-12 10:03:03",
+//                                        accepted_by: "Anand",
+//                                        completion_status: "",
+//                                        completion_date: "2019-03-12 10:03:03"
+//                                    },
+//                                    feature:
+//                                    {
+//                                        name: "legislation version 1.0",
+//                                        created_date: "2019-03-12 10:03:03",
+//                                        created_by: "Anand",
+//                                        acceptance_status: "",
+//                                        accepted_date: "2019-03-12 10:03:03",
+//                                        accepted_by: "Anand",
+//                                        completion_status: "",
+//                                        completion_date: "2019-03-12 10:03:03"
+//                                    },
+//                                    ivn:
+//                                    {
+//                                        name: "ivn version 1.0",
+//                                        created_date: "2019-03-12 10:03:03",
+//                                        created_by: "Anand",
+//                                        acceptance_status: "yes",
+//                                        accepted_date: "2019-03-12 10:03:03",
+//                                        accepted_by: "Anand",
+//                                        completion_status: "",
+//                                        completion_date: "2019-03-12 10:03:03"
+//                                    },
+//                                    acb:
+//                                    {
+//                                        name: "ivn version 1.0",
+//                                        created_date: "2019-03-12 10:03:03",
+//                                        created_by: "Anand",
+//                                        acceptance_status: "",
+//                                        accepted_date: "2019-03-12 10:03:03",
+//                                        accepted_by: "Anand",
+//                                        completion_status: "",
+//                                        completion_date: "2019-03-12 10:03:03"
+//                                    }
+//                            };
                             $scope.task_accept = function()
                             {
                                 $scope.task.legislation.acceptance_status="yes";

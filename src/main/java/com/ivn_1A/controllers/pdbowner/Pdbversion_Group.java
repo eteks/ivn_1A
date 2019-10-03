@@ -215,6 +215,7 @@ public class Pdbversion_Group {
                 Pdbversion curpdb_id = PDBOwnerDB.insertPDBVersion(pdbversion);
                 //Insert data into PDB Version Group
                 int i = 0;
+                List<Pdbversion_group> pdbversion_groups = new ArrayList<>();
                 for (Object o : pdbdata_list) {
                     JsonNode pdbdata = (JsonNode) o;
                     System.out.println("pdbdata" + pdbdata);
@@ -230,6 +231,7 @@ public class Pdbversion_Group {
 
                     pvg.setAvailable_status(pdbdata.get("status").asText());
                     Pdbversion_group pvg_id = PDBOwnerDB.insertPDBVersionGroup(pvg);
+                    pdbversion_groups.add(pvg_id);
                 }
                 if (prevpdb_id != 0) {
                     Map<String, Object> pdb_previous_data = PDBOwnerDB.GetPDBPreviousVersion_DomFea(prevpdb_id, curpdb_id.getId());
@@ -242,7 +244,9 @@ public class Pdbversion_Group {
                     pdb_previous_data_result.put("added_models", pdb_previous_data.get("added_models"));
                     pdb_previous_data_result.put("current_version", String.format("%.1f", curpdb_id.getPdb_versionname()));
                     pdb_previous_data_result.put("reference_version", pdbversion_value.get("pdbversion").get("pdbversion_name").asDouble());
-
+                    pdb_previous_data_result.put("pdb_version", mapper.writeValueAsString(curpdb_id));
+                    pdb_previous_data_result.put("pdb_version_group", mapper.writeValueAsString(pdbversion_groups));
+                    
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
                 if (button_type.equals("save")) {

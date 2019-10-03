@@ -30,23 +30,25 @@ public class Tasks_Group implements Serializable {
     
     private int id;
     private Tasks task_id;
-    private int user_id;
+    private int version_id;
+    private String version_name;
     private boolean accepted_status;
-    private int accepted_by;
+    private String accepted_by;
     private boolean completed_status;
-    private int completed_by;
+    private String completed_by;
     private Date created_date;
     private Date modified_date;
     private User created_or_updated_by;
-    private int sender_id;
-    private int receiver_id;
+    private String sender_id;
+    private String receiver_id;
 
     public Tasks_Group() {
     }
 
-    public Tasks_Group(Tasks task_id, int user_id, boolean accepted_status, int accepted_by, boolean completed_status, int completed_by, Date created_date, Date modified_date, User created_or_updated_by, int sender_id, int receiver_id) {
+    public Tasks_Group(Tasks task_id, int version_id, String version_name, boolean accepted_status, String accepted_by, boolean completed_status, String completed_by, Date created_date, Date modified_date, User created_or_updated_by, String sender_id, String receiver_id) {
         this.task_id = task_id;
-        this.user_id = user_id;
+        this.version_id = version_id;
+        this.version_name = version_name;
         this.accepted_status = accepted_status;
         this.accepted_by = accepted_by;
         this.completed_status = completed_status;
@@ -79,13 +81,22 @@ public class Tasks_Group implements Serializable {
         this.task_id = task_id;
     }
 
-    @Column(name = "user_id", nullable = false)
-    public int getUser_id() {
-        return user_id;
+    @Column(name = "version_id", nullable = false)
+    public int getVersion_id() {
+        return version_id;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setVersion_id(int version_id) {
+        this.version_id = version_id;
+    }
+
+    @Column(name = "version_name", nullable = false)
+    public String getVersion_name() {
+        return version_name;
+    }
+
+    public void setVersion_name(String version_name) {
+        this.version_name = version_name;
     }
 
     @Column(name = "accepted_status", nullable = false, columnDefinition = "TINYINT(1)")
@@ -98,11 +109,11 @@ public class Tasks_Group implements Serializable {
     }
 
     @Column(name = "accepted_by", nullable = false)
-    public int getAccepted_by() {
+    public String getAccepted_by() {
         return accepted_by;
     }
 
-    public void setAccepted_by(int accepted_by) {
+    public void setAccepted_by(String accepted_by) {
         this.accepted_by = accepted_by;
     }
 
@@ -116,11 +127,11 @@ public class Tasks_Group implements Serializable {
     }
 
     @Column(name = "completed_by", nullable = false)
-    public int getCompleted_by() {
+    public String getCompleted_by() {
         return completed_by;
     }
 
-    public void setCompleted_by(int completed_by) {
+    public void setCompleted_by(String completed_by) {
         this.completed_by = completed_by;
     }
 
@@ -157,26 +168,26 @@ public class Tasks_Group implements Serializable {
     }
 
     @Column(name = "sender_id", nullable = false)
-    public int getSender_id() {
+    public String getSender_id() {
         return sender_id;
     }
 
-    public void setSender_id(int sender_id) {
+    public void setSender_id(String sender_id) {
         this.sender_id = sender_id;
     }
 
     @Column(name = "receiver_id", nullable = false)
-    public int getReceiver_id() {
+    public String getReceiver_id() {
         return receiver_id;
     }
 
-    public void setReceiver_id(int receiver_id) {
+    public void setReceiver_id(String receiver_id) {
         this.receiver_id = receiver_id;
     }
 
     @Override
     public String toString() {
-        return "Tasks_Group{" + "id=" + id + ", task_id=" + task_id + ", user_id=" + user_id + ", accepted_status=" + accepted_status + ", accepted_by=" + accepted_by + ", completed_status=" + completed_status + ", completed_by=" + completed_by + ", created_date=" + created_date + ", modified_date=" + modified_date + ", created_or_updated_by=" + created_or_updated_by + ", sender_id=" + sender_id + ", receiver_id=" + receiver_id + '}';
+        return "Tasks_Group{" + "id=" + id + ", task_id=" + task_id + ", version_id=" + version_id + ", accepted_status=" + accepted_status + ", accepted_by=" + accepted_by + ", completed_status=" + completed_status + ", completed_by=" + completed_by + ", created_date=" + created_date + ", modified_date=" + modified_date + ", created_or_updated_by=" + created_or_updated_by + ", sender_id=" + sender_id + ", receiver_id=" + receiver_id + '}';
     }
     
     
