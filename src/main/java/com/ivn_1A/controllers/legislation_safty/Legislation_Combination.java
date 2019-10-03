@@ -43,7 +43,7 @@ public class Legislation_Combination {
             System.out.println("CreateLegComb");
             System.out.println("entered try");
             long comb_id = 0;
-            String previousversion_status = "true";
+            String previousversion_status = "none";
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
             final ObjectMapper mapper = new ObjectMapper();

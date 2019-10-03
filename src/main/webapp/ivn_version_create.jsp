@@ -57,7 +57,15 @@
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Vehicle:</label>
-                                                                <select ng-model="data.vehiclename" ng-options="arr as arr.vname for arr in arr_res" ng-change="LoadVehicleModels(data.vehiclename)">
+                                                                <select ng-model="data.vehiclename" ng-options="arr as arr.vname for arr in arr_res" ng-change="LoadIVNVersion()">
+                                                                </select>
+<!--                                                                <select ng-change="LoadVehicleModels(data.vehiclename)" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
+                                                                        <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
+                                                                </select>-->
+                                                            </div>
+                                                            <div class="form-group col-md-3">
+                                                                <label for="vehicle">Version:</label>
+                                                                <select ng-model="data.vername" ng-options="arr as arr.ivn_version for arr in records track by arr.ivn_version" >
                                                                 </select>
 <!--                                                                <select ng-change="LoadVehicleModels(data.vehiclename)" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
                                                                         <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
@@ -183,7 +191,7 @@
                                     <option value="ecu">ECU</option>
                                 </select>
                             </div>
-                                <div class="" ng-if="data.network != 'signals'">
+                                <div class="" ng-if="data.network !== 'signals'">
                                      <div ng-repeat="data in Demo.data">              
                                         <div class="form-group">
                                         <!--<label for="name">Feature</label>-->
@@ -404,20 +412,10 @@
                          <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
                          <input type="text" class="col-md-12 m-b-10" ng-model="data.version_name" placeholder="Version Name" />
                          <textarea class="col-md-12 m-b-10" ng-model="data.pdb_manual_comment" placeholder="Your Comment" ></textarea>
-                         <div ng-if="create_type == true" class="form-radio">
-                            <div class="radio radio-inline">
-                                <label>
-                                    <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">
-                                    <i class="helper"></i>Major
-                                </label>
-                            </div>
-                            <div class="radio radio-inline">
-                                <label>
-                                    <input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">
-                                    <i class="helper"></i>Minor
-                                </label>
-                            </div>                                                            
-                        </div>
+                         <div ng-if="create_type == true">
+                             <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">Major
+                             &nbsp;<input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">Minor
+                         </div>
                          <div class="text-right">
                              <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createIvnVersion('save')" name="save">Save</button>
                              <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createIvnVersion('submit')" name="submit">Submit</button>
@@ -439,6 +437,7 @@
             this.data=[];
             var notification_to;
             $scope.features = [];
+            $scope.ivn_version = "";
 //            $scope.list = [];
             $scope.Demo.dt = [];
             $scope.vehicleresults = {};
@@ -475,7 +474,7 @@
             $scope.signal_list = signal_list;
 //            alert(JSON.stringify($scope.signal_list));
 //            alert("feature_list  "+JSON.stringify(result_data_obj)+"network_list  "+JSON.stringify(network_list)+" eculist_list  "+JSON.stringify(ecu_list)+" signal_list  "+JSON.stringify(signal_list));
-                     
+
             $scope.sort = function(keyname)
             {
                 $scope.sortKey = keyname;   //set the sortKey to the param passed
@@ -590,7 +589,7 @@
             $scope.SelectNetwork = function()
             {
                 Object.keys($scope.Demo.data).forEach(function(itm){
-                    alert(itm);
+                    alert("!!!!!!!!!!!!"+itm);
                     if(itm != "network") delete $scope.Demo.data[itm];
                 });
                 $scope.Demo.data = [];
@@ -651,16 +650,15 @@
                         });
                         alert(JSON.stringify($scope.signal));
                     });
-                    $('#modal-product-form').closeModal();
                     can = [];
                     lin = [];
                     hardware = [];
-//                    $scope.data.network="";
-//                    $scope.Demo.data=[];
-//                    $scope.data=[];
-                }
-                else
-                {
+                    $scope.data.network="";
+                    $scope.Demo.data=[];
+                    $scope.data=[];
+                    location.reload();
+                    $('#modal-product-form').closeModal();
+                } else {
                     if($scope.data.network == "signals")
                         alert("Please fill the name and description and alias");
                     else
@@ -714,10 +712,28 @@
                     }
                     $scope.data.vehiclename = arr_res[0];
                     $scope.arr_res = arr_res;
+                    $scope.LoadIVNVersion();
 //                    $window.alert(JSON.stringify($scope.arr_res));
                 });
             };
-            
+            $scope.LoadIVNVersion = function() {
+                alert($scope.data.vehiclename.vid);
+                $http({
+                        url : 'LoadIVNVersion',
+                        method : "POST",
+                        data : {"vid":$scope.data.vehiclename.vid}
+                    }).then(function (response, status, headers, config){
+                        
+                        var result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
+                        $scope.data.vername = result_data[0];
+                        $scope.records = result_data;
+                        if ($scope.data.vername) {
+                            $scope.create_type = true;
+//                            alert($scope.create_type);
+                        }
+//                        alert(JSON.stringify($scope.records)+" "+$scope.data.vername);
+                });
+            };
             $scope.createIVNVersionAjax = function (event){
                 var status = $scope.data.status;
                 if(status == undefined || status == false)
@@ -727,18 +743,33 @@
                 data['ivnversion'] = $scope.data;
                 data['ivndata_list'] = $scope.list;
                 data['button_type'] = event;
-                data['notification_to'] = notification_to+"";                
+                data['notification_to'] = notification_to+"";
                 alert(JSON.stringify(data));
-//                console.log(JSON.stringify(data));
+                console.log(JSON.stringify(data));
                 $http({
                     url : 'createivnversion',
                     method : "POST",
                     data : data,
                 })
-                .then(function (data, status, headers, config){               
-                    alert(JSON.stringify(data.data.maps_object.status).slice(1, -1));
-                    $window.open("ivn_version_listing.action","_self"); //                alert(data.maps);
-//            //                Materialize.toast(data['maps']["status"], 4000);
+                .then(function (response, status, headers, config){
+//                    $scope.vercompare_results = {"removed_features":"(d1) feature3, (d1) feature5", 
+//                                                 "added_features":"(d1) feature4", 
+//                                                 "removed_models":"m2,m4", "added_models":"m3", 
+//                                                 "previous_version":"1.0", "current_version":"1.1"
+//                                                };
+                    alert(response.data.maps_object.status);
+                    var vercompare_res = response.data.maps_object.ivn_previous_data_result;
+                    if(vercompare_res != undefined){
+                        
+                          $scope.vercompare_results = response.data.maps_object.ivn_previous_data_result;
+                          alert(JSON.stringify($scope.vercompare_results));    
+                    }
+                    else{
+                          alert("No any previous version found to compare");
+                    }
+                    $('#modal-comment').closeModal();
+                    if(response.data.maps_string.status_code == "1")
+                        $window.open("ivn_version_listing.action","_self");
                 });
             };
             

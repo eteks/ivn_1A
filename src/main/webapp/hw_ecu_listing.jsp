@@ -50,7 +50,7 @@
                                                                 <!-- Nav tabs -->
                                                                 <ul class="nav nav-tabs  tabs" role="tablist">
                                                                     <li class="nav-item">
-                                                                        <a class="nav-link" data-toggle="tab" href="#can" role="tab">CAN</a>
+                                                                        <a class="nav-link selected" data-toggle="tab" href="#can" role="tab">CAN</a>
                                                                     </li>
                                                                     <li class="nav-item">
                                                                         <a class="nav-link" data-toggle="tab" href="#lin" role="tab">LIN</a>
@@ -176,21 +176,19 @@
                                                                                     <div class="card-block accordion-block">
                                                                                         <div id="accordion" role="tablist" aria-multiselectable="true">
                                                                                             
-                                                                                            <div class="accordion-panel" ng-repeat="s in signal">
+                                                                                            <div class="accordion-panel" ng-repeat="s in signal_list">
                                                                                                 <div class="accordion-heading" role="tab" id="heading{{s.sid}}">
                                                                                                     <h3 class="card-title accordion-title">
-                                                                                                    <a class="accordion-msg" data-toggle="collapse"
-                                                                                                       data-parent="#accordion" href="#collapse{{s.sid}}"
-                                                                                                       aria-expanded="true" aria-controls="collapse{{s.sid}}">
-                                                                                                        {{s.listitem}}
-                                                                                                    </a>
-                                                                                                    <a href="#" ng-click="removeSignalRow(s.sid)" class="removeSignalRow"><i class="icofont icofont-ui-close text-c-red"></i></a>    
-                                                                                                </h3>
+                                                                                                        <a class="accordion-msg" data-toggle="collapse"
+                                                                                                           data-parent="#accordion" href="#collapse{{s.sid}}"
+                                                                                                           aria-expanded="true" aria-controls="collapse{{s.sid}}">
+                                                                                                            {{s.listitem}}
+                                                                                                        </a>
+                                                                                                        <a href="#" ng-click="removeSignalRow(s.sid)" class="removeSignalRow"><i class="icofont icofont-ui-close text-c-red"></i></a>    
+                                                                                                    </h3>
                                                                                                 </div>
                                                                                                 <div id="collapse{{s.sid}}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading{{s.sid}}">
                                                                                                     <div class="accordion-content accordion-desc">
-                                                                                                        
-                                                                                                        
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>                                                                                           
@@ -203,14 +201,14 @@
                                                                     <div class="tab-pane" id="ecu" role="tabpanel">
                                                                         
                                                                            
-                                                                                <div ng-repeat="e in ecu">
-                                                                                    <a href="#" ng-click="removeEcuRow(e.eid)" class="removeEcuRow"><i class="icofont icofont-ui-close text-c-red"></i></a>
-                                                                                    <div class="border-checkbox-section check_pan">                                                                                    
+                                                                                <div ng-repeat="e in ecu_list">
+                                                                                    <!--<a href="#" ng-click="removeEcuRow(e.eid)" class="removeEcuRow"><i class="icofont icofont-ui-close text-c-red"></i></a>-->
+<!--                                                                                    <div class="border-checkbox-section check_pan">                                                                                    
                                                                                         <div class="border-checkbox-group border-checkbox-group-success">
                                                                                             <input class="border-checkbox" type="checkbox" id="checkbox_eu_{{e.eid}}">
                                                                                             <label class="border-checkbox-label" for="checkbox_eu_{{e.eid}}"></label>
                                                                                         </div>
-                                                                                    </div>
+                                                                                    </div>-->
                                                                                     <label>{{e.listitem}} ({{e.description}})</label>
                                                                                     
                                                                                 </div>
@@ -244,7 +242,7 @@
                                     <option value="ecu">ECU</option>
                                 </select>
                             </div>
-                                <div class="" ng-if="data.network != 'signals'">
+                                <div class="" ng-if="data.network !== 'signals'">
                                      <div ng-repeat="data in Demo.data">              
                                         <div class="form-group">
                                         <!--<label for="name">Feature</label>-->
@@ -408,9 +406,10 @@
 
         app.controller('RecordCtrl1',function($scope, $http, $window, $location)
         {
-//            var notification_to;
+            this.data=[];
+            var notification_to;
             $scope.features = [];
-            $scope.list = [];
+//            $scope.list = [];
             $scope.Demo.dt = [];
             $scope.vehicleresults = {};
             $scope.vercompare_results = {};            
@@ -421,25 +420,32 @@
             $scope.showProceed =true;
             $scope.showSubmit =true;
             $scope.data = {};
-
+            $scope.$on('notifyValue', function (event, args) {
+                notification_to = args;
+                $scope.createIVNVersionAjax("submit");
+            });
+            
+            $scope.list = {};
+            
+            result_data_obj = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+            $scope.array_result = result_data_obj;
+            
             network_list = JSON.parse("<s:property value="network_list_obj"/>".replace(/&quot;/g,'"'));
             $scope.cans = network_list.can_list;
             $scope.lin = network_list.lin_list;
             $scope.hw = network_list.hardware_list;
-              
+            
             $scope.signal = [];
               
             $scope.ecu = [];
+            ecu_list = JSON.parse("<s:property value="eculist_result_obj"/>".replace(/&quot;/g,'"'));
+            $scope.ecu_list = ecu_list;
 
-              ecu_list = JSON.parse("<s:property value="eculist_result_obj"/>".replace(/&quot;/g,'"'));
-              $scope.ecu_list = ecu_list;
-
-              signal_list = JSON.parse("<s:property value="signallist_result_obj"/>".replace(/&quot;/g,'"'));
-              $scope.signal_list = signal_list;
-            
-//            var features_list = JSON.parse("<s:property value="featureslist_result_obj"/>".replace(/&quot;/g,'"'));
-//            $scope.features_list = features_list;
-                     
+            signal_list = JSON.parse("<s:property value="signallist_result_obj"/>".replace(/&quot;/g,'"'));
+            $scope.signal_list = signal_list;
+//            alert(JSON.stringify($scope.signal_list));
+//            alert("feature_list  "+JSON.stringify(result_data_obj)+"network_list  "+JSON.stringify(network_list)+" eculist_list  "+JSON.stringify(ecu_list)+" signal_list  "+JSON.stringify(signal_list));
+                    
             $scope.sort = function(keyname)
             {
                 $scope.sortKey = keyname;   //set the sortKey to the param passed
@@ -447,11 +453,12 @@
             }
             
             $scope.add_signal_tab = function(sid)
-            {				
+            {
 		var index = -1;		
 		var comArr = eval( $scope.signal_list );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
+//                    alert(sid+" and "+comArr[i].sid);
                     if( comArr[i].sid === sid ) 
                     {
                         index = i;
@@ -467,11 +474,16 @@
 //                var myEl = angular.element( document.querySelector( idr ) );
 //                myEl.css('display','block');
                 $scope.signal.push({sid:comArr[index].sid,listitem:comArr[index].listitem,description: comArr[index].description})
-		$scope.signal_list.splice( index, 1 );
+                if($scope.list.signal == undefined){
+                    $scope.list.signal = [];
+                }
+                $scope.list.signal.push(comArr[index].sid);
+                $scope.signal_list.splice( index, 1 );
+//                alert(JSON.stringify($scope.list));
             };
             
             $scope.removeSignalRow = function(sid)
-            {				
+            {
 		var index = -1;		
 		var comArr = eval( $scope.signal );
 		for( var i = 0; i < comArr.length; i++ ) 
@@ -485,13 +497,15 @@
 		if( index === -1 ) 
                 {
 			alert( "Something gone wrong" );
-		}
+		} 
                 $scope.signal_list.push({sid:comArr[index].sid,listitem:comArr[index].listitem,description: comArr[index].description})
-		$scope.signal.splice( index, 1 );		
+                $scope.signal.splice( index, 1 );
+                $scope.list.signal.splice(index,1);
+//                alert(JSON.stringify($scope.list));
             };
             
             $scope.add_ecu_tab = function(eid)
-            {				
+            {
 		var index = -1;		
 		var comArr = eval( $scope.ecu_list );
 		for( var i = 0; i < comArr.length; i++ ) 
@@ -512,11 +526,17 @@
 //                myEl.css('display','block');
 
                 $scope.ecu.push({eid:comArr[index].eid,listitem:comArr[index].listitem,description: comArr[index].description})
-		$scope.ecu_list.splice( index, 1 );
+		if($scope.list.ecu == undefined){
+                    $scope.list.ecu = [];
+                }
+                $scope.list.ecu.push(comArr[index].eid);
+                $scope.ecu_list.splice( index, 1 );
+//                alert(JSON.stringify($scope.list));
                 
-            };     
+            };
+            
             $scope.removeEcuRow = function(eid)
-            {				
+            {
 		var index = -1;		
 		var comArr = eval( $scope.ecu);
 		for( var i = 0; i < comArr.length; i++ ) 
@@ -532,9 +552,110 @@
 			alert( "Something gone wrong" );
 		}
                 $scope.ecu_list.push({eid:comArr[index].eid,listitem:comArr[index].listitem,description: comArr[index].description})
-		$scope.ecu.splice( index, 1 );		
+                $scope.ecu.splice( index, 1 );	
+                $scope.list.ecu.splice(index,1);
+//                alert(JSON.stringify($scope.list));
             };
             
+            $scope.SelectNetwork = function()
+            {
+                Object.keys($scope.Demo.data).forEach(function(itm){
+                    alert("!!!!!!! "+itm);
+                    if(itm !== "network") delete $scope.Demo.data[itm];
+                });
+                $scope.Demo.data = [];
+            };
+            
+            $scope.create_ivn_required_attributes = function (event) 
+            {
+                if (!$scope.doSubmit) 
+                {
+                    return;
+                }
+                $scope.doSubmit = false; 
+                var ivn_attribute_data = {};
+                ivn_attribute_data['network'] = $scope.data.network;
+                
+                alert(JSON.stringify($scope.data)+" "+JSON.stringify($scope.Demo.data));
+                if($scope.data.network === "signals")
+                    ivn_attribute_data['ivn_attribute_data'] = $scope.data;
+                else
+                    ivn_attribute_data['ivn_attribute_data'] = $scope.Demo.data;
+//                alert(JSON.stringify(ivn_attribute_data)+" "+JSON.stringify($scope.Demo.data));
+                if(($scope.data.network != "signals" && $scope.Demo.data.length > 0 && $scope.Demo.data[0].name != undefined  && $scope.Demo.data[0].description != undefined)||
+                        ($scope.data.network == "signals" && $scope.data.name != undefined  && $scope.data.description != undefined && $scope.data.alias != undefined))
+                {
+                    alert(JSON.stringify($scope.data)+"   "+JSON.stringify(ivn_attribute_data));
+                    $http({
+                        url : 'create_ivn_required_attributes',
+                        method : "POST",
+                        data : ivn_attribute_data
+                    })
+                   .then(function (data, status, headers, config)
+                    {
+                        result_data_obj = JSON.parse(data.data.result_data_obj.replace(/&quot;/g,'"'));
+                        alert(data.data.maps_object.status+"   "+result_data_obj);
+//                        alert(JSON.stringify(data.data.result_data));
+                        angular.forEach(result_data_obj, function(value, key) {
+                            if($scope.data.network == "can")
+                                $scope.cans.push(value);
+                            else if($scope.data.network == "lin")
+                                $scope.lin.push(value);
+                            else if($scope.data.network == "hardware")
+                                $scope.hw.push(value);
+                            else if($scope.data.network == "ecu"){
+                                if($scope.list.ecu == undefined){
+                                    $scope.list.ecu = [];
+                                }
+                                $scope.list.ecu.push(value.eid);
+                                $scope.ecu.push(value);
+                                $scope.ecu_list = $scope.ecu;
+                            }
+                            else if($scope.data.network == "signals")
+                            {
+                                if($scope.list.signal == undefined)
+                                {
+                                    $scope.list.signal = [];
+                                }
+                                $scope.list.signal.push(value.sid);
+                                $scope.signal.push(value);
+                                $scope.signal_list = $scope.signal;
+                            }
+                        });
+                        alert(JSON.stringify($scope.signal));
+                    });
+                    can = [];
+                    lin = [];
+                    hardware = [];
+                    $scope.data.network="";
+                    $scope.Demo.data=[];
+                    $scope.data=[];
+                    location.reload();
+                    $('#modal-product-form').closeModal();
+                }
+                else
+                {
+                    if($scope.data.network == "signals")
+                        alert("Please fill the name and description and alias");
+                    else
+                        alert("Please fill all the fields");
+                }
+            };
+            
+            var can = [];
+            var lin = [];
+            var hardware = [];
+            $scope.checkboxvalue = function(network_type,network_id)
+            {
+                network_type = eval(network_type);
+                if(network_type.indexOf(network_id) !== -1)
+                    network_type.splice(can.indexOf(network_id), 1);     
+                else
+                    network_type.push(network_id);
+                $scope.data.can = can.toString();
+                $scope.data.lin = lin.toString();
+                $scope.data.hardware = hardware.toString();                              
+            };
             
         });
 

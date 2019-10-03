@@ -5,6 +5,7 @@
  */
 package com_ivn_1A.models.net_sign;
 
+import com.ivn_1A.models.admin.User;
 import com.ivn_1A.models.pdbowner.Featureversion;
 import com.ivn_1A.models.pdbowner.Vehicle;
 import java.io.Serializable;
@@ -14,6 +15,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -33,23 +36,18 @@ public class IVN_Version implements Serializable {
     private Date modified_date;
     private Date created_date;
     private String version_name;
-    private String pdb_manual_comment;
+    private String ivn_manual_comment;
+    private float ivn_reference_version;
+    private String version_type;
     private boolean flag;
     private boolean status;
+    private User created_or_updated_by;
+    private Vehicle vehicleId;
+    private Featureversion featureVersionId;
 
     public IVN_Version() {
     }
 
-    public IVN_Version(float ivn_version, Date modified_date, Date created_date, String version_name, String pdb_manual_comment, boolean flag, boolean status) {
-        this.ivn_version = ivn_version;
-        this.modified_date = modified_date;
-        this.created_date = created_date;
-        this.version_name = version_name;
-        this.pdb_manual_comment = pdb_manual_comment;
-        this.flag = flag;
-        this.status = status;
-    }
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -61,7 +59,7 @@ public class IVN_Version implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "ivn_version", nullable = false, columnDefinition = "Float(10,1)")
+    @Column(name = "ivn_version", nullable = false, columnDefinition = "float(10,1)")
     public float getIvn_version() {
         return ivn_version;
     }
@@ -100,14 +98,32 @@ public class IVN_Version implements Serializable {
     public void setVersion_name(String version_name) {
         this.version_name = version_name;
     }
-    
-    @Column(name = "pdb_manual_comment", columnDefinition ="Text")
-    public String getPdb_manual_comment() {
-        return pdb_manual_comment;
+
+    @Column(name = "ivn_manual_comment", columnDefinition = "Text")
+    public String getIvn_manual_comment() {
+        return ivn_manual_comment;
     }
 
-    public void setPdb_manual_comment(String pdb_manual_comment) {
-        this.pdb_manual_comment = pdb_manual_comment;
+    public void setIvn_manual_comment(String ivn_manual_comment) {
+        this.ivn_manual_comment = ivn_manual_comment;
+    }
+
+    @Column(name = "ivn_reference_version", nullable = false)
+    public float getIvn_reference_version() {
+        return ivn_reference_version;
+    }
+
+    public void setIvn_reference_version(float ivn_reference_version) {
+        this.ivn_reference_version = ivn_reference_version;
+    }
+
+    @Column(name = "version_type", nullable = false)
+    public String getVersion_type() {
+        return version_type;
+    }
+
+    public void setVersion_type(String version_type) {
+        this.version_type = version_type;
     }
 
     @Column(name = "flag", nullable = false, columnDefinition = "TINYINT(1)")
@@ -128,4 +144,33 @@ public class IVN_Version implements Serializable {
         this.status = status;
     }
 
+    @OneToOne
+    @JoinColumn(name = "created_or_updated_by", nullable = false)
+    public User getCreated_or_updated_by() {
+        return created_or_updated_by;
+    }
+
+    public void setCreated_or_updated_by(User created_or_updated_by) {
+        this.created_or_updated_by = created_or_updated_by;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "vehicleId", nullable = false)
+    public Vehicle getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(Vehicle vehicleId) {
+        this.vehicleId = vehicleId;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "featureVersionId", nullable = false)
+    public Featureversion getFeatureVersionId() {
+        return featureVersionId;
+    }
+
+    public void setFeatureVersionId(Featureversion featureVersionId) {
+        this.featureVersionId = featureVersionId;
+    }
 }

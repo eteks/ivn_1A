@@ -9,15 +9,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
-import com.ivn_1A.configs.HibernateUtil;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.configs.VersionType;
 import com.ivn_1A.controllers.notification.NotificationController;
 
-import static com.ivn_1A.controllers.pdbowner.Vehicle_Version_Group.vehicle_Repository;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +22,6 @@ import org.json.simple.JSONObject;
 import com.ivn_1A.models.pdbowner.*;
 import com.opensymphony.xwork2.ActionContext;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +30,6 @@ import javax.persistence.Tuple;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.ServletActionContext;
 //import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.json.simple.parser.ParseException;
 
 /**
@@ -101,7 +93,7 @@ public class Pdbversion_Group {
                 JSONObject fr = new JSONObject();
                 fr.put("fid", fea.getId());
                 fr.put("fea", fea.getFeature_id().getFeature_name());
-                fr.put("domain",fea.getDomain_id().getDomain_name() );
+                fr.put("domain",fea.getDomain_id().getDomain_name());
                 return fr;
             }).forEachOrdered((fr) -> {
                 featureslist_result.add(fr);
@@ -204,7 +196,7 @@ public class Pdbversion_Group {
                         }
                         pdbversion.setPdb_reference_version(Float.valueOf(pdbversion_value.get("pdbversion").get("pdbversion_name").asText()));
                     }
-                }                
+                }
                 System.out.println("version_name"+version_name);
                 System.out.println("prevpdb_id"+prevpdb_id);
                 //To find and store removed id's and new feature'ids 

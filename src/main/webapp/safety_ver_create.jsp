@@ -135,22 +135,13 @@
                     <a class="feature_add_tip modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
                     <div id="modal-comment" class="modal">
                          <div class="modal-content text-left">
-                            <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
-                            <textarea class="col-md-12 m-b-10" ng-model="data.safety_manual_comment"></textarea>
-                            <div ng-if="create_type == true" class="form-radio">
-                                <div class="radio radio-inline">
-                                    <label>
-                                        <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">
-                                        <i class="helper"></i>Major
-                                    </label>
-                                </div>
-                                <div class="radio radio-inline">
-                                    <label>
-                                        <input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">
-                                        <i class="helper"></i>Minor
-                                    </label>
-                                </div>                                                            
-                            </div>
+
+                             <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
+                             <textarea class="col-md-12 m-b-10" ng-model="data.safety_manual_comment"></textarea>
+                             <div ng-if="create_type == true">
+                                 <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">Major
+                                 &nbsp;<input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">Minor
+                             </div>
                              <div class="text-right">
                                  <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createsafetyversion('save')" name="save">Save</button>
                                  <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createsafetyversion('submit')" name="submit">Submit</button>
@@ -179,6 +170,7 @@
                                                         <button class="btn btn-primary parse-sql  float-right" data-target="import_export" data-stmt="false" id="btn-get" data-ctype="safety">Submit</button>                                                        
                                                 </div>
                                             </div>
+                                
                             </div>
                         </div>
              
@@ -298,7 +290,7 @@
                      }
                      $scope.data.pdbversion = $scope.array_result[0];
                      $scope.LoadVehicleModels();
-                     if($scope.data.pdbversion != undefined){
+                     if($scope.data.pdbversion !== undefined){
                         $http({
                             url : 'loadsafetyversion_data',
                             method : "POST",
@@ -664,5 +656,4 @@
     });
     </script>   
 </body>
-
-</html>          
+</html>

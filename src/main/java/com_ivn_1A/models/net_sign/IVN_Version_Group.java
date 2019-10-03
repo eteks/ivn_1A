@@ -28,22 +28,18 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Table(name = "ivnversiongroup")
 public class IVN_Version_Group implements Serializable {
-    
+
     private int id;
     private IVN_Version ivnVersionId;
-    private Vehicle vehicleId;
-    private Featureversion featureVersionId;
-    private String signalsId;
-    private String ecuId;
+    private Signals signalsId;
+    private ECU ecuId;
     private Date created_date;
 
     public IVN_Version_Group() {
     }
 
-    public IVN_Version_Group(IVN_Version ivnVersionId, Vehicle vehicleId, Featureversion featureVersionId, String signalsId, String ecuId, Date created_date) {
+    public IVN_Version_Group(IVN_Version ivnVersionId, Signals signalsId, ECU ecuId, Date created_date) {
         this.ivnVersionId = ivnVersionId;
-        this.vehicleId = vehicleId;
-        this.featureVersionId = featureVersionId;
         this.signalsId = signalsId;
         this.ecuId = ecuId;
         this.created_date = created_date;
@@ -69,42 +65,24 @@ public class IVN_Version_Group implements Serializable {
     public void setIvnVersionId(IVN_Version ivnVersionId) {
         this.ivnVersionId = ivnVersionId;
     }
-    
-    @OneToOne
-    @JoinColumn(name = "vehicleId", nullable = false)
-    public Vehicle getVehicleId() {
-        return vehicleId;
-    }
-
-    public void setVehicleId(Vehicle vehicleId) {
-        this.vehicleId = vehicleId;
-    }
 
     @OneToOne
-    @JoinColumn(name = "featureVersionId", nullable = false)
-    public Featureversion getFeatureVersionId() {
-        return featureVersionId;
-    }
-
-    public void setFeatureVersionId(Featureversion featureVersionId) {
-        this.featureVersionId = featureVersionId;
-    }
-    
-    @Column(name = "signalsId", unique = true, nullable = false)
-    public String getSignalsId() {
+    @JoinColumn(name = "signalsId")
+    public Signals getSignalsId() {
         return signalsId;
     }
 
-    public void setSignalsId(String signalsId) {
+    public void setSignalsId(Signals signalsId) {
         this.signalsId = signalsId;
     }
 
-    @Column(name = "ecuId", unique = true, nullable = false)
-    public String getEcuId() {
+    @OneToOne
+    @JoinColumn(name = "ecuId")
+    public ECU getEcuId() {
         return ecuId;
     }
 
-    public void setEcuId(String ecuId) {
+    public void setEcuId(ECU ecuId) {
         this.ecuId = ecuId;
     }
 
@@ -119,10 +97,4 @@ public class IVN_Version_Group implements Serializable {
         this.created_date = created_date;
     }
 
-    @Override
-    public String toString() {
-        return "IVN_Version_Group{" + "id=" + id + ", ivnVersionId=" + ivnVersionId + ", vehicleId=" + vehicleId + ", featureVersionId=" + featureVersionId + ", signalsId=" + signalsId + ", ecuId=" + ecuId + ", created_date=" + created_date + '}';
-    }
-    
-    
 }
