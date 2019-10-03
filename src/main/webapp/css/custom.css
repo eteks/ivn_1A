@@ -853,3 +853,58 @@ a
 {
     
 }
+.acb_space_drop .panel
+{
+    border:none;
+}
+
+.acb_space_drop .drop_list_box
+{
+    max-width: 260px;
+    vertical-align: middle;
+}
+.acb_space_drop .signal_slot
+{
+    
+}
+.acb_space_drop .ip
+{
+    /*background: rgba(5,207,179,0.5);*/
+}
+.acb_space_drop .ip .panel-heading
+{
+    background:#a3ffff;
+}
+.acb_space_drop .ecu_slot
+{
+    /*background: rgba(255,120,20,0.5);*/
+}
+.acb_space_drop .ecu_slot .panel-heading
+{
+    background:#f3a8a0;
+}
+.acb_space_drop .op
+{
+     /*background: rgba(5,207,179,0.5);*/
+}
+.acb_space_drop .op .panel-heading
+{
+    background:#a3ffff;
+}
+.acb_space_drop .ecu_list
+{
+    
+}
+
+.acb_space_drop .nestedDemo .dropzone li
+{
+    
+}
+.feat_prop_save
+{
+    
+}
+.background-signal > ul
+  {
+      /*display:none;*/
+  }  

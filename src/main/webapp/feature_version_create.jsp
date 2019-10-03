@@ -141,10 +141,20 @@
 
                              <h5 class="text-c-red m-b-10">Comment <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
                              <textarea class="col-md-12 m-b-10" ng-model="data.featureversion_manual_comment"></textarea>
-                             <div ng-if="create_type == true">
-                                 <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">Major
-                                 &nbsp;<input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">Minor
-                             </div>
+                            <div ng-if="create_type == true" class="form-radio">
+                                <div class="radio radio-inline">
+                                    <label>
+                                        <input type="radio" ng-click="" ng-model="data.version_change" value="major" class="radio_button">
+                                        <i class="helper"></i>Major
+                                    </label>
+                                </div>
+                                <div class="radio radio-inline">
+                                    <label>
+                                        <input type="radio" ng-click="" ng-model="data.version_change" value="minor" class="radio_button">
+                                        <i class="helper"></i>Minor
+                                    </label>
+                                </div>                                                            
+                            </div>
                              <div class="text-right">
                                  <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createfeatureversion('save')" name="save">Save</button>
                                  <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createfeatureversion('submit')" name="submit">Submit</button>
