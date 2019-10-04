@@ -12,26 +12,24 @@ import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.configs.VersionType;
 import com.ivn_1A.controllers.notification.NotificationController;
-import com.ivn_1A.models.pdbowner.Featureversion;
 import com.ivn_1A.models.pdbowner.FeatureversionDB;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
-import com.ivn_1A.models.pdbowner.SafetyLegDB;
-import com_ivn_1A.models.net_sign.ECU;
-import com_ivn_1A.models.net_sign.IVNEngineerDB;
-import static com_ivn_1A.models.net_sign.IVNEngineerDB.getSignalTagsByName;
-import com_ivn_1A.models.net_sign.IVN_Version;
-import com_ivn_1A.models.net_sign.IVN_Version_Group;
-import com_ivn_1A.models.net_sign.Network;
-import com_ivn_1A.models.net_sign.SignalTags;
-import com_ivn_1A.models.net_sign.SignalTags_Mapping;
-import com_ivn_1A.models.net_sign.Signals;
+import com.ivn_1A.models.net_sign.ECU;
+import com.ivn_1A.models.net_sign.IVNEngineerDB;
+import static com.ivn_1A.models.net_sign.IVNEngineerDB.getSignalTagsByName;
+import com.ivn_1A.models.net_sign.IVN_Version;
+import com.ivn_1A.models.net_sign.IVN_Version_Group;
+import com.ivn_1A.models.net_sign.Network;
+import com.ivn_1A.models.net_sign.SignalTags;
+import com.ivn_1A.models.net_sign.SignalTags_Mapping;
+import com.ivn_1A.models.net_sign.Signals;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Tuple;
-import org.apache.struts2.ServletActionContext;
+
 import org.json.simple.JSONObject;
 
 /**
