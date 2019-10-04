@@ -12,11 +12,9 @@ import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.configs.VersionType;
 import com.ivn_1A.controllers.notification.NotificationController;
-import com.ivn_1A.models.pdbowner.Featureversion;
+import com.ivn_1A.models.net_sign.ECU;
 import com.ivn_1A.models.pdbowner.FeatureversionDB;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
-import com.ivn_1A.models.pdbowner.SafetyLegDB;
-import com.ivn_1A.models.net_sign.ECU;
 import com.ivn_1A.models.net_sign.IVNEngineerDB;
 import static com.ivn_1A.models.net_sign.IVNEngineerDB.getSignalTagsByName;
 import com.ivn_1A.models.net_sign.IVN_Version;
@@ -31,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Tuple;
-import org.apache.struts2.ServletActionContext;
+
 import org.json.simple.JSONObject;
 
 /**

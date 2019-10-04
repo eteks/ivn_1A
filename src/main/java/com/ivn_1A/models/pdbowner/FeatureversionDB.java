@@ -6,7 +6,6 @@
 package com.ivn_1A.models.pdbowner;
 
 import com.ivn_1A.configs.HibernateUtil;
-import com.ivn_1A.models.net_sign.Network;
 import java.util.List;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
@@ -15,7 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 /**
  *

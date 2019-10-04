@@ -5,8 +5,6 @@
  */
 package com.ivn_1A.models.net_sign;
 
-import com.ivn_1A.models.pdbowner.Featureversion;
-import com.ivn_1A.models.pdbowner.Vehicle;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
