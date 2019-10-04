@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com_ivn_1A.models.task;
+package com.ivn_1A.models.task;
 
 import com.ivn_1A.models.pdbowner.Vehicle;
 import java.io.Serializable;

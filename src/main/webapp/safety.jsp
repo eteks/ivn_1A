@@ -40,7 +40,7 @@
                                         </div>
                                        
                                        <div id="accordion" role="tablist" aria-multiselectable="true">
-                                            <div class="accordion-panel" ng-if="task.pdb.completion_status == 'yes'">
+                                            <div class="accordion-panel" ng-if="task.pdb.completion_status == true">
                                                 <div class="accordion-heading" role="tab" id="headingOne">
                                                     <h3 class="card-title accordion-title">
                                                         <a class="accordion-msg text-success" data-toggle="collapse"

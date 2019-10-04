@@ -3,14 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com_ivn_1A.models.acbowner;
+package com.ivn_1A.models.net_sign;
 
 import com.ivn_1A.models.admin.User;
-import com.ivn_1A.models.pdbowner.Featureversion;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -22,20 +23,33 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  *
- * @author ets-poc
+ * @author ETS06
  */
 @Entity
-@Table(name = "featureversion_tasks")
-public class Featureversion_Tasks implements Serializable {    
+@Table(name = "signaltags")
+public class SignalTags implements Serializable {
+
     private int id;
-    private Featureversion featureversion_id;
-    private boolean approval_status;  
-    private boolean completion_status;  
+    private String tagname;
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
-    
+    private boolean status;
+
+    public SignalTags() {
+    }
+
+    public SignalTags(String tagname, Date modified_date, Date created_date, User created_or_updated_by, boolean status) {
+        this.tagname = tagname;
+        this.modified_date = modified_date;
+        this.created_date = created_date;
+        this.created_or_updated_by = created_or_updated_by;
+        this.status = status;
+    }
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
     public int getId() {
         return id;
     }
@@ -43,31 +57,16 @@ public class Featureversion_Tasks implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-    @OneToOne
-    @JoinColumn(name = "featureversion_id", nullable = false)
-    public Featureversion getFeatureversion_id() {
-        return featureversion_id;
+
+    @Column(name = "tagname", unique = true, nullable = false)
+    public String getTagname() {
+        return tagname;
     }
 
-    public void setFeatureversion_id(Featureversion featureversion_id) {
-        this.featureversion_id = featureversion_id;
-    }
-    @Column(name = "approval_status", nullable = false, columnDefinition = "TINYINT(1) default 1")
-    public boolean getApproval_status() {
-        return approval_status;
+    public void setTagname(String tagname) {
+        this.tagname = tagname;
     }
 
-    public void setApproval_status(boolean approval_status) {
-        this.approval_status = approval_status;
-    }
-    @Column(name = "completion_status", nullable = false, columnDefinition = "TINYINT(1) default 1")
-    public boolean getCompletion_status() {
-        return completion_status;
-    }
-
-    public void setCompletion_status(boolean completion_status) {
-        this.completion_status = completion_status;
-    }
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modified_date", nullable = false)
@@ -78,6 +77,7 @@ public class Featureversion_Tasks implements Serializable {
     public void setModified_date(Date modified_date) {
         this.modified_date = modified_date;
     }
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = false)
@@ -88,6 +88,7 @@ public class Featureversion_Tasks implements Serializable {
     public void setCreated_date(Date created_date) {
         this.created_date = created_date;
     }
+    
     @OneToOne
     @JoinColumn(name = "created_or_updated_by", nullable = false)
     public User getCreated_or_updated_by() {
@@ -96,5 +97,20 @@ public class Featureversion_Tasks implements Serializable {
 
     public void setCreated_or_updated_by(User created_or_updated_by) {
         this.created_or_updated_by = created_or_updated_by;
-    }   
+    }
+
+    @Column(name = "status", nullable = false, columnDefinition = "TINYINT(1) default 1")
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "SignalTags{" + "id=" + id + ", tagname=" + tagname + ", modified_date=" + modified_date + ", created_date=" + created_date + ", created_or_updated_by=" + created_or_updated_by + ", status=" + status + '}';
+    }
+    
 }

@@ -6,7 +6,7 @@
 package com.ivn_1A.models.pdbowner;
 
 import com.ivn_1A.configs.HibernateUtil;
-import com_ivn_1A.models.net_sign.Network;
+import com.ivn_1A.models.net_sign.Network;
 import java.util.List;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;

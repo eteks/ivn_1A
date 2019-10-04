@@ -500,10 +500,18 @@
 //                                                };
                       alert(response.data.maps_string.status);
                       var vercompare_res = response.data.maps_object.pdb_previous_data_result;
-                      var st = "";
                       if(vercompare_res != undefined) {
-                            var pdbv = JSON.parse(response.data.maps_object.pdb_previous_data_result.pdb_version.replace(/&quot;/g,'"'));
-                            var pdbvg = JSON.parse(response.data.maps_object.pdb_previous_data_result.pdb_version_group.replace(/&quot;/g,'"'));
+                            
+                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
+                            alert(JSON.stringify($scope.vercompare_results));
+                      } else {
+                            alert("No any previous version found to compare");
+                      }
+                      $('#modal-comment').closeModal();
+                      if(response.data.maps_string.status_code == "1") {
+                          
+                            var pdbv = JSON.parse(response.data.maps_string.pdb_version.replace(/&quot;/g,'"'));
+                            var pdbvg = JSON.parse(response.data.maps_string.pdb_version_group.replace(/&quot;/g,'"'));
                             pdbv["froms"] = "PDB";
                             alert("pdbv "+ JSON.stringify(pdbv) +" pdbvg "+ JSON.stringify(pdbvg));
 //                            alert("pdbv "+ JSON.stringify(pdbv) +" fro "+ JSON.stringify(pdbvg.froms));
@@ -520,15 +528,8 @@
                                     alert(JSON.stringify(response.data.maps_object));
                                 }
                             });
-                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
-                            alert(JSON.stringify($scope.vercompare_results));
-                      }
-                      else{
-                            alert("No any previous version found to compare");
-                      }
-                      $('#modal-comment').closeModal();
-                      if(response.data.maps_string.status_code == "1" && st != "Tasks_Group Work is Done")
                           $window.open("pdb_listing.action","_self");
+                      }
     //                                    $window.alert(JSON.stringify(data));
     //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
     //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);

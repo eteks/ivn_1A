@@ -244,11 +244,13 @@ public class Pdbversion_Group {
                     pdb_previous_data_result.put("added_models", pdb_previous_data.get("added_models"));
                     pdb_previous_data_result.put("current_version", String.format("%.1f", curpdb_id.getPdb_versionname()));
                     pdb_previous_data_result.put("reference_version", pdbversion_value.get("pdbversion").get("pdbversion_name").asDouble());
-                    pdb_previous_data_result.put("pdb_version", mapper.writeValueAsString(curpdb_id));
-                    pdb_previous_data_result.put("pdb_version_group", mapper.writeValueAsString(pdbversion_groups));
                     
                     maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
                 }
+                
+                maps_string.put("pdb_version", mapper.writeValueAsString(curpdb_id));
+                maps_string.put("pdb_version_group", mapper.writeValueAsString(pdbversion_groups));
+                
                 if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary PDB Version Created Successfully");
                 } else {

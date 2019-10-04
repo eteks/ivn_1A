@@ -232,7 +232,8 @@
 //                            };
                             $scope.task_accept = function()
                             {
-                                $scope.task.legislation.acceptance_status="yes";
+                                alert(JSON.stringify($scope.task));
+//                                $scope.task.legislation.acceptance_status="yes";
                             }
                             $scope.task_reject = function()
                             {
