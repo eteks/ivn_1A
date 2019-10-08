@@ -76,6 +76,45 @@ public class TasksController {
         return "success";
     }
 
+    public String createFirstLevelTask() {
+
+        try {
+
+            System.out.println("createFirstLevelTask");
+            final ObjectMapper mapper = new ObjectMapper();
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+
+            int t_id = readValue.get("t_id").asInt();
+            int tg_id = readValue.get("tg_id").asInt();
+            int u_id = readValue.get("uid").asInt();
+            String froms = readValue.get("froms").asText();
+
+            Tasks tasks = TasksDB.getTasksById(t_id);
+            if (tasks != null) {
+                User user = PDBOwnerDB.getUser(1);
+                String acceptedBy = user.getUsername() + "(" + froms + ")";
+                Tasks_Group tg = TasksDB.insertTasks_Group(new Tasks_Group(
+                        tasks, 0, "0.0", true, acceptedBy, new Date(), false,
+                        "none", new Date(), user, froms, VersionType.Safetyversion.name())
+                );
+
+                if (tg != null) {
+
+                    maps_object.put("success", "Accepted is Done");
+                } else {
+                    maps_object.put("failed", "Accepted is Failed");
+                }
+            } else {
+                maps_object.put("failed", "Accepted init is Failed");
+            }
+        } catch (Exception e) {
+            System.err.println("Error in \"TasksController\" \'getTasks\' : " + e);
+            maps_string.put("error", "Error in \"TasksController\" \'getTasks\' : " + e);
+        }
+        return "success";
+    }
+
     public String getTasks() {
 
         try {
@@ -99,6 +138,8 @@ public class TasksController {
                     column.put("acceptance_status", tg.isAccepted_status());
                     column.put("completion_status", tg.isCompleted_status());
                     column.put("completion_date", tg.getCompleted_date());
+                    column.put("task_id", tg.getTask_id().getId());
+                    column.put("tg_id", tg.getId());
 
                     columns.put("pdb", column);
                 } else if (tg.getTask_id().getCreated_name().equals(VersionType.Legislationversion.name())) {
@@ -111,6 +152,8 @@ public class TasksController {
                     column.put("acceptance_status", tg.isAccepted_status());
                     column.put("completion_status", tg.isCompleted_status());
                     column.put("completion_date", tg.getCompleted_date());
+                    column.put("task_id", tg.getTask_id().getId());
+                    column.put("tg_id", tg.getId());
 
                     columns.put("legislation", column);
                 } else if (tg.getTask_id().getCreated_name().equals(VersionType.Safetyversion.name())) {
@@ -123,6 +166,8 @@ public class TasksController {
                     column.put("acceptance_status", tg.isAccepted_status());
                     column.put("completion_status", tg.isCompleted_status());
                     column.put("completion_date", tg.getCompleted_date());
+                    column.put("task_id", tg.getTask_id().getId());
+                    column.put("tg_id", tg.getId());
 
                     columns.put("safety", column);
                 } else if (tg.getTask_id().getCreated_name().equals(VersionType.Featureversion.name())) {
@@ -135,6 +180,8 @@ public class TasksController {
                     column.put("acceptance_status", tg.isAccepted_status());
                     column.put("completion_status", tg.isCompleted_status());
                     column.put("completion_date", tg.getCompleted_date());
+                    column.put("task_id", tg.getTask_id().getId());
+                    column.put("tg_id", tg.getId());
 
                     columns.put("feature", column);
                 } else if (tg.getTask_id().getCreated_name().equals(VersionType.IVN_Version.name())) {
@@ -147,6 +194,8 @@ public class TasksController {
                     column.put("acceptance_status", tg.isAccepted_status());
                     column.put("completion_status", tg.isCompleted_status());
                     column.put("completion_date", tg.getCompleted_date());
+                    column.put("task_id", tg.getTask_id().getId());
+                    column.put("tg_id", tg.getId());
 
                     columns.put("ivn", column);
                 } else {

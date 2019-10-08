@@ -67,6 +67,29 @@ public class TasksDB {
         }
     }
 
+    //Tasks Data by id
+    public static Tasks getTasksById(int t_id) {
+        try {
+            System.err.println("getTasksByVehicleId");
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery<Tasks> criteriaQuery = criteriaBuilder.createQuery(Tasks.class);
+
+            Root<Tasks> tasksRoot = criteriaQuery.from(Tasks.class);
+            criteriaQuery.where(criteriaBuilder.equal(tasksRoot.get("id"), t_id));
+            TypedQuery<Tasks> dfm_result = s.createQuery(criteriaQuery);
+
+            tx.commit();
+            s.clear();
+            return dfm_result.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Error in \"TasksDB\" \'getTasksByVehicleId\' : " + e);
+            return null;
+        }
+    }
+
     //Tasks_Group Data insertion
     public static Tasks_Group insertTasks_Group(Tasks_Group tasks_Group) {
         try {

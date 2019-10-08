@@ -57,7 +57,9 @@
                                                         <p><span>Created Date</span>: {{t.pdb.completion_date}} </p>
                                                         <p><span>Created By</span>: {{t.pdb.created_by}} </p>
                                                         <div class="text-center">
-                                                            <a href="#" ng-click="task_accept()" class="btn-round btn btn-primary">Accept</a>&nbsp;&nbsp;
+                                                            <input type="hidden" ng-model="t_id" value="{{t.pdb.task_id}}">
+                                                            <input type="hidden" ng-model="t_id" value="{{t.pdb.tg_id}}">
+                                                            <a href="#" ng-click="task_accept(t.pdb.task_id, t.pdb.tg_id)" class="btn-round btn btn-primary">Accept</a>&nbsp;&nbsp;
                                                             <a href="#" ng-click="task_reject()" class="btn-round btn btn-danger">Reject</a>
                                                         </div>
                                                         <p><span>Status</span>: 
@@ -233,10 +235,28 @@
 //                                        completion_date: "2019-03-12 10:03:03"
 //                                    }
 //                            };
-                            $scope.task_accept = function()
+                            $scope.task_accept = function(t_id, tg_id)
                             {
-                                alert(JSON.stringify('${sessionScope.user.username}'));
-//                                $scope.task.legislation.acceptance_status="yes";
+                                alert(tg_id);
+                                var data = {};
+                                data['t_id'] = t_id;
+                                data['tg_id'] = tg_id;
+                                data['username'] = '${sessionScope.user.username}';
+                                data['uid'] = '${sessionScope.user.id}';
+                                data['froms'] = 'Legslationversion';
+                                alert(JSON.stringify(data));
+                                $http({
+                                    url: 'createFirstLevelTask',
+                                    method: "POST",
+                                    data: data,
+                                }).then(function (response, status, headers, config){
+
+                                    if(response.data.maps_string.success){
+                                        $window.alert(response.data.maps_string.success);
+                                    } else {
+                                        $window.alert(response.data.maps_string);
+                                    }
+                                });
                             }
                             $scope.task_reject = function()
                             {
