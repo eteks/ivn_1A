@@ -6,15 +6,11 @@
 package com.ivn_1A.models.task;
 
 import com.ivn_1A.models.pdbowner.Vehicle;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import java.util.Date;
+import javax.persistence.*;
 
 /**
  *
@@ -28,14 +24,16 @@ public class Tasks implements Serializable {
     private String task_name;
     private Vehicle vehicle_id;
     private String created_name;
+    private Date created_date;
 
     public Tasks() {
     }
 
-    public Tasks(String task_name, Vehicle vehicle_id, String created_name) {
+    public Tasks(String task_name, Vehicle vehicle_id, String created_name, Date created_date) {
         this.task_name = task_name;
         this.vehicle_id = vehicle_id;
         this.created_name = created_name;
+        this.created_date = created_date;
     }
 
     @Id
@@ -76,6 +74,15 @@ public class Tasks implements Serializable {
     public void setCreated_name(String created_name) {
         this.created_name = created_name;
     }
-    
-    
+
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date", nullable = false)
+    public Date getCreated_date() {
+        return created_date;
+    }
+
+    public void setCreated_date(Date created_date) {
+        this.created_date = created_date;
+    }
 }

@@ -6,16 +6,17 @@
 package com.ivn_1A.models.task;
 
 import com.ivn_1A.configs.HibernateUtil;
+
 import java.util.List;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 /**
- *
  * @author ETS06
  */
 public class TasksDB {
@@ -87,8 +88,8 @@ public class TasksDB {
             System.err.println("Error in \"TasksDB\" \'insertTasks_Group\' : " + e);
             return null;
         }
-    }    
-    
+    }
+
     //Tasks_Group Data by Tasks id
     public static Tasks_Group getTasks_GroupByTasksId(Tasks_Group tasks_Group) {
         try {
@@ -111,12 +112,12 @@ public class TasksDB {
             return null;
         }
     }
-    
+
     //Tasks_Group Data
-    public static List<Tasks_Group> getTasks() {
-        
+    public static List<Tasks_Group> getTasks(String from) {
+
         try {
-            System.err.println("getTasks_GroupByTasksId");
+            System.err.println("getTasks");
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
 
@@ -124,7 +125,7 @@ public class TasksDB {
             CriteriaQuery<Tasks_Group> criteriaQuery = criteriaBuilder.createQuery(Tasks_Group.class);
 
             Root<Tasks_Group> tgRoot = criteriaQuery.from(Tasks_Group.class);
-            criteriaQuery.distinct(true);
+            criteriaQuery.where(criteriaBuilder.equal(tgRoot.get("receiver_id"), from)).distinct(true);
             TypedQuery<Tasks_Group> dfm_result = s.createQuery(criteriaQuery);
 
             tx.commit();
@@ -135,5 +136,5 @@ public class TasksDB {
             return null;
         }
     }
-    
+
 }

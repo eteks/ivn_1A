@@ -36,11 +36,12 @@
                                <div class="card-block marketing-card p-t-20 row">
                                    <div class="col-md-12">
                                         <div class="card-header">
-                                            <h5 class="card-header-text">Task</h5>
+                                            <h5 class="card-header-text">Task </h5>
+<%--                                            <h5 class="card-header-text">Task ${sessionScope.user.username}</h5>--%>
                                         </div>
                                        
-                                       <div id="accordion" role="tablist" aria-multiselectable="true">
-                                            <div class="accordion-panel" ng-if="task.pdb.completion_status == true">
+                                       <div id="accordion" role="tablist" aria-multiselectable="true" ng-repeat="t in task" >
+                                            <div class="accordion-panel" ng-if="t.pdb.completion_status == true">
                                                 <div class="accordion-heading" role="tab" id="headingOne">
                                                     <h3 class="card-title accordion-title">
                                                         <a class="accordion-msg text-success" data-toggle="collapse"
@@ -52,17 +53,17 @@
                                                 </div>
                                                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                                     <div class="accordion-content accordion-desc task_content">
-                                                        <p><span>Name</span>: {{task.pdb.name}} </p>
-                                                        <p><span>Created Date</span>: {{task.pdb.created_date}} </p>
-                                                        <p><span>Created By</span>: {{task.pdb.created_by}} </p>
+                                                        <p><span>Name</span>: {{t.pdb.name}} </p>
+                                                        <p><span>Created Date</span>: {{t.pdb.completion_date}} </p>
+                                                        <p><span>Created By</span>: {{t.pdb.created_by}} </p>
                                                         <div class="text-center">
                                                             <a href="#" ng-click="task_accept()" class="btn-round btn btn-primary">Accept</a>&nbsp;&nbsp;
                                                             <a href="#" ng-click="task_reject()" class="btn-round btn btn-danger">Reject</a>
                                                         </div>
                                                         <p><span>Status</span>: 
-                                                            <label ng-if="task.legislation.acceptance_status == 'yes'">Pending</label>
-                                                            <label ng-if="task.legislation.acceptance_status == 'no'">rejected</label>
-                                                            <label ng-if="task.legislation.completion_status == 'yes'">Completed</label>
+                                                            <label ng-if="t.legislation.acceptance_status == 'yes'">Pending</label>
+                                                            <label ng-if="t.legislation.acceptance_status == 'no'">rejected</label>
+                                                            <label ng-if="t.legislation.completion_status == 'yes'">Completed</label>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -135,7 +136,8 @@
 //        var app = angular.module('angularTable', []);
 
         app.controller('MyCtrl',function($scope, $http, $window, $location, $element, $rootScope)
-        {      
+        {
+            $scope.task = [];
 //            alert("MyCtrl");
 //            $scope.getAllCount = function()
 //            {
@@ -150,13 +152,14 @@
             $http({
                 url: 'getTasks',
                 method: "POST",
-                data: {"froms":"leg"},
+                data: {"froms":"Legislationversion"},
             }).then(function (response, status, headers, config){
                 if(response.data.maps_string.success){
-                    $window.alert(JSON.stringify(response.data.maps_object));
-                    $window.alert(JSON.stringify(response.data.maps_object.tasks));
-                    console.log(JSON.stringify(response.data.maps_object.tasks))
-                    $scope.task = response.data.maps_object.tasks;
+                    // $window.alert(JSON.stringify(response.data.maps_object));
+                    // $window.alert(JSON.stringify(response.data.maps_object.tasks));
+                    // console.log(JSON.stringify(response.data.maps_object.tasks))
+                    $scope.task = response.data.list_object;
+                    $window.alert(JSON.stringify($scope.task));
 //                            $window.document.getElementById('model').focus();
                 } else {
                     $window.alert(JSON.stringify(response.data.maps_string));
@@ -232,7 +235,7 @@
 //                            };
                             $scope.task_accept = function()
                             {
-                                alert(JSON.stringify($scope.task));
+                                alert(JSON.stringify('${sessionScope.user.username}'));
 //                                $scope.task.legislation.acceptance_status="yes";
                             }
                             $scope.task_reject = function()

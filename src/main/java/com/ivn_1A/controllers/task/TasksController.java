@@ -15,6 +15,7 @@ import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.task.Tasks;
 import com.ivn_1A.models.task.TasksDB;
 import com.ivn_1A.models.task.Tasks_Group;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,7 +24,6 @@ import java.util.Map;
 import javax.persistence.Tuple;
 
 /**
- *
  * @author ETS06
  */
 public class TasksController {
@@ -45,7 +45,7 @@ public class TasksController {
             Map<String, Object> obj = new HashMap<>();
             JsonNode pdbv = (JsonNode) readValue.get("pdbv");
 
-            Tasks tasks = TasksDB.insertTasks(new Tasks("myTask", PDBOwnerDB.getVehicle(pdbv.get("vehicle_id").get("id").asInt()), VersionType.Pdbversion.name()));
+            Tasks tasks = TasksDB.insertTasks(new Tasks("myTask", PDBOwnerDB.getVehicle(pdbv.get("vehicle_id").get("id").asInt()), VersionType.Pdbversion.name(), new Date()));
             if (tasks != null) {
 
                 obj.put("pdbv", tasks);
@@ -54,8 +54,8 @@ public class TasksController {
                 String completedBy = user.getUsername() + "(" + pdbv.get("froms") + ")";
                 String version = pdbv.get("froms").asText() + " version " + pdbv.get("pdb_versionname").asText();
                 Tasks_Group tg = TasksDB.insertTasks_Group(new Tasks_Group(
-                        tasks, pdbv.get("id").asInt(), version, true, acceptedBy, true,
-                        completedBy, new Date(), new Date(), user, pdbv.get("froms").asText(), VersionType.Legislationversion.name())
+                        tasks, pdbv.get("id").asInt(), version, true, acceptedBy, new Date(), true,
+                        completedBy, new Date(), user, pdbv.get("froms").asText(), VersionType.Legislationversion.name())
                 );
 
                 if (tg != null) {
@@ -79,81 +79,83 @@ public class TasksController {
     public String getTasks() {
 
         try {
-            List<Tasks_Group> list = TasksDB.getTasks();
+
+            final ObjectMapper mapper = new ObjectMapper();
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            String froms = readValue.get("froms").asText();
+            System.out.println("Froms__________________________" + froms);
+            List<Tasks_Group> list = TasksDB.getTasks(froms);
             list.stream().map((tg) -> {
                 Map<String, Object> columns = new HashMap<>();
-                
+
                 if (tg.getTask_id().getCreated_name().equals(VersionType.Pdbversion.name())) {
 
                     Map<String, Object> column = new HashMap<>();
                     column.put("name", tg.getVersion_name());
-                    column.put("created_date", tg.getCreated_date());
-                    column.put("accepted_date", tg.getModified_date());
+                    column.put("accepted_date", tg.getAccepted_date());
                     column.put("created_by", tg.getCreated_or_updated_by().getUsername());
                     column.put("accepted_by", tg.getCreated_or_updated_by().getUsername());
                     column.put("acceptance_status", tg.isAccepted_status());
                     column.put("completion_status", tg.isCompleted_status());
-                    column.put("completion_date", tg.getModified_date());
-                    
+                    column.put("completion_date", tg.getCompleted_date());
+
                     columns.put("pdb", column);
                 } else if (tg.getTask_id().getCreated_name().equals(VersionType.Legislationversion.name())) {
 
                     Map<String, Object> column = new HashMap<>();
                     column.put("name", tg.getVersion_name());
-                    column.put("created_date", tg.getCreated_date());
-                    column.put("accepted_date", tg.getModified_date());
+                    column.put("accepted_date", tg.getAccepted_date());
                     column.put("created_by", tg.getCreated_or_updated_by().getUsername());
                     column.put("accepted_by", tg.getCreated_or_updated_by().getUsername());
                     column.put("acceptance_status", tg.isAccepted_status());
                     column.put("completion_status", tg.isCompleted_status());
-                    column.put("completion_date", tg.getModified_date());
-                    
+                    column.put("completion_date", tg.getCompleted_date());
+
                     columns.put("legislation", column);
                 } else if (tg.getTask_id().getCreated_name().equals(VersionType.Safetyversion.name())) {
 
                     Map<String, Object> column = new HashMap<>();
                     column.put("name", tg.getVersion_name());
-                    column.put("created_date", tg.getCreated_date());
-                    column.put("accepted_date", tg.getModified_date());
+                    column.put("accepted_date", tg.getAccepted_date());
                     column.put("created_by", tg.getCreated_or_updated_by().getUsername());
                     column.put("accepted_by", tg.getCreated_or_updated_by().getUsername());
                     column.put("acceptance_status", tg.isAccepted_status());
                     column.put("completion_status", tg.isCompleted_status());
-                    column.put("completion_date", tg.getModified_date());
-                    
+                    column.put("completion_date", tg.getCompleted_date());
+
                     columns.put("safety", column);
                 } else if (tg.getTask_id().getCreated_name().equals(VersionType.Featureversion.name())) {
 
                     Map<String, Object> column = new HashMap<>();
                     column.put("name", tg.getVersion_name());
-                    column.put("created_date", tg.getCreated_date());
-                    column.put("accepted_date", tg.getModified_date());
+                    column.put("accepted_date", tg.getAccepted_date());
                     column.put("created_by", tg.getCreated_or_updated_by().getUsername());
                     column.put("accepted_by", tg.getCreated_or_updated_by().getUsername());
                     column.put("acceptance_status", tg.isAccepted_status());
                     column.put("completion_status", tg.isCompleted_status());
-                    column.put("completion_date", tg.getModified_date());
-                    
+                    column.put("completion_date", tg.getCompleted_date());
+
                     columns.put("feature", column);
                 } else if (tg.getTask_id().getCreated_name().equals(VersionType.IVN_Version.name())) {
 
                     Map<String, Object> column = new HashMap<>();
                     column.put("name", tg.getVersion_name());
-                    column.put("created_date", tg.getCreated_date());
-                    column.put("accepted_date", tg.getModified_date());
+                    column.put("accepted_date", tg.getAccepted_date());
                     column.put("created_by", tg.getCreated_or_updated_by().getUsername());
                     column.put("accepted_by", tg.getCreated_or_updated_by().getUsername());
                     column.put("acceptance_status", tg.isAccepted_status());
                     column.put("completion_status", tg.isCompleted_status());
-                    column.put("completion_date", tg.getModified_date());
-                    
+                    column.put("completion_date", tg.getCompleted_date());
+
                     columns.put("ivn", column);
                 } else {
                     columns.put("none", "Empty");
                 }
                 return columns;
             }).map((columns) -> {
-                maps_object.put("tasks", columns);
+                list_object.add(columns);
+//                maps_object.put("tasks", columns);
                 return columns;
             }).forEachOrdered((columns) -> {
                 System.out.println("colums" + columns);

@@ -34,10 +34,10 @@ public class Tasks_Group implements Serializable {
     private String version_name;
     private boolean accepted_status;
     private String accepted_by;
+    private Date accepted_date;
     private boolean completed_status;
     private String completed_by;
-    private Date created_date;
-    private Date modified_date;
+    private Date completed_date;
     private User created_or_updated_by;
     private String sender_id;
     private String receiver_id;
@@ -45,16 +45,16 @@ public class Tasks_Group implements Serializable {
     public Tasks_Group() {
     }
 
-    public Tasks_Group(Tasks task_id, int version_id, String version_name, boolean accepted_status, String accepted_by, boolean completed_status, String completed_by, Date created_date, Date modified_date, User created_or_updated_by, String sender_id, String receiver_id) {
+    public Tasks_Group(Tasks task_id, int version_id, String version_name, boolean accepted_status, String accepted_by, Date accepted_date, boolean completed_status, String completed_by, Date completed_date, User created_or_updated_by, String sender_id, String receiver_id) {
         this.task_id = task_id;
         this.version_id = version_id;
         this.version_name = version_name;
         this.accepted_status = accepted_status;
         this.accepted_by = accepted_by;
+        this.accepted_date = accepted_date;
         this.completed_status = completed_status;
         this.completed_by = completed_by;
-        this.created_date = created_date;
-        this.modified_date = modified_date;
+        this.completed_date = completed_date;
         this.created_or_updated_by = created_or_updated_by;
         this.sender_id = sender_id;
         this.receiver_id = receiver_id;
@@ -137,24 +137,24 @@ public class Tasks_Group implements Serializable {
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_date", nullable = false)
-    public Date getCreated_date() {
-        return created_date;
+    @Column(name = "accepted_date", nullable = false)
+    public Date getAccepted_date() {
+        return accepted_date;
     }
 
-    public void setCreated_date(Date created_date) {
-        this.created_date = created_date;
+    public void setAccepted_date(Date accepted_date) {
+        this.accepted_date = accepted_date;
     }
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "modified_date", nullable = false)
-    public Date getModified_date() {
-        return modified_date;
+    @Column(name = "completed_date", nullable = false)
+    public Date getCompleted_date() {
+        return completed_date;
     }
 
-    public void setModified_date(Date modified_date) {
-        this.modified_date = modified_date;
+    public void setCompleted_date(Date completed_date) {
+        this.completed_date = completed_date;
     }
 
     @OneToOne
@@ -187,8 +187,20 @@ public class Tasks_Group implements Serializable {
 
     @Override
     public String toString() {
-        return "Tasks_Group{" + "id=" + id + ", task_id=" + task_id + ", version_id=" + version_id + ", accepted_status=" + accepted_status + ", accepted_by=" + accepted_by + ", completed_status=" + completed_status + ", completed_by=" + completed_by + ", created_date=" + created_date + ", modified_date=" + modified_date + ", created_or_updated_by=" + created_or_updated_by + ", sender_id=" + sender_id + ", receiver_id=" + receiver_id + '}';
+        return "Tasks_Group{" +
+                "id=" + id +
+                ", task_id=" + task_id +
+                ", version_id=" + version_id +
+                ", version_name='" + version_name + '\'' +
+                ", accepted_status=" + accepted_status +
+                ", accepted_by='" + accepted_by + '\'' +
+                ", accepted_date=" + accepted_date +
+                ", completed_status=" + completed_status +
+                ", completed_by='" + completed_by + '\'' +
+                ", completed_date=" + completed_date +
+                ", created_or_updated_by=" + created_or_updated_by +
+                ", sender_id='" + sender_id + '\'' +
+                ", receiver_id='" + receiver_id + '\'' +
+                '}';
     }
-    
-    
 }
