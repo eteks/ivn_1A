@@ -12,13 +12,9 @@ import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.configs.VersionType;
 import com.ivn_1A.controllers.notification.NotificationController;
-import com.ivn_1A.models.legislation_safty.LegislationDB;
-import com.ivn_1A.models.pdbowner.Domain_and_Features_Mapping;
 import com.ivn_1A.models.pdbowner.Legislationversion;
 import com.ivn_1A.models.pdbowner.Legislationversion_group;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
-import com.ivn_1A.models.pdbowner.Pdbversion;
-import com.ivn_1A.models.pdbowner.Pdbversion_group;
 import com.ivn_1A.models.pdbowner.Querybuilder;
 import com.ivn_1A.models.pdbowner.SafetyLegDB;
 import com.ivn_1A.models.pdbowner.Safetyversion;
@@ -42,6 +38,7 @@ import org.json.simple.JSONObject;
  * @author ets-poc
  */
 public class Safety_and_Legislation {
+
     private Map<String, String> maps_string = new HashMap<>();
     private Map<String, Object> maps_object = new HashMap<>();
 //    Session session = HibernateUtil.getThreadLocalSession();
@@ -58,37 +55,38 @@ public class Safety_and_Legislation {
         System.out.println("LegislationPage");
 
 //        This will execute if url contains parameter(id and action-edit, view)
-//        try {
-//            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
-//            System.out.println("request" + request);
-//            System.out.println("id_value" + request.getParameter("id"));
-//            System.out.println("action_value" + request.getParameter("action"));
-//            List<Safetyversion_group> safetyversion_groups = SafetyLegDB.LoadLegislationversion_groupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
-//            List<Map<String, Object>> pdb_map_result = new ArrayList<>();
-//            safetyversion_groups.stream().map((safetyversion_group) -> {
-//                Map<String, Object> safetyMap = new HashMap<>();
-//                safetyMap.put("qb_name", safetyversion_group.getQuerybuilder_id().getQuerybuilder_name());
-//                safetyMap.put("qb_id", safetyversion_group.getQuerybuilder_id().getId());
-//                safetyMap.put("pdbversion_id", safetyversion_group.getSafetyversion_id().getPdbversion_id().getId());
-//                safetyMap.put("pdbversion_name", safetyversion_group.getSafetyversion_id().getPdbversion_id().getPdb_versionname());
-//                safetyMap.put("modelname", safetyversion_group.getVehiclemodel_id().getModelname());
-//                safetyMap.put("model_id", safetyversion_group.getVehiclemodel_id().getId());
-//                safetyMap.put("vehiclename", safetyversion_group.getSafetyversion_id().getVehicle_id().getVehiclename());
-//                safetyMap.put("vehicle_id", safetyversion_group.getSafetyversion_id().getVehicle_id().getId());
-//                safetyMap.put("legisversion_group_id", safetyversion_group.getId());
-//                safetyMap.put("legisversion_id", safetyversion_group.getSafetyversion_id().getId());
-//                safetyMap.put("legisversion_name", safetyversion_group.getSafetyversion_id().getSafety_versionname());
-//                safetyMap.put("status", safetyversion_group.getSafetyversion_id().getStatus());
-//                safetyMap.put("flag", safetyversion_group.getSafetyversion_id().getFlag());
-//                return safetyMap;
-//            }).forEachOrdered((safetyMap) -> {
-//                pdb_map_result.add(safetyMap);
-//            });
-//            result_data_obj = new Gson().toJson(pdb_map_result);
-//            System.err.println("result_data_obj " + result_data_obj);
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        }
+        try {
+            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
+            System.out.println("request" + request);
+            System.out.println("id_value" + request.getParameter("id"));
+            System.out.println("action_value" + request.getParameter("action"));
+            tupleObjects = SafetyLegDB.LoadLegislationversion_groupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
+            List<Map<String, Object>> saf_map_result = new ArrayList<>();
+            tupleObjects.stream().map((tuple) -> {
+                Map<String, Object> safetyMap = new HashMap<>();
+                safetyMap.put("qb_name", tuple.get("qb_name"));
+                safetyMap.put("qb_id", tuple.get("qb_id"));
+                safetyMap.put("pdbversion_id", tuple.get("pdb_versionid"));
+                safetyMap.put("pdbversion_name", tuple.get("pdb_versionname"));
+                safetyMap.put("modelname", tuple.get("modelname"));
+                safetyMap.put("model_id", tuple.get("model_id"));
+                safetyMap.put("vehiclename", tuple.get("vehiclename"));
+                safetyMap.put("vehicle_id", tuple.get("vehicle_id"));
+                safetyMap.put("legisversion_group_id", tuple.get("legisversion_group_id"));
+                safetyMap.put("leg_id", tuple.get("leg_id"));
+                safetyMap.put("leg", tuple.get("leg"));
+                safetyMap.put("status", tuple.get("status"));
+                safetyMap.put("available_status", tuple.get("available_status"));
+                safetyMap.put("flag", tuple.get("flag"));
+                return safetyMap;
+            }).forEachOrdered((safetyMap) -> {
+                saf_map_result.add(safetyMap);
+            });
+            result_data_obj = new Gson().toJson(saf_map_result);
+            System.err.println("result_data_obj " + result_data_obj);
+        } catch (Exception e) {
+            System.err.println("Error in \"Safety_and_Legislation\" \'LegislationPage\' : " + e);
+        }
         try {
             List<Querybuilder> legcomb_list = SafetyLegDB.LoadCombinationList("legislation");
 
@@ -104,14 +102,14 @@ public class Safety_and_Legislation {
             maps_object.put("legcomb_list_res", legcomb_list_res);
             vehicle_result = PDBOwnerDB.loadVehicleVersion();
             System.out.println("vehicle_result" + vehicle_result);
-            
+
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             maps_string.put("status", "Some error occurred !!");
         }
         return "success";
     }
-    
+
     public String SafetyPage() {
 
         System.out.println("Entered");
@@ -123,9 +121,9 @@ public class Safety_and_Legislation {
             System.out.println("request" + request);
             System.out.println("id_value" + request.getParameter("id"));
             System.out.println("action_value" + request.getParameter("action"));
-            List<Tuple> safetyversion_groups = SafetyLegDB.LoadSafetyversion_groupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
-            List<Map<String, Object>> pdb_map_result = new ArrayList<>();
-            safetyversion_groups.stream().map((tuple) -> {
+            tupleObjects = SafetyLegDB.LoadSafetyversion_groupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
+            List<Map<String, Object>> saf_map_result = new ArrayList<>();
+            tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> safetyMap = new HashMap<>();
                 safetyMap.put("qb_name", tuple.get("qb_name"));
                 safetyMap.put("qb_id", tuple.get("qb_id"));
@@ -143,9 +141,9 @@ public class Safety_and_Legislation {
                 safetyMap.put("flag", tuple.get("flag"));
                 return safetyMap;
             }).forEachOrdered((safetyMap) -> {
-                pdb_map_result.add(safetyMap);
+                saf_map_result.add(safetyMap);
             });
-            result_data_obj = new Gson().toJson(pdb_map_result);
+            result_data_obj = new Gson().toJson(saf_map_result);
             System.err.println("result_data_obj " + result_data_obj);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -163,18 +161,19 @@ public class Safety_and_Legislation {
                 safcomb_list_res.add(fr);
             });
             maps_object.put("safcomb_list_res", safcomb_list_res);
-            System.out.println("safcomb_list_res"+safcomb_list_res);
+            System.out.println("safcomb_list_res" + safcomb_list_res);
             vehicle_result = PDBOwnerDB.loadVehicleVersion();
             System.out.println("vehicle_result" + vehicle_result);
-           
+
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             maps_string.put("status", "Some error occurred !!");
         }
         return "success";
     }
-    
+
     public String CreateLegislationVersion() throws IOException {
+        
         NotificationController notificationController = new NotificationController();
         System.out.println("CreateLegislationVersion");
         final ObjectMapper mapper = new ObjectMapper();
@@ -218,30 +217,29 @@ public class Safety_and_Legislation {
                     System.out.println("enter legislationversion");
                     if (legislation_value.has("version_change")) {
                         System.out.println("enter version change");
-                        System.out.println("enter version change1"+legislation_value.get("version_change").asText());
-                        if(legislation_value.get("version_change").asText().equals("major")){
+                        System.out.println("enter version change1" + legislation_value.get("version_change").asText());
+                        if (legislation_value.get("version_change").asText().equals("major")) {
                             System.out.println("major");
-                            System.out.println("vehicle_id"+legislation_value.get("vehicle").asInt());
-                            List<Legislationversion> version_data = SafetyLegDB.GetVersionname(legislation_value.get("vehicle").asInt(),version_type);
+                            System.out.println("vehicle_id" + legislation_value.get("vehicle").asInt());
+                            List<Legislationversion> version_data = SafetyLegDB.GetVersionname(legislation_value.get("vehicle").asInt(), version_type);
                             version_name = (float) 1.0 + version_data.get(0).getLegislation_versionname();
 //                            pdbversion.setPdb_reference_version(Float.valueOf(version_data.get(0).getPdb_versionname()));
                             prevleg_id = version_data.get(0).getId();
-                            
-                        }
-                        //else if minor changes
-                        else{
+
+                        } //else if minor changes
+                        else {
                             version_type = "minor_changes";
                             System.out.println("minor");
-                            List<Legislationversion> version_data = SafetyLegDB.GetVersionname(legislation_value.get("vehicle").asInt(),version_type);
+                            List<Legislationversion> version_data = SafetyLegDB.GetVersionname(legislation_value.get("vehicle").asInt(), version_type);
                             version_name = (float) 0.1 + version_data.get(0).getLegislation_versionname();
 //                            pdbversion.setPdb_reference_version(Float.valueOf(pdbversion_value.get("pdbversion").get("pdbversion_name").asText()));
-                            prevleg_id = legislation_value.get("legislationversion").get("legid").asInt();                           
+                            prevleg_id = legislation_value.get("legislationversion").get("legid").asInt();
                         }
                         legislationversion.setLegislation_reference_version(Float.valueOf(legislation_value.get("legislationversion").get("legversion_name").asText()));
                     }
-                }                
-                System.out.println("version_name"+version_name);
-                System.out.println("prevleg_id"+prevleg_id);
+                }
+                System.out.println("version_name" + version_name);
+                System.out.println("prevleg_id" + prevleg_id);
                 //To find and store removed id's and new feature'ids 
 //                List pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(Integer.parseInt((String) pdbversion_value.get("pdbversion_id")));
 //                System.out.println("pdb_previous_data" + pdb_previous_data);
@@ -259,6 +257,7 @@ public class Safety_and_Legislation {
                 Legislationversion curleg_id = SafetyLegDB.insertLegilsationVersion(legislationversion);
                 //Insert data into PDB Version Group
                 int i = 0;
+                List<Legislationversion_group> legislationversion_groups = new ArrayList<>();
                 for (Object o : legislationdata_list) {
                     JsonNode legdata = (JsonNode) o;
                     System.out.println("legdata" + legdata);
@@ -268,22 +267,26 @@ public class Safety_and_Legislation {
                     leg_gp.setQuerybuilder_id(SafetyLegDB.getQuerybuilder(legdata.get("qb_id").asLong()));
                     leg_gp.setAvailable_status(legdata.get("status").asText());
                     Legislationversion_group leg_gp_id = SafetyLegDB.insertLegislationVersionGroup(leg_gp);
+                    legislationversion_groups.add(leg_gp_id);
                 }
                 //we can use this code to find comparision of previous id and current id
-//                if (prevleg_id != 0) {
-//                    Map<String, Object> pdb_previous_data = PDBOwnerDB.GetPDBPreviousVersion_DomFea(prevpdb_id, curpdb_id.getId());
-//                    System.out.println("pdb_previous_data result" + pdb_previous_data);
-//
-//                    JSONObject pdb_previous_data_result = new JSONObject();
-//                    pdb_previous_data_result.put("removed_features", pdb_previous_data.get("removed_features"));
-//                    pdb_previous_data_result.put("added_features", pdb_previous_data.get("added_features"));
-//                    pdb_previous_data_result.put("removed_models", pdb_previous_data.get("removed_models"));
-//                    pdb_previous_data_result.put("added_models", pdb_previous_data.get("added_models"));
-//                    pdb_previous_data_result.put("current_version", String.format("%.1f", curpdb_id.getPdb_versionname()));
-//                    pdb_previous_data_result.put("reference_version", pdbversion_value.get("pdbversion").get("pdbversion_name").asDouble());
-//
-//                    maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
-//                }
+                if (prevleg_id != 0) {
+                    Map<String, Object> leg_previous_data = PDBOwnerDB.GetPDBPreviousVersion_DomFea(prevleg_id, curleg_id.getId());
+                    System.out.println("leg_previous_data result" + leg_previous_data);
+
+                    JSONObject leg_previous_data_result = new JSONObject();
+                    leg_previous_data_result.put("removed_features", leg_previous_data.get("removed_features"));
+                    leg_previous_data_result.put("added_features", leg_previous_data.get("added_features"));
+                    leg_previous_data_result.put("removed_models", leg_previous_data.get("removed_models"));
+                    leg_previous_data_result.put("added_models", leg_previous_data.get("added_models"));
+                    leg_previous_data_result.put("current_version", String.format("%.1f", curleg_id.getLegislation_versionname()));
+                    leg_previous_data_result.put("reference_version", legislation_value.get("legislationversion").get("legversion_name").asDouble());
+
+                    maps_object.put("leg_previous_data_result", leg_previous_data_result);
+                }
+                
+                maps_string.put("leg_version", mapper.writeValueAsString(curleg_id));
+                maps_string.put("leg_version_group", mapper.writeValueAsString(legislationversion_groups));
                 if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary Legislation Version Created Successfully");
                 } else {
@@ -300,7 +303,7 @@ public class Safety_and_Legislation {
         }
         return "success";
     }
-    
+
     public String CreateSafetyVersion() throws IOException {
         NotificationController notificationController = new NotificationController();
         System.out.println("CreateSafetyVersion");
@@ -345,30 +348,29 @@ public class Safety_and_Legislation {
                     System.out.println("enter safetyversion");
                     if (safety_value.has("version_change")) {
                         System.out.println("enter version change");
-                        System.out.println("enter version change1"+safety_value.get("version_change").asText());
-                        if(safety_value.get("version_change").asText().equals("major")){
+                        System.out.println("enter version change1" + safety_value.get("version_change").asText());
+                        if (safety_value.get("version_change").asText().equals("major")) {
                             System.out.println("major");
-                            System.out.println("vehicle_id"+safety_value.get("vehicle").asInt());
-                            List<Safetyversion> version_data = SafetyLegDB.GetSafetyVersionname(safety_value.get("vehicle").asInt(),version_type);
+                            System.out.println("vehicle_id" + safety_value.get("vehicle").asInt());
+                            List<Safetyversion> version_data = SafetyLegDB.GetSafetyVersionname(safety_value.get("vehicle").asInt(), version_type);
                             version_name = (float) 1.0 + version_data.get(0).getSafety_versionname();
 //                            pdbversion.setPdb_reference_version(Float.valueOf(version_data.get(0).getPdb_versionname()));
                             prevsaf_id = version_data.get(0).getId();
-                            
-                        }
-                        //else if minor changes
-                        else{
+
+                        } //else if minor changes
+                        else {
                             version_type = "minor_changes";
                             System.out.println("minor");
-                            List<Safetyversion> version_data = SafetyLegDB.GetSafetyVersionname(safety_value.get("vehicle").asInt(),version_type);
+                            List<Safetyversion> version_data = SafetyLegDB.GetSafetyVersionname(safety_value.get("vehicle").asInt(), version_type);
                             version_name = (float) 0.1 + version_data.get(0).getSafety_versionname();
 //                            pdbversion.setPdb_reference_version(Float.valueOf(pdbversion_value.get("pdbversion").get("pdbversion_name").asText()));
-                            prevsaf_id = safety_value.get("safetyversion").get("safid").asInt();                           
+                            prevsaf_id = safety_value.get("safetyversion").get("safid").asInt();
                         }
                         safetyversion.setSafety_reference_version(Float.valueOf(safety_value.get("safetyversion").get("safversion_name").asText()));
                     }
-                }                
-                System.out.println("version_name"+version_name);
-                System.out.println("prevleg_id"+prevsaf_id);
+                }
+                System.out.println("version_name" + version_name);
+                System.out.println("prevleg_id" + prevsaf_id);
                 //To find and store removed id's and new feature'ids 
 //                List pdb_previous_data = pdbownerdb.GetPDBPreviousVersion_DomFea(Integer.parseInt((String) pdbversion_value.get("pdbversion_id")));
 //                System.out.println("pdb_previous_data" + pdb_previous_data);
@@ -386,6 +388,7 @@ public class Safety_and_Legislation {
                 Safetyversion cursaf_id = SafetyLegDB.insertSafetyVersion(safetyversion);
                 //Insert data into PDB Version Group
                 int i = 0;
+                List<Safetyversion_group> Safetyversion_group = new ArrayList<>();
                 for (Object o : safetydata_list) {
                     JsonNode safdata = (JsonNode) o;
                     System.out.println("safdata" + safdata);
@@ -395,22 +398,26 @@ public class Safety_and_Legislation {
                     saf_gp.setQuerybuilder_id(SafetyLegDB.getQuerybuilder(safdata.get("qb_id").asLong()));
                     saf_gp.setAvailable_status(safdata.get("status").asText());
                     Safetyversion_group saf_gp_id = SafetyLegDB.insertSafetyVersionGroup(saf_gp);
+                    Safetyversion_group.add(saf_gp_id);
                 }
                 //we can use this code to find comparision of previous id and current id
-//                if (prevleg_id != 0) {
-//                    Map<String, Object> pdb_previous_data = PDBOwnerDB.GetPDBPreviousVersion_DomFea(prevpdb_id, curpdb_id.getId());
-//                    System.out.println("pdb_previous_data result" + pdb_previous_data);
-//
-//                    JSONObject pdb_previous_data_result = new JSONObject();
-//                    pdb_previous_data_result.put("removed_features", pdb_previous_data.get("removed_features"));
-//                    pdb_previous_data_result.put("added_features", pdb_previous_data.get("added_features"));
-//                    pdb_previous_data_result.put("removed_models", pdb_previous_data.get("removed_models"));
-//                    pdb_previous_data_result.put("added_models", pdb_previous_data.get("added_models"));
-//                    pdb_previous_data_result.put("current_version", String.format("%.1f", curpdb_id.getPdb_versionname()));
-//                    pdb_previous_data_result.put("reference_version", pdbversion_value.get("pdbversion").get("pdbversion_name").asDouble());
-//
-//                    maps_object.put("pdb_previous_data_result", pdb_previous_data_result);
-//                }
+                if (prevsaf_id != 0) {
+                    Map<String, Object> saf_previous_data = PDBOwnerDB.GetPDBPreviousVersion_DomFea(prevsaf_id, cursaf_id.getId());
+                    System.out.println("saf_previous_data result" + saf_previous_data);
+
+                    JSONObject saf_previous_data_result = new JSONObject();
+                    saf_previous_data_result.put("removed_features", saf_previous_data.get("removed_features"));
+                    saf_previous_data_result.put("added_features", saf_previous_data.get("added_features"));
+                    saf_previous_data_result.put("removed_models", saf_previous_data.get("removed_models"));
+                    saf_previous_data_result.put("added_models", saf_previous_data.get("added_models"));
+                    saf_previous_data_result.put("current_version", String.format("%.1f", cursaf_id.getSafety_versionname()));
+                    saf_previous_data_result.put("reference_version", safety_value.get("safetyversion").get("safversion_name").asDouble());
+
+                    maps_object.put("saf_previous_data_result", saf_previous_data_result);
+                }
+                
+                maps_string.put("saf_version", mapper.writeValueAsString(cursaf_id));
+                maps_string.put("saf_version_group", mapper.writeValueAsString(Safetyversion_group));
                 if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary Safety Version Created Successfully");
                 } else {
@@ -427,7 +434,7 @@ public class Safety_and_Legislation {
         }
         return "success";
     }
-    
+
     public String LoadLegislationversionData() {
         try {
             System.out.println("LoadLegislationversionData");
@@ -441,7 +448,7 @@ public class Safety_and_Legislation {
             tupleObjects = SafetyLegDB.loadLegislationversion_groupByVehicleId(vehicle_id, action);
             JSONArray legvers_group_result = new JSONArray();
 
-            tupleObjects.stream().map((tuple) -> {             
+            tupleObjects.stream().map((tuple) -> {
                 return tuple;
             }).map((tuple) -> {
                 JSONObject fr = new JSONObject();
@@ -464,7 +471,9 @@ public class Safety_and_Legislation {
             System.out.println("Error : " + e);
         }
         return "success";
-    };
+    }
+
+    ;
     
     public String LoadSafetyversionData() {
         try {
@@ -479,7 +488,7 @@ public class Safety_and_Legislation {
             tupleObjects = SafetyLegDB.loadSafetyversion_groupByVehicleId(vehicle_id, action);
             JSONArray safvers_group_result = new JSONArray();
 
-            tupleObjects.stream().map((tuple) -> {             
+            tupleObjects.stream().map((tuple) -> {
                 return tuple;
             }).map((tuple) -> {
                 JSONObject fr = new JSONObject();
@@ -502,7 +511,9 @@ public class Safety_and_Legislation {
             System.out.println("Error : " + e);
         }
         return "success";
-    };
+    }
+
+    ;
     
     public String GetSafetyListing() {
         System.out.println("GetSafetyListing");
@@ -539,7 +550,7 @@ public class Safety_and_Legislation {
 //            System.out.println("Result"+vehmod_map_result);
         return "success";
     }
-    
+
     public Map<String, Object> getMaps_object() {
         return maps_object;
     }
@@ -547,7 +558,7 @@ public class Safety_and_Legislation {
     public void setMaps_object(Map<String, Object> maps_object) {
         this.maps_object = maps_object;
     }
-    
+
     public Map<String, String> getMaps_string() {
         return maps_string;
     }
@@ -555,7 +566,7 @@ public class Safety_and_Legislation {
     public void setMaps_string(Map<String, String> maps_string) {
         this.maps_string = maps_string;
     }
-    
+
     public List<Vehicle> getVehicle_result() {
         return vehicle_result;
     }
@@ -563,7 +574,7 @@ public class Safety_and_Legislation {
     public void setVehicleversion_result(List<Vehicle> vehicle_result) {
         this.vehicle_result = vehicle_result;
     }
-    
+
     public String getResult_data_obj() {
         return result_data_obj;
     }

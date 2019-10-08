@@ -415,7 +415,7 @@ public class SafetyLegDB {
         }
     }
 
-    public static List<Legislationversion_group> LoadLegislationversion_groupData(int safety_version_id, String actionString) {
+    public static List<Tuple> LoadLegislationversion_groupData(int legislation_version_id, String actionString) {
 
         System.out.println("LoadPDBPreviousVehicleversionData");
         try {
@@ -424,26 +424,31 @@ public class SafetyLegDB {
             Transaction tx = session.beginTransaction();
 
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<Legislationversion_group> criteriaQuery = criteriaBuilder.createQuery(Legislationversion_group.class);
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
 
             Root<Legislationversion_group> pRoot = criteriaQuery.from(Legislationversion_group.class);
-            pRoot.join("legislationversion_id", JoinType.INNER);
-            pRoot.join("querybuilder_id", JoinType.INNER);
-            pRoot.join("vehiclemodel_id", JoinType.INNER);
-
-            criteriaQuery.distinct(true);
+            
+            criteriaQuery.multiselect(pRoot.get("id").alias("legisversion_group_id"), pRoot.get("legislationversion_id").get("id").alias("leg_id"),
+                    pRoot.get("legislationversion_id").get("legislation_versionname").alias("leg"), pRoot.get("legislationversion_id").get("status").alias("status"),
+                    pRoot.get("legislationversion_id").get("flag").alias("flag"), pRoot.get("legislationversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"),
+                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
+                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("model_id"),
+                    criteriaBuilder.function("group_concat", String.class, pRoot.get("available_status")).alias("available_status"),
+                    pRoot.get("legislationversion_id").get("vehicle_id").get("id").alias("vehicle_id"),
+                    pRoot.get("querybuilder_id").get("id").alias("qb_id"), pRoot.get("querybuilder_id").get("querybuilder_name").alias("qb_name"),
+                    pRoot.get("legislationversion_id").get("pdbversion_id").get("id").alias("pdb_versionid"), 
+                    pRoot.get("legislationversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname")).distinct(true);
 
             if (actionString.equals("edit")) {
-                criteriaQuery.where(criteriaBuilder.equal(pRoot.get("legislationversion_id").get("id"), safety_version_id));
+                criteriaQuery.where(criteriaBuilder.equal(pRoot.get("legislationversion_id").get("id"), legislation_version_id));
             } else {
                 criteriaQuery.where(criteriaBuilder.equal(pRoot.get("legislationversion_id").get("status"), true),
                         criteriaBuilder.equal(pRoot.get("legislationversion_id").get("flag"), true),
-                        criteriaBuilder.equal(pRoot.get("legislationversion_id").get("id"), safety_version_id));
+                        criteriaBuilder.equal(pRoot.get("legislationversion_id").get("id"), legislation_version_id));
             }
 
-            criteriaQuery.groupBy(pRoot.get("vehiclemodel_id").get("modelname"), pRoot.get("vehiclemodel_id").get("id"))
-                    .orderBy(criteriaBuilder.desc(pRoot.get("legislationversion_id").get("id")));
-            TypedQuery<Legislationversion_group> typedQuery = session.createQuery(criteriaQuery);
+            criteriaQuery.orderBy(criteriaBuilder.desc(pRoot.get("legislationversion_id").get("id")));
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();
             session.clear();

@@ -109,8 +109,8 @@ public class TasksController {
                 maps_object.put("failed", "Accepted init is Failed");
             }
         } catch (Exception e) {
-            System.err.println("Error in \"TasksController\" \'getTasks\' : " + e);
-            maps_string.put("error", "Error in \"TasksController\" \'getTasks\' : " + e);
+            System.err.println("Error in \"TasksController\" \'createFirstLevelTask\' : " + e);
+            maps_object.put("error", "Error in \"TasksController\" \'createFirstLevelTask\' : " + e);
         }
         return "success";
     }

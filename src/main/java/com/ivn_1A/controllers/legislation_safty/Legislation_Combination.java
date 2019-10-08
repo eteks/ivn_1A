@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.models.legislation_safty.LegislationDB;
-import com.ivn_1A.models.pdbowner.Legislationversion_group;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.pdbowner.Querybuilder;
 import java.time.LocalDateTime;
@@ -21,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Tuple;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.struts2.ServletActionContext;
 
 /**
  *

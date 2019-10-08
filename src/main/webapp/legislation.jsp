@@ -251,10 +251,11 @@
                                     data: data,
                                 }).then(function (response, status, headers, config){
 
-                                    if(response.data.maps_string.success){
-                                        $window.alert(response.data.maps_string.success);
+                                    if(response.data.maps_object.success){
+                                        $window.alert(response.data.maps_object.success);
+                                        $window.open("legi_ver_create.action", "_self");
                                     } else {
-                                        $window.alert(response.data.maps_string);
+                                        $window.alert(response.data.maps_object);
                                     }
                                 });
                             }

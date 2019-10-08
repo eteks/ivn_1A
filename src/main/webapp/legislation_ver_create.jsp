@@ -566,8 +566,6 @@
                 angular.element(function () {
                     var result = document.getElementsByClassName("radio_button");
 //                        alert(JSON.stringify(result));
-                        $scope.list.push({model_id:1,qb_id:1,status:"y"},{model_id:2,qb_id:1,status:"n"},{model_id:3,qb_id:1,status:"o"});
-                            alert(JSON.stringify($scope.list));
                     angular.forEach(result, function(value) {
                         var result_name = value.getAttribute("name").substring(1).split("_");
                         var fid = result_name[0];

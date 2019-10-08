@@ -70,7 +70,7 @@ public class TasksDB {
     //Tasks Data by id
     public static Tasks getTasksById(int t_id) {
         try {
-            System.err.println("getTasksByVehicleId");
+            System.err.println("getTasksById");
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
 
@@ -85,7 +85,7 @@ public class TasksDB {
             s.clear();
             return dfm_result.getSingleResult();
         } catch (Exception e) {
-            System.err.println("Error in \"TasksDB\" \'getTasksByVehicleId\' : " + e);
+            System.err.println("Error in \"TasksDB\" \'getTasksById\' : " + e);
             return null;
         }
     }
@@ -94,18 +94,19 @@ public class TasksDB {
     public static Tasks_Group insertTasks_Group(Tasks_Group tasks_Group) {
         try {
             System.err.println("insertTasks_Group");
-            Tasks_Group tg = getTasks_GroupByTasksId(tasks_Group);
+//            Tasks_Group tg = getTasks_GroupByTasksId(tasks_Group);
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
 
-            if (tg == null) {
-                s.save(tasks_Group);
-                tg = tasks_Group;
-            }
+//            if (tg == null) {
+//                s.save(tasks_Group);
+//                tg = tasks_Group;
+//            }
+            s.save(tasks_Group);
 
             tx.commit();
             s.clear();
-            return tg;
+            return tasks_Group;
 //            return pdbversion.getId();
         } catch (Exception e) {
             System.err.println("Error in \"TasksDB\" \'insertTasks_Group\' : " + e);
