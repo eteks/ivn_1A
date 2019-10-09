@@ -205,6 +205,7 @@ public class Featureversion_Group {
                     notificationController.createNotification(VersionType.Featureversion.getVersionCode(), curfea_id.getFeature_versionname(), new Date().toString(), notification_to, curfea_id.getId());
                     maps_string.put("status", "New Permanent Feature Version Created Successfully");
                 }
+                maps_string.put("feature", mapper.writeValueAsString(curfea_id));
             }
             maps_string.put("status_code", "1");
 

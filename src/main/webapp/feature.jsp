@@ -45,7 +45,7 @@
                                         </div>
                                        
                                        <div id="accordion" role="tablist" aria-multiselectable="true">
-                                            <div class="accordion-panel" ng-if="task.safety.completion_status == 'yes' && task.legislation.completion_status == 'yes'">
+                                            <div class="accordion-panel" ng-if="task.safety.completion_status == true">
                                                 <div class="accordion-heading" role="tab" id="headingOne">
                                                     <h3 class="card-title accordion-title">
                                                         <a class="accordion-msg text-success" data-toggle="collapse"
@@ -57,12 +57,12 @@
                                                 </div>
                                                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                                     <div class="accordion-content accordion-desc task_content">
-                                                        <p><span>Name</span>: {{task.pdb.name}} </p>
-                                                        <p><span>Created Date</span>: {{task.pdb.created_date}} </p>
-                                                        <p><span>Created By</span>: {{task.pdb.created_by}} </p>
-                                                        <div ng-if="task.feature.acceptance_status == ''" class="text-center">
-                                                            <a href="#" ng-click="task_accept()" class="btn-round btn btn-primary">Accept</a>&nbsp;&nbsp;
-                                                            <a href="#" ng-click="task_reject()" class="btn-round btn btn-danger">Reject</a>
+                                                        <p><span>Name</span>: {{task.safety.name}} </p>
+                                                        <p><span>Created Date</span>: {{task.safety.completion_date}} </p>
+                                                        <p><span>Created By</span>: {{task.safety.created_by}} </p>
+                                                        <div ng-if="task.feature.acceptance_status == null" class="text-center">
+                                                            <a href="#" ng-click="task_accept(task.safety.task_id, task.safety.tg_id)" class="btn-round btn btn-primary">Accept</a>&nbsp;&nbsp;
+                                                            <a href="#" ng-click="task_reject(task.safety.task_id, task.safety.tg_id)" class="btn-round btn btn-danger">Reject</a>
                                                         </div>
                                                         <p><span>Status</span>: 
                                                             <label ng-if="task.feature.acceptance_status == 'yes'">Pending</label>
@@ -111,7 +111,7 @@
 <script>
 //        var app = angular.module('angularTable', []);
 
-        app.controller('MyCtrl',function($scope, $http)
+        app.controller('MyCtrl',function($scope, $http, $window, $location, $element, $rootScope)
         {      
 //            alert("MyCtrl");
 //            $scope.getAllCount = function()
@@ -123,81 +123,144 @@
 //                    $scope.pdbfeatures_count = data['pdbfeatures_count'];
 //                });
 //            }
-$scope.task = 
+            $http({
+                url: 'getTasks',
+                method: "POST",
+                data: {"froms":"Featureversion"},
+            }).then(function (response, status, headers, config){
+                if(response.data.maps_string.success){
+                    // $window.alert(JSON.stringify(response.data.maps_object));
+                    // $window.alert(JSON.stringify(response.data.maps_object.tasks));
+                    // console.log(JSON.stringify(response.data.maps_object.tasks))
+                    // $scope.task = response.data.list_object;
+                    $scope.task = response.data.maps_object.tasks;
+                    $window.alert(JSON.stringify($scope.task));
+                    //                            $window.document.getElementById('model').focus();
+                } else {
+                    $window.alert(JSON.stringify(response.data.maps_string));
+                }
+            });
+// $scope.task =
+//                             {
+//                                 pdb:{
+//                                         name: "pdb version 1.0",
+//                                         created_date: "2019-03-12 10:03:03",
+//                                         created_by: "Anand",
+//                                         acceptance_status: "yes",
+//                                         accepted_date: "2019-03-12 10:03:03",
+//                                         accepted_by: "Anand",
+//                                         completion_status: "yes",
+//                                         completion_date: "2019-03-12 10:03:03"
+//                                     },
+//                                     safety:
+//                                     {
+//                                         name: "safety version 1.0",
+//                                         created_date: "2019-03-12 10:03:03",
+//                                         created_by: "Anand",
+//                                         acceptance_status: "yes",
+//                                         accepted_date: "2019-03-12 10:03:03",
+//                                         accepted_by: "Anand",
+//                                         completion_status: "yes",
+//                                         completion_date: "2019-03-12 10:03:03"
+//                                     },
+//                                     legislation:
+//                                     {
+//                                         name: "legislation version 1.0",
+//                                         created_date: "2019-03-12 10:03:03",
+//                                         created_by: "Anand",
+//                                         acceptance_status: "yes",
+//                                         accepted_date: "2019-03-12 10:03:03",
+//                                         accepted_by: "Anand",
+//                                         completion_status: "yes",
+//                                         completion_date: "2019-03-12 10:03:03"
+//                                     },
+//                                     feature:
+//                                     {
+//                                         name: "legislation version 1.0",
+//                                         created_date: "2019-03-12 10:03:03",
+//                                         created_by: "Anand",
+//                                         acceptance_status: "",
+//                                         accepted_date: "2019-03-12 10:03:03",
+//                                         accepted_by: "Anand",
+//                                         completion_status: "",
+//                                         completion_date: "2019-03-12 10:03:03"
+//                                     },
+//                                     ivn:
+//                                     {
+//                                         name: "ivn version 1.0",
+//                                         created_date: "2019-03-12 10:03:03",
+//                                         created_by: "Anand",
+//                                         acceptance_status: "",
+//                                         accepted_date: "2019-03-12 10:03:03",
+//                                         accepted_by: "Anand",
+//                                         completion_status: "",
+//                                         completion_date: "2019-03-12 10:03:03"
+//                                     },
+//                                     acb:
+//                                     {
+//                                         name: "ivn version 1.0",
+//                                         created_date: "2019-03-12 10:03:03",
+//                                         created_by: "Anand",
+//                                         acceptance_status: "",
+//                                         accepted_date: "2019-03-12 10:03:03",
+//                                         accepted_by: "Anand",
+//                                         completion_status: "",
+//                                         completion_date: "2019-03-12 10:03:03"
+//                                     }
+//                             };
+                            $scope.task_accept = function(t_id, tg_id)
                             {
-                                pdb:{
-                                        name: "pdb version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "yes",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "yes",
-                                        completion_date: "2019-03-12 10:03:03"
-                                    },
-                                    safety:
-                                    {
-                                        name: "safety version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "yes",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "yes",
-                                        completion_date: "2019-03-12 10:03:03"
-                                    },
-                                    legislation:
-                                    {
-                                        name: "legislation version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "yes",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "yes",
-                                        completion_date: "2019-03-12 10:03:03"
-                                    },
-                                    feature:
-                                    {
-                                        name: "legislation version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "",
-                                        completion_date: "2019-03-12 10:03:03"
-                                    },
-                                    ivn:
-                                    {
-                                        name: "ivn version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "",
-                                        completion_date: "2019-03-12 10:03:03"
-                                    },
-                                    acb:
-                                    {
-                                        name: "ivn version 1.0",
-                                        created_date: "2019-03-12 10:03:03",
-                                        created_by: "Anand",
-                                        acceptance_status: "",
-                                        accepted_date: "2019-03-12 10:03:03",
-                                        accepted_by: "Anand",
-                                        completion_status: "",
-                                        completion_date: "2019-03-12 10:03:03"
+                                alert(tg_id);
+                                var data = {};
+                                data['t_id'] = t_id;
+                                data['tg_id'] = tg_id;
+                                data['username'] = '${sessionScope.user.username}';
+                                data['uid'] = '${sessionScope.user.id}';
+                                data['froms'] = 'Featureversion';
+                                data['stt'] = 'accept';
+                                alert(JSON.stringify(data));
+                                $http({
+                                    url: 'createFirstLevelTask',
+                                    method: "POST",
+                                    data: data,
+                                }).then(function (response, status, headers, config){
+
+                                    if(response.data.maps_object.success){
+                                        $window.alert(response.data.maps_object.success);
+                                        var vals = JSON.parse(response.data.maps_object.vals.replace(/&quot;/g,'"'));
+                                        $window.open("feature_version_create.action?t_id="+vals.task_id.id+"&tg_id="+vals.id, "_self");
+                                    } else {
+                                        var stt = response.data.maps_object.failed ? response.data.maps_object.failed : response.data.maps_object.error;
+                                        $window.alert(stt);
                                     }
-                            };
-                            $scope.task_accept = function()
-                            {
-                                $scope.task.feature.acceptance_status="yes";
+                                });
                             }
-                            $scope.task_reject = function()
+                            $scope.task_reject = function(t_id, tg_id)
                             {
-                                $scope.task.feature.acceptance_status="no";
+                                alert(tg_id);
+                                var data = {};
+                                data['t_id'] = t_id;
+                                data['tg_id'] = tg_id;
+                                data['username'] = '${sessionScope.user.username}';
+                                data['uid'] = '${sessionScope.user.id}';
+                                data['froms'] = 'Featureversion';
+                                data['stt'] = 'reject';
+                                alert(JSON.stringify(data));
+                                $http({
+                                    url: 'createFirstLevelTask',
+                                    method: "POST",
+                                    data: data,
+                                }).then(function (response, status, headers, config){
+
+                                    if(response.data.maps_object.success){
+                                        $window.alert(response.data.maps_object.success);
+                                        var vals = JSON.parse(response.data.maps_object.vals.replace(/&quot;/g,'"'));
+                                        $window.open("feature_version_create.action?t_id="+vals.task_id.id+"&tg_id="+vals.id, "_self");
+                                    } else {
+                                        var stt = response.data.maps_object.failed ? response.data.maps_object.failed : response.data.maps_object.error;
+                                        $window.alert(stt);
+                                    }
+                                });
                             }
  
         });

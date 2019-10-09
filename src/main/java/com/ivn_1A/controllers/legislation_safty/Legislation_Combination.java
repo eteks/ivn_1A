@@ -12,6 +12,8 @@ import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.models.legislation_safty.LegislationDB;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.pdbowner.Querybuilder;
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ import javax.persistence.Tuple;
 public class Legislation_Combination {
 
     private Map<String, String> maps = new HashMap<>();
+    private Map<String, Object> maps_obj = new HashMap<>();
     private List<Tuple> tuple_result = new ArrayList<>();
     private List<Map<String, Object>> legcomb_result = new ArrayList<>();
     private List<Map<String, Object>> result_data = new ArrayList<>();
@@ -116,14 +119,14 @@ public class Legislation_Combination {
         System.out.println("GetLegislationListing");
         Querybuilder lc = new Querybuilder();
         try {
-            tuple_result = LegislationDB.GetLegislationListing();
-            tuple_result.stream().map((legislationversion_group) -> {
+//            tuple_result = LegislationDB.GetLegislationListing();
+            LegislationDB.GetLegislationListing().stream().map((legislationversion_group) -> {
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("leg_id", legislationversion_group.get("leg_id"));
                 columns.put("leg", String.format("%.1f", legislationversion_group.get("leg")));
                 columns.put("created_date", legislationversion_group.get("created_date"));
                 columns.put("modified_date", legislationversion_group.get("modified_date"));
-                columns.put("model", legislationversion_group.get("modelname"));
+                maps_obj.put("model", StringUtils.join(legislationversion_group.get("modelname"), ","));
                 columns.put("vehicle", legislationversion_group.get("vehiclename"));
                 columns.put("version", String.format("%.1f", legislationversion_group.get("pdb_versionname")));
                 columns.put("status", legislationversion_group.get("status"));
@@ -133,8 +136,27 @@ public class Legislation_Combination {
                 result_data.add(columns);
                 return columns;
             }).forEachOrdered((columns) -> {
-                System.out.println("colums" + columns);
+                System.out.println("colums****************" + columns);
             });
+            result_data.add(maps_obj);
+//            LegislationDB.GetLegislationListing().stream().map((legislationversion_group) -> {
+//                Map<String, Object> columns = new HashMap<>();
+//                columns.put("leg_id", legislationversion_group.getLegislationversion_id().getId());
+//                columns.put("leg", String.format("%.1f", legislationversion_group.getLegislationversion_id().getLegislation_versionname()));
+//                columns.put("created_date", legislationversion_group.getLegislationversion_id().getCreated_date());
+//                columns.put("modified_date", legislationversion_group.getLegislationversion_id().getModified_date());
+//                columns.put("model", StringUtils.join(legislationversion_group.getVehiclemodel_id().getModelname(), ","));
+//                columns.put("vehicle", legislationversion_group.getLegislationversion_id().getVehicle_id().getVehiclename());
+//                columns.put("version", String.format("%.1f", legislationversion_group.getLegislationversion_id().getPdbversion_id().getPdb_versionname()));
+//                columns.put("status", legislationversion_group.getLegislationversion_id().getStatus());
+//                columns.put("flag", legislationversion_group.getLegislationversion_id().getFlag());
+//                return columns;
+//            }).map((columns) -> {
+//                result_data.add(columns);
+//                return columns;
+//            }).forEachOrdered((columns) -> {
+//                System.out.println("colums" + columns);
+//            });
             result_data_obj = new Gson().toJson(result_data);
 //            vehmod_map_result_obj = new Gson().toJson(vehmod_map_result);
 //                vehmod_map_result_obj =  Gson().toJSON(vehmod_map_result);
@@ -238,4 +260,11 @@ public class Legislation_Combination {
         this.result_data_obj = result_data_obj;
     }
 
+    public Map<String, Object> getMaps_obj() {
+        return maps_obj;
+    }
+
+    public void setMaps_obj(Map<String, Object> maps_obj) {
+        this.maps_obj = maps_obj;
+    }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
@@ -114,6 +115,42 @@ public class TasksDB {
         }
     }
 
+    //Tasks_Group Data updation
+    public static Tasks_Group updateTasks_Group(Tasks_Group tasks_Group) {
+
+        try {
+
+            System.out.println("updateTasks_Group");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            // create update
+            CriteriaUpdate<Tasks_Group> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Tasks_Group.class);
+            // set the root class
+            Root<Tasks_Group> qRoot = criteriaUpdate.from(Tasks_Group.class);
+            // set update and where clause
+            criteriaUpdate.set("completed_by", tasks_Group.getCompleted_by())
+                    .set("completed_status", tasks_Group.isCompleted_status())
+                    .set("version_id", tasks_Group.getVersion_id())
+                    .set("version_name", tasks_Group.getVersion_name())
+                    .set("completed_date", tasks_Group.getCompleted_date())
+                    .where(criteriaBuilder.equal(qRoot.get("id"), tasks_Group.getId()));
+            // perform update
+            int a = session.createQuery(criteriaUpdate).executeUpdate();
+            tx.commit();
+            session.clear();
+            if (a > 0) {
+                System.out.println("Done " + a + "  " +tasks_Group.getCompleted_date());
+                return tasks_Group;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error in \"TasksDB\" \'updateTasks_Group\' : " + e);
+            return null;
+        }
+    }
+
     //Tasks_Group Data by Tasks id
     public static Tasks_Group getTasks_GroupByTasksId(Tasks_Group tasks_Group) {
         try {
@@ -137,6 +174,29 @@ public class TasksDB {
         }
     }
 
+    //Tasks_Group Data by id
+    public static Tasks_Group getTasks_GroupById(int id) {
+        try {
+            System.err.println("getTasks_GroupById");
+            Session s = HibernateUtil.getThreadLocalSession();
+            Transaction tx = s.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+            CriteriaQuery<Tasks_Group> criteriaQuery = criteriaBuilder.createQuery(Tasks_Group.class);
+
+            Root<Tasks_Group> tgRoot = criteriaQuery.from(Tasks_Group.class);
+            criteriaQuery.where(criteriaBuilder.equal(tgRoot.get("id"), id));
+            TypedQuery<Tasks_Group> dfm_result = s.createQuery(criteriaQuery);
+
+            tx.commit();
+            s.clear();
+            return dfm_result.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Error in \"TasksDB\" \'getTasks_GroupById\' : " + e);
+            return null;
+        }
+    }
+
     //Tasks_Group Data
     public static List<Tasks_Group> getTasks(String from) {
 
@@ -149,7 +209,7 @@ public class TasksDB {
             CriteriaQuery<Tasks_Group> criteriaQuery = criteriaBuilder.createQuery(Tasks_Group.class);
 
             Root<Tasks_Group> tgRoot = criteriaQuery.from(Tasks_Group.class);
-            criteriaQuery.where(criteriaBuilder.equal(tgRoot.get("receiver_id"), from)).distinct(true);
+            criteriaQuery.where(criteriaBuilder.or(criteriaBuilder.equal(tgRoot.get("receiver_id"), from), criteriaBuilder.equal(tgRoot.get("sender_id"), from))).distinct(true);
             TypedQuery<Tasks_Group> dfm_result = s.createQuery(criteriaQuery);
 
             tx.commit();

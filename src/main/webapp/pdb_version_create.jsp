@@ -519,11 +519,11 @@
                             $http({
                                 url: 'insertTasks',
                                 method: "POST",
-                                data: {"pdbv":pdbv},
+                                data: {"val":pdbv},
                             }).then(function (response, status, headers, config) {
                                 if (response.data.maps_object.success) {
-                                    st = response.data.maps_object.success;
-                                    console.log(st+" "+JSON.stringify(response.data.list_object));
+                                    alert(response.data.maps_object.success);
+                                    console.log(response.data.maps_object.success+" "+JSON.stringify(response.data.list_object));
                                 } else {
                                     alert(JSON.stringify(response.data.maps_object));
                                 }
