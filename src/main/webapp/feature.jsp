@@ -111,7 +111,7 @@
 <script>
 //        var app = angular.module('angularTable', []);
 
-        app.controller('MyCtrl',function($scope, $http)
+        app.controller('MyCtrl',function($scope, $http, $window)
         {      
 //            alert("MyCtrl");
 //            $scope.getAllCount = function()
@@ -194,6 +194,7 @@ $scope.task =
                             $scope.task_accept = function()
                             {
                                 $scope.task.feature.acceptance_status="yes";
+                                $window.open("feature_version_create.action","_self");
                             }
                             $scope.task_reject = function()
                             {

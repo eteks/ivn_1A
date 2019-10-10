@@ -133,7 +133,7 @@
 <%@include file="footer.jsp" %>
 <script>
 //        var app = angular.module('angularTable', []);
-        app.controller('MyCtrl',function($scope, $http)
+        app.controller('MyCtrl',function($scope, $http, $window)
         {      
 //            var data = JSON.parse("<s:property value="count"/>".replace(/&quot;/g,'"'));
 ////            alert(JSON.stringify(data));
@@ -176,7 +176,7 @@ $scope.task =
                                     },
                                     feature:
                                     {
-                                        name: "legislation version 1.0",
+                                        name: "Feature version 2.0",
                                         created_date: "2019-03-12 10:03:03",
                                         created_by: "Anand",
                                         acceptance_status: "yes",
@@ -211,6 +211,7 @@ $scope.task =
                             $scope.task_accept = function()
                             {
                                 $scope.task.acb.acceptance_status="yes";
+                                $window.open("acb_version_create.action","_self");
                             }
                             $scope.task_reject = function()
                             {

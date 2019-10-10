@@ -134,7 +134,7 @@
 <script>
 //        var app = angular.module('angularTable', []);
 
-        app.controller('MyCtrl',function($scope, $http)
+        app.controller('MyCtrl',function($scope, $http, $window)
         {      
 //            alert("MyCtrl");
 //            $scope.getAllCount = function()
@@ -217,6 +217,7 @@ $scope.task =
                             $scope.task_accept = function()
                             {
                                 $scope.task.legislation.acceptance_status="yes";
+                                $window.open("legi_ver_create.action","_self");
                             }
                             $scope.task_reject = function()
                             {

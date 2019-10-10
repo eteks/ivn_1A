@@ -115,11 +115,19 @@
                                                             <div class="form-group">
                                                                 <input ng-model="data.feature" type="text" class="validate  col-lg-12" id="form-name" placeholder="Feature"/>
                                                             </div>
-                                                            <div class="form-group">                                                                
-                                                                <input ng-model="data.type" type="radio" class="validate" placeholder="Electrical" value="electrical"/>
-                                                                <label for="name">Electrical</label>&nbsp<span>/</span>
-                                                                <input ng-model="data.type" type="radio" class="validate" placeholder="Non Electrical" value="non_electrical"/>
-                                                                <label for="name">Non Electrical</label>
+                                                            <div class="form-group form-radio">
+                                                                <div class="radio radio-matrial radio-inverse radio-inline">
+                                                                    <label>
+                                                                        <input ng-model="data.type" type="radio" class="validate" placeholder="Electrical" value="electrical" />
+                                                                        <i class="helper"></i>Electrical
+                                                                    </label>
+                                                                </div>
+                                                                <div class="radio radio-matrial radio-inverse radio-inline">
+                                                                    <label>
+                                                                        <input ng-model="data.type" type="radio" class="validate" placeholder="Non Electrical" value="non_electrical"/>
+                                                                        <i class="helper"></i>Non Electrical
+                                                                    </label>
+                                                                </div>                                                                
                                                             </div>
                                                             <div class="form-group">
                                                                 <textarea ng-model="data.description" type="text" class="validate materialize-textarea  col-lg-12" placeholder="Description"></textarea>
@@ -128,7 +136,7 @@
                                                         <div style="clear:both"></div>
                                                         <p class="text-right">
                                                             <a href="" ng-click="Demo.data[Demo.data.length] = {}" class="text-c-green">
-                                                                <strong>Clone</strong>
+                                                                <strong>Add</strong>
                                                              </a>
                                                         </p>
                                                         <div class="input-field text-right">

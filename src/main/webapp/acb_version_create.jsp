@@ -42,42 +42,37 @@
                                                          <div class="row p-t-30">
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">PDB version :</label>
-                                                                <select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">
-                                                                    <s:iterator value="vehicleversion_result" >
-                                                                        <option value="<s:property value="id"/>">
-                                                                            <s:property value="versionname"/>
-                                                                        </option>
-                                                                    </s:iterator>
+                                                                <select>                                                                    
+                                                                    <option value="2.0" selected="">2.0</option>
                                                                 </select>
+                                                                <!--<select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">-->
+                                                                    <%--<s:iterator value="vehicleversion_result" >--%>
+                                                                        <!--<option value="<s:property value="id"/>">-->
+                                                                            <%--<s:property value="versionname"/>--%>
+                                                                        <!--</option>-->
+                                                                    <%--</s:iterator>--%>
+                                                                    <!--<option value="2.0" selected="">2.0</option>-->
+                                                                <!--</select>-->
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Vehicle:</label>
-                                                                <select ng-hide="data.vehicleversion"></select>
-                                                                <select ng-change="LoadPDBandIVN_Version()" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
-                                                                        <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
+                                                                <select>
+                                                                        <option value="XUV 500" selected="">XUV 500</option>
                                                                 </select>
+                                                                <!--<select ng-change="LoadPDBandIVN_Version()" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">-->
+                                                                        <!--<option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>-->                                                                    
+                                                                <!--</select>-->
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">IVN version:</label>
-                                                                <select ng-model="data.ivnversion" ng-change="LoadSelectedIVNData()">
-                                                                    <option value=""></option>
-                                                                    <option value="{{ivn.id}}" ng-repeat="ivn in ivnversion">{{ivn.ivn_versionname}}</option> 
+                                                                <select>
+                                                                    <option value="" selected="">2.0</option>
                                                                 </select>
-                                                                <button class="text-c-green" style="font-weight:600" ng-click="exportACB()">Export</button>
-                                                            </div>
-<!--                                                            <div class="form-group col-md-3">
-                                                                <label for="vehicle">ACB version :</label>
-                                                                <select ng-model="data.acbversion" ng-focus="focusCallback($event)" ng-change="LoadACBPreviousVersion($event)" data="mainversion">
-                                                                    <s:iterator value="acbversion_result" >
-                                                                        <option value="<s:property value="id"/>">
-                                                                            <s:property value="acb_versionname"/>
-                                                                        </option>
-                                                                    </s:iterator>
-                                                                </select>
-                                                                <select ng-change="LoadACBPreviousVersion($event)" ng-focus="focusCallback($event)" ng-if="acbsubversion.length > 0" ng-model="data.acbsubversion" data="subversion">
-                                                                    <option value="{{acb.id}}" ng-repeat="acb in acbsubversion">{{acb.acb_versionname}}</option>                                                                    
-                                                                </select>
-                                                            </div>                                -->                                                           
+                                                                <!--<select ng-model="data.ivnversion" ng-change="LoadSelectedIVNData()">-->
+                                                                    <!--<option value="{{ivn.id}}" ng-repeat="ivn in ivnversion">{{ivn.ivn_versionname}}</option>--> 
+                                                                <!--</select>-->
+                                                                <!--<button class="text-c-green" style="font-weight:600" ng-click="exportACB()">Export</button>-->
+                                                            </div>                                                                                        
                                                         </div>   
                                                         <div class="col-lg-12">
                                                             <div class="ng-table-scrollcontainer">
@@ -152,20 +147,20 @@
                                 <ul dnd-list="list.version"
                                           dnd-allowed-types="list.allowedTypes"
                                           dnd-disable-if="list.version.length == list.max-1">
-
+                                           <!--dnd-moved="list.version.splice($index, 1)"-->
                                           <li ng-repeat="person in list.version"
                                               dnd-draggable="person"
                                               dnd-type="person.type"
-                                              dnd-disable-if="person.type == 'unknown'"
-                                              dnd-moved="list.version.splice($index, 1)"
+                                              dnd-disable-if="person.type == 'unknown'"                                              
                                               class="background-{{person.type}} {{list.slot}}"
                                               >
                                               <a href="#" ng-click="hiddenDiv = !hiddenDiv">{{person.name}}</a>
                                               <ul ng-if="person.type == 'signal'" ng-show="hiddenDiv">
-                                                <li ng-repeat="net in (person.nw | customSplitString) track by $index">
-                                                    <a href="#" ng-click="addnwsignal(net,person.name,list.slot)">{{net}}</a>
+                                                <li ng-repeat="net in person.nw">
+                                                    <a href="#" ng-click="addnwsignal(net.id,person.id,list.slot)">{{net.name}}</a>
                                                 </li>
                                               </ul>
+                                              <input ng-if="list.slot == 'ecu_slot'" type="text" ng-model="" place-holder="Ecu feature name">                                              
                                           </li>
 
                                           <li class="dndPlaceholder">
@@ -187,7 +182,6 @@
                             <div class="container-element box box-blue">
                               <h3>Container {{item.id}}</h3>
                               <div style="padding:125px" class="column" ng-repeat="lists in item.columns" ng-include="'list.html'"></div>
-
                             </div>
                           </script>
 
@@ -231,8 +225,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="modal-content">
-                    
+                <div class="modal-content">                    
                     <h5 class="text-c-red m-b-10">Signals <a class="modal-action modal-close waves-effect waves-light float-right m-t-5" ><i class="icofont icofont-ui-close"></i></a></h5>
                     <!--<form class="form-inline mt-3">
                         <div class="form-group">
@@ -244,8 +237,7 @@
                             <a href="#" class="text-c-green" ng-click="add_signal_tab(cen.ip,cen.pri,fil.sid)">
                             <i class="icofont icofont-ui-add"></i></a>&nbsp;{{fil.listitem}}&nbsp;({{fil.description}})
                         </li>
-                    </ul>
-                    
+                    </ul>                    
                 </div>
             </div>
             
@@ -315,8 +307,9 @@
 //              scope: $scope
 //            });}
             $scope.hiddenDiv = false;
-            $scope.showDiv = function () {
-            $scope.hiddenDiv = !$scope.hiddenDiv;
+            $scope.showDiv = function () 
+            {
+                $scope.hiddenDiv = !$scope.hiddenDiv;
             };            
             $scope.fea = [];
             $scope.result = [];
@@ -328,16 +321,34 @@
                 $scope.fea.push({'fid':a});
                 
             }
-            $scope.addnwsignal = function(a,b,c)
+            $scope.addnwsignal = function(nid,sid,type)
             {
-                if(c=='ip')
+                if(type=='ip')
                 {
-                   $scope.ipsignal.push({'signal':b,'n/w':a});
-                   alert(JSON.stringify($scope.ipsignal));  
+                        const index = $scope.ipsignal.findIndex((e) => e.sid === sid);
+                        if (index === -1) 
+                        {
+                           $scope.ipsignal.push({sid:sid,nw:nid});
+                        }
+                        else 
+                        {
+                            $scope.ipsignal[index].nw = nid;
+                        }
+                         $("li.ip > ul").addClass("ng-hide");
+                        alert(JSON.stringify($scope.ipsignal));  
                 }
-                if(c=='op')
+                if(type=='op')
                 {
-                   $scope.opsignal.push({'signal':b,'n/w':a});
+                   const index = $scope.opsignal.findIndex((e) => e.sid === sid);
+                    if (index === -1) 
+                    {
+                       $scope.opsignal.push({sid:sid,nw:nid});
+                    }
+                    else 
+                    {
+                        $scope.opsignal[index].nw = nid;
+                    }
+                     $("li.op > ul").addClass("ng-hide");
                    alert(JSON.stringify($scope.opsignal));
                 }               
             }
@@ -431,16 +442,16 @@
                           allowedTypes: ['signal'],
                           max: 10,
                           version: [
-                              {name: "AUTO_SWITCH", type: "signal",nw:"can,lin,hw"},
-                              {name: "Solar temperature", type: "signal",nw:"can,lin,hw"},
-                              {name: "Ambient Temperature", type: "signal",nw:"can,lin,hw"},
-                              {name: "AC_Switch", type: "signal",nw:"can,lin,hw"},
-                              {name: "Drive Mode", type: "signal",nw:"can,lin,hw"},
-                              {name: "IGN status", type: "signal",nw:"can,lin,hw"},
-                              {name: "Current_Gear_MT", type: "signal",nw:"can,lin,hw"},
-                              {name: "Vehicle_Speed_ESC", type: "signal",nw:"can,lin,hw"},
-                              {name: "Compressor control", type: "signal",nw:"can,lin,hw"},
-                              {name: "DRV_SET_TEMP", type: "signal",nw:"can,lin,hw"}
+                              {id:1,name: "AUTO_SWITCH", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+                              {id:2,name: "Solar temperature", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+                              {id:3,name: "Ambient Temperature", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+                              {id:4,name: "AC_Switch", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+                              {id:5,name: "Drive Mode", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+                              {id:6,name: "IGN status", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+                              {id:7,name: "Current_Gear_MT", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+                              {id:8,name: "Vehicle_Speed_ESC", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+                              {id:9,name: "Compressor control", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+                              {id:10,name: "DRV_SET_TEMP", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]}
                           ]
 //                          version:[]
                       }, 

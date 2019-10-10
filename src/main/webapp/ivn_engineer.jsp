@@ -149,7 +149,7 @@
 <%@include file="footer.jsp" %>
 <script>
 //        var app = angular.module('angularTable', []);
-        app.controller('MyCtrl',function($scope, $http)
+        app.controller('MyCtrl',function($scope, $http, $window)
         {      
 //            var data = JSON.parse("<s:property value="count"/>".replace(/&quot;/g,'"'));
 ////            alert(JSON.stringify(data));
@@ -227,6 +227,7 @@ $scope.task =
                             $scope.task_accept = function()
                             {
                                 $scope.task.ivn.acceptance_status="yes";
+                                $window.open("ivn_version_create.action","_self");
                             }
                             $scope.task_reject = function()
                             {

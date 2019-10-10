@@ -45,7 +45,7 @@
                                     <li ng-tab-head ="active" ng-click="tabstep1()">
                                         <a href="#" >Vehicle</a>
                                     </li>
-                                    <li ng-tab-head="" ng-click="tabstep2()">
+                                    <li ng-if="Demo.dt.modelname !='' && Demo.dt.modelname !=undefined" ng-tab-head="" ng-click="tabstep2()">
                                         <a href="#" >PDB</a>
                                     </li>
                                 </ul>
@@ -127,12 +127,24 @@
                                             <div class="card-block marketing-card p-t-0">
                                                 <div class="row p-t-30">
                                                    
-                                                   <a class=" modal-trigger" href="#modal-feature-list">
+                                                   <a class=" modal-trigger text-dark" href="#modal-feature-list">
                                                        <i class="icofont icofont-ship-wheel text-c-red"></i>
                                                        Feature List
-                                                   </a>&nbsp&nbsp
-                                                   <a class="feature_add_tip waves-effect waves-light btn modal-trigger btn-floating btn-large red" href="#modal-product-form" ng-click="showCreateForm()">Add Feature</a>
-
+                                                   </a>&nbsp&nbsp&nbsp&nbsp
+                                                   <a class="feature_add_tip waves-effect waves-light btn modal-trigger btn-floating btn-large red text-pink" href="#modal-product-form" ng-click="showCreateForm()">Add Feature</a>
+                                                   &nbsp&nbsp&nbsp&nbsp
+                                                   <a href="#" ng-click="hiddenDiv = !hiddenDiv" class="text-purple">Borrow Features</a>
+                                                   <div class="col-xl-3" ng-show="hiddenDiv">    
+                                                        <select class="form-control form-control-primary" id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()" >
+                                                            <s:iterator value="vehicleversion_result" var="data" >
+                                                                <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
+                                                            </s:iterator>
+                                                        </select>
+                                                    </div>
+                                                   <div class="col-xl-2" ng-show="hiddenDiv"> 
+                                                        <select class="form-control form-control-primary" ng-model="data.pdbversion" ng-options="arr as arr.pdbversion_name for arr in array_result" ng-change="LoadVehicleModels()" disabled>
+                                                        </select>
+                                                   </div>
                                                </div>   
                                            <div class="ng-table-scrollcontainer" style="margin-left:300px;">        
                                                <table st-table="rowCollection" class="table table-striped">
@@ -266,11 +278,19 @@
                                 <div class="form-group">
                                     <input ng-model="data.feature" type="text" class="validate  col-lg-12" id="form-name" placeholder="Feature"/>
                                 </div>
-                                <div class="form-group">                                                                
-                                    <input ng-model="data.type" type="radio" class="validate" placeholder="Electrical" value="electrical"/>
-                                    <label for="name">Electrical</label>&nbsp<span>/</span>
-                                    <input ng-model="data.type" type="radio" class="validate" placeholder="Non Electrical" value="non_electrical"/>
-                                    <label for="name">Non Electrical</label>
+                                <div class="form-group form-radio">
+                                    <div class="radio radio-matrial radio-inverse radio-inline">
+                                        <label>
+                                            <input ng-model="data.type" type="radio" class="validate" placeholder="Electrical" value="electrical" />
+                                            <i class="helper"></i>Electrical
+                                        </label>
+                                    </div>
+                                    <div class="radio radio-matrial radio-inverse radio-inline">
+                                        <label>
+                                            <input ng-model="data.type" type="radio" class="validate" placeholder="Non Electrical" value="non_electrical"/>
+                                            <i class="helper"></i>Non Electrical
+                                        </label>
+                                    </div>                                                                
                                 </div>
                                 <div class="form-group">
                                     <textarea ng-model="data.description" type="text" class="validate materialize-textarea  col-lg-12" placeholder="Description"></textarea>
@@ -279,7 +299,7 @@
                             <div style="clear:both"></div>
                             <p class="text-right">
                                 <a href="" ng-click="Demo.data[Demo.data.length] = {}" class="text-c-green">
-                                    <strong>Clone</strong>
+                                    <strong>Add</strong>
                                  </a>
                             </p>
                             
@@ -338,7 +358,11 @@
 //                $window.alert(s);
 //                $scope.new_vehicle = s;
 //            };
-            
+            $scope.hiddenDiv = false;
+            $scope.showDiv = function () 
+            {
+                $scope.hiddenDiv = !$scope.hiddenDiv;
+            };
             $scope.formRest = function() 
             {
                 if ($scope.data.new_vehicle=="select_vehicle") {
