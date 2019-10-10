@@ -103,12 +103,10 @@ public class LegislationDB {
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
             Root<Legislationversion_group> lVGRoot = criteriaQuery.from(Legislationversion_group.class);
 //            criteriaQuery.distinct(true);
-            criteriaQuery.multiselect(lVGRoot.get("legislationversion_id").get("id").alias("leg_id"), lVGRoot.get("legislationversion_id").get("legislation_versionname").alias("leg"), 
+            criteriaQuery.distinct(true).multiselect(lVGRoot.get("vehiclemodel_id").get("modelname").alias("modelname"), lVGRoot.get("legislationversion_id").get("id").alias("leg_id"), lVGRoot.get("legislationversion_id").get("legislation_versionname").alias("leg"),
                     lVGRoot.get("legislationversion_id").get("created_date").alias("created_date"), lVGRoot.get("legislationversion_id").get("modified_date").alias("modified_date"),
-                    lVGRoot.get("legislationversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), lVGRoot.get("legislationversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"), 
-                    lVGRoot.get("legislationversion_id").get("flag").alias("flag"), lVGRoot.get("legislationversion_id").get("status").alias("status"),
-                    criteriaBuilder.function("group_concat", String.class, lVGRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"))
-                    .distinct(true).orderBy(criteriaBuilder.desc(lVGRoot.get("legislationversion_id").get("id")));
+                    lVGRoot.get("legislationversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), lVGRoot.get("legislationversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"),
+                    lVGRoot.get("legislationversion_id").get("flag").alias("flag"), lVGRoot.get("legislationversion_id").get("status").alias("status"));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();
@@ -119,7 +117,27 @@ public class LegislationDB {
             return null;
         }
     }
-    
+//    public static List<Legislationversion_group> GetLegislationListing() {
+//        try {
+//
+//            System.out.println("GetLegislationListing");
+//            Session session = HibernateUtil.getThreadLocalSession();
+//            Transaction tx = session.beginTransaction();
+//
+//            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+//            CriteriaQuery<Legislationversion_group> criteriaQuery = criteriaBuilder.createQuery(Legislationversion_group.class);
+//            Root<Legislationversion_group> lVGRoot = criteriaQuery.from(Legislationversion_group.class);
+//            criteriaQuery.distinct(true);
+//            TypedQuery<Legislationversion_group> typedQuery = session.createQuery(criteriaQuery);
+//
+//            tx.commit();
+//            session.clear();
+//            return typedQuery.getResultList();
+//        } catch (Exception e) {
+//            System.err.println("Error in \"GetLegislationListing\" : " + e);
+//            return null;
+//        }
+//    }
     
     public static List<Tuple> GetLegislationCombinationListing() {
         try {

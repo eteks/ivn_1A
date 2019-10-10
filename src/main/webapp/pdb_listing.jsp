@@ -31,7 +31,7 @@
                                                             </s:a>
                                                         </li>
                                                         <li class="breadcrumb-item">
-                                                            <s:url action="pdb_assign.action" var="aURL" />
+                                                            <s:url action="create_pdb.action" var="aURL" />
                                                             <s:a href="%{aURL}">
                                                                 Create Action
                                                             </s:a>

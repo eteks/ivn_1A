@@ -6,7 +6,6 @@
 package com.ivn_1A.models.pdbowner;
 
 import com.ivn_1A.configs.HibernateUtil;
-import com_ivn_1A.models.net_sign.Network;
 import java.util.List;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
@@ -15,7 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 /**
  *
@@ -106,20 +104,22 @@ public class FeatureversionDB {
         }
     }
 
-    public static List<Featureversion> GetVersionname() {
+    public static Featureversion GetVersionname() {
         System.out.println("Entered GetVersionname");
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
+
             CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
             CriteriaQuery<Featureversion> criteriaQuery = criteriaBuilder.createQuery(Featureversion.class);
+
             Root<Featureversion> test = criteriaQuery.from(Featureversion.class);
             criteriaQuery.orderBy(criteriaBuilder.desc(test.get("feature_versionname")));
             TypedQuery<Featureversion> dfm_result = s.createQuery(criteriaQuery).setMaxResults(1);
 
             tx.commit();
             s.clear();
-            return dfm_result.getResultList();
+            return dfm_result.getSingleResult();
         } catch (Exception e) {
             System.err.println("Error in \"GetVersionname\" : " + e.getMessage());
             return null;

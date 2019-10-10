@@ -8,11 +8,13 @@ package com.ivn_1A.controllers.notification;
 import com.ivn_1A.configs.CookieRead;
 import com.ivn_1A.configs.VersionType;
 import com.ivn_1A.configs.VersionViewPage;
+import com.ivn_1A.models.admin.User;
 import com.ivn_1A.models.notification.Notification;
 import com.ivn_1A.models.notification.NotificationDB;
 import com.ivn_1A.models.notification.StatusNotification;
 import com.ivn_1A.models.notification.StatusNotificationDB;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,13 +23,15 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.Tuple;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.dispatcher.SessionMap;
+import org.apache.struts2.interceptor.SessionAware;
 
 /**
- *
  * @author ETS-05
  */
-public class NotificationController {
+public class NotificationController implements SessionAware {
 
     private Map<String, String> maps_string = new HashMap<>();
     private Map<String, Object> maps_object = new HashMap<>();
@@ -35,6 +39,7 @@ public class NotificationController {
     private List<Map<String, Object>> view_notification = new ArrayList<>();
     private List<Tuple> tempTuples = new ArrayList<>();
     private int notification_id;
+    private SessionMap<String, Object> sessionMap;
 
     private static String getURLPath(HttpServletRequest request) {
         String uri = request.getRequestURI();
@@ -78,7 +83,10 @@ public class NotificationController {
         try {
             System.err.println("unreadNotification");
 //            int userid = CookieRead.getUserIdFromSession();
-            int userid = PDBOwnerDB.getUser(1).getId();
+            User user = PDBOwnerDB.getUser(1);
+            sessionMap.put("user", user);
+            System.out.println("User added in session");
+            int userid = user.getId();
             System.err.println("Notification Area " + userid);
             tempTuples = NotificationDB.getNotificationList(userid);
             tempTuples.stream().map((tuple) -> {
@@ -193,4 +201,8 @@ public class NotificationController {
         this.maps_object = maps_object;
     }
 
+    @Override
+    public void setSession(Map<String, Object> map) {
+        sessionMap = (SessionMap) map;
+    }
 }

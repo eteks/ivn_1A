@@ -181,9 +181,9 @@ public class Featureversion_Group {
             } else {
                 System.out.println("Ready to create");
                 //Create PDB version               
-                List<Featureversion> version_data = FeatureversionDB.GetVersionname();
-                if (!version_data.isEmpty()) {
-                    version_name = (float) 1.0 + version_data.get(0).getFeature_versionname();
+                Featureversion version_data = FeatureversionDB.GetVersionname();
+                if (version_data != null) {
+                    version_name = (float) 1.0 + version_data.getFeature_versionname();
                 }
                 Featureversion featureversion = new Featureversion();
                 featureversion.setFeature_versionname(version_name);
@@ -204,6 +204,7 @@ public class Featureversion_Group {
 //                    notificationController.createNotification(VersionType.Featureversion.getVersionCode(), version_name, new Date().toString(), notification_to, curfea_id.getId());
                     maps_string.put("status", "New Permanent Feature Version Created Successfully");
                 }
+                maps_string.put("feature", mapper.writeValueAsString(curfea_id));
             }
             maps_string.put("status_code", "1");
 

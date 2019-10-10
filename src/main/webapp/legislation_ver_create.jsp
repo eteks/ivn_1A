@@ -250,7 +250,9 @@
             $scope.showProceed =true;
             $scope.showSubmit =true;
             $scope.data = {};
-            
+            $scope.t_id = "";
+            $scope.tg_id = "";
+
              var data = '{"group": {"operator": "AND","rules": []}}';
              var action;
              $scope.records = [];
@@ -459,22 +461,47 @@
 //                                                };
 //                      alert(JSON.stringify(response.data.maps_object));
 //                      alert(JSON.stringify(response.data.maps_string));
-                      alert(response.data.maps_string.status);
-                      var vercompare_res = response.data.maps_object.pdb_previous_data_result;
-//                      if(vercompare_res != undefined){
-//                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
-//                            alert(JSON.stringify($scope.vercompare_results));    
-//                      }
-//                      else{
-//                            alert("No any previous version found to compare");
-//                      }
-                      $('#modal-comment').closeModal(); 
-                      if(response.data.maps_string.status_code == "1")
-                          $window.open("legislate_list.action","_self");
-    //                                    $window.alert(JSON.stringify(data));
-    //                                      alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-    //                                      $window.open("pdb_listing.action","_self"); //                alert(data.maps);
-    //            //                        Materialize.toast(data['maps']["status"], 4000);
+                    alert(response.data.maps_string.status);
+                    var vercompare_res = response.data.maps_object.leg_previous_data_result;
+                    if(vercompare_res != undefined){
+                       $scope.vercompare_results = response.data.maps_object.leg_previous_data_result;
+                       alert(JSON.stringify($scope.vercompare_results));
+                    }
+                    else{
+                       alert("No any previous version found to compare");
+                    }
+                    $('#modal-comment').closeModal();
+                    if(response.data.maps_string.status_code == "1") {
+
+                        var leg = JSON.parse(response.data.maps_string.leg_version.replace(/&quot;/g,'"'));
+                        var legvg = JSON.parse(response.data.maps_string.leg_version_group.replace(/&quot;/g,'"'));
+                        leg["froms"] = "Legislation";
+                        leg["t_id"] = $scope.t_id;
+                        leg["tg_id"] = $scope.tg_id;
+                        // if ($scope.t_id && $scope.tg_id) {
+                        //     leg["t_id"] = prompt("Enter the Task ID");
+                        //     leg["tg_id"] = prompt("Enter the Task Group ID");;
+                        // } else {
+                        //     leg["t_id"] = $scope.t_id;
+                        //     leg["tg_id"] = $scope.tg_id;
+                        // }
+                        alert("leg "+ JSON.stringify(leg) +" legvg "+ JSON.stringify(legvg));
+//                            alert("pdbv "+ JSON.stringify(pdbv) +" fro "+ JSON.stringify(pdbvg.froms));
+//                            console.log("pdbv "+ JSON.stringify(pdbv) +" pdbvg "+ JSON.stringify(pdbvg));
+                        $http({
+                            url: 'insertTasks',
+                            method: "POST",
+                            data: {"val":leg},
+                        }).then(function (response, status, headers, config) {
+                            if (response.data.maps_object.success) {
+                                alert(response.data.maps_object.success);
+                                console.log(response.data.maps_object.success+" "+JSON.stringify(response.data.list_object));
+                            } else {
+                                alert(JSON.stringify(response.data.maps_object));
+                            }
+                        });
+                        $window.open("legislate_list.action","_self");
+                    }
                 });
             };
             
@@ -512,7 +539,7 @@
             }
           };
           
-          if($location.absUrl().includes("?")){
+          if($location.absUrl().includes("?")) {
                 var params_array = [];
                 var absUrl = $location.absUrl().split("?")[1].split("&");
                 for(i=0;i<absUrl.length;i++){
@@ -522,29 +549,31 @@
 //                    alert(value);
                     params_array.push({[key_test]:value});
                 }
-                $scope.data.pdbversion = params_array[0].id;
-                var action = params_array[1].action;
-                
+                if (params_array[0].id && params_array[1].action) {
+
+                    $scope.data.pdbversion = params_array[0].id;
+                    var action = params_array[1].action;
+
 //                var result_data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-                
-                var legisdetail_list = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-                $window.alert(JSON.stringify(legisdetail_list));
+
+                    var legisdetail_list = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                    $window.alert(JSON.stringify(legisdetail_list));
 //                $scope.data.new_vehicle="select_vehicle";
-                $scope.truefalse = true;
-                $scope.data.status = legisdetail_list[0].status;                
-                $scope.data.vehicle = legisdetail_list[0].vehicle_id.toString();
-                $scope.LoadPreviousVersion();
-                $scope.records = legisdetail_list;
-                
-                
+                    $scope.truefalse = true;
+                    $scope.data.status = legisdetail_list[0].status;
+                    $scope.data.vehicle = legisdetail_list[0].vehicle_id.toString();
+                    $scope.LoadPreviousVersion();
+                    $scope.records = legisdetail_list;
+
+
 //                var vehicledetail_list = result_data.vehicledetail_list;
 //                $scope.data.status = result_data.pdbversion_status[0].status;
-//                
+//
 //                $scope.data.vehicleversion = vehicledetail_list[0].vehver_id.toString();
 //                $scope.LoadSelectedVehicleVersionData();
 //                $scope.data.vehiclename = vehicledetail_list[0].vehicle_id.toString();
 //                $scope.records = vehicledetail_list;
-//                    alert(JSON.stringify($scope.records));             
+//                    alert(JSON.stringify($scope.records));
 
 //                var featuredetail_list = result_data.featuredetail_list;
 //                for(var i=0; i<featuredetail_list.length; i++)
@@ -562,7 +591,7 @@
 //                            if($scope.features[j].fid === featuredetail_list[i].fid)
 //                            {
 //                                temp=1;
-//                            }   
+//                            }
 //                        }
 //                        if(temp==0)
 //                        {
@@ -571,32 +600,34 @@
 //                    }
 //
 //                    $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].model_id,featuredetail_list[i].status);
-////                        alert(JSON.stringify($scope.list));  
+////                        alert(JSON.stringify($scope.list));
 //                }
-                angular.element(function () {
-                    var result = document.getElementsByClassName("radio_button");
+                    angular.element(function () {
+                        var result = document.getElementsByClassName("radio_button");
 //                        alert(JSON.stringify(result));
-                        $scope.list.push({model_id:1,qb_id:1,status:"y"},{model_id:2,qb_id:1,status:"n"},{model_id:3,qb_id:1,status:"o"});
-                            alert(JSON.stringify($scope.list));
-                    angular.forEach(result, function(value) {
-                        var result_name = value.getAttribute("name").substring(1).split("_");
-                        var fid = result_name[0];
-                        var model_id = result_name[1];
-                        var status = value.getAttribute("value");  
+                        angular.forEach(result, function(value) {
+                            var result_name = value.getAttribute("name").substring(1).split("_");
+                            var fid = result_name[0];
+                            var model_id = result_name[1];
+                            var status = value.getAttribute("value");
 //                        alert(fid+" "+model_id+" "+status);
-                        angular.forEach($scope.list, function(item) {
+                            angular.forEach($scope.list, function(item) {
 //                            alert(item.qb_id+" "+item.model_id+" "+item.status);
-                            if(item.qb_id === fid && item.model_id === model_id && item.status === status)
-                                value.setAttribute("checked","checked");
-                        });    
+                                if(item.qb_id === fid && item.model_id === model_id && item.status === status)
+                                    value.setAttribute("checked","checked");
+                            });
+                        });
                     });
-                });
-                if(action === "view"){
-                    $scope.showProceed =false;
-                    $scope.showSave =false;
-                    $scope.showSubmit =false;
-                } else if(action === "edit"){
-                    $scope.showProceed =true;
+                    if(action === "view"){
+                        $scope.showProceed =false;
+                        $scope.showSave =false;
+                        $scope.showSubmit =false;
+                    } else if(action === "edit"){
+                        $scope.showProceed =true;
+                    }
+                } else {
+                    $scope.t_id = params_array[0].t_id;
+                    $scope.tg_id = params_array[1].tg_id;
                 }
             }
     });

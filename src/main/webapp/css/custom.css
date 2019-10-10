@@ -905,14 +905,6 @@ a
     
 }
 .background-signal > ul
-  {
-      /*display:none;*/
-  }  
-  .background-signal > ul
-  {
-    -webkit-transition: 4s ease-in;  
-    -moz-transition: 4s ease-in;  
-    -o-transition: 4s ease-in;  
-    transition: 4s ease-in; 
-  }
-  
+{
+    /*display:none;*/
+}  

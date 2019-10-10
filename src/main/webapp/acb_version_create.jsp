@@ -42,8 +42,12 @@
                                                          <div class="row p-t-30">
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">PDB version :</label>
-                                                                <select>                                                                    
-                                                                    <option value="2.0" selected="">2.0</option>
+                                                                <select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">
+                                                                    <s:iterator value="vehicleversion_result" >
+                                                                        <option value="<s:property value="id"/>">
+                                                                            <s:property value="versionname"/>
+                                                                        </option>
+                                                                    </s:iterator>
                                                                 </select>
                                                                 <!--<select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">-->
                                                                     <%--<s:iterator value="vehicleversion_result" >--%>
@@ -56,23 +60,32 @@
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Vehicle:</label>
-                                                                <select>
-                                                                        <option value="XUV 500" selected="">XUV 500</option>
+                                                                <select ng-hide="data.vehicleversion"></select>
+                                                                <select ng-change="LoadPDBandIVN_Version()" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
+                                                                        <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
                                                                 </select>
-                                                                <!--<select ng-change="LoadPDBandIVN_Version()" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">-->
-                                                                        <!--<option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>-->                                                                    
-                                                                <!--</select>-->
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">IVN version:</label>
-                                                                <select>
-                                                                    <option value="" selected="">2.0</option>
+                                                                <select ng-model="data.ivnversion" ng-change="LoadSelectedIVNData()">
+                                                                    <option value=""></option>
+                                                                    <option value="{{ivn.id}}" ng-repeat="ivn in ivnversion">{{ivn.ivn_versionname}}</option> 
                                                                 </select>
-                                                                <!--<select ng-model="data.ivnversion" ng-change="LoadSelectedIVNData()">-->
-                                                                    <!--<option value="{{ivn.id}}" ng-repeat="ivn in ivnversion">{{ivn.ivn_versionname}}</option>--> 
-                                                                <!--</select>-->
-                                                                <!--<button class="text-c-green" style="font-weight:600" ng-click="exportACB()">Export</button>-->
-                                                            </div>                                                                                        
+                                                                <button class="text-c-green" style="font-weight:600" ng-click="exportACB()">Export</button>
+                                                            </div>
+<!--                                                            <div class="form-group col-md-3">
+                                                                <label for="vehicle">ACB version :</label>
+                                                                <select ng-model="data.acbversion" ng-focus="focusCallback($event)" ng-change="LoadACBPreviousVersion($event)" data="mainversion">
+                                                                    <s:iterator value="acbversion_result" >
+                                                                        <option value="<s:property value="id"/>">
+                                                                            <s:property value="acb_versionname"/>
+                                                                        </option>
+                                                                    </s:iterator>
+                                                                </select>
+                                                                <select ng-change="LoadACBPreviousVersion($event)" ng-focus="focusCallback($event)" ng-if="acbsubversion.length > 0" ng-model="data.acbsubversion" data="subversion">
+                                                                    <option value="{{acb.id}}" ng-repeat="acb in acbsubversion">{{acb.acb_versionname}}</option>                                                                    
+                                                                </select>
+                                                            </div>                                -->         
                                                         </div>   
                                                         <div class="col-lg-12">
                                                             <div class="ng-table-scrollcontainer">
@@ -162,11 +175,9 @@
                                               </ul>
                                               <input ng-if="list.slot == 'ecu_slot'" type="text" ng-model="" place-holder="Ecu feature name">                                              
                                           </li>
-
                                           <li class="dndPlaceholder">
                                               Drop any <strong>{{list.allowedTypes.join(' or ')}}</strong> here
                                           </li>
-
                                       </ul>                                      
                               </div>                              
                             </div>
@@ -497,8 +508,6 @@
               $scope.$watch('models.dropzones', function(model) {
                 $scope.modelAsJson = angular.toJson(model, true);
               }, true);
-            
-            
         });
         app.filter('customSplitString', function() 
         {
