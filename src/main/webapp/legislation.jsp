@@ -61,9 +61,9 @@
                                                             <a href="#" ng-click="task_reject(task.pdb.task_id, task.pdb.tg_id)" class="btn-round btn btn-danger">Reject</a>
                                                         </div>
                                                         <p><span>Status</span>:
-                                                            <label ng-if="task.legislation.acceptance_status == true">Pending</label>
+                                                            <label ng-if="task.legislation.acceptance_status == true && task.legislation.completion_status == null">Pending</label>
                                                             <label ng-if="task.legislation.acceptance_status == false">rejected</label>
-                                                            <label ng-if="task.legislation.completion_status == true">Completed</label>
+                                                            <label ng-if="task.legislation.acceptance_status == true && task.legislation.completion_status == true">Completed</label>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -116,14 +116,14 @@
 <!--                                   <div class="col-md-3 col-lg-3">
                                         <div class="card visitor-card">
                                             <s:url action="legislation.action" var="aURL" />
-                                            <s:a href="%{aURL}">      
+                                            <s:a href="%{aURL}">
                                                 <div class="card-block">
                                                     <span> PDB Activity</span>
                                                     <span class="count"> + </span>
-                                                    <i class="icofont icofont icofont-star-alt-2 text-c-red"></i>  
+                                                    <i class="icofont icofont icofont-star-alt-2 text-c-red"></i>
                                                     <div class="clearfix"></div>
                                                 </div>
-                                            </s:a>    
+                                            </s:a>
                                         </div>
                                     </div>-->
 
@@ -285,7 +285,7 @@
                                         });
                                     };
                                 });
-                            </script>
-</body>
+                        </script>
+    </body>
 
 </html>

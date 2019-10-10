@@ -104,20 +104,22 @@ public class FeatureversionDB {
         }
     }
 
-    public static List<Featureversion> GetVersionname() {
+    public static Featureversion GetVersionname() {
         System.out.println("Entered GetVersionname");
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
+
             CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
             CriteriaQuery<Featureversion> criteriaQuery = criteriaBuilder.createQuery(Featureversion.class);
+
             Root<Featureversion> test = criteriaQuery.from(Featureversion.class);
             criteriaQuery.orderBy(criteriaBuilder.desc(test.get("feature_versionname")));
             TypedQuery<Featureversion> dfm_result = s.createQuery(criteriaQuery).setMaxResults(1);
 
             tx.commit();
             s.clear();
-            return dfm_result.getResultList();
+            return dfm_result.getSingleResult();
         } catch (Exception e) {
             System.err.println("Error in \"GetVersionname\" : " + e.getMessage());
             return null;

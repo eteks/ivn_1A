@@ -60,9 +60,9 @@
                                                             <a href="#" ng-click="task_reject(task.legislation.task_id, task.legislation.tg_id)" class="btn-round btn btn-danger">Reject</a>
                                                         </div>
                                                         <p><span>Status</span>: 
-                                                            <label ng-if="task.safety.acceptance_status == true">Pending</label>
+                                                            <label ng-if="task.safety.acceptance_status == true && task.safety.completion_status == null">Pending</label>
                                                             <label ng-if="task.safety.acceptance_status == false">rejected</label>
-                                                            <label ng-if="task.safety.completion_status == true">Completed</label>
+                                                            <label ng-if="task.safety.completion_status == true && task.safety.completion_status == true">Completed</label>
                                                         </p>
                                                     </div>
                                                 </div>

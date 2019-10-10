@@ -65,9 +65,9 @@
                                                             <a href="#" ng-click="task_reject(task.safety.task_id, task.safety.tg_id)" class="btn-round btn btn-danger">Reject</a>
                                                         </div>
                                                         <p><span>Status</span>: 
-                                                            <label ng-if="task.feature.acceptance_status == 'yes'">Pending</label>
-                                                            <label ng-if="task.feature.acceptance_status == 'no'">rejected</label>
-                                                            <label ng-if="task.feature.completion_status == 'yes'">Completed</label>
+                                                            <label ng-if="task.feature.acceptance_status == true && task.feature.completion_status != true">Pending</label>
+                                                            <label ng-if="task.feature.acceptance_status != true">rejected</label>
+                                                            <label ng-if="task.feature.completion_status == true">Completed</label>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -208,60 +208,60 @@
 //                                         completion_date: "2019-03-12 10:03:03"
 //                                     }
 //                             };
-                            $scope.task_accept = function(t_id, tg_id)
-                            {
-                                alert(tg_id);
-                                var data = {};
-                                data['t_id'] = t_id;
-                                data['tg_id'] = tg_id;
-                                data['username'] = '${sessionScope.user.username}';
-                                data['uid'] = '${sessionScope.user.id}';
-                                data['froms'] = 'Featureversion';
-                                data['stt'] = 'accept';
-                                alert(JSON.stringify(data));
-                                $http({
-                                    url: 'createFirstLevelTask',
-                                    method: "POST",
-                                    data: data,
-                                }).then(function (response, status, headers, config){
+            $scope.task_accept = function(t_id, tg_id)
+            {
+                alert(tg_id);
+                var data = {};
+                data['t_id'] = t_id;
+                data['tg_id'] = tg_id;
+                data['username'] = '${sessionScope.user.username}';
+                data['uid'] = '${sessionScope.user.id}';
+                data['froms'] = 'Featureversion';
+                data['stt'] = 'accept';
+                alert(JSON.stringify(data));
+                $http({
+                    url: 'createFirstLevelTask',
+                    method: "POST",
+                    data: data,
+                }).then(function (response, status, headers, config){
 
-                                    if(response.data.maps_object.success){
-                                        $window.alert(response.data.maps_object.success);
-                                        var vals = JSON.parse(response.data.maps_object.vals.replace(/&quot;/g,'"'));
-                                        $window.open("feature_version_create.action?t_id="+vals.task_id.id+"&tg_id="+vals.id, "_self");
-                                    } else {
-                                        var stt = response.data.maps_object.failed ? response.data.maps_object.failed : response.data.maps_object.error;
-                                        $window.alert(stt);
-                                    }
-                                });
-                            }
-                            $scope.task_reject = function(t_id, tg_id)
-                            {
-                                alert(tg_id);
-                                var data = {};
-                                data['t_id'] = t_id;
-                                data['tg_id'] = tg_id;
-                                data['username'] = '${sessionScope.user.username}';
-                                data['uid'] = '${sessionScope.user.id}';
-                                data['froms'] = 'Featureversion';
-                                data['stt'] = 'reject';
-                                alert(JSON.stringify(data));
-                                $http({
-                                    url: 'createFirstLevelTask',
-                                    method: "POST",
-                                    data: data,
-                                }).then(function (response, status, headers, config){
+                    if(response.data.maps_object.success){
+                        $window.alert(response.data.maps_object.success);
+                        var vals = JSON.parse(response.data.maps_object.vals.replace(/&quot;/g,'"'));
+                        $window.open("feature_version_create.action?t_id="+vals.task_id.id+"&tg_id="+vals.id, "_self");
+                    } else {
+                        var stt = response.data.maps_object.failed ? response.data.maps_object.failed : response.data.maps_object.error;
+                        $window.alert(stt);
+                    }
+                });
+            }
+            $scope.task_reject = function(t_id, tg_id)
+            {
+                alert(tg_id);
+                var data = {};
+                data['t_id'] = t_id;
+                data['tg_id'] = tg_id;
+                data['username'] = '${sessionScope.user.username}';
+                data['uid'] = '${sessionScope.user.id}';
+                data['froms'] = 'Featureversion';
+                data['stt'] = 'reject';
+                alert(JSON.stringify(data));
+                $http({
+                    url: 'createFirstLevelTask',
+                    method: "POST",
+                    data: data,
+                }).then(function (response, status, headers, config){
 
-                                    if(response.data.maps_object.success){
-                                        $window.alert(response.data.maps_object.success);
-                                        var vals = JSON.parse(response.data.maps_object.vals.replace(/&quot;/g,'"'));
-                                        $window.open("feature_version_create.action?t_id="+vals.task_id.id+"&tg_id="+vals.id, "_self");
-                                    } else {
-                                        var stt = response.data.maps_object.failed ? response.data.maps_object.failed : response.data.maps_object.error;
-                                        $window.alert(stt);
-                                    }
-                                });
-                            }
+                    if(response.data.maps_object.success){
+                        $window.alert(response.data.maps_object.success);
+                        var vals = JSON.parse(response.data.maps_object.vals.replace(/&quot;/g,'"'));
+                        $window.open("feature_version_create.action?t_id="+vals.task_id.id+"&tg_id="+vals.id, "_self");
+                    } else {
+                        var stt = response.data.maps_object.failed ? response.data.maps_object.failed : response.data.maps_object.error;
+                        $window.alert(stt);
+                    }
+                });
+            }
  
         });
     </script> 

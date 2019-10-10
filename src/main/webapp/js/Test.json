@@ -1,1 +1,22 @@
-{"pdb":{"name":"PDB version 2.5","completion_status":true,"accepted_date":"2019-10-03T12:33:49","accepted_by":"khan","completion_date":"2019-10-03T12:33:49","created_date":"2019-10-03T12:33:49","created_by":"khan","acceptance_status":true}}
+{
+    "featureversion": {
+        "vehicle": "1",
+        "status": true,
+        "featureversion_manual_comment": "wew"
+    },
+    "featuredata_list": [{
+            "name": "Safety 1.1",
+            "id": 2,
+            "type": "safety"
+        }, {
+            "name": "Legislation 2.3",
+            "id": 8,
+            "type": "legislation"
+        }, {
+            "name": "PDB 1.0",
+            "id": 1,
+            "type": "pdb"
+        }],
+    "button_type": "submit",
+    "notification_to": "1"
+}

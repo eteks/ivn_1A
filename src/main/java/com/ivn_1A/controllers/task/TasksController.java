@@ -88,7 +88,7 @@ public class TasksController {
                 else if (val.get("froms").asText().equals("Feature"))
                     tasks_group.setVersion_name(val.get("froms").asText() + " version " + val.get("feature_versionname").asDouble());
                 else if (val.get("froms").asText().equals("IVN"))
-                    tasks_group.setVersion_name(val.get("froms").asText() + " version " + val.get("ivn_versionname").asDouble());
+                    tasks_group.setVersion_name(val.get("froms").asText() + " version " + val.get("ivn_version").asDouble());
 
                 if (tasks_group != null) {
                     tasks_group = TasksDB.updateTasks_Group(tasks_group);
@@ -121,8 +121,9 @@ public class TasksController {
 
             int t_id = readValue.get("t_id").asInt();
             String froms = readValue.get("froms").asText();
-            boolean stt = readValue.get("stt").asText().equals("accept") ? true : false;
+            boolean stt = readValue.get("stt").asText().equals("accept");
             String receiver = "";
+            
             if (readValue.get("froms").asText().equals("Legislationversion"))
                 receiver = VersionType.Safetyversion.name();
             else if (readValue.get("froms").asText().equals("Safetyversion"))

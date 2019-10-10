@@ -441,7 +441,7 @@ public class Network_Group {
                         //loop for different size arraynode value.
                         int max = Math.max(sigNode.size(), ecuNode.size());
                         for (int i = 0; i < max; i++) {
-                            
+
                             iVN_Version_Groups.setIvnVersionId(iVN_Versions);
                             if (sigNode.size() > i) {
                                 iVN_Version_Groups.setSignalsId(IVNEngineerDB.getSignalDataByID(sigNode.get(i).asInt()));
@@ -471,6 +471,10 @@ public class Network_Group {
 
                             maps_object.put("ivn_previous_data_result", ivn_previous_data_result);
                         }
+
+                        maps_string.put("ivn_version", mapper.writeValueAsString(iVN_Versions));
+                        maps_string.put("ivn_version_group", mapper.writeValueAsString(iVN_Version_Groups));
+                        
                         if (iVN_Version_Groups != null && button_type.equals("save")) {
                             maps_object.put("status", "New Temporary IVN Version Created Successfully");
                         } else {
@@ -482,7 +486,6 @@ public class Network_Group {
                         }
                     }
                     maps_string.put("status_code", "1");
-                    
                 } else {
                     System.out.println("version_name " + version_name);
                     System.out.println("prevpdb_id " + ivnversion_id);
@@ -504,7 +507,7 @@ public class Network_Group {
 
                         ArrayNode sigNode = (ArrayNode) ivndata_list.get("signal");
                         ArrayNode ecuNode = (ArrayNode) ivndata_list.get("ecu");
-                        
+
                         IVN_Version_Group iVN_Version_Groups = new IVN_Version_Group();
                         int max = Math.max(sigNode.size(), ecuNode.size());
                         for (int i = 0; i < max; i++) {
@@ -537,6 +540,10 @@ public class Network_Group {
 
                             maps_object.put("ivn_previous_data_result", ivn_previous_data_result);
                         }
+                        
+                        maps_string.put("ivn_version", mapper.writeValueAsString(iVN_Versions));
+                        maps_string.put("ivn_version_group", mapper.writeValueAsString(iVN_Version_Groups));
+                        
                         if (iVN_Version_Groups != null && button_type.equals("save")) {
                             maps_object.put("status", "New Temporary IVN Version Created Successfully");
                         } else {
@@ -546,11 +553,11 @@ public class Network_Group {
                             }
                             maps_object.put("status", "New Permanent IVN Version Created Successfully");
                         }
-                    }
+                    }                    
+                    maps_string.put("status_code", "1");
                 }
             }
-            maps_string.put("status_code", "1");
-            
+
         } catch (Exception e) {
             System.err.println("Error in \"Network_Group\" \'CreateIVNVersion\' " + e);
             maps_object.put("status", "Error in \"Network_Group\" \'CreateIVNVersion\' " + e);
