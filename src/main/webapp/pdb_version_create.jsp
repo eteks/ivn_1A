@@ -997,6 +997,8 @@
             //getting pdb version and id
             $scope.borrowFeature = function()
             {
+                
+                $scope.features_list= JSON.parse("<s:property value="maps_object.features"/>".replace(/&quot;/g,'"'));
                 alert(JSON.stringify($scope.data.borrowFeature));
 //                $scope.truefalse = true;
 //                $scope.data.pdbversion = "";
@@ -1009,10 +1011,23 @@
                     data : {"vehicle_id":$scope.data.borrowFeature}
                 }).then(function (response, status, headers, config) {
                     
-                    $window.alert(JSON.stringify(response.data.maps_object.pdbfeature));                    
-                    $window.alert(JSON.stringify($scope.features));
-                    $scope.features = $scope.features.concat(response.data.maps_object.pdbfeature);
-                    $window.alert(JSON.stringify($scope.features));
+                    $window.alert(JSON.stringify(response.data));
+                    if (response.data.maps_object.success) {
+//                        $window.alert(response.data.maps_object.success);
+//                        $window.alert(JSON.stringify($scope.features));
+
+                        $scope.features = response.data.maps_object.pdbfeature;
+                        
+                        var ids = new Set($scope.features.map(({ fea }) => fea));
+                        $scope.features_list = $scope.features_list.filter(({ fea }) => !ids.has(fea));
+//                        for (var i = 0; i < $scope.features.length; i++) {
+////                            $scope.features_list = $scope.features_list.splice($scope.features_list.findIndex(({fid}) => fid == $scope.features[i].fid), 1);
+//                        }
+                    
+                    $window.alert(JSON.stringify($scope.features_list)+" "+JSON.stringify($scope.features));
+                    } else {
+                        $window.alert(response.data.maps_object.error);
+                    }
 //                    $scope.array_result = [];
 //                    $scope.status_value = "";
 //                    var pdbLength = response.data.maps_object.pdbversion.length;

@@ -416,8 +416,9 @@ public class Pdbversion_Group {
 //            String pdbvers_group_result = mapper.writeValueAsString(pdbversion_group_result);
             maps_object.put("pdbfeature", pdbvers_group_result);
             System.out.println(pdbvers_group_result);
+            maps_object.put("success", "Data Fetched Done");
         } catch (Exception e) {
-            maps_object.put("status", "No Feature has found");
+            maps_object.put("error", "No Feature has found");
             System.out.println("Error \"LoadPdbFeatureData\" : " + e);
         }
         return "success";
