@@ -189,8 +189,7 @@ public class Pdbversion_Group {
 //                            pdbversion.setPdb_reference_version(Float.valueOf(version_data.get(0).getPdb_versionname()));
                             prevpdb_id = version_data.get(0).getId();
 
-                        }
-                        //else if minor changes
+                        } //else if minor changes
                         else {
                             version_type = "minor_changes";
                             System.out.println("minor");
@@ -366,8 +365,6 @@ public class Pdbversion_Group {
 
             tupleObjects.stream().map((tuple) -> {
                 System.err.println("*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*****************" + tuple.get("pid") + " " + tuple.get("pversion"));
-                return tuple;
-            }).map((tuple) -> {
                 JSONObject fr = new JSONObject();
                 fr.put("pid", tuple.get("pid"));
                 fr.put("pversion", tuple.get("pversion"));
@@ -386,6 +383,42 @@ public class Pdbversion_Group {
         } catch (Exception e) {
             maps_object.put("status", e);
             System.out.println("Error : " + e);
+        }
+        return "success";
+    }
+
+    public String LoadPdbFeatureData() {
+
+        try {
+            System.out.println("LoadPdbFeatureData");
+
+            final ObjectMapper mapper = new ObjectMapper();
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            System.out.println("LoadPdbversionData1");
+            int vehicle_id = readValue.get("vehicle_id").asInt();
+
+            JSONArray pdbvers_group_result = new JSONArray();
+            PDBOwnerDB.loadPdbFeatureByVehicleId(vehicle_id).stream().map((pdbvers_group) -> {
+                
+                JSONObject fr = new JSONObject();
+                fr.put("fid", pdbvers_group.get("fid"));
+                fr.put("fea", pdbvers_group.get("fea"));
+                fr.put("domain", pdbvers_group.get("domain"));
+                return fr;
+            }).map((fr) -> {
+                pdbvers_group_result.add(fr);
+                return fr;
+            }).forEachOrdered((fr) -> {
+                System.out.println("LoadPdbFeatureData : " + fr);
+            });
+//            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+//            String pdbvers_group_result = mapper.writeValueAsString(pdbversion_group_result);
+            maps_object.put("pdbfeature", pdbvers_group_result);
+            System.out.println(pdbvers_group_result);
+        } catch (Exception e) {
+            maps_object.put("status", "No Feature has found");
+            System.out.println("Error \"LoadPdbFeatureData\" : " + e);
         }
         return "success";
     }

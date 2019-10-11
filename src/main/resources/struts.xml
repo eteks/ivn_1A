@@ -146,6 +146,10 @@
         <action name="createFirstLevelTask" class="com.ivn_1A.controllers.task.TasksController" method="createFirstLevelTask">
             <result type="json" />
         </action>
+        
+        <action name="loadpdbfeature_data" class="com.ivn_1A.controllers.pdbowner.Pdbversion_Group" method="LoadPdbFeatureData">
+            <result type="json" />
+        </action>
 
     </package>
     

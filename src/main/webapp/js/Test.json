@@ -1,22 +1,17 @@
-{
-    "featureversion": {
-        "vehicle": "1",
-        "status": true,
-        "featureversion_manual_comment": "wew"
-    },
-    "featuredata_list": [{
-            "name": "Safety 1.1",
-            "id": 2,
-            "type": "safety"
-        }, {
-            "name": "Legislation 2.3",
-            "id": 8,
-            "type": "legislation"
-        }, {
-            "name": "PDB 1.0",
-            "id": 1,
-            "type": "pdb"
-        }],
-    "button_type": "submit",
-    "notification_to": "1"
-}
+[{
+        "fid": 1,
+        "fea": "f1",
+        "domain": "car"
+    }, {
+        "fid": 2,
+        "fea": "f2",
+        "domain": "car"
+    }, {
+        "fid": 3,
+        "fea": "f3",
+        "domain": "car"
+    }, {
+        "fid": 4,
+        "fea": "f4",
+        "domain": "car"
+    }]
