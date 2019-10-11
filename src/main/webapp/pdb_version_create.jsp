@@ -135,7 +135,7 @@
                                                    &nbsp&nbsp&nbsp&nbsp
                                                    <a href="#" ng-click="hiddenDiv = !hiddenDiv" class="text-purple">Borrow Features</a>
                                                    <div class="col-xl-3" ng-show="hiddenDiv">    
-                                                        <select class="form-control form-control-primary" id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()" >
+                                                        <select class="form-control form-control-primary" id="vehiclename" ng-model="data.borrowFeature" ng-change="borrowFeature()" >
                                                             <s:iterator value="vehicleversion_result" var="data" >
                                                                 <option value="<s:property value="id"/>"><s:property value="vehiclename"/></option>
                                                             </s:iterator>
@@ -773,28 +773,26 @@
                            $scope.Demo.data=[];
                            
                         } else if (response.data.maps_string.res === "failed") {
-                            $window.alert(response.data.maps_string.status);
+                            
+                            var c = $window.confirm(response.data.maps_string.status +". Do you want to update?");
+                            if (c) {
+                                $http({
+                                    url : 'createfeature_and_domain',
+                                    method : "POST",
+                                    data : feature_and_domain_data
+                                }).then(function (data, status, headers, config) {
+                                    result_data = data.data.maps_object.domainfeatures_result;
+                                    $window.alert(JSON.stringify(result_data));
+                                    //result_data =  result_data.slice(1, -1);
+                                    for(var i = 0; i < result_data.length; i++) 
+                                    {
+                                        $scope.features.push({fid:result_data[i].fid,fea:result_data[i].fea,domain:result_data[i].domain});
+                                    }
+                                });
+                            }
                             $('#modal-product-form').closeModal();
                             $scope.domain="";
                             $scope.Demo.data=[];
-//                            $http({
-//                            url : 'createfeature_and_domain',
-//                            method : "POST",
-//                            data : feature_and_domain_data
-//                           })
-//                           .then(function (data, status, headers, config)
-//                           {
-//                                result_data = data.data.maps_object.domainfeatures_result;
-//                                $window.alert(JSON.stringify(result_data));
-//                                //result_data =  result_data.slice(1, -1);
-//                                for(var i = 0; i < result_data.length; i++) 
-//                                {
-//                                    $scope.features.push({fid:result_data[i].fid,fea:result_data[i].fea,domain:result_data[i].domain});
-//                                }
-//                           });
-//                           $('#modal-product-form').closeModal();
-//                           $scope.domain="";
-//                           $scope.Demo.data=[];
 //                           
                         } else {
                             $window.alert(response.data.maps_string.status);
@@ -992,6 +990,85 @@
                     } else {
                         $window.alert("The Selected Vehicle is now Inactive.");
                     }
+    //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
+                });
+            };
+            
+            //getting pdb version and id
+            $scope.borrowFeature = function()
+            {
+                
+                $scope.features_list= JSON.parse("<s:property value="maps_object.features"/>".replace(/&quot;/g,'"'));
+                alert(JSON.stringify($scope.data.borrowFeature));
+//                $scope.truefalse = true;
+//                $scope.data.pdbversion = "";
+//                $scope.Demo.dt.vehiclename = "";
+//                $scope.Demo.dt.modelname = "";
+//                $window.alert(ac);
+                $http({
+                    url : 'loadpdbfeature_data',
+                    method : "POST",
+                    data : {"vehicle_id":$scope.data.borrowFeature}
+                }).then(function (response, status, headers, config) {
+                    
+                    $window.alert(JSON.stringify(response.data));
+                    if (response.data.maps_object.success) {
+//                        $window.alert(response.data.maps_object.success);
+//                        $window.alert(JSON.stringify($scope.features));
+
+                        $scope.features = response.data.maps_object.pdbfeature;
+                        
+                        var ids = new Set($scope.features.map(({ fea }) => fea));
+                        $scope.features_list = $scope.features_list.filter(({ fea }) => !ids.has(fea));
+//                        for (var i = 0; i < $scope.features.length; i++) {
+////                            $scope.features_list = $scope.features_list.splice($scope.features_list.findIndex(({fid}) => fid == $scope.features[i].fid), 1);
+//                        }
+                    
+                    $window.alert(JSON.stringify($scope.features_list)+" "+JSON.stringify($scope.features));
+                    } else {
+                        $window.alert(response.data.maps_object.error);
+                    }
+//                    $scope.array_result = [];
+//                    $scope.status_value = "";
+//                    var pdbLength = response.data.maps_object.pdbversion.length;
+////                    alert(JSON.stringify(response.data.maps_object.pdbversion));
+//                    if (pdbLength > 0) {
+//                        for(var i = 0; i < pdbLength; i++)
+//                        {
+//                             var data= response.data.maps_object.pdbversion[i];
+//     //                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
+//     //                        $window.alert($scope.data.pdbversion);
+//                             $scope.array_result.push({
+//                                 "pdbid":data.pid,
+//                                 "pdbversion_name":parseFloat(data.pversion).toFixed(1),
+//                                 "status":data.status
+//                             });
+//                         }
+////                         alert(JSON.stringfy($scope.array_result));
+////                         alert($location.absUrl());
+//                         if($location.absUrl().includes("?")){
+//                            var pdb_id = $location.absUrl().split("?")[1].split("&")[0].split("=")[1];
+////                             alert(pdb_id);                             
+//                            for (var i = 0; i < $scope.array_result.length; i++){
+//                                // here jsonObject['sync_contact_list'][i] is your current "bit"
+////                                alert($scope.array_result[i].pdbid==pdb_id);
+//                                if ($scope.array_result[i].pdbid==pdb_id) {
+////                                    alert(JSON.stringify($scope.array_result[i]));
+//                                    $scope.data.pdbversion = $scope.array_result[i];
+//                                }
+//                            }
+////                             alert(JSON.stringify($scope.array_result['pdbid']));
+////                             $scope.data.pdbversion = {"pdbid":2,"pdbversion_name":"1.1","status":true};
+//                         }
+//                         else{
+////                             alert(JSON.stringify($scope.array_result[0]));
+//                             $scope.data.pdbversion = $scope.array_result[0];
+//                         }    
+////                         $scope.data.pdbversion = {"pdbid":5,"pdbversion_name":"2.1","status":true};
+//                         $scope.LoadVehicleModels();
+//                    } else {
+//                        $window.alert("The Selected Vehicle is now Inactive.");
+//                    }
     //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                 });
             };
