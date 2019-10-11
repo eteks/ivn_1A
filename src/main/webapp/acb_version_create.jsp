@@ -160,10 +160,10 @@
                                 <ul dnd-list="list.version"
                                           dnd-allowed-types="list.allowedTypes"
                                           dnd-disable-if="list.version.length == list.max-1">
-                                           <!--dnd-moved="list.version.splice($index, 1)"-->
                                           <li ng-repeat="person in list.version"
-                                              dnd-draggable="person"
+                                              dnd-draggable="person"                                             
                                               dnd-type="person.type"
+                                              dnd-moved="list.version.splice($index, 1)"
                                               dnd-disable-if="person.type == 'unknown'"                                              
                                               class="background-{{person.type}} {{list.slot}}"
                                               >

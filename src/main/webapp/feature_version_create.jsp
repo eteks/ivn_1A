@@ -83,8 +83,12 @@
                                                                           </li>
 
                                                                       </ul>
-                                                              </div>
+                                                              </div>                                                              
                                                             </div>
+                                                            <div class="check_feature">
+                                                            {{models.dropzones.B[3].version[0].type}}
+                                                                    <button ng-show="showSave == true" type="submit" class="btn btn-grd-success" ng-mousedown='doSubmit=true' ng-click="checkcompatibility()" name="save">Check Feature Compatibility</button>
+                                                             </div>
                                                            </script> 
 
                                                           <!-- This template is responsible for rendering a container element. It uses
@@ -268,7 +272,10 @@
               $scope.$watch('models.dropzones', function(model) {
                 $scope.modelAsJson = angular.toJson(model, true);
               }, true);      
-              
+            $scope.checkcompatibility = function()
+            {
+                alert('hi');
+            }
             $scope.LoadPreviousVersion = function()
             {
                 $http({
