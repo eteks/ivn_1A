@@ -47,7 +47,7 @@ public class ACB_DB {
         }
     }
     
-    public static List<Tuple> loadFeaturesByPdbId(int id) {
+    public static List<Pdbversion_group> loadFeaturesByPdbId(int id) {
         
         try {
 
@@ -56,15 +56,11 @@ public class ACB_DB {
             Transaction tx = session.beginTransaction();
 
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            CriteriaQuery<Pdbversion_group> criteriaQuery = criteriaBuilder.createQuery(Pdbversion_group.class);
             Root<Pdbversion_group> pdbGRoot = criteriaQuery.from(Pdbversion_group.class);
 //            criteriaQuery.distinct(true);
-            criteriaQuery.distinct(true).multiselect(pdbGRoot.get("domain_and_features_mapping_id").get("feature_id").get("id").alias("fid"), 
-                    pdbGRoot.get("domain_and_features_mapping_id").get("feature_id").get("feature_name").alias("fname"),
-                    pdbGRoot.get("vehiclemodel_id").get("id").alias("mid"), pdbGRoot.get("vehiclemodel_id").get("modelname").alias("mname"),
-                    criteriaBuilder.function("group_concat", String.class, pdbGRoot.get("available_status")).alias("stt"))
-                    .where(criteriaBuilder.equal(pdbGRoot.get("pdbversion_id").get("id"), id));
-            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+            criteriaQuery.where(criteriaBuilder.equal(pdbGRoot.get("pdbversion_id").get("id"), id));
+            TypedQuery<Pdbversion_group> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();
             session.clear();

@@ -16,6 +16,7 @@ public class CustomMySql5Dialect extends MySQL5Dialect {
     public CustomMySql5Dialect() {
         super();
         registerFunction("group_concat", new GroupConcatFunction());
+        registerFunction("group_concat_Distinct", new GroupConcatWithDistinctFunction());
         registerFunction("find_in_set", new FindInSet());
     }
 }

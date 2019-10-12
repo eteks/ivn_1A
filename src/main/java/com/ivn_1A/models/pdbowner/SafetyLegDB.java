@@ -333,7 +333,7 @@ public class SafetyLegDB {
                     svg.get("safetyversion_id").get("created_date").alias("created_date"), svg.get("safetyversion_id").get("modified_date").alias("modified_date"),
                     svg.get("safetyversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), svg.get("safetyversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"),
                     svg.get("safetyversion_id").get("flag").alias("flag"), svg.get("safetyversion_id").get("status").alias("status"),
-                    criteriaBuilder.function("group_concat", String.class, svg.get("vehiclemodel_id").get("modelname")).alias("modelname"))
+                    criteriaBuilder.function("group_concat_Distinct", String.class, svg.get("vehiclemodel_id").get("modelname")).alias("modelname"))
                     .distinct(true).orderBy(criteriaBuilder.desc(svg.get("safetyversion_id").get("id")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
@@ -389,9 +389,9 @@ public class SafetyLegDB {
             criteriaQuery.multiselect(pRoot.get("id").alias("safetyversion_group_id"), pRoot.get("safetyversion_id").get("id").alias("saf_id"),
                     pRoot.get("safetyversion_id").get("safety_versionname").alias("saf"), pRoot.get("safetyversion_id").get("status").alias("status"),
                     pRoot.get("safetyversion_id").get("flag").alias("flag"), pRoot.get("safetyversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("model_id"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("available_status")).alias("available_status"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("model_id"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("available_status")).alias("available_status"),
                     pRoot.get("safetyversion_id").get("vehicle_id").get("id").alias("vehicle_id"),
                     pRoot.get("querybuilder_id").get("id").alias("qb_id"), pRoot.get("querybuilder_id").get("querybuilder_name").alias("qb_name"),
                     pRoot.get("safetyversion_id").get("pdbversion_id").get("id").alias("pdb_versionid"), pRoot.get("safetyversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname")).distinct(true);
@@ -432,9 +432,9 @@ public class SafetyLegDB {
             criteriaQuery.multiselect(pRoot.get("id").alias("legisversion_group_id"), pRoot.get("legislationversion_id").get("id").alias("leg_id"),
                     pRoot.get("legislationversion_id").get("legislation_versionname").alias("leg"), pRoot.get("legislationversion_id").get("status").alias("status"),
                     pRoot.get("legislationversion_id").get("flag").alias("flag"), pRoot.get("legislationversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("model_id"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("available_status")).alias("available_status"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("model_id"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("available_status")).alias("available_status"),
                     pRoot.get("legislationversion_id").get("vehicle_id").get("id").alias("vehicle_id"),
                     pRoot.get("querybuilder_id").get("id").alias("qb_id"), pRoot.get("querybuilder_id").get("querybuilder_name").alias("qb_name"),
                     pRoot.get("legislationversion_id").get("pdbversion_id").get("id").alias("pdb_versionid"), 
@@ -684,7 +684,7 @@ public class SafetyLegDB {
 //                    lVGRoot.get("legislationversion_id").get("created_date").alias("created_date"), lVGRoot.get("legislationversion_id").get("modified_date").alias("modified_date"),
 //                    lVGRoot.get("legislationversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), lVGRoot.get("legislationversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"), 
 //                    lVGRoot.get("legislationversion_id").get("flag").alias("flag"), lVGRoot.get("legislationversion_id").get("status").alias("status"),
-//                    criteriaBuilder.function("group_concat", String.class, lVGRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"))
+//                    criteriaBuilder.function("group_concat_Distinct", String.class, lVGRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"))
 //                    .distinct(true).orderBy(criteriaBuilder.desc(lVGRoot.get("legislationversion_id").get("id")));
 //            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 //

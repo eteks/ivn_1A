@@ -108,17 +108,24 @@ public class ACB_Version_Group {
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             int pdbID = readValue.get("pdbid").asInt();
-            tupleObjects = ACB_DB.loadFeaturesByPdbId(pdbID);
-            tupleObjects.stream().map((tuple) -> {
+//            tupleObjects = ACB_DB.loadFeaturesByPdbId(pdbID);
+            ACB_DB.loadFeaturesByPdbId(pdbID).stream().map((tuple) -> {
                 
                 Map<String, Object> columns = new HashMap<>();
                 System.err.println("WElcome");
-                columns.put("fid", tuple.get("fid"));
-                columns.put("featurename", tuple.get("fname"));
-                columns.put("stt", tuple.get("stt").toString().split(","));
+//                columns.put("fid", tuple.get("fid"));
+//                columns.put("featurename", tuple.get("fname"));
+//                columns.put("stt", tuple.get("stt"));
+//                columns.put("touch", "No");
+//                columns.put("vmm_id", tuple.get("mid"));
+//                columns.put("modelname", tuple.get("mname"));
+
+                columns.put("fid", tuple.getDomain_and_features_mapping_id().getFeature_id().getId());
+                columns.put("featurename", tuple.getDomain_and_features_mapping_id().getFeature_id().getFeature_name());
+                columns.put("stt", tuple.getAvailable_status());
                 columns.put("touch", "No");
-                columns.put("vmm_id", tuple.get("mid"));
-                columns.put("modelname", tuple.get("mname"));
+                columns.put("vmm_id", tuple.getVehiclemodel_id().getId());
+                columns.put("modelname", tuple.getVehiclemodel_id().getModelname());
                 return columns;
             }).map((columns) -> {
                 result_data.add(columns);

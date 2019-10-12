@@ -97,9 +97,9 @@
                                                                     
                                                                     <td class="text-center acb_btn" ng-repeat="x in (record.status | customSplitString) track by $index">
                                                                         
-                                                                        <span class="btn yellow btn-icon" ng-if="x == 'O'">{{x | uppercase}}</span>
-                                                                        <span class="btn green  btn-icon" ng-if="x == 'Y'">{{x | uppercase}}</span>
-                                                                        <span class="btn brown btn-icon" ng-if="x == 'N'">{{x | uppercase}}</span>
+                                                                        <span class="btn yellow btn-icon" ng-if="x == 'o'">{{x | uppercase}}</span>
+                                                                        <span class="btn green  btn-icon" ng-if="x == 'y'">{{x | uppercase}}</span>
+                                                                        <span class="btn brown btn-icon" ng-if="x == 'n'">{{x | uppercase}}</span>
                                                                     </td>
                                                                     <td class="text-center" ng-if="record.touch != 'No'">
                                                                         <!--{{record.touch}}-->
@@ -293,6 +293,8 @@
             $scope.signal_list = [];
             $scope.network = [];
             $scope.list = [];
+            $scope.modals = [];
+            $scope.features = [];
             var features_group = [];
             var version_type;
             
@@ -363,24 +365,58 @@
                     
                     if (response.data.maps_string.success) {
                         
+                        
+                        result_data_obj = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
+                        alert(JSON.stringify(result_data_obj));
+//            $scope.modals = [
+//                        { vmm_id:'1',modelname: 'm1'},
+//                        { vmm_id:'2',modelname: 'm2'},
+//                        { vmm_id:'3',modelname: 'm3'},
+//                        { vmm_id:'4',modelname: 'm4'}
+//                    ];              
+//            $scope.features = [
+//                        { fid:'1',featurename: 'feature1',status:"Y,O,Y,N",touch:'No'},
+//                        { fid:'2',featurename: 'feature2',status:'O,N,Y,N',touch:'No'},
+//                        { fid:'3',featurename: 'feature3',status:'Y,Y,O,N',touch:'No'},
+//                        { fid:'4',featurename: 'feature4',status:'Y,Y,N,O',touch:'No'}
+//                    ];    
                         var arr_1 = [], arr_2 = [];
-                        for(var i = 0; i < response.data.result_data.length; i++)
+                        for(var i = 0; i < result_data_obj.length; i++)
                         {
                              arr_1.push({
-                                 "fid":response.data.result_data[i].fid,
-                                 "featurename":response.data.result_data[i].featurename,
-                                 "status":response.data.result_data[i].stt,
-                                 "touch":response.data.result_data[i].touch
+                                 'fid' : result_data_obj[i].fid,
+                                 'featurename' : result_data_obj[i].featurename,
+                                 'status' : result_data_obj[i].stt,
+                                 'touch' : result_data_obj[i].touch
                              });
                              
                              arr_2.push({
-                                 "vmm_id":response.data.result_data[i].vmm_id,
-                                 "modelname":response.data.result_data[i].modelname
+                                 'vmm_id' : result_data_obj[i].vmm_id,
+                                 'modelname' : result_data_obj[i].modelname
                              });
                          }
-                         $scope.features = arr_1;
+                        var seenNames = {}, seenNames1 = {};
+                        arr_1 = arr_1.filter(function(currentObject) {
+                            if (currentObject.featurename in seenNames) {
+                                return false;
+                            } else {
+                                seenNames[currentObject.featurename] = true;
+                                return true;
+                            }
+                        });
+                        arr_2 = arr_2.filter(function(currentObject) {
+                            if (currentObject.modelname in seenNames1) {
+                                return false;
+                            } else {
+                                seenNames1[currentObject.modelname] = true;
+                                return true;
+                            }
+                        });
+                        var mySet = new Set(arr_1);
+                        var filteredArray = Array.from(mySet)
+                         $scope.features = filteredArray;
                          $scope.modals = arr_2;
-                        alert(JSON.stringify(arr_1)+" ** "+JSON.stringify(arr_2));
+                        alert(JSON.stringify($scope.features)+" ** "+JSON.stringify($scope.modals));
                     } else {
                         alert(response.data.maps_string.error);
                     }
