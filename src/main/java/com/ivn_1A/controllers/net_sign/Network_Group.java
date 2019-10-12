@@ -291,6 +291,8 @@ public class Network_Group {
 //                columns.put("pdbversionname", String.format("%.1f", tuple.get("pdbversionname")));
                 columns.put("vid", tuple.get("vid"));
                 columns.put("vname", tuple.get("vname"));
+                columns.put("pdbid", tuple.get("pdbid"));
+                columns.put("pdbversionname", tuple.get("pdbversionname"));
                 columns.put("status", tuple.get("status"));
                 columns.put("flag", tuple.get("flag"));
                 return columns;
@@ -615,13 +617,12 @@ public class Network_Group {
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
 
             List<Map<String, Object>> row = new ArrayList<>();
-            tupleObjects = IVNEngineerDB.loadIVNVersion_ListingByVehicleId(readValue.get("vid").asInt());
 
-            tupleObjects.stream().map((tupleObject) -> {
+            IVNEngineerDB.loadIVNVersion_ListingByVehicleId(readValue.get("vid").asInt()).stream().map((tupleObject) -> {
 
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("id", tupleObject.get("id"));
-                columns.put("ivn_version", tupleObject.get("ivn_version"));
+                columns.put("ivn_version", String.format("%.1f", tupleObject.get("ivn_version")));
                 return columns;
             }).map((columns) -> {
 

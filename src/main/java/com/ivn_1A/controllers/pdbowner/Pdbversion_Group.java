@@ -43,12 +43,12 @@ public class Pdbversion_Group {
 
     private Map<String, String> maps_string = new HashMap<>();
     private Map<String, Object> maps_object = new HashMap<>();
-    //    Session session = HibernateUtil.getThreadLocalSession();
     private List<Vehicle> vehicleversion_result;
     private List<Tuple> tupleObjects = new ArrayList<>();
     Gson gson = new Gson();
     private String result_data_obj;
     HttpSession session = ServletActionContext.getRequest().getSession(false);
+    final ObjectMapper mapper = new ObjectMapper();
 
     public String PDBAssignPage() {
 
@@ -132,7 +132,6 @@ public class Pdbversion_Group {
 
         NotificationController notificationController = new NotificationController();
         System.out.println("CreatePDBVersion");
-        final ObjectMapper mapper = new ObjectMapper();
         String jsonValues = JSONConfigure.getAngularJSONFile();
         final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
         System.out.println("readValue" + readValue);
@@ -350,8 +349,6 @@ public class Pdbversion_Group {
     public String LoadPdbversionData() {
         try {
             System.out.println("LoadPdbversionData");
-
-            final ObjectMapper mapper = new ObjectMapper();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             System.out.println("LoadPdbversionData1");
@@ -391,8 +388,6 @@ public class Pdbversion_Group {
 
         try {
             System.out.println("LoadPdbFeatureData");
-
-            final ObjectMapper mapper = new ObjectMapper();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             System.out.println("LoadPdbversionData1");
@@ -400,7 +395,7 @@ public class Pdbversion_Group {
 
             JSONArray pdbvers_group_result = new JSONArray();
             PDBOwnerDB.loadPdbFeatureByVehicleId(vehicle_id).stream().map((pdbvers_group) -> {
-                
+
                 JSONObject fr = new JSONObject();
                 fr.put("fid", pdbvers_group.get("fid"));
                 fr.put("fea", pdbvers_group.get("fea"));
@@ -427,8 +422,6 @@ public class Pdbversion_Group {
     public String loadVehicleAndModelNames() {
         try {
             System.out.println("loadVehicleAndModelNames");
-
-            final ObjectMapper mapper = new ObjectMapper();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             int vehver_id = readValue.get("pdb_id").asInt();
@@ -474,7 +467,6 @@ public class Pdbversion_Group {
         try {
 
             System.out.println("CreateDomain_and_Features");
-            final ObjectMapper mapper = new ObjectMapper();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             List<Map<String, Object>> domainfeatures_result = new ArrayList<>();
@@ -526,7 +518,6 @@ public class Pdbversion_Group {
         try {
 
             System.out.println("checkVehicleAndModel");
-            final ObjectMapper mapper = new ObjectMapper();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             Map<String, Object> vehicleAndModel = new HashMap<>();
@@ -637,7 +628,6 @@ public class Pdbversion_Group {
 
         System.out.println("GetVehicleVersion_Listing");
         try {
-            ObjectMapper mapper = new ObjectMapper();
             tupleObjects = PDBOwnerDB.GetPDBVersion_Listing();
 
             User user = (User) session.getAttribute("user");
@@ -680,7 +670,6 @@ public class Pdbversion_Group {
 
         System.out.println("GetFeaturesListing controller");
         try {
-            ObjectMapper mapper = new ObjectMapper();
             tupleObjects = PDBOwnerDB.GetDomainFeaturesListing();
 
             List<Map<String, Object>> row = new ArrayList<>();
@@ -746,7 +735,6 @@ public class Pdbversion_Group {
         System.out.println("verifyVehicles controller");
         try {
 
-            final ObjectMapper mapper = new ObjectMapper();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             String vehicleName = readValue.get("vehiclename").asText();
@@ -769,7 +757,6 @@ public class Pdbversion_Group {
         System.out.println("validateDomain controller");
         try {
 
-            final ObjectMapper mapper = new ObjectMapper();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             String domainname = readValue.get("domainname").asText();
@@ -792,7 +779,6 @@ public class Pdbversion_Group {
 
     public String LoadPDBDomainFeatures() throws ParseException, IOException {
         System.out.println("LoadPDBDomainFeatures controller");
-        final ObjectMapper mapper = new ObjectMapper();
         String jsonValues = JSONConfigure.getAngularJSONFile();
         final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
 

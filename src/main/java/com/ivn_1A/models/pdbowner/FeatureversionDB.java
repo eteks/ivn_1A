@@ -159,11 +159,11 @@ public class FeatureversionDB {
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
             Root<Featureversion> lVGRoot = criteriaQuery.from(Featureversion.class);
 //            criteriaQuery.distinct(true);
-            criteriaQuery.multiselect(lVGRoot.get("feature_versionname").alias("feature_versionname"), lVGRoot.get("vehicle_id").get("vehiclename").alias("vehiclename"),
-                    lVGRoot.get("created_date").alias("created_date"), lVGRoot.get("modified_date").alias("modified_date"),
+            criteriaQuery.distinct(true).multiselect(lVGRoot.get("feature_versionname").alias("feature_versionname"), lVGRoot.get("vehicle_id").get("vehiclename").alias("vehiclename"),
+                    lVGRoot.get("created_date").alias("created_date"), lVGRoot.get("modified_date").alias("modified_date"), lVGRoot.get("pdbversion_id").get("id").alias("pdbid"),
                     lVGRoot.get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), lVGRoot.get("legislationversion_id").get("legislation_versionname").alias("legislation_versionname"),
                     lVGRoot.get("flag").alias("flag"), lVGRoot.get("status").alias("status"), lVGRoot.get("safetyversion_id").get("safety_versionname").alias("safety_versionname"))
-                    .distinct(true).orderBy(criteriaBuilder.desc(lVGRoot.get("id")));
+                    .orderBy(criteriaBuilder.desc(lVGRoot.get("id")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();

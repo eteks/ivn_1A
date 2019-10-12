@@ -151,6 +151,14 @@
             <result type="json" />
         </action>
 
+        <action name="getPdbVersionFromFeatureVersion" class="com.ivn_1A.controllers.acb.ACB_Version_Group" method="getPdbVersionFromFeatureVersion">
+            <result type="json" />
+        </action>
+        
+        <action name="LoadFeatures" class="com.ivn_1A.controllers.acb.ACB_Version_Group" method="getFeaturesByPdb">
+            <result type="json" />
+        </action>
+        
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">
@@ -259,7 +267,7 @@
             <!--<result name="session">index.jsp</result>--> 
             <result>acb_listing.jsp</result>
         </action>
-        <action name="acb_version_create" class="com.ivn_1A.controllers.pdbowner.Featureversion_Group" method="FeatureversionPage">
+        <action name="acb_version_create" class="com.ivn_1A.controllers.acb.ACB_Version_Group" method="ACBVersionPage">
             <!--<result name="session">index.jsp</result>--> 
             <result>acb_version_create.jsp</result>
         </action>
