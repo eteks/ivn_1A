@@ -115,7 +115,7 @@ public class ACB_Version_Group {
                 System.err.println("WElcome");
                 columns.put("fid", tuple.get("fid"));
                 columns.put("featurename", tuple.get("fname"));
-                columns.put("status", tuple.get("stt"));
+                columns.put("stt", tuple.get("stt").toString().split(","));
                 columns.put("touch", "No");
                 columns.put("vmm_id", tuple.get("mid"));
                 columns.put("modelname", tuple.get("mname"));
@@ -126,6 +126,7 @@ public class ACB_Version_Group {
             }).forEachOrdered((columns) -> {
                 System.out.println("colums" + columns);
             });
+            result_data_obj = new Gson().toJson(result_data);
             maps_string.put("success", "work is done");
 
         } catch (Exception e) {

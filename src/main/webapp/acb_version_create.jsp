@@ -354,7 +354,7 @@
                 });
             };
             $scope.LoadFeatures = function(pdbid) {
-                alert("kjfdhskfh "+pdbid);
+                alert("pdbid "+pdbid);
                 $http({
                     url : 'LoadFeatures',
                     method : "POST",
@@ -362,8 +362,25 @@
                 }).then(function (response, status, headers, config){
                     
                     if (response.data.maps_string.success) {
-                        alert(JSON.stringify(response.data.result_data));
-                        $scope.features = response.data.result_data;
+                        
+                        var arr_1 = [], arr_2 = [];
+                        for(var i = 0; i < response.data.result_data.length; i++)
+                        {
+                             arr_1.push({
+                                 "fid":response.data.result_data[i].fid,
+                                 "featurename":response.data.result_data[i].featurename,
+                                 "status":response.data.result_data[i].stt,
+                                 "touch":response.data.result_data[i].touch
+                             });
+                             
+                             arr_2.push({
+                                 "vmm_id":response.data.result_data[i].vmm_id,
+                                 "modelname":response.data.result_data[i].modelname
+                             });
+                         }
+                         $scope.features = arr_1;
+                         $scope.modals = arr_2;
+                        alert(JSON.stringify(arr_1)+" ** "+JSON.stringify(arr_2));
                     } else {
                         alert(response.data.maps_string.error);
                     }
@@ -456,18 +473,18 @@
             {
                 
             }
-            $scope.modals = [
-                        { vmm_id:'1',modelname: 'm1'},
-                        { vmm_id:'2',modelname: 'm2'},
-                        { vmm_id:'3',modelname: 'm3'},
-                        { vmm_id:'4',modelname: 'm4'}
-                    ];              
-            $scope.features = [
-                        { fid:'1',featurename: 'feature1',status:"Y,O,Y,N",touch:'No'},
-                        { fid:'2',featurename: 'feature2',status:'O,N,Y,N',touch:'No'},
-                        { fid:'3',featurename: 'feature3',status:'Y,Y,O,N',touch:'No'},
-                        { fid:'4',featurename: 'feature4',status:'Y,Y,N,O',touch:'No'}
-                    ];    
+//            $scope.modals = [
+//                        { vmm_id:'1',modelname: 'm1'},
+//                        { vmm_id:'2',modelname: 'm2'},
+//                        { vmm_id:'3',modelname: 'm3'},
+//                        { vmm_id:'4',modelname: 'm4'}
+//                    ];              
+//            $scope.features = [
+//                        { fid:'1',featurename: 'feature1',status:"Y,O,Y,N",touch:'No'},
+//                        { fid:'2',featurename: 'feature2',status:'O,N,Y,N',touch:'No'},
+//                        { fid:'3',featurename: 'feature3',status:'Y,Y,O,N',touch:'No'},
+//                        { fid:'4',featurename: 'feature4',status:'Y,Y,N,O',touch:'No'}
+//                    ];    
 //            $scope.ecu_list = [ 
 //                { eid:'1',listitem:'ecu 1',description:'description 1'},
 //                { eid:'2',listitem:'ecu 2',description:'description 2'},
