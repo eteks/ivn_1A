@@ -12,6 +12,7 @@ import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.models.acb.ACB_DB;
 import com.ivn_1A.models.net_sign.IVNEngineerDB;
 import com.ivn_1A.models.pdbowner.FeatureversionDB;
+import com.ivn_1A.models.pdbowner.Pdbversion_group;
 import com.ivn_1A.models.pdbowner.Vehicle;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,9 +100,9 @@ public class ACB_Version_Group {
         }
         return "success";
     }
-    
+
     public String getFeaturesByPdb() {
-        
+
         try {
 
             System.out.println("getFeaturesByPdb");
@@ -109,31 +110,102 @@ public class ACB_Version_Group {
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
             int pdbID = readValue.get("pdbid").asInt();
 //            tupleObjects = ACB_DB.loadFeaturesByPdbId(pdbID);
-            ACB_DB.loadFeaturesByPdbId(pdbID).stream().map((tuple) -> {
-                
-                Map<String, Object> columns = new HashMap<>();
-                System.err.println("WElcome");
-//                columns.put("fid", tuple.get("fid"));
-//                columns.put("featurename", tuple.get("fname"));
-//                columns.put("stt", tuple.get("stt"));
-//                columns.put("touch", "No");
-//                columns.put("vmm_id", tuple.get("mid"));
-//                columns.put("modelname", tuple.get("mname"));
+            Pdbversion_group pdbversion_group = new Pdbversion_group();
+            pdbversion_group.setId(pdbID);
+            Map<String, Object> col = new HashMap<>();
+            Map<String, Object> testMap = ACB_DB.getFeaturesByPdbId(pdbversion_group);
+            testMap.forEach((k, v) -> {
+                switch (k) {
+                    case "vehicledetail_list":
+                        List<Map<String, Object>> row1 = new ArrayList<>();
+                        tupleObjects = (List<Tuple>) v;
+                        tupleObjects.stream().map((tuple) -> {
 
-                columns.put("fid", tuple.getDomain_and_features_mapping_id().getFeature_id().getId());
-                columns.put("featurename", tuple.getDomain_and_features_mapping_id().getFeature_id().getFeature_name());
-                columns.put("stt", tuple.getAvailable_status());
-                columns.put("touch", "No");
-                columns.put("vmm_id", tuple.getVehiclemodel_id().getId());
-                columns.put("modelname", tuple.getVehiclemodel_id().getModelname());
-                return columns;
-            }).map((columns) -> {
-                result_data.add(columns);
-                return columns;
-            }).forEachOrdered((columns) -> {
-                System.out.println("colums" + columns);
+                            Map<String, Object> columns = new HashMap<>();
+                            System.err.println("WElcome");
+                            columns.put("pdb_id", tuple.get("pdb_id"));
+                            columns.put("vehicle_id", tuple.get("vehicle_id"));
+                            columns.put("modelname", tuple.get("modelname"));
+                            columns.put("touch", "No");
+                            columns.put("vmm_id", tuple.get("pdb_id"));
+                            return columns;
+                        }).map((columns) -> {
+                            row1.add(columns);
+                            return columns;
+                        }).forEachOrdered((columns) -> {
+                            System.out.println("colums_______________" + columns);
+                        });
+                        col.put("vehicledetail_list", row1);
+                        break;
+                    case "featuredetail_list":
+                        List<Map<String, Object>> row2 = new ArrayList<>();
+                        tupleObjects = (List<Tuple>) v;
+                        tupleObjects.stream().map((tuple) -> {
+
+                            Map<String, Object> columns = new HashMap<>();
+                            System.err.println("WElcome");
+                            columns.put("pdbgroup_id", tuple.get("pdbgroup_id"));
+                            columns.put("vmm_id", tuple.get("vmm_id"));
+                            columns.put("fid", tuple.get("fid"));
+                            columns.put("featurename", tuple.get("featurename"));
+                            columns.put("domainname", tuple.get("domainname"));
+                            columns.put("status", tuple.get("status"));
+                            return columns;
+                        }).map((columns) -> {
+                            row2.add(columns);
+                            return columns;
+                        }).forEachOrdered((columns) -> {
+                            System.out.println("colums_______________" + columns);
+                        });
+                        col.put("featuredetail_list", row2);
+                        break;
+                    case "pdbversion_status":
+                        List<Map<String, Object>> row3 = new ArrayList<>();
+                        tupleObjects = (List<Tuple>) v;
+                        tupleObjects.stream().map((tuple) -> {
+
+                            Map<String, Object> columns = new HashMap<>();
+                            System.err.println("WElcome");
+                            columns.put("status", tuple.get("status"));
+                            return columns;
+                        }).map((columns) -> {
+                            row3.add(columns);
+                            return columns;
+                        }).forEachOrdered((columns) -> {
+                            System.out.println("colums____________" + columns);
+                        });
+                        col.put("pdbversion_status", row3);
+                        break;
+                    default:
+                        System.err.println("+++++++++++++++++++++++++++ Error");
+                        break;
+                }
             });
-            result_data_obj = new Gson().toJson(result_data);
+//            tupleObjects.stream().map((tuple) -> {
+//                
+//                Map<String, Object> columns = new HashMap<>();
+//                System.err.println("WElcome");
+////                columns.put("fid", tuple.get("fid"));
+////                columns.put("featurename", tuple.get("fname"));
+////                columns.put("stt", tuple.get("stt"));
+////                columns.put("touch", "No");
+////                columns.put("vmm_id", tuple.get("mid"));
+////                columns.put("modelname", tuple.get("mname"));
+//
+//                columns.put("fid", tuple.getDomain_and_features_mapping_id().getFeature_id().getId());
+//                columns.put("featurename", tuple.getDomain_and_features_mapping_id().getFeature_id().getFeature_name());
+//                columns.put("stt", tuple.getAvailable_status());
+//                columns.put("touch", "No");
+//                columns.put("vmm_id", tuple.getVehiclemodel_id().getId());
+//                columns.put("modelname", tuple.getVehiclemodel_id().getModelname());
+//                return columns;
+//            }).map((columns) -> {
+//                result_data.add(columns);
+//                return columns;
+//            }).forEachOrdered((columns) -> {
+//                System.out.println("colums" + columns);
+//            });
+            result_data_obj = new Gson().toJson(col);
             maps_string.put("success", "work is done");
 
         } catch (Exception e) {

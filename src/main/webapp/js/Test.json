@@ -1,17 +1,99 @@
-[{
-        "fid": 1,
-        "fea": "f1",
-        "domain": "car"
-    }, {
-        "fid": 2,
-        "fea": "f2",
-        "domain": "car"
-    }, {
-        "fid": 3,
-        "fea": "f3",
-        "domain": "car"
-    }, {
-        "fid": 4,
-        "fea": "f4",
-        "domain": "car"
-    }]
+{
+    "vehicledetail_list": [{
+            "modelname": "High_O_Gadget_2WDMT",
+            "vehver_id": 2,
+            "vmm_id": "10",
+            "vehicle_id": 1
+        }, {
+            "modelname": "High_O_City_2WDAT",
+            "vehver_id": 2,
+            "vmm_id": "11",
+            "vehicle_id": 1
+        }, {
+            "modelname": "High_O_4Cast_4WDMT",
+            "vehver_id": 2,
+            "vmm_id": "12",
+            "vehicle_id": 1
+        }, {
+            "modelname": "High_O_4Cast_4WDAT",
+            "vehver_id": 2,
+            "vmm_id": "13",
+            "vehicle_id": 1
+        }, {
+            "modelname": "Base_Active_2WDMT",
+            "vehver_id": 2,
+            "vmm_id": "4",
+            "vehicle_id": 1
+        }, {
+            "modelname": "Mid_Machismo_2WDMT",
+            "vehver_id": 2,
+            "vmm_id": "5",
+            "vehicle_id": 1
+        }, {
+            "modelname": "Mid_O_4Cast_4WDMT",
+            "vehver_id": 2,
+            "vmm_id": "6",
+            "vehicle_id": 1
+        }, {
+            "modelname": "Mid_O_City_2WDAT",
+            "vehver_id": 2,
+            "vmm_id": "7",
+            "vehicle_id": 1
+        }, {
+            "modelname": "High_Pro_2WDMT",
+            "vehver_id": 2,
+            "vmm_id": "8",
+            "vehicle_id": 1
+        }, {
+            "modelname": "High_O_Delight_2WDMT",
+            "vehver_id": 2,
+            "vmm_id": "9",
+            "vehicle_id": 1
+        }],
+    "featuredetail_list": [{
+            "fid": "10",
+            "featurename": "Carbon filter",
+            "pdbgroup_id": "25,31,37,43,49,55,61,67,73,79",
+            "domainname": "Filter",
+            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
+            "status": "y,y,y,y,y,y,y,y,y,y"
+        }, {
+            "fid": "11",
+            "featurename": "PM 2.5 Clean Air Certification",
+            "pdbgroup_id": "26,32,38,44,50,56,62,68,74,80",
+            "domainname": "PM 2.5 Clean Air Certification",
+            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
+            "status": "y,y,y,y,y,y,y,y,y,y"
+        }, {
+            "fid": "6",
+            "featurename": "Demister",
+            "pdbgroup_id": "21,27,33,39,45,51,57,63,69,75",
+            "domainname": "RR DEFOGGER",
+            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
+            "status": "y,y,y,y,y,y,y,y,y,y"
+        }, {
+            "fid": "7",
+            "featurename": "Internally Variable Displacement AC Compressor",
+            "pdbgroup_id": "22,28,34,40,46,52,58,64,70,76",
+            "domainname": "IVDC",
+            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
+            "status": "y,y,y,y,y,y,y,y,y,y"
+        }, {
+            "fid": "8",
+            "featurename": "Externaly variable compressor",
+            "pdbgroup_id": "23,29,35,41,47,53,59,65,71,77",
+            "domainname": "IVDC",
+            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
+            "status": "o,o,o,o,o,o,o,o,o,o"
+        }, {
+            "fid": "9",
+            "featurename": "Paper filter",
+            "pdbgroup_id": "24,30,36,42,48,54,60,66,72,78",
+            "domainname": "Filter",
+            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
+            "status": "n,n,n,n,n,n,n,n,n,n"
+        }],
+    "pdbversion_status": [{
+            "status": true
+        }]
+}

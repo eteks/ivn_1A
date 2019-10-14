@@ -287,12 +287,10 @@ public class Network_Group {
             tupleObjects = IVNEngineerDB.LoadFeatureVersionById(featureID);
             tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
-//                columns.put("id", tuple.get("id"));
-//                columns.put("pdbversionname", String.format("%.1f", tuple.get("pdbversionname")));
                 columns.put("vid", tuple.get("vid"));
                 columns.put("vname", tuple.get("vname"));
                 columns.put("pdbid", tuple.get("pdbid"));
-                columns.put("pdbversionname", tuple.get("pdbversionname"));
+                columns.put("pdbversionname", String.format("%.1f", tuple.get("pdbversionname")));
                 columns.put("status", tuple.get("status"));
                 columns.put("flag", tuple.get("flag"));
                 return columns;

@@ -58,6 +58,11 @@
                                                                 </select>
                                                                 <button class="text-c-green" style="font-weight:600" ng-click="exportACB()">Export</button>
                                                             </div>
+                                                            <div class="form-group col-md-3">
+                                                                <label for="vehicle">PDB:</label>
+                                                                <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversionname for arr in arr_res_1" ng-change="LoadFeatures()">
+                                                                </select>
+                                                            </div>
 <!--                                                            <div class="form-group col-md-3">
                                                                 <label for="vehicle">ACB version :</label>
                                                                 <select ng-model="data.acbversion" ng-focus="focusCallback($event)" ng-change="LoadACBPreviousVersion($event)" data="mainversion">
@@ -315,14 +320,22 @@
                     $scope.vehicleresults = "";
                     result_data_obj = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
 //                    $window.alert(JSON.stringify(result_data_obj));
-                    var arr_res = [];
+                    var arr_res = [], arr_res_1 = [];
                    for(var i = 0; i < result_data_obj.length; i++)
                    {
                         arr_res.push({
-                           //"id":data.id,
-                            //"pdbversionname":data.pdbversionname,
+//                           "pdbid":result_data_obj[i].pdbid,
+//                            "pdbversionname":result_data_obj[i].pdbversionname,
                             "vid":result_data_obj[i].vid,
                             "vname":result_data_obj[i].vname,
+                            "status":result_data_obj[i].status,
+                            "flag":result_data_obj[i].flag
+                        });
+                        arr_res_1.push({
+                           "pdbid":result_data_obj[i].pdbid,
+                            "pdbversionname":result_data_obj[i].pdbversionname,
+//                            "vid":result_data_obj[i].vid,
+//                            "vname":result_data_obj[i].vname,
                             "status":result_data_obj[i].status,
                             "flag":result_data_obj[i].flag
                         });
@@ -331,14 +344,16 @@
 //                       $window.alert(JSON.stringify(result_data_obj[i]));
                     }
                     $scope.data.vehiclename = arr_res[0];
+                    $scope.data.pdbversion = arr_res_1[0];
                     $scope.arr_res = arr_res;
+                    $scope.arr_res_1 = arr_res_1;
                     $scope.LoadIVNVersion();
-                    $scope.LoadFeatures(result_data_obj[0].pdbid);
+//                    $scope.LoadFeatures(result_data_obj[0].pdbid);
 //                    $window.alert(JSON.stringify($scope.arr_res));
                 });
             };
             $scope.LoadIVNVersion = function() {
-                alert($scope.data.vehiclename.vid);
+                alert("vehiclename id "+$scope.data.vehiclename.vid);
                 $http({
                         url : 'LoadIVNVersion',
                         method : "POST",
@@ -352,11 +367,12 @@
                             $scope.create_type = true;
 //                            alert($scope.create_type);
                         }
+                        $scope.LoadFeatures($scope.data.pdbversion.pdbid);
 //                        alert(JSON.stringify($scope.records)+" "+$scope.data.vername);
                 });
             };
             $scope.LoadFeatures = function(pdbid) {
-                alert("pdbid "+pdbid);
+                alert("pdbversion id "+pdbid);
                 $http({
                     url : 'LoadFeatures',
                     method : "POST",
@@ -365,58 +381,17 @@
                     
                     if (response.data.maps_string.success) {
                         
-                        
-                        result_data_obj = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
-                        alert(JSON.stringify(result_data_obj));
-//            $scope.modals = [
-//                        { vmm_id:'1',modelname: 'm1'},
-//                        { vmm_id:'2',modelname: 'm2'},
-//                        { vmm_id:'3',modelname: 'm3'},
-//                        { vmm_id:'4',modelname: 'm4'}
-//                    ];              
-//            $scope.features = [
-//                        { fid:'1',featurename: 'feature1',status:"Y,O,Y,N",touch:'No'},
-//                        { fid:'2',featurename: 'feature2',status:'O,N,Y,N',touch:'No'},
-//                        { fid:'3',featurename: 'feature3',status:'Y,Y,O,N',touch:'No'},
-//                        { fid:'4',featurename: 'feature4',status:'Y,Y,N,O',touch:'No'}
-//                    ];    
-                        var arr_1 = [], arr_2 = [];
-                        for(var i = 0; i < result_data_obj.length; i++)
-                        {
-                             arr_1.push({
-                                 'fid' : result_data_obj[i].fid,
-                                 'featurename' : result_data_obj[i].featurename,
-                                 'status' : result_data_obj[i].stt,
-                                 'touch' : result_data_obj[i].touch
-                             });
-                             
-                             arr_2.push({
-                                 'vmm_id' : result_data_obj[i].vmm_id,
-                                 'modelname' : result_data_obj[i].modelname
-                             });
-                         }
-                        var seenNames = {}, seenNames1 = {};
-                        arr_1 = arr_1.filter(function(currentObject) {
-                            if (currentObject.featurename in seenNames) {
-                                return false;
-                            } else {
-                                seenNames[currentObject.featurename] = true;
-                                return true;
-                            }
+                        result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
+//                        alert("RES "+JSON.stringify(result_data));
+                        var vehicledetail_list = result_data.vehicledetail_list;
+                        var featuredetail_list = result_data.featuredetail_list;
+                        $scope.modals = vehicledetail_list;
+                        $scope.features = featuredetail_list;
+                        $scope.features.filter(function(v,i){
+                            $scope.features[i].pdbgroup_id = $scope.features[i].pdbgroup_id.split(",");
                         });
-                        arr_2 = arr_2.filter(function(currentObject) {
-                            if (currentObject.modelname in seenNames1) {
-                                return false;
-                            } else {
-                                seenNames1[currentObject.modelname] = true;
-                                return true;
-                            }
-                        });
-                        var mySet = new Set(arr_1);
-                        var filteredArray = Array.from(mySet)
-                         $scope.features = filteredArray;
-                         $scope.modals = arr_2;
-                        alert(JSON.stringify($scope.features)+" ** "+JSON.stringify($scope.modals));
+                        delete $scope.data.acbversion;
+                        alert("RES "+JSON.stringify($scope.modals)+" WEQ "+JSON.stringify($scope.features));
                     } else {
                         alert(response.data.maps_string.error);
                     }
