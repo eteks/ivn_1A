@@ -12,6 +12,7 @@ import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -332,7 +333,7 @@ public class SafetyLegDB {
                     svg.get("safetyversion_id").get("created_date").alias("created_date"), svg.get("safetyversion_id").get("modified_date").alias("modified_date"),
                     svg.get("safetyversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), svg.get("safetyversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"),
                     svg.get("safetyversion_id").get("flag").alias("flag"), svg.get("safetyversion_id").get("status").alias("status"),
-                    criteriaBuilder.function("group_concat", String.class, svg.get("vehiclemodel_id").get("modelname")).alias("modelname"))
+                    criteriaBuilder.function("group_concat_Distinct", String.class, svg.get("vehiclemodel_id").get("modelname")).alias("modelname"))
                     .distinct(true).orderBy(criteriaBuilder.desc(svg.get("safetyversion_id").get("id")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
@@ -388,9 +389,9 @@ public class SafetyLegDB {
             criteriaQuery.multiselect(pRoot.get("id").alias("safetyversion_group_id"), pRoot.get("safetyversion_id").get("id").alias("saf_id"),
                     pRoot.get("safetyversion_id").get("safety_versionname").alias("saf"), pRoot.get("safetyversion_id").get("status").alias("status"),
                     pRoot.get("safetyversion_id").get("flag").alias("flag"), pRoot.get("safetyversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("model_id"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("available_status")).alias("available_status"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("model_id"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("available_status")).alias("available_status"),
                     pRoot.get("safetyversion_id").get("vehicle_id").get("id").alias("vehicle_id"),
                     pRoot.get("querybuilder_id").get("id").alias("qb_id"), pRoot.get("querybuilder_id").get("querybuilder_name").alias("qb_name"),
                     pRoot.get("safetyversion_id").get("pdbversion_id").get("id").alias("pdb_versionid"), pRoot.get("safetyversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname")).distinct(true);
@@ -431,9 +432,9 @@ public class SafetyLegDB {
             criteriaQuery.multiselect(pRoot.get("id").alias("legisversion_group_id"), pRoot.get("legislationversion_id").get("id").alias("leg_id"),
                     pRoot.get("legislationversion_id").get("legislation_versionname").alias("leg"), pRoot.get("legislationversion_id").get("status").alias("status"),
                     pRoot.get("legislationversion_id").get("flag").alias("flag"), pRoot.get("legislationversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("model_id"),
-                    criteriaBuilder.function("group_concat", String.class, pRoot.get("available_status")).alias("available_status"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("vehiclemodel_id").get("id")).alias("model_id"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, pRoot.get("available_status")).alias("available_status"),
                     pRoot.get("legislationversion_id").get("vehicle_id").get("id").alias("vehicle_id"),
                     pRoot.get("querybuilder_id").get("id").alias("qb_id"), pRoot.get("querybuilder_id").get("querybuilder_name").alias("qb_name"),
                     pRoot.get("legislationversion_id").get("pdbversion_id").get("id").alias("pdb_versionid"), 
@@ -458,4 +459,268 @@ public class SafetyLegDB {
             return null;
         }
     }
+    
+    
+    public static List<Tuple> LoadPreviousLegislationCombinationData(Querybuilder querybuilder) {
+        try {
+
+            System.out.println("LoadPreviousLegislationCombinationData");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<Querybuilder> qBRoot = criteriaQuery.from(Querybuilder.class);
+            criteriaQuery.multiselect(qBRoot.get("querybuilder_name").alias("querybuilder_name"), qBRoot.get("querybuilder_type").alias("querybuilder_type"),
+                    qBRoot.get("querybuilder_condition").alias("querybuilder_condition"), qBRoot.get("querybuilder_status").alias("querybuilder_status"))
+                    .distinct(true).where(criteriaBuilder.equal(qBRoot.get("id"), querybuilder.getId()));
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"LoadPreviousLegislationCombinationData\" : " + e);
+            return null;
+        }
+    }
+
+    public static long insertLegislationCombination(Querybuilder querybuilder) {
+
+        try {
+
+            System.out.println("LoadPreviousLegislationCombinationData");
+            System.out.println("status_value" + querybuilder.getQuerybuilder_status());
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+            if (querybuilder.getQuerybuilder_status()) {
+
+                session.save(querybuilder);
+                tx.commit();
+                session.clear();
+                return querybuilder.getId();
+            } else {
+
+                final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+                // create update
+                CriteriaUpdate<Querybuilder> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Querybuilder.class);
+                // set the root class
+                Root<Querybuilder> qRoot = criteriaUpdate.from(Querybuilder.class);
+                // set update and where clause
+                criteriaUpdate.set("querybuilder_name", querybuilder.getQuerybuilder_name())
+                        .set("querybuilder_type", querybuilder.getQuerybuilder_type())
+                        .set("querybuilder_condition", querybuilder.getQuerybuilder_condition())
+                        .set("querybuilder_status", querybuilder.getQuerybuilder_status())
+                        .set("created_date", querybuilder.getCreated_date())
+                        .where(criteriaBuilder.equal(qRoot.get("id"), querybuilder.getId()));
+                // perform update
+                int a = session.createQuery(criteriaUpdate).executeUpdate();
+                tx.commit();
+                session.clear();
+                if (a > 0) {
+                    return querybuilder.getId();
+                } else {
+                    return 0;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error in \"insertLegislationCombination\" : " + e);
+            return 0;
+        }
+    }
+
+    public static List<Tuple> GetLegislationListing() {
+        try {
+
+            System.out.println("GetLegislationListing");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<Legislationversion_group> lVGRoot = criteriaQuery.from(Legislationversion_group.class);
+//            criteriaQuery.distinct(true);
+            criteriaQuery.distinct(true).multiselect(lVGRoot.get("vehiclemodel_id").get("modelname").alias("modelname"), lVGRoot.get("legislationversion_id").get("id").alias("leg_id"), lVGRoot.get("legislationversion_id").get("legislation_versionname").alias("leg"),
+                    lVGRoot.get("legislationversion_id").get("created_date").alias("created_date"), lVGRoot.get("legislationversion_id").get("modified_date").alias("modified_date"),
+                    lVGRoot.get("legislationversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), lVGRoot.get("legislationversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"),
+                    lVGRoot.get("legislationversion_id").get("flag").alias("flag"), lVGRoot.get("legislationversion_id").get("status").alias("status"));
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"GetLegislationListing\" : " + e);
+            return null;
+        }
+    }
+//    public static List<Legislationversion_group> GetLegislationListing() {
+//        try {
+//
+//            System.out.println("GetLegislationListing");
+//            Session session = HibernateUtil.getThreadLocalSession();
+//            Transaction tx = session.beginTransaction();
+//
+//            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+//            CriteriaQuery<Legislationversion_group> criteriaQuery = criteriaBuilder.createQuery(Legislationversion_group.class);
+//            Root<Legislationversion_group> lVGRoot = criteriaQuery.from(Legislationversion_group.class);
+//            criteriaQuery.distinct(true);
+//            TypedQuery<Legislationversion_group> typedQuery = session.createQuery(criteriaQuery);
+//
+//            tx.commit();
+//            session.clear();
+//            return typedQuery.getResultList();
+//        } catch (Exception e) {
+//            System.err.println("Error in \"GetLegislationListing\" : " + e);
+//            return null;
+//        }
+//    }
+    
+    public static List<Tuple> GetLegislationCombinationListing() {
+        try {
+
+            System.out.println("GetLegislationCombinationListing");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<Querybuilder> qBRoot = criteriaQuery.from(Querybuilder.class);
+            criteriaQuery.multiselect(qBRoot.get("id").alias("leg_id"), qBRoot.get("querybuilder_name").alias("leg"), qBRoot.get("created_date").alias("created_date"),
+                    qBRoot.get("modified_date").alias("modified_date"), qBRoot.get("querybuilder_condition").alias("combination"), qBRoot.get("querybuilder_status").alias("status"))
+                    .distinct(true).where(criteriaBuilder.equal(qBRoot.get("querybuilder_type"), "legislation"))
+                    .orderBy(criteriaBuilder.desc(qBRoot.get("id")));
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"GetLegislationCombinationListing\" : " + e);
+            return null;
+        }
+    }
+
+    public static List<Tuple> LoadPreviousSafetyCombinationData(Querybuilder querybuilder) {
+        try {
+
+            System.out.println("LoadPreviousLegislationCombinationData");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<Querybuilder> qBRoot = criteriaQuery.from(Querybuilder.class);
+            criteriaQuery.multiselect(qBRoot.get("querybuilder_name").alias("querybuilder_name"), qBRoot.get("querybuilder_type").alias("querybuilder_type"),
+                    qBRoot.get("querybuilder_condition").alias("querybuilder_condition"), qBRoot.get("querybuilder_status").alias("querybuilder_status"))
+                    .distinct(true).where(criteriaBuilder.equal(qBRoot.get("id"), querybuilder.getId()));
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"LoadPreviousSafetyCombinationData\" : " + e);
+            return null;
+        }
+    }
+
+    public static long insertSafetyCombination(Querybuilder querybuilder) {
+
+        try {
+
+            System.out.println("LoadPreviousLegislationCombinationData");
+            System.out.println("status_value" + querybuilder.getQuerybuilder_status());
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+            if (querybuilder.getQuerybuilder_status()) {
+
+                session.save(querybuilder);
+                tx.commit();
+                session.clear();
+                return querybuilder.getId();
+            } else {
+
+                final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+                // create update
+                CriteriaUpdate<Querybuilder> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Querybuilder.class);
+                // set the root class
+                Root<Querybuilder> qRoot = criteriaUpdate.from(Querybuilder.class);
+                // set update and where clause
+                criteriaUpdate.set("querybuilder_name", querybuilder.getQuerybuilder_name())
+                        .set("querybuilder_type", querybuilder.getQuerybuilder_type())
+                        .set("querybuilder_condition", querybuilder.getQuerybuilder_condition())
+                        .set("querybuilder_status", querybuilder.getQuerybuilder_status())
+                        .set("created_date", querybuilder.getCreated_date())
+                        .where(criteriaBuilder.equal(qRoot.get("id"), querybuilder.getId()));
+                // perform update
+                int a = session.createQuery(criteriaUpdate).executeUpdate();
+                tx.commit();
+                session.clear();
+                if (a > 0) {
+                    return querybuilder.getId();
+                } else {
+                    return 0;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error in \"insertSafetyCombination\" : " + e);
+            return 0;
+        }
+    }
+
+//    public static List<Tuple> GetSafetyListing() {
+//        try {
+//
+//            System.out.println("GetSafetyListing");
+//            Session session = HibernateUtil.getThreadLocalSession();
+//            Transaction tx = session.beginTransaction();
+//
+//            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+//            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+//            Root<Legislationversion_group> lVGRoot = criteriaQuery.from(Legislationversion_group.class);
+////            criteriaQuery.distinct(true);
+//            criteriaQuery.multiselect(lVGRoot.get("legislationversion_id").get("id").alias("saf_id"), lVGRoot.get("legislationversion_id").get("legislation_versionname").alias("saf"), 
+//                    lVGRoot.get("legislationversion_id").get("created_date").alias("created_date"), lVGRoot.get("legislationversion_id").get("modified_date").alias("modified_date"),
+//                    lVGRoot.get("legislationversion_id").get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), lVGRoot.get("legislationversion_id").get("vehicle_id").get("vehiclename").alias("vehiclename"), 
+//                    lVGRoot.get("legislationversion_id").get("flag").alias("flag"), lVGRoot.get("legislationversion_id").get("status").alias("status"),
+//                    criteriaBuilder.function("group_concat_Distinct", String.class, lVGRoot.get("vehiclemodel_id").get("modelname")).alias("modelname"))
+//                    .distinct(true).orderBy(criteriaBuilder.desc(lVGRoot.get("legislationversion_id").get("id")));
+//            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+//
+//            tx.commit();
+//            session.clear();
+//            return typedQuery.getResultList();
+//        } catch (Exception e) {
+//            System.err.println("Error in \"GetSafetyListing\" : " + e);
+//            return null;
+//        }
+//    }
+    
+    
+//    public static List<Tuple> GetSafetyCombinationListing() {
+//        try {
+//
+//            System.out.println("GetLegislationCombinationListing");
+//            Session session = HibernateUtil.getThreadLocalSession();
+//            Transaction tx = session.beginTransaction();
+//
+//            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+//            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+//            Root<Querybuilder> qBRoot = criteriaQuery.from(Querybuilder.class);
+//            criteriaQuery.multiselect(qBRoot.get("id").alias("saf_id"), qBRoot.get("querybuilder_name").alias("saf"), qBRoot.get("created_date").alias("created_date"),
+//                    qBRoot.get("modified_date").alias("modified_date"), qBRoot.get("querybuilder_condition").alias("combination"), qBRoot.get("querybuilder_status").alias("status"))
+//                    .distinct(true).where(criteriaBuilder.equal(qBRoot.get("querybuilder_type"), "safety"))
+//                    .orderBy(criteriaBuilder.desc(qBRoot.get("id")));
+//            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+//
+//            tx.commit();
+//            session.clear();
+//            return typedQuery.getResultList();
+//        } catch (Exception e) {
+//            System.err.println("Error in \"GetSafetyCombinationListing\" : " + e);
+//            return null;
+//        }
+//    }
+
 }

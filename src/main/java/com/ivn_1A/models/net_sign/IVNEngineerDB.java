@@ -431,7 +431,8 @@ public class IVNEngineerDB {
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
             Root<Featureversion> fvRoot = criteriaQuery.from(Featureversion.class);
 
-            criteriaQuery.multiselect(fvRoot.get("id").alias("id"), fvRoot.get("pdbversion_id").get("pdb_versionname").alias("pdbversionname"),
+            criteriaQuery.multiselect(fvRoot.get("id").alias("id"), fvRoot.get("pdbversion_id").get("id").alias("pdbid"), 
+                    fvRoot.get("pdbversion_id").get("pdb_versionname").alias("pdbversionname"),
                     fvRoot.get("vehicle_id").get("id").alias("vid"), fvRoot.get("vehicle_id").get("vehiclename").alias("vname"), fvRoot.get("status").alias("status"),
                     fvRoot.get("flag").alias("flag")).distinct(true)
                     .where(criteriaBuilder.equal(fvRoot.get("status"), true), criteriaBuilder.equal(fvRoot.get("flag"), true), criteriaBuilder.equal(fvRoot.get("id"), id))
