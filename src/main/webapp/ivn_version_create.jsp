@@ -82,15 +82,8 @@
                                                                 </select>
                                                             </div>-->
                                                              
-                                                            <a class="feature_add sig_add modal-trigger" href="#modal-signal-list">
-                                                                <i class="icofont icofont-drag text-c-green"></i>
-                                                                Signal List
-                                                            </a>
-                                                             <a class="feature_add ecu_add modal-trigger" href="#modal-ecu-list">
-                                                                <i class="icofont icofont-drag1 text-c-green"></i>
-                                                                Ecu List
-                                                            </a>
-                                                            <a class="feature_add_tip waves-effect waves-light btn modal-trigger btn-floating btn-large red" href="#modal-product-form" ng-click="showCreateForm()">Add</a>
+                                                                                                                         
+                                                            <a class="feature_add_tip modal-trigger text-c-primary" href="#modal-product-form" ng-click="showCreateForm()"><i class="icofont icofont-plus"></i> Add</a>
                                                             
                                                         </div>   
                                                         <div class="col-lg-12">
@@ -107,7 +100,12 @@
                                                                 <div class="tab-content" style="overflow: hidden">
                                                                     
                                                                     <div ng-tab-body="animated bounceInLeft" class="tab-pane ">
-                                                                        <h5 class="m-t-10">Select or Add Signal</h5>
+                                                                        <h5 class="m-t-20 m-b-10">Select or Add Signal
+                                                                            <a class="feature_add sig_add modal-trigger" href="#modal-signal-list">
+                                                                                <i class="icofont icofont-drag text-c-green"></i>
+                                                                                Signal List
+                                                                            </a>
+                                                                        </h5>
                                                                         <div id="accordion" role="tablist" aria-multiselectable="true">
                                                                                             
                                                                             <div class="accordion-panel" ng-repeat="s in signal">                                                         
@@ -150,16 +148,22 @@
                                                                         
                                                                     </div>
                                                                     <div ng-tab-body="animated bounceInLeft" class="tab-pane">
-                                                                           <h5 class="m-t-10">Select or Add ECU</h5>
-                                                                          <div ng-repeat="e in ecu">
-                                                                                <a href="#" ng-click="removeEcuRow(e.eid)" class="removeEcuRow"><i class="icofont icofont-ui-close text-c-red"></i></a>
+                                                                           <h5 class="m-t-20 m-b-10">Select or Add ECU
+                                                                                <a class="feature_add ecu_add modal-trigger" href="#modal-ecu-list">
+                                                                                <i class="icofont icofont-drag1 text-c-green"></i>
+                                                                                Ecu List
+                                                                                </a>
+                                                                           </h5>
+                                                                          <div ng-repeat="e in ecu" class="accordion-msg">
+                                                                               <span>{{e.listitem}} ({{e.description}})</span>   
+                                                                                <a href="#" ng-click="removeEcuRow(e.eid)" class="float-right"><i class="icofont icofont-ui-close text-c-red"></i></a>
 <!--                                                                                <div class="border-checkbox-section check_pan">                                                                                    
                                                                                     <div class="border-checkbox-group border-checkbox-group-success">
                                                                                         <input class="border-checkbox" type="checkbox" id="checkbox_eu_{{e.eid}}">
                                                                                         <label class="border-checkbox-label" for="checkbox_eu_{{e.eid}}"></label>
                                                                                     </div>
                                                                                 </div>-->
-                                                                                <label>{{e.listitem}} ({{e.description}})</label>           
+                                                                                        
                                                                             </div>                                                                    
                                                                     </div>
                                                                     
@@ -405,7 +409,7 @@
                     <input type="checkbox" ng-model="data.status">
                     <span class="slider round"></span>
                  </label>
-                <a class="feature_add_tip modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
+                <a class="modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
                 <div id="modal-comment" class="modal">
                      <div class="modal-content text-left">
 

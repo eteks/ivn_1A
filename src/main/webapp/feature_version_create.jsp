@@ -60,35 +60,35 @@
                                                         <!--drag and drop-->
                                                         <script type="text/ng-template" id="list.html">
                                                             <div ng-repeat="list in lists" class="col-md-4 drop_list_box">
-                                                              <div class="panel panel-info">
-                                                                <div class="panel-heading">
-                                                                  <h5 class="panel-title">List of {{list.label}} </h5>
-                                                                </div>
-                                                                <ul dnd-list="list.version"
-                                                                          dnd-allowed-types="list.allowedTypes"
-                                                                          dnd-disable-if="list.version.length == list.max-1">
+                                                                <div class="panel panel-info">
+                                                                  <div class="panel-heading">
+                                                                    <h5 class="panel-title">List of {{list.label}} </h5>
+                                                                  </div>
+                                                                  <ul dnd-list="list.version"
+                                                                            dnd-allowed-types="list.allowedTypes"
+                                                                            dnd-disable-if="list.version.length == list.max-1">
 
-                                                                          <li ng-repeat="person in list.version"
-                                                                              dnd-draggable="person"
-                                                                              dnd-type="person.type"
-                                                                              dnd-disable-if="person.type == 'unknown'"
-                                                                              dnd-moved="list.version.splice($index, 1)"
-                                                                              class="background-{{person.type}}"
-                                                                              >
-                                                                              {{person.name}}
-                                                                          </li>
+                                                                            <li ng-repeat="person in list.version"
+                                                                                dnd-draggable="person"
+                                                                                dnd-type="person.type"
+                                                                                dnd-disable-if="person.type == 'unknown'"
+                                                                                dnd-moved="list.version.splice($index, 1)"
+                                                                                class="background-{{person.type}}"
+                                                                                >
+                                                                                {{person.name}}
+                                                                            </li>
 
-                                                                          <li class="dndPlaceholder">
-                                                                              Drop any <strong>{{list.allowedTypes.join(' or ')}}</strong> here
-                                                                          </li>
+                                                                            <li class="dndPlaceholder">
+                                                                                Drop any <strong>{{list.allowedTypes.join(' or ')}}</strong> here
+                                                                            </li>
 
-                                                                      </ul>
-                                                              </div>                                                              
-                                                            </div>
-                                                            <div class="check_feature">
-                                                            {{models.dropzones.B[3].version[0].type}}
-                                                                    <button ng-show="showSave == true" type="submit" class="btn btn-grd-success" ng-mousedown='doSubmit=true' ng-click="checkcompatibility()" name="save">Check Feature Compatibility</button>
-                                                             </div>
+                                                                        </ul>
+                                                                </div>                                                              
+                                                              </div>
+                                                              <div class="check_feature">
+                                                              <!--{{models.dropzones.B[3].version[0].type}}-->
+                                                                      <button type="submit" class="btn btn-grd-success" ng-mousedown='doSubmit=true' ng-click="checkcompatibility()" name="save">Check Feature Compatibility</button>
+                                                               </div>
                                                            </script> 
 
                                                           <!-- This template is responsible for rendering a container element. It uses
@@ -274,7 +274,14 @@
               }, true);      
             $scope.checkcompatibility = function()
             {
-                alert('hi');
+                if($scope.models.dropzones.B[3].version[0].type == "pdb" || $scope.models.dropzones.B[3].version[1].type == "pdb")
+                {
+                    alert('Features are compatible with safety and legistion');
+                }
+                else
+                {
+                    alert('Features are not compatible with safety and legistion');
+                }
             }
             $scope.LoadPreviousVersion = function()
             {

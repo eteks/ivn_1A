@@ -427,17 +427,21 @@ input:checked + .slider:before
 }
 .feature_add_tip
 {
-    padding:0;
+    padding: 0;
+    position: absolute;
+    right: 200px;
+    top: 129px;
+    z-index: 9999;
 }
 .sig_add
 {
-    right: 40px;
-    top: 15px;
+    right: 0;
+    top: 0;
 }
 .ecu_add
 {
-    right: 56px;
-    top: 55px;
+    right: 0;
+    top: 0;
 }
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
