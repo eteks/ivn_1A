@@ -159,6 +159,10 @@
             <result type="json" />
         </action>
         
+        <action name="LoadSignalEcu" class="com.ivn_1A.controllers.acb.ACB_Version_Group" method="getSignalsAndECU">
+            <result type="json" />
+        </action>
+        
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">

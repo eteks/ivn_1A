@@ -92,7 +92,7 @@
                                                                 </thead>
                                                                 <tr dir-paginate="record in features|orderBy:sortKey:reverse|filter:search|itemsPerPage:20">                                                                        
                                                                     <td class="ng-table-fixedcolumn">
-                                                                        <a class="modal-trigger" href="#modal-product-form" style="text-decoration:underline;" ng-click="assignstart(record.fid)">
+                                                                        <a class="modal-trigger" href="#modal-product-form" style="text-decoration:underline;" ng-click="assignstart(record.fid)" >
                                                                             <span class="compresslength" style="display:block">{{record.featurename}}</span>
                                                                         </a>
                                                                         
@@ -352,8 +352,81 @@
 //                    $window.alert(JSON.stringify($scope.arr_res));
                 });
             };
+            
+            $scope.models = {
+                selected: null,
+                templates: [{
+                  type: "item",
+                  id: 2
+                }, {
+                  type: "container",
+                  id: 1,
+                  columns: [
+                    []
+                  ]
+                }],
+                dropzones: {
+                  "B": [
+                       {
+                          label: "Signal",
+                          slot:"signal_slot",
+                          allowedTypes: ['signal'],
+                          max: 10,
+//                          version: [
+//                              {id:1,name: "AUTO_SWITCH", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:2,name: "Solar temperature", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:3,name: "Ambient Temperature", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:4,name: "AC_Switch", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:5,name: "Drive Mode", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:6,name: "IGN status", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:7,name: "Current_Gear_MT", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:8,name: "Vehicle_Speed_ESC", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:9,name: "Compressor control", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:10,name: "DRV_SET_TEMP", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]}
+//                          ]
+//                          version:[]
+                      }, 
+                      {
+                          label: "i/p Signal Slot",
+                          slot:"ip",
+                          allowedTypes: ['signal'],
+                          max: 3,
+                          version: []
+                      },
+                      {
+                          label: "ECU Slot",
+                          slot:"ecu_slot",
+                          allowedTypes: ['ecu'],
+                          max: 2,
+                          version: []
+//                          version:[]
+                      },
+                      {
+                          label: "o/p Signal Slot",
+                          slot:"op",
+                          allowedTypes: ['signal'],
+                          max: 3,
+                          version: []
+                      },
+                      {
+                          label: "ECU",
+                          slot:"ecu_list",
+                          allowedTypes: ['ecu'],
+                          max: 4,
+//                          version: [
+//                              {name: "HVAC Systems", type: "ecu"},
+//                              {name: "DZATC", type: "ecu"},
+//                              {name: "ETC2", type: "ecu"}
+//                          ]
+//                          version:[]
+                      }                      
+                  ]
+                }                
+              };
+              
             $scope.LoadIVNVersion = function() {
-                alert("vehiclename id "+$scope.data.vehiclename.vid);
+                
+//                alert("vehiclename id "+$scope.data.vehiclename.vid);
                 $http({
                         url : 'LoadIVNVersion',
                         method : "POST",
@@ -371,8 +444,10 @@
 //                        alert(JSON.stringify($scope.records)+" "+$scope.data.vername);
                 });
             };
+            
             $scope.LoadFeatures = function(pdbid) {
-                alert("pdbversion id "+pdbid);
+                
+//                alert("pdbversion id "+pdbid);
                 $http({
                     url : 'LoadFeatures',
                     method : "POST",
@@ -391,7 +466,62 @@
                             $scope.features[i].pdbgroup_id = $scope.features[i].pdbgroup_id.split(",");
                         });
                         delete $scope.data.acbversion;
-                        alert("RES "+JSON.stringify($scope.modals)+" WEQ "+JSON.stringify($scope.features));
+//                        alert("RES "+JSON.stringify($scope.modals)+" WEQ "+JSON.stringify($scope.features));
+                        //Load Signals and ECU
+                        $http.get("LoadSignalEcu.action").then(function (response, status, headers, config){
+
+                            if (response.data.maps_string.success) {
+                                
+                                //{id:1,name: "AUTO_SWITCH", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},{name: "HVAC Systems", type: "ecu"},
+                                result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
+//                                console.log(JSON.stringify(result_data));
+                                var sig = [], nw = [], ecu = [];
+                                var mx = Math.max(result_data.signals.length, result_data.ecu.length);
+                                
+                                for (var i = 0; i < mx; i++) {
+                                    
+                                    if (result_data.signals[i].can_id_group) {
+                                        nw.push({
+                                            id : result_data.signals[i].can_id_group.id,
+                                            name : result_data.signals[i].can_id_group.network_name
+                                        });
+                                    }
+                                    if (result_data.signals[i].lin_id_group) {
+                                        nw.push({
+                                            id : result_data.signals[i].lin_id_group.id,
+                                            name : result_data.signals[i].lin_id_group.network_name
+                                        });
+                                    }
+                                    if (result_data.signals[i].hw_id_group) {
+                                        nw.push({
+                                            id : result_data.signals[i].hw_id_group.id,
+                                            name : result_data.signals[i].hw_id_group.network_name
+                                        });
+                                    }
+                                    sig.push({
+                                        id : result_data.signals[i].id,
+                                        name : result_data.signals[i].signal_name,
+                                        type : "signal",
+                                        nw : nw
+                                    });
+                                    if (result_data.ecu[i].id) {
+                                        ecu.push({
+                                            id : result_data.ecu[i].id,
+                                            name : result_data.ecu[i].ecu_name,
+                                            type : "ecu"
+                                        });
+                                    }
+                                }
+                                //assigning single to model json
+                                $scope.models.dropzones.B[0].version = sig;
+                                //assigning ecu to model json
+                                $scope.models.dropzones.B[4].version = ecu;
+//                                    alert(JSON.stringify(ecu));
+//                                alert(JSON.stringify($scope.models));
+                            } else {
+                                alert(response.data.maps_string.error);
+                            }
+                        });
                     } else {
                         alert(response.data.maps_string.error);
                     }
@@ -441,6 +571,7 @@
             $scope.assignstart = function(a)
             {
                 $scope.fea.push({'fid':a});
+                $('.modal-trigger').leanModal();
                 
             }
             $scope.addnwsignal = function(nid,sid,type)
@@ -529,8 +660,8 @@
                 alert(JSON.stringify($scope.data.pdbversion));
             }
 
-    $scope.dropCallback = function(index, item, external, type) 
-    {
+            $scope.dropCallback = function(index, item, external, type) 
+            {
                 // Return false here to cancel drop. Return true if you insert the item yourself.
                 // roll down and delete any empty columns//
                 var model = $scope.models.dropzones;
@@ -545,78 +676,8 @@
                 }
 
                 return item;
-              };
+            };
 
-              $scope.models = {
-                selected: null,
-                templates: [{
-                  type: "item",
-                  id: 2
-                }, {
-                  type: "container",
-                  id: 1,
-                  columns: [
-                    []
-                  ]
-                }],
-                dropzones: {
-                  "B": [
-                       {
-                          label: "Signal",
-                          slot:"signal_slot",
-                          allowedTypes: ['signal'],
-                          max: 10,
-                          version: [
-                              {id:1,name: "AUTO_SWITCH", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:2,name: "Solar temperature", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:3,name: "Ambient Temperature", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:4,name: "AC_Switch", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:5,name: "Drive Mode", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:6,name: "IGN status", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:7,name: "Current_Gear_MT", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:8,name: "Vehicle_Speed_ESC", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:9,name: "Compressor control", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:10,name: "DRV_SET_TEMP", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]}
-                          ]
-//                          version:[]
-                      }, 
-                      {
-                          label: "i/p Signal Slot",
-                          slot:"ip",
-                          allowedTypes: ['signal'],
-                          max: 3,
-                          version: []
-                      },
-                      {
-                          label: "ECU Slot",
-                          slot:"ecu_slot",
-                          allowedTypes: ['ecu'],
-                          max: 2,
-                          version: []
-//                          version:[]
-                      },
-                      {
-                          label: "o/p Signal Slot",
-                          slot:"op",
-                          allowedTypes: ['signal'],
-                          max: 3,
-                          version: []
-                      },
-                      {
-                          label: "ECU",
-                          slot:"ecu_list",
-                          allowedTypes: ['ecu'],
-                          max: 4,
-                          version: [
-                              {name: "HVAC Systems", type: "ecu"},
-                              {name: "DZATC", type: "ecu"},
-                              {name: "ETC2", type: "ecu"}
-                          ]
-//                          version:[]
-                      }                      
-                  ]
-                }                
-              };
 //              alert(JSON.stringify($scope.models.dropzones.B[0].version));
 
               $scope.$watch('models.dropzones', function(model) {
@@ -695,4 +756,4 @@
     </script>   
 </body>
 
-</html>                                            
+</html>
