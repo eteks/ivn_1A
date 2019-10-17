@@ -41,27 +41,37 @@
                                                     <div class="card-block marketing-card p-t-0">
                                                          <div class="row p-t-30">
                                                             <div class="form-group col-md-3">
-                                                                <label for="vehicle">Feature version :</label>
-<!--                                                                <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversionname for arr in pdbversion" ng-change="LoadVehicleData()">
-                                                                </select>-->
-                                                                <select ng-model="data.featureversion" ng-options="arr as arr.versionname for arr in array_result" ng-change="LoadSelectedFeatureVersionData()">
+                                                                <label for="vehicle">PDB version :</label>
+                                                                <select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">
+                                                                    <s:iterator value="vehicleversion_result" >
+                                                                        <option value="<s:property value="id"/>">
+                                                                            <s:property value="versionname"/>
+                                                                        </option>
+                                                                    </s:iterator>
                                                                 </select>
+                                                                <!--<select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">-->
+                                                                    <%--<s:iterator value="vehicleversion_result" >--%>
+                                                                        <!--<option value="<s:property value="id"/>">-->
+                                                                            <%--<s:property value="versionname"/>--%>
+                                                                        <!--</option>-->
+                                                                    <%--</s:iterator>--%>
+                                                                    <!--<option value="2.0" selected="">2.0</option>-->
+                                                                <!--</select>-->
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Vehicle:</label>
-                                                                <select ng-model="data.vehiclename" ng-options="arr as arr.vname for arr in arr_res" ng-change="LoadIVNVersion()">
+                                                                <select ng-hide="data.vehicleversion"></select>
+                                                                <select ng-change="LoadPDBandIVN_Version()" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
+                                                                        <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">IVN version:</label>
-                                                                <select ng-model="data.vername" ng-options="arr as arr.ivn_version for arr in records track by arr.ivn_version" >
+                                                                <select ng-model="data.ivnversion" ng-change="LoadSelectedIVNData()">
+                                                                    <option value=""></option>
+                                                                    <option value="{{ivn.id}}" ng-repeat="ivn in ivnversion">{{ivn.ivn_versionname}}</option> 
                                                                 </select>
                                                                 <button class="text-c-green" style="font-weight:600" ng-click="exportACB()">Export</button>
-                                                            </div>
-                                                            <div class="form-group col-md-3">
-                                                                <label for="vehicle">PDB:</label>
-                                                                <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversionname for arr in arr_res_1" ng-change="LoadFeatures()">
-                                                                </select>
                                                             </div>
 <!--                                                            <div class="form-group col-md-3">
                                                                 <label for="vehicle">ACB version :</label>
@@ -102,9 +112,9 @@
                                                                     
                                                                     <td class="text-center acb_btn" ng-repeat="x in (record.status | customSplitString) track by $index">
                                                                         
-                                                                        <span class="btn yellow btn-icon" ng-if="x == 'o'">{{x | uppercase}}</span>
-                                                                        <span class="btn green  btn-icon" ng-if="x == 'y'">{{x | uppercase}}</span>
-                                                                        <span class="btn brown btn-icon" ng-if="x == 'n'">{{x | uppercase}}</span>
+                                                                        <span class="btn yellow btn-icon" ng-if="x == 'O'">{{x | uppercase}}</span>
+                                                                        <span class="btn green  btn-icon" ng-if="x == 'Y'">{{x | uppercase}}</span>
+                                                                        <span class="btn brown btn-icon" ng-if="x == 'N'">{{x | uppercase}}</span>
                                                                     </td>
                                                                     <td class="text-center" ng-if="record.touch != 'No'">
                                                                         <!--{{record.touch}}-->
@@ -159,8 +169,15 @@
                                               >
                                               <a href="#" ng-click="hiddenDiv = !hiddenDiv">{{person.name}}</a>
                                               <ul ng-if="person.type == 'signal'" ng-show="hiddenDiv">
-                                                <li ng-repeat="net in person.nw">
-                                                    <a href="#" ng-click="addnwsignal(net.id,person.id,list.slot)">{{net.name}}</a>
+                                                <li ng-repeat="i in modals" class="form-radio">
+                                                      {{i.modelname}}
+                                                        </br>  
+                                                      <div ng-repeat="net in person.nw" class="radio radio-matrial radio-danger radio-inline">    
+                                                            <label>
+                                                                <input type="radio" ng-click="addnwsignal(net.id,person.id,i.vmm_id,list.slot)" name="modalmap_{{i.vmm_id}}" ng-model="modalmap_i.vmm_id" value="" required=""/>                
+                                                                <i class="helper"></i>{{net.name}}
+                                                            </label>
+                                                      </div>
                                                 </li>
                                               </ul>
                                               <input ng-if="list.slot == 'ecu_slot'" type="text" ng-model="" place-holder="Ecu feature name">                                              
@@ -282,7 +299,7 @@
     <script>
 //        var app = angular.module('angularTable', ['ui.bootstrap']);
 
-        app.controller('RecordCtrl1',function($scope, $http, $window, $location, $element, $rootScope)
+        app.controller('RecordCtrl1',function($scope, $http, $window, $location)
         {
             this.data1=[];
             this.data2=[]; 
@@ -293,133 +310,12 @@
                 notification_to = args;
                 $scope.createacbversion("submit",1);
             });
-            $scope.pdbversion = [];
             $scope.ecu_list = [];
             $scope.signal_list = [];
             $scope.network = [];
             $scope.list = [];
-            $scope.modals = [];
-            $scope.features = [];
             var features_group = [];
             var version_type;
-            
-            result_data_obj = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-            $scope.array_result = result_data_obj;
-            
-                        //Load Selected Feature Version Data
-            $scope.LoadSelectedFeatureVersionData= function()
-            {
-                $http({
-                    url : 'loadSelectedFeatureVersionData',
-                    method : "POST",
-                    data : {"id":$scope.data.featureversion.id}
-                }).then(function (response, status, headers, config){
-                    
-                    var vm_result = [];
-                    $scope.status_value = "";
-                    $scope.vehicleresults = "";
-                    result_data_obj = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
-//                    $window.alert(JSON.stringify(result_data_obj));
-                    var arr_res = [], arr_res_1 = [];
-                   for(var i = 0; i < result_data_obj.length; i++)
-                   {
-                        arr_res.push({
-//                           "pdbid":result_data_obj[i].pdbid,
-//                            "pdbversionname":result_data_obj[i].pdbversionname,
-                            "vid":result_data_obj[i].vid,
-                            "vname":result_data_obj[i].vname,
-                            "status":result_data_obj[i].status,
-                            "flag":result_data_obj[i].flag
-                        });
-                        arr_res_1.push({
-                           "pdbid":result_data_obj[i].pdbid,
-                            "pdbversionname":result_data_obj[i].pdbversionname,
-//                            "vid":result_data_obj[i].vid,
-//                            "vname":result_data_obj[i].vname,
-                            "status":result_data_obj[i].status,
-                            "flag":result_data_obj[i].flag
-                        });
-//                        status_value = data.status;  
-//                       $scope.vehicleresults = response.data.maps_object.pdbversion[i];
-//                       $window.alert(JSON.stringify(result_data_obj[i]));
-                    }
-                    $scope.data.vehiclename = arr_res[0];
-                    $scope.data.pdbversion = arr_res_1[0];
-                    $scope.arr_res = arr_res;
-                    $scope.arr_res_1 = arr_res_1;
-                    $scope.LoadIVNVersion();
-//                    $scope.LoadFeatures(result_data_obj[0].pdbid);
-//                    $window.alert(JSON.stringify($scope.arr_res));
-                });
-            };
-            $scope.LoadIVNVersion = function() {
-                alert("vehiclename id "+$scope.data.vehiclename.vid);
-                $http({
-                        url : 'LoadIVNVersion',
-                        method : "POST",
-                        data : {"vid":$scope.data.vehiclename.vid}
-                    }).then(function (response, status, headers, config){
-                        
-                        var result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
-                        $scope.data.vername = result_data[0];
-                        $scope.records = result_data;
-                        if ($scope.data.vername) {
-                            $scope.create_type = true;
-//                            alert($scope.create_type);
-                        }
-                        $scope.LoadFeatures($scope.data.pdbversion.pdbid);
-//                        alert(JSON.stringify($scope.records)+" "+$scope.data.vername);
-                });
-            };
-            $scope.LoadFeatures = function(pdbid) {
-                alert("pdbversion id "+pdbid);
-                $http({
-                    url : 'LoadFeatures',
-                    method : "POST",
-                    data : {"pdbid":pdbid}
-                }).then(function (response, status, headers, config){
-                    
-                    if (response.data.maps_string.success) {
-                        
-                        result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
-//                        alert("RES "+JSON.stringify(result_data));
-                        var vehicledetail_list = result_data.vehicledetail_list;
-                        var featuredetail_list = result_data.featuredetail_list;
-                        $scope.modals = vehicledetail_list;
-                        $scope.features = featuredetail_list;
-                        $scope.features.filter(function(v,i){
-                            $scope.features[i].pdbgroup_id = $scope.features[i].pdbgroup_id.split(",");
-                        });
-                        delete $scope.data.acbversion;
-                        alert("RES "+JSON.stringify($scope.modals)+" WEQ "+JSON.stringify($scope.features));
-                    } else {
-                        alert(response.data.maps_string.error);
-                    }
-                });
-            };
-            
-//            $http.get("getPdbVersionFromFeatureVersion.action")
-//                .then(function (response, status, headers, config) {
-//                    
-//                    if (response.data.maps_string.success) {
-//                        
-//                        var ids = {};
-//
-//                        $scope.pdbversion = response.data.result_data.filter(function(v) {
-//                          var ind = v.name + '_' + v.key;
-//                          if (!ids[ind]) {
-//                            ids[ind] = true;
-//                            return true;
-//                          }
-//                          return false;
-//                        });
-////                        $scope.pdbversion = response.data.result_data;
-//                        $window.alert(JSON.stringify($scope.pdbversion));
-//                    } else {                        
-//                        $window.alert(response.data.maps_string.error);
-//                    }
-//                });
-                    
 //            $scope.list.features_group = [];
             
 //            $scope.Confirm = function() {
@@ -443,34 +339,50 @@
                 $scope.fea.push({'fid':a});
                 
             }
-            $scope.addnwsignal = function(nid,sid,type)
+            $scope.addnwsignal = function(nid,sid,mod,type)
             {
+//                alert(mod);
                 if(type=='ip')
-                {
+                {                   
                         const index = $scope.ipsignal.findIndex((e) => e.sid === sid);
                         if (index === -1) 
                         {
-                           $scope.ipsignal.push({sid:sid,nw:nid});
+                            $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod});
+                                
                         }
-                        else 
+                        else
                         {
-                            $scope.ipsignal[index].nw = nid;
-                        }
-                         $("li.ip > ul").addClass("ng-hide");
+                            if($scope.ipsignal[index].vmm_id == mod)
+                            {
+                                $scope.ipsignal[index].nw = nid;
+                            }
+                            else
+                            {
+                                 $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod});
+                            }
+                        }                        
                         alert(JSON.stringify($scope.ipsignal));  
                 }
                 if(type=='op')
                 {
-                   const index = $scope.opsignal.findIndex((e) => e.sid === sid);
-                    if (index === -1) 
-                    {
-                       $scope.opsignal.push({sid:sid,nw:nid});
-                    }
-                    else 
-                    {
-                        $scope.opsignal[index].nw = nid;
-                    }
-                     $("li.op > ul").addClass("ng-hide");
+                    const index = $scope.opsignal.findIndex((e) => e.sid === sid);
+                     if (index === -1) 
+                     {
+                         $scope.opsignal.push({sid:sid,nw:nid,vmm_id:mod});
+
+                     }
+                     else
+                     {
+                         if($scope.opsignal[index].vmm_id == mod)
+                         {
+                             $scope.opsignal[index].nw = nid;
+                         }
+                         else
+                         {
+                              $scope.opsignal.push({sid:sid,nw:nid,vmm_id:mod});
+                         }
+                     }
+//                     $("li.op > ul").addClass("ng-hide");
                    alert(JSON.stringify($scope.opsignal));
                 }               
             }
@@ -484,18 +396,18 @@
             {
                 
             }
-//            $scope.modals = [
-//                        { vmm_id:'1',modelname: 'm1'},
-//                        { vmm_id:'2',modelname: 'm2'},
-//                        { vmm_id:'3',modelname: 'm3'},
-//                        { vmm_id:'4',modelname: 'm4'}
-//                    ];              
-//            $scope.features = [
-//                        { fid:'1',featurename: 'feature1',status:"Y,O,Y,N",touch:'No'},
-//                        { fid:'2',featurename: 'feature2',status:'O,N,Y,N',touch:'No'},
-//                        { fid:'3',featurename: 'feature3',status:'Y,Y,O,N',touch:'No'},
-//                        { fid:'4',featurename: 'feature4',status:'Y,Y,N,O',touch:'No'}
-//                    ];    
+            $scope.modals = [
+                        { vmm_id:'1',modelname: 'm1'},
+                        { vmm_id:'2',modelname: 'm2'},
+                        { vmm_id:'3',modelname: 'm3'},
+                        { vmm_id:'4',modelname: 'm4'}
+                    ];              
+            $scope.features = [
+                        { fid:'1',featurename: 'feature1',status:"Y,O,Y,N",touch:'No'},
+                        { fid:'2',featurename: 'feature2',status:'O,N,Y,N',touch:'No'},
+                        { fid:'3',featurename: 'feature3',status:'Y,Y,O,N',touch:'No'},
+                        { fid:'4',featurename: 'feature4',status:'Y,Y,N,O',touch:'No'}
+                    ];    
 //            $scope.ecu_list = [ 
 //                { eid:'1',listitem:'ecu 1',description:'description 1'},
 //                { eid:'2',listitem:'ecu 2',description:'description 2'},
@@ -525,9 +437,6 @@
 //              ];
             $scope.signaltags = [];            
              
-            $scope.LoadVehicleData = function() {
-                alert(JSON.stringify($scope.data.pdbversion));
-            }
 
     $scope.dropCallback = function(index, item, external, type) 
     {

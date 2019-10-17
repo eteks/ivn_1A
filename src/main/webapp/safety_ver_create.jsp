@@ -132,7 +132,7 @@
                         <input type="checkbox" ng-model="data.status">
                         <span class="slider round"></span>
                      </label>
-                    <a class="feature_add_tip modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
+                    <a class="modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
                     <div id="modal-comment" class="modal">
                          <div class="modal-content text-left">
 
