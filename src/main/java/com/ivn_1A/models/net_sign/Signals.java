@@ -13,6 +13,7 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,6 +25,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -214,10 +217,11 @@ public class Signals implements Serializable {
         this.signal_valuetable = signal_valuetable;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "sig_can", joinColumns = {
         @JoinColumn(name = "sig_id")}, inverseJoinColumns = {
         @JoinColumn(name = "can_id")})
+    @Fetch(value = FetchMode.SUBSELECT)
     public Collection<Network> getCan_id_group() {
         return can_id_group;
     }
@@ -226,10 +230,11 @@ public class Signals implements Serializable {
         this.can_id_group = can_id_group;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "sig_lin", joinColumns = {
         @JoinColumn(name = "sig_id")}, inverseJoinColumns = {
         @JoinColumn(name = "lin_id")})
+    @Fetch(value = FetchMode.SUBSELECT)
     public Collection<Network> getLin_id_group() {
         return lin_id_group;
     }
@@ -238,10 +243,11 @@ public class Signals implements Serializable {
         this.lin_id_group = lin_id_group;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "sig_hw", joinColumns = {
         @JoinColumn(name = "sig_id")}, inverseJoinColumns = {
         @JoinColumn(name = "hw_id")})
+    @Fetch(value = FetchMode.SUBSELECT)
     public Collection<Network> getHw_id_group() {
         return hw_id_group;
     }
@@ -250,10 +256,11 @@ public class Signals implements Serializable {
         this.hw_id_group = hw_id_group;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "sig_tag", joinColumns = {
         @JoinColumn(name = "sig_id")}, inverseJoinColumns = {
         @JoinColumn(name = "tag_id")})
+    @Fetch(value = FetchMode.SUBSELECT)
     public Collection<SignalTags> getSignalTagses() {
         return signalTagses;
     }

@@ -774,7 +774,7 @@
                     if(response.data.maps_string.status_code == "1") {
 
                         var ivn = JSON.parse(response.data.maps_string.ivn_version.replace(/&quot;/g,'"'));
-                        var ivnvg = JSON.parse(response.data.maps_string.ivn_version_group.replace(/&quot;/g,'"'));
+//                        var ivnvg = JSON.parse(response.data.maps_string.ivn_version_group.replace(/&quot;/g,'"'));
                         ivn["froms"] = "IVN";
                         ivn["t_id"] = $scope.t_id;
                         ivn["tg_id"] = $scope.tg_id;
@@ -785,7 +785,7 @@
                         //     leg["t_id"] = $scope.t_id;
                         //     leg["tg_id"] = $scope.tg_id;
                         // }
-                        alert("ivn "+ JSON.stringify(ivn) +" ivnvg "+ JSON.stringify(ivnvg));
+                        alert("ivn "+ JSON.stringify(ivn));
     //                            alert("pdbv "+ JSON.stringify(pdbv) +" fro "+ JSON.stringify(pdbvg.froms));
     //                            console.log("pdbv "+ JSON.stringify(pdbv) +" pdbvg "+ JSON.stringify(pdbvg));
                         $http({

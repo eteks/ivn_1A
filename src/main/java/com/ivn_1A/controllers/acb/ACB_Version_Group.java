@@ -11,9 +11,7 @@ import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.models.acb.ACB_DB;
 import com.ivn_1A.models.net_sign.IVNEngineerDB;
-import com.ivn_1A.models.pdbowner.FeatureversionDB;
 import com.ivn_1A.models.pdbowner.Pdbversion_group;
-import com.ivn_1A.models.pdbowner.Vehicle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,7 +124,7 @@ public class ACB_Version_Group {
                             columns.put("pdb_id", tuple.get("pdb_id"));
                             columns.put("vehicle_id", tuple.get("vehicle_id"));
                             columns.put("modelname", tuple.get("modelname"));
-                            columns.put("vmm_id", tuple.get("pdb_id"));
+                            columns.put("vmm_id", tuple.get("vmm_id"));
                             return columns;
                         }).map((columns) -> {
                             row1.add(columns);
@@ -201,7 +199,7 @@ public class ACB_Version_Group {
             System.out.println("result_data_obj : " + result_data_obj);
             maps_string.put("success", "work is done");
         } catch (Exception e) {
-            System.out.println("Error in \"ACB_Version_Group\" \'ACBVersionPage\' : " + e);
+            System.out.println("Error in \"ACB_Version_Group\" \'getSignalsAndECU\' : " + e);
             maps_string.put("error", "Some error occurred !!");
         }
         return "success";

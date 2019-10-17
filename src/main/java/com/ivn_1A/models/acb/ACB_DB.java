@@ -90,7 +90,8 @@ public class ACB_DB {
 //            criteriaQuery.distinct(true);
             criteriaQuery.multiselect(pdbGRoot.get("pdbversion_id").get("id").alias("pdb_id"),
                     pdbGRoot.get("pdbversion_id").get("vehicle_id").get("id").alias("vehicle_id"),
-                    pdbGRoot.get("vehiclemodel_id").get("modelname").alias("modelname"))
+                    pdbGRoot.get("vehiclemodel_id").get("modelname").alias("modelname"),
+                    pdbGRoot.get("vehiclemodel_id").get("id").alias("vmm_id"))
                     .where(criteriaBuilder.equal(pdbGRoot.get("pdbversion_id").get("id"), pdbversion_group.getId()))
                     .groupBy(pdbGRoot.get("vehiclemodel_id").get("modelname"))
                     .orderBy(criteriaBuilder.desc(pdbGRoot.get("pdbversion_id").get("id")));

@@ -164,7 +164,7 @@
                                                         </br>  
                                                       <div ng-repeat="net in person.nw" class="radio radio-matrial radio-danger radio-inline">    
                                                             <label>
-                                                                <input type="radio" ng-click="addnwsignal(net.id,person.id,i.vmm_id,list.slot)" name="modalmap_{{i.vmm_id}}" ng-model="modalmap_i.vmm_id" value="" required=""/>                
+                                                                <input type="radio" ng-click="addnwsignal(net.id,person.id, i.vmm_id,list.slot)" name="modalmap_{{i.vmm_id}}" ng-model="modalmap_i.vmm_id" value="" required=""/>                
                                                                 <i class="helper"></i>{{net.name}}
                                                             </label>
                                                       </div>
@@ -481,37 +481,50 @@
                                 
                                 //{id:1,name: "AUTO_SWITCH", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},{name: "HVAC Systems", type: "ecu"},
                                 result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
-//                                console.log(JSON.stringify(result_data));
-                                var sig = [], nw = [], ecu = [];
+                                console.log(JSON.stringify(result_data));
+                                var sig = [], ecu = [], nw = [];
+                                var cn = new Set(),ln = new Set(),hw = new Set();
                                 var mx = Math.max(result_data.signals.length, result_data.ecu.length);
                                 
                                 for (var i = 0; i < mx; i++) {
                                     
-                                    if (result_data.signals[i].can_id_group) {
-                                        nw.push({
-                                            id : result_data.signals[i].can_id_group.id,
-                                            name : result_data.signals[i].can_id_group.network_name
+                                    
+                                    if (result_data.signals.length > i) {
+                                        
+                                        angular.forEach(result_data.signals[i].can_id_group, function (value, key) {
+                                            cn.add({
+                                                id : value.id,
+                                                name : value.network_name
+                                            });
                                         });
-                                    }
-                                    if (result_data.signals[i].lin_id_group) {
-                                        nw.push({
-                                            id : result_data.signals[i].lin_id_group.id,
-                                            name : result_data.signals[i].lin_id_group.network_name
+                                        
+                                        angular.forEach(result_data.signals[i].lin_id_group, function (value, key) {
+                                            ln.add({
+                                                id : value.id,
+                                                name : value.network_name
+                                            });
                                         });
-                                    }
-                                    if (result_data.signals[i].hw_id_group) {
-                                        nw.push({
-                                            id : result_data.signals[i].hw_id_group.id,
-                                            name : result_data.signals[i].hw_id_group.network_name
+                                        
+                                        angular.forEach(result_data.signals[i].hw_id_group, function (value, key) {
+                                            hw.add({
+                                                id : value.id,
+                                                name : value.network_name
+                                            });
                                         });
+                                        nw = Array.from(cn).concat(Array.from(ln),Array.from(hw));
+//                                        alert(JSON.stringify(nw));
+                                        sig.push({
+                                            id : result_data.signals[i].id,
+                                            name : result_data.signals[i].signal_name,
+                                            type : "signal",
+    //                                        nw : Array.from(nw)
+                                            nw : nw
+                                        });
+                                        cn.clear();
+                                        ln.clear();
+                                        hw.clear();
                                     }
-                                    sig.push({
-                                        id : result_data.signals[i].id,
-                                        name : result_data.signals[i].signal_name,
-                                        type : "signal",
-                                        nw : nw
-                                    });
-                                    if (result_data.ecu[i].id) {
+                                    if (result_data.ecu.length > i) {
                                         ecu.push({
                                             id : result_data.ecu[i].id,
                                             name : result_data.ecu[i].ecu_name,
@@ -524,7 +537,8 @@
                                 //assigning ecu to model json
                                 $scope.models.dropzones.B[4].version = ecu;
 //                                    alert(JSON.stringify(ecu));
-//                                alert(JSON.stringify($scope.models));
+                                alert(JSON.stringify($scope.models));
+                                console.log(JSON.stringify($scope.models));
                             } else {
                                 alert(response.data.maps_string.error);
                             }
