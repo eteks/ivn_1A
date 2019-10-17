@@ -170,7 +170,6 @@ public class TasksController {
             String froms = readValue.get("froms").asText();
             System.out.println("Froms__________________________" + froms);
             Map<String, Object> columns = new HashMap<>();
-            ;
             List<Tasks_Group> list = TasksDB.getTasks(froms);
             list.stream().map((tg) -> {
 
@@ -256,6 +255,7 @@ public class TasksController {
             });
             maps_object.put("tasks", columns);
             maps_string.put("success", "Work is done");
+            
         } catch (Exception e) {
             System.err.println("Error in \"TasksController\" \'getTasks\' : " + e);
             maps_string.put("error", "Error in \"TasksController\" \'getTasks\' : " + e);

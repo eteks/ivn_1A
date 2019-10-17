@@ -159,8 +159,15 @@
                                               >
                                               <a href="#" ng-click="hiddenDiv = !hiddenDiv">{{person.name}}</a>
                                               <ul ng-if="person.type == 'signal'" ng-show="hiddenDiv">
-                                                <li ng-repeat="net in person.nw">
-                                                    <a href="#" ng-click="addnwsignal(net.id,person.id,list.slot)">{{net.name}}</a>
+                                                <li ng-repeat="i in modals" class="form-radio">
+                                                      {{i.modelname}}
+                                                        </br>  
+                                                      <div ng-repeat="net in person.nw" class="radio radio-matrial radio-danger radio-inline">    
+                                                            <label>
+                                                                <input type="radio" ng-click="addnwsignal(net.id,person.id,i.vmm_id,list.slot)" name="modalmap_{{i.vmm_id}}" ng-model="modalmap_i.vmm_id" value="" required=""/>                
+                                                                <i class="helper"></i>{{net.name}}
+                                                            </label>
+                                                      </div>
                                                 </li>
                                               </ul>
                                               <input ng-if="list.slot == 'ecu_slot'" type="text" ng-model="" place-holder="Ecu feature name">                                              
@@ -574,37 +581,54 @@
                 $('.modal-trigger').leanModal();
                 
             }
-            $scope.addnwsignal = function(nid,sid,type)
+            $scope.addnwsignal = function(nid,sid,mod,type)
             {
+//                alert(mod);
                 if(type=='ip')
-                {
+                {                   
                         const index = $scope.ipsignal.findIndex((e) => e.sid === sid);
                         if (index === -1) 
                         {
-                           $scope.ipsignal.push({sid:sid,nw:nid});
+                            $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod});
+                                
                         }
-                        else 
+                        else
                         {
-                            $scope.ipsignal[index].nw = nid;
-                        }
-                         $("li.ip > ul").addClass("ng-hide");
+                            if($scope.ipsignal[index].vmm_id == mod)
+                            {
+                                $scope.ipsignal[index].nw = nid;
+                            }
+                            else
+                            {
+                                 $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod});
+                            }
+                        }                        
                         alert(JSON.stringify($scope.ipsignal));  
                 }
                 if(type=='op')
                 {
-                   const index = $scope.opsignal.findIndex((e) => e.sid === sid);
-                    if (index === -1) 
-                    {
-                       $scope.opsignal.push({sid:sid,nw:nid});
-                    }
-                    else 
-                    {
-                        $scope.opsignal[index].nw = nid;
-                    }
-                     $("li.op > ul").addClass("ng-hide");
+                    const index = $scope.opsignal.findIndex((e) => e.sid === sid);
+                     if (index === -1) 
+                     {
+                         $scope.opsignal.push({sid:sid,nw:nid,vmm_id:mod});
+
+                     }
+                     else
+                     {
+                         if($scope.opsignal[index].vmm_id == mod)
+                         {
+                             $scope.opsignal[index].nw = nid;
+                         }
+                         else
+                         {
+                              $scope.opsignal.push({sid:sid,nw:nid,vmm_id:mod});
+                         }
+                     }
+//                     $("li.op > ul").addClass("ng-hide");
                    alert(JSON.stringify($scope.opsignal));
                 }               
             }
+            
             $scope.feature_result_cap = function()
             {
               $scope.result.push({'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal});

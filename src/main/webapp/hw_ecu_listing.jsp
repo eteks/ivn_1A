@@ -582,59 +582,65 @@
                 else
                     ivn_attribute_data['ivn_attribute_data'] = $scope.Demo.data;
 //                alert(JSON.stringify(ivn_attribute_data)+" "+JSON.stringify($scope.Demo.data));
-                if(($scope.data.network != "signals" && $scope.Demo.data.length > 0 && $scope.Demo.data[0].name != undefined  && $scope.Demo.data[0].description != undefined)||
-                        ($scope.data.network == "signals" && $scope.data.name != undefined  && $scope.data.description != undefined && $scope.data.alias != undefined))
+                if(($scope.data.network !== "signals" && $scope.Demo.data.length > 0 && $scope.Demo.data[0].name !== undefined  && $scope.Demo.data[0].description !== undefined)||
+                        ($scope.data.network === "signals" && $scope.data.name !== undefined  && $scope.data.description !== undefined && $scope.data.alias !== undefined))
                 {
                     alert(JSON.stringify($scope.data)+"   "+JSON.stringify(ivn_attribute_data));
                     $http({
                         url : 'create_ivn_required_attributes',
                         method : "POST",
                         data : ivn_attribute_data
-                    })
-                   .then(function (data, status, headers, config)
-                    {
-                        result_data_obj = JSON.parse(data.data.result_data_obj.replace(/&quot;/g,'"'));
-                        alert(data.data.maps_object.status+"   "+result_data_obj);
-//                        alert(JSON.stringify(data.data.result_data));
-                        angular.forEach(result_data_obj, function(value, key) {
-                            if($scope.data.network == "can")
-                                $scope.cans.push(value);
-                            else if($scope.data.network == "lin")
-                                $scope.lin.push(value);
-                            else if($scope.data.network == "hardware")
-                                $scope.hw.push(value);
-                            else if($scope.data.network == "ecu"){
-                                if($scope.list.ecu == undefined){
-                                    $scope.list.ecu = [];
+                    }).then(function (data, status, headers, config) {
+                        if (data.data.maps_object.success) {
+
+                            result_data_obj = JSON.parse(data.data.result_data_obj.replace(/&quot;/g,'"'));
+                            alert(JSON.stringify(result_data_obj));
+                            angular.forEach(result_data_obj, function(value, key) {
+                                if($scope.data.network === "can")
+                                    $scope.cans.push(value);
+                                else if($scope.data.network === "lin")
+                                    $scope.lin.push(value);
+                                else if($scope.data.network === "hardware")
+                                    $scope.hw.push(value);
+                                else if($scope.data.network === "ecu") {
+                                    if($scope.list.ecu === undefined){
+                                        $scope.list.ecu = [];
+                                    }
+                                    $scope.list.ecu.push(value.eid);
+                                    $scope.ecu.push(value);
+                                    $scope.ecu_list = $scope.ecu;
+                                } else if($scope.data.network === "signals") {
+                                    if($scope.list.signal === undefined)
+                                    {
+                                        $scope.list.signal = [];
+                                    }
+                                    $scope.list.signal.push(value.sid);
+                                    $scope.signal.push(value);
+                                    $scope.signal_list = $scope.signal;
                                 }
-                                $scope.list.ecu.push(value.eid);
-                                $scope.ecu.push(value);
-                                $scope.ecu_list = $scope.ecu;
-                            }
-                            else if($scope.data.network == "signals")
-                            {
-                                if($scope.list.signal == undefined)
-                                {
-                                    $scope.list.signal = [];
-                                }
-                                $scope.list.signal.push(value.sid);
-                                $scope.signal.push(value);
-                                $scope.signal_list = $scope.signal;
-                            }
-                        });
-                        alert(JSON.stringify($scope.signal));
+                            });
+                            can = [];
+                            lin = [];
+                            hardware = [];
+                            $scope.data.network="";
+                            $scope.Demo.data=[];
+                            $scope.data=[];
+                            location.reload();
+                            $('#modal-product-form').closeModal();
+                        } else {
+                            alert(data.data.maps_object.error);
+                            can = [];
+                            lin = [];
+                            hardware = [];
+                            $scope.data.network="";
+                            $scope.Demo.data=[];
+                            $scope.data=[];
+                            location.reload();
+                            $('#modal-product-form').closeModal();
+                        }
+                        
                     });
-                    can = [];
-                    lin = [];
-                    hardware = [];
-                    $scope.data.network="";
-                    $scope.Demo.data=[];
-                    $scope.data=[];
-                    location.reload();
-                    $('#modal-product-form').closeModal();
-                }
-                else
-                {
+                } else {
                     if($scope.data.network == "signals")
                         alert("Please fill the name and description and alias");
                     else
