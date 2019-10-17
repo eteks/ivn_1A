@@ -21,13 +21,15 @@ import com.ivn_1A.models.net_sign.IVN_Version;
 import com.ivn_1A.models.net_sign.IVN_Version_Group;
 import com.ivn_1A.models.net_sign.Network;
 import com.ivn_1A.models.net_sign.SignalTags;
-import com.ivn_1A.models.net_sign.SignalTags_Mapping;
 import com.ivn_1A.models.net_sign.Signals;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.persistence.Tuple;
 
 import org.json.simple.JSONObject;
@@ -201,9 +203,12 @@ public class Network_Group {
                 String signal_unit = jsonNode.get("unit").asText();
                 String signal_valuetype = jsonNode.get("valuetype").asText();
                 String signal_valuetable = jsonNode.get("valuetable").asText();
-                String signal_can_id = jsonNode.get("can").asText();
-                String signal_lin_id = jsonNode.get("lin").asText();
-                String signal_hw_id = jsonNode.get("hardware").asText();
+                String[] signal_can_id = jsonNode.get("can").asText().split(",");
+                String[] signal_lin_id = jsonNode.get("lin").asText().split(",");
+                String[] signal_hw_id = jsonNode.get("hardware").asText().split(",");
+//                ArrayNode signal_can_id = (ArrayNode) jsonNode.get("can");
+//                ArrayNode signal_lin_id = (ArrayNode) jsonNode.get("lin");
+//                ArrayNode signal_hw_id = (ArrayNode) jsonNode.get("hardware");
                 ArrayNode signal_tags = (ArrayNode) jsonNode.get("tags");
                 System.out.println("signal_tags" + signal_tags);
                 System.out.println("int value started");
@@ -220,55 +225,79 @@ public class Network_Group {
                 int signal_maximum = (jsonNode.get("minimum") != null) ? Integer.parseInt(jsonNode.get("maximum").asText()) : 0;
                 System.out.println("signal_maximum" + signal_maximum);
 
+                Collection<Network> can_Networks = new ArrayList<>(), lin_Networks = new ArrayList<>(), hw_Networks = new ArrayList<>();
                 int last_inserted_id = 0;
                 int tag_id = 0;
                 Signals s1 = IVNEngineerDB.getSignalByName(signal_name);
                 if (s1 == null) {
+                    
+                    Collection<SignalTags> signalTagses = new ArrayList<>();
+                    int max = Math.max(Math.max(signal_can_id.length, signal_tags.size()), Math.max(signal_lin_id.length, signal_hw_id.length));
+                    for (int i = 0; i < max; i++) {
+
+                        if (signal_tags.size() > i) {
+                            
+                            SignalTags st = getSignalTagsByName(signal_tags.get(i).asText());
+                            if (st == null) {
+                                st = IVNEngineerDB.insertSignalTagsData(new SignalTags(signal_tags.get(i).asText(), new Date(), new Date(), PDBOwnerDB.getUser(1), true));
+                                tag_id = st.getId();
+                                System.err.println("tag_id   " + tag_id);
+                            } else {
+                                tag_id = st.getId();
+                                System.err.println("tag_id   " + tag_id);
+                            }
+                            signalTagses.add(st);
+                        }
+                        
+                        if (signal_can_id.length > i) {
+                            can_Networks.add(IVNEngineerDB.getNetworkById(Integer.parseInt(signal_can_id[i])));
+                        }
+                        
+                        if (signal_lin_id.length > i) {
+                            lin_Networks.add(IVNEngineerDB.getNetworkById(Integer.parseInt(signal_lin_id[i])));
+                        }
+                        
+                        if (signal_hw_id.length > i) {
+                            hw_Networks.add(IVNEngineerDB.getNetworkById(Integer.parseInt(signal_hw_id[i])));
+                        }
+                    }
                     s1 = IVNEngineerDB.insertSignalData(new Signals(signal_name, signal_alias, signal_description, signal_length,
                             signal_byteorder, signal_unit, signal_valuetype, signal_initvalue,
                             signal_factor, signal_offset, signal_minimum, signal_maximum,
-                            signal_valuetable, IVNEngineerDB.getNetworkById(Integer.parseInt(signal_can_id)), IVNEngineerDB.getNetworkById(Integer.parseInt(signal_lin_id)),
-                            IVNEngineerDB.getNetworkById(Integer.parseInt(signal_hw_id)), new Date(), new Date(), PDBOwnerDB.getUser(1), true));
+                            signal_valuetable, can_Networks, lin_Networks, hw_Networks, signalTagses, new Date(), new Date(), PDBOwnerDB.getUser(1), true));
                     last_inserted_id = s1.getId();
                     System.err.println("Singnal Id    " + last_inserted_id);
-                }
-                for (JsonNode signal_tag : signal_tags) {
-
-                    String tagname = signal_tag.asText();
-                    System.err.println("tagname   " + tagname);
-                    SignalTags st = getSignalTagsByName(tagname);
-                    if (st == null) {
-                        st = IVNEngineerDB.insertSignalTagsData(new SignalTags(tagname, new Date(), new Date(), PDBOwnerDB.getUser(1), true));
-                        tag_id = st.getId();
-                        System.err.println("tag_id   " + tag_id);
-                    } else {
-                        tag_id = st.getId();
-                        System.err.println("tag_id   " + tag_id);
-                    }
-                    SignalTags_Mapping stm = IVNEngineerDB.insertsignalTags_MappingData(new SignalTags_Mapping(s1, st, new Date()));
-                    tag_id = stm.getId();
-                    System.err.println("tag_id   " + tag_id);
                 }
 
                 List<Map<String, Object>> row = new ArrayList<>();
                 Map<String, Object> col = new HashMap<>();
                 Signals signals = IVNEngineerDB.getSignalDataByID(last_inserted_id);
+                StringBuilder sb = new StringBuilder();
                 if (signals != null) {
                     col.put("listitem", signals.getSignal_name());
                     col.put("sid", Integer.toString(signals.getId()));
                     col.put("description", signals.getSignal_description());
                     col.put("salias", signals.getSignal_alias());
-                    col.put("can", signals.getCan_id_group().getId());
-                    col.put("lin", signals.getLin_id_group().getId());
-                    col.put("hardware", signals.getHw_id_group().getId());
+                    signals.getCan_id_group().forEach((network) -> {
+                        sb.append(network.getId()).append(",");
+                    });
+                    col.put("can", sb.deleteCharAt(sb.length() - 1).toString());
+                    signals.getLin_id_group().forEach((network) -> {
+                        sb.append(network.getId()).append(",");
+                    });
+                    col.put("lin", sb.deleteCharAt(sb.length() - 1).toString());
+                    signals.getHw_id_group().forEach((network) -> {
+                        sb.append(network.getId()).append(",");
+                    });
+                    col.put("hardware", sb.deleteCharAt(sb.length() - 1).toString());
                     row.add(col);
                 }
                 result_data_obj = new Gson().toJson(row);
             }
-            maps_object.put("status", "Work is done");
+            maps_object.put("success", "Work is done");
         } catch (Exception e) {
             System.err.println("Error in \"Network_Group\" \'CreateIVNVersion_Attributes\' " + e);
-            maps_object.put("status", "Error in \"Network_Group\" \'CreateIVNVersion_Attributes\' " + e);
+            maps_object.put("error", "Error in 'CreateIVNVersion_Attributes ");
         }
         return "success";
     }
@@ -474,7 +503,7 @@ public class Network_Group {
 
                         maps_string.put("ivn_version", mapper.writeValueAsString(iVN_Versions));
                         maps_string.put("ivn_version_group", mapper.writeValueAsString(iVN_Version_Groups));
-                        
+
                         if (iVN_Version_Groups != null && button_type.equals("save")) {
                             maps_object.put("status", "New Temporary IVN Version Created Successfully");
                         } else {
@@ -540,10 +569,10 @@ public class Network_Group {
 
                             maps_object.put("ivn_previous_data_result", ivn_previous_data_result);
                         }
-                        
+
                         maps_string.put("ivn_version", mapper.writeValueAsString(iVN_Versions));
                         maps_string.put("ivn_version_group", mapper.writeValueAsString(iVN_Version_Groups));
-                        
+
                         if (iVN_Version_Groups != null && button_type.equals("save")) {
                             maps_object.put("status", "New Temporary IVN Version Created Successfully");
                         } else {
@@ -553,7 +582,7 @@ public class Network_Group {
                             }
                             maps_object.put("status", "New Permanent IVN Version Created Successfully");
                         }
-                    }                    
+                    }
                     maps_string.put("status_code", "1");
                 }
             }

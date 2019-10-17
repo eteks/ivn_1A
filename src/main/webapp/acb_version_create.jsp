@@ -41,37 +41,27 @@
                                                     <div class="card-block marketing-card p-t-0">
                                                          <div class="row p-t-30">
                                                             <div class="form-group col-md-3">
-                                                                <label for="vehicle">PDB version :</label>
-                                                                <select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">
-                                                                    <s:iterator value="vehicleversion_result" >
-                                                                        <option value="<s:property value="id"/>">
-                                                                            <s:property value="versionname"/>
-                                                                        </option>
-                                                                    </s:iterator>
+                                                                <label for="vehicle">Feature version :</label>
+<!--                                                                <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversionname for arr in pdbversion" ng-change="LoadVehicleData()">
+                                                                </select>-->
+                                                                <select ng-model="data.featureversion" ng-options="arr as arr.versionname for arr in array_result" ng-change="LoadSelectedFeatureVersionData()">
                                                                 </select>
-                                                                <!--<select ng-model="data.vehicleversion" ng-change="LoadSelectedVehicleVersionData()">-->
-                                                                    <%--<s:iterator value="vehicleversion_result" >--%>
-                                                                        <!--<option value="<s:property value="id"/>">-->
-                                                                            <%--<s:property value="versionname"/>--%>
-                                                                        <!--</option>-->
-                                                                    <%--</s:iterator>--%>
-                                                                    <!--<option value="2.0" selected="">2.0</option>-->
-                                                                <!--</select>-->
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">Vehicle:</label>
-                                                                <select ng-hide="data.vehicleversion"></select>
-                                                                <select ng-change="LoadPDBandIVN_Version()" ng-if="vehicle_list.length > 0" ng-model="data.vehiclename">
-                                                                        <option value="{{veh.vehicle_id}}" ng-repeat="veh in vehicle_list">{{veh.vehiclename}}</option>                                                                    
+                                                                <select ng-model="data.vehiclename" ng-options="arr as arr.vname for arr in arr_res" ng-change="LoadIVNVersion()">
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="vehicle">IVN version:</label>
-                                                                <select ng-model="data.ivnversion" ng-change="LoadSelectedIVNData()">
-                                                                    <option value=""></option>
-                                                                    <option value="{{ivn.id}}" ng-repeat="ivn in ivnversion">{{ivn.ivn_versionname}}</option> 
+                                                                <select ng-model="data.vername" ng-options="arr as arr.ivn_version for arr in records track by arr.ivn_version" >
                                                                 </select>
                                                                 <button class="text-c-green" style="font-weight:600" ng-click="exportACB()">Export</button>
+                                                            </div>
+                                                            <div class="form-group col-md-3">
+                                                                <label for="vehicle">PDB:</label>
+                                                                <select ng-model="data.pdbversion" ng-options="arr as arr.pdbversionname for arr in arr_res_1" ng-change="LoadFeatures()">
+                                                                </select>
                                                             </div>
 <!--                                                            <div class="form-group col-md-3">
                                                                 <label for="vehicle">ACB version :</label>
@@ -102,7 +92,7 @@
                                                                 </thead>
                                                                 <tr dir-paginate="record in features|orderBy:sortKey:reverse|filter:search|itemsPerPage:20">                                                                        
                                                                     <td class="ng-table-fixedcolumn">
-                                                                        <a class="modal-trigger" href="#modal-product-form" style="text-decoration:underline;" ng-click="assignstart(record.fid)">
+                                                                        <a class="modal-trigger" href="#modal-product-form" style="text-decoration:underline;" ng-click="assignstart(record.fid)" >
                                                                             <span class="compresslength" style="display:block">{{record.featurename}}</span>
                                                                         </a>
                                                                         
@@ -112,9 +102,9 @@
                                                                     
                                                                     <td class="text-center acb_btn" ng-repeat="x in (record.status | customSplitString) track by $index">
                                                                         
-                                                                        <span class="btn yellow btn-icon" ng-if="x == 'O'">{{x | uppercase}}</span>
-                                                                        <span class="btn green  btn-icon" ng-if="x == 'Y'">{{x | uppercase}}</span>
-                                                                        <span class="btn brown btn-icon" ng-if="x == 'N'">{{x | uppercase}}</span>
+                                                                        <span class="btn yellow btn-icon" ng-if="x == 'o'">{{x | uppercase}}</span>
+                                                                        <span class="btn green  btn-icon" ng-if="x == 'y'">{{x | uppercase}}</span>
+                                                                        <span class="btn brown btn-icon" ng-if="x == 'n'">{{x | uppercase}}</span>
                                                                     </td>
                                                                     <td class="text-center" ng-if="record.touch != 'No'">
                                                                         <!--{{record.touch}}-->
@@ -299,7 +289,7 @@
     <script>
 //        var app = angular.module('angularTable', ['ui.bootstrap']);
 
-        app.controller('RecordCtrl1',function($scope, $http, $window, $location)
+        app.controller('RecordCtrl1',function($scope, $http, $window, $location, $element, $rootScope)
         {
             this.data1=[];
             this.data2=[]; 
@@ -310,12 +300,263 @@
                 notification_to = args;
                 $scope.createacbversion("submit",1);
             });
+            $scope.pdbversion = [];
             $scope.ecu_list = [];
             $scope.signal_list = [];
             $scope.network = [];
             $scope.list = [];
+            $scope.modals = [];
+            $scope.features = [];
             var features_group = [];
             var version_type;
+            
+            result_data_obj = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+            $scope.array_result = result_data_obj;
+            
+                        //Load Selected Feature Version Data
+            $scope.LoadSelectedFeatureVersionData= function()
+            {
+                $http({
+                    url : 'loadSelectedFeatureVersionData',
+                    method : "POST",
+                    data : {"id":$scope.data.featureversion.id}
+                }).then(function (response, status, headers, config){
+                    
+                    var vm_result = [];
+                    $scope.status_value = "";
+                    $scope.vehicleresults = "";
+                    result_data_obj = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
+//                    $window.alert(JSON.stringify(result_data_obj));
+                    var arr_res = [], arr_res_1 = [];
+                   for(var i = 0; i < result_data_obj.length; i++)
+                   {
+                        arr_res.push({
+//                           "pdbid":result_data_obj[i].pdbid,
+//                            "pdbversionname":result_data_obj[i].pdbversionname,
+                            "vid":result_data_obj[i].vid,
+                            "vname":result_data_obj[i].vname,
+                            "status":result_data_obj[i].status,
+                            "flag":result_data_obj[i].flag
+                        });
+                        arr_res_1.push({
+                           "pdbid":result_data_obj[i].pdbid,
+                            "pdbversionname":result_data_obj[i].pdbversionname,
+//                            "vid":result_data_obj[i].vid,
+//                            "vname":result_data_obj[i].vname,
+                            "status":result_data_obj[i].status,
+                            "flag":result_data_obj[i].flag
+                        });
+//                        status_value = data.status;  
+//                       $scope.vehicleresults = response.data.maps_object.pdbversion[i];
+//                       $window.alert(JSON.stringify(result_data_obj[i]));
+                    }
+                    $scope.data.vehiclename = arr_res[0];
+                    $scope.data.pdbversion = arr_res_1[0];
+                    $scope.arr_res = arr_res;
+                    $scope.arr_res_1 = arr_res_1;
+                    $scope.LoadIVNVersion();
+//                    $scope.LoadFeatures(result_data_obj[0].pdbid);
+//                    $window.alert(JSON.stringify($scope.arr_res));
+                });
+            };
+            
+            $scope.models = {
+                selected: null,
+                templates: [{
+                  type: "item",
+                  id: 2
+                }, {
+                  type: "container",
+                  id: 1,
+                  columns: [
+                    []
+                  ]
+                }],
+                dropzones: {
+                  "B": [
+                       {
+                          label: "Signal",
+                          slot:"signal_slot",
+                          allowedTypes: ['signal'],
+                          max: 10,
+//                          version: [
+//                              {id:1,name: "AUTO_SWITCH", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:2,name: "Solar temperature", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:3,name: "Ambient Temperature", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:4,name: "AC_Switch", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:5,name: "Drive Mode", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:6,name: "IGN status", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:7,name: "Current_Gear_MT", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:8,name: "Vehicle_Speed_ESC", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:9,name: "Compressor control", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
+//                              {id:10,name: "DRV_SET_TEMP", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]}
+//                          ]
+//                          version:[]
+                      }, 
+                      {
+                          label: "i/p Signal Slot",
+                          slot:"ip",
+                          allowedTypes: ['signal'],
+                          max: 3,
+                          version: []
+                      },
+                      {
+                          label: "ECU Slot",
+                          slot:"ecu_slot",
+                          allowedTypes: ['ecu'],
+                          max: 2,
+                          version: []
+//                          version:[]
+                      },
+                      {
+                          label: "o/p Signal Slot",
+                          slot:"op",
+                          allowedTypes: ['signal'],
+                          max: 3,
+                          version: []
+                      },
+                      {
+                          label: "ECU",
+                          slot:"ecu_list",
+                          allowedTypes: ['ecu'],
+                          max: 4,
+//                          version: [
+//                              {name: "HVAC Systems", type: "ecu"},
+//                              {name: "DZATC", type: "ecu"},
+//                              {name: "ETC2", type: "ecu"}
+//                          ]
+//                          version:[]
+                      }                      
+                  ]
+                }                
+              };
+              
+            $scope.LoadIVNVersion = function() {
+                
+//                alert("vehiclename id "+$scope.data.vehiclename.vid);
+                $http({
+                        url : 'LoadIVNVersion',
+                        method : "POST",
+                        data : {"vid":$scope.data.vehiclename.vid}
+                    }).then(function (response, status, headers, config){
+                        
+                        var result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
+                        $scope.data.vername = result_data[0];
+                        $scope.records = result_data;
+                        if ($scope.data.vername) {
+                            $scope.create_type = true;
+//                            alert($scope.create_type);
+                        }
+                        $scope.LoadFeatures($scope.data.pdbversion.pdbid);
+//                        alert(JSON.stringify($scope.records)+" "+$scope.data.vername);
+                });
+            };
+            
+            $scope.LoadFeatures = function(pdbid) {
+                
+//                alert("pdbversion id "+pdbid);
+                $http({
+                    url : 'LoadFeatures',
+                    method : "POST",
+                    data : {"pdbid":pdbid}
+                }).then(function (response, status, headers, config){
+                    
+                    if (response.data.maps_string.success) {
+                        
+                        result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
+//                        alert("RES "+JSON.stringify(result_data));
+                        var vehicledetail_list = result_data.vehicledetail_list;
+                        var featuredetail_list = result_data.featuredetail_list;
+                        $scope.modals = vehicledetail_list;
+                        $scope.features = featuredetail_list;
+                        $scope.features.filter(function(v,i){
+                            $scope.features[i].pdbgroup_id = $scope.features[i].pdbgroup_id.split(",");
+                        });
+                        delete $scope.data.acbversion;
+//                        alert("RES "+JSON.stringify($scope.modals)+" WEQ "+JSON.stringify($scope.features));
+                        //Load Signals and ECU
+                        $http.get("LoadSignalEcu.action").then(function (response, status, headers, config){
+
+                            if (response.data.maps_string.success) {
+                                
+                                //{id:1,name: "AUTO_SWITCH", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},{name: "HVAC Systems", type: "ecu"},
+                                result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
+//                                console.log(JSON.stringify(result_data));
+                                var sig = [], nw = [], ecu = [];
+                                var mx = Math.max(result_data.signals.length, result_data.ecu.length);
+                                
+                                for (var i = 0; i < mx; i++) {
+                                    
+                                    if (result_data.signals[i].can_id_group) {
+                                        nw.push({
+                                            id : result_data.signals[i].can_id_group.id,
+                                            name : result_data.signals[i].can_id_group.network_name
+                                        });
+                                    }
+                                    if (result_data.signals[i].lin_id_group) {
+                                        nw.push({
+                                            id : result_data.signals[i].lin_id_group.id,
+                                            name : result_data.signals[i].lin_id_group.network_name
+                                        });
+                                    }
+                                    if (result_data.signals[i].hw_id_group) {
+                                        nw.push({
+                                            id : result_data.signals[i].hw_id_group.id,
+                                            name : result_data.signals[i].hw_id_group.network_name
+                                        });
+                                    }
+                                    sig.push({
+                                        id : result_data.signals[i].id,
+                                        name : result_data.signals[i].signal_name,
+                                        type : "signal",
+                                        nw : nw
+                                    });
+                                    if (result_data.ecu[i].id) {
+                                        ecu.push({
+                                            id : result_data.ecu[i].id,
+                                            name : result_data.ecu[i].ecu_name,
+                                            type : "ecu"
+                                        });
+                                    }
+                                }
+                                //assigning single to model json
+                                $scope.models.dropzones.B[0].version = sig;
+                                //assigning ecu to model json
+                                $scope.models.dropzones.B[4].version = ecu;
+//                                    alert(JSON.stringify(ecu));
+//                                alert(JSON.stringify($scope.models));
+                            } else {
+                                alert(response.data.maps_string.error);
+                            }
+                        });
+                    } else {
+                        alert(response.data.maps_string.error);
+                    }
+                });
+            };
+            
+//            $http.get("getPdbVersionFromFeatureVersion.action")
+//                .then(function (response, status, headers, config) {
+//                    
+//                    if (response.data.maps_string.success) {
+//                        
+//                        var ids = {};
+//
+//                        $scope.pdbversion = response.data.result_data.filter(function(v) {
+//                          var ind = v.name + '_' + v.key;
+//                          if (!ids[ind]) {
+//                            ids[ind] = true;
+//                            return true;
+//                          }
+//                          return false;
+//                        });
+////                        $scope.pdbversion = response.data.result_data;
+//                        $window.alert(JSON.stringify($scope.pdbversion));
+//                    } else {                        
+//                        $window.alert(response.data.maps_string.error);
+//                    }
+//                });
+                    
 //            $scope.list.features_group = [];
             
 //            $scope.Confirm = function() {
@@ -337,6 +578,7 @@
             $scope.assignstart = function(a)
             {
                 $scope.fea.push({'fid':a});
+                $('.modal-trigger').leanModal();
                 
             }
             $scope.addnwsignal = function(nid,sid,mod,type)
@@ -386,6 +628,7 @@
                    alert(JSON.stringify($scope.opsignal));
                 }               
             }
+            
             $scope.feature_result_cap = function()
             {
               $scope.result.push({'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal});
@@ -396,18 +639,18 @@
             {
                 
             }
-            $scope.modals = [
-                        { vmm_id:'1',modelname: 'm1'},
-                        { vmm_id:'2',modelname: 'm2'},
-                        { vmm_id:'3',modelname: 'm3'},
-                        { vmm_id:'4',modelname: 'm4'}
-                    ];              
-            $scope.features = [
-                        { fid:'1',featurename: 'feature1',status:"Y,O,Y,N",touch:'No'},
-                        { fid:'2',featurename: 'feature2',status:'O,N,Y,N',touch:'No'},
-                        { fid:'3',featurename: 'feature3',status:'Y,Y,O,N',touch:'No'},
-                        { fid:'4',featurename: 'feature4',status:'Y,Y,N,O',touch:'No'}
-                    ];    
+//            $scope.modals = [
+//                        { vmm_id:'1',modelname: 'm1'},
+//                        { vmm_id:'2',modelname: 'm2'},
+//                        { vmm_id:'3',modelname: 'm3'},
+//                        { vmm_id:'4',modelname: 'm4'}
+//                    ];              
+//            $scope.features = [
+//                        { fid:'1',featurename: 'feature1',status:"Y,O,Y,N",touch:'No'},
+//                        { fid:'2',featurename: 'feature2',status:'O,N,Y,N',touch:'No'},
+//                        { fid:'3',featurename: 'feature3',status:'Y,Y,O,N',touch:'No'},
+//                        { fid:'4',featurename: 'feature4',status:'Y,Y,N,O',touch:'No'}
+//                    ];    
 //            $scope.ecu_list = [ 
 //                { eid:'1',listitem:'ecu 1',description:'description 1'},
 //                { eid:'2',listitem:'ecu 2',description:'description 2'},
@@ -437,9 +680,12 @@
 //              ];
             $scope.signaltags = [];            
              
+            $scope.LoadVehicleData = function() {
+                alert(JSON.stringify($scope.data.pdbversion));
+            }
 
-    $scope.dropCallback = function(index, item, external, type) 
-    {
+            $scope.dropCallback = function(index, item, external, type) 
+            {
                 // Return false here to cancel drop. Return true if you insert the item yourself.
                 // roll down and delete any empty columns//
                 var model = $scope.models.dropzones;
@@ -454,78 +700,8 @@
                 }
 
                 return item;
-              };
+            };
 
-              $scope.models = {
-                selected: null,
-                templates: [{
-                  type: "item",
-                  id: 2
-                }, {
-                  type: "container",
-                  id: 1,
-                  columns: [
-                    []
-                  ]
-                }],
-                dropzones: {
-                  "B": [
-                       {
-                          label: "Signal",
-                          slot:"signal_slot",
-                          allowedTypes: ['signal'],
-                          max: 10,
-                          version: [
-                              {id:1,name: "AUTO_SWITCH", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:2,name: "Solar temperature", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:3,name: "Ambient Temperature", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:4,name: "AC_Switch", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:5,name: "Drive Mode", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:6,name: "IGN status", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:7,name: "Current_Gear_MT", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:8,name: "Vehicle_Speed_ESC", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:9,name: "Compressor control", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]},
-                              {id:10,name: "DRV_SET_TEMP", type: "signal",nw:[{id:1,name: "can"},{id:2,name: "lin"},{id:3,name: "h/w"}]}
-                          ]
-//                          version:[]
-                      }, 
-                      {
-                          label: "i/p Signal Slot",
-                          slot:"ip",
-                          allowedTypes: ['signal'],
-                          max: 3,
-                          version: []
-                      },
-                      {
-                          label: "ECU Slot",
-                          slot:"ecu_slot",
-                          allowedTypes: ['ecu'],
-                          max: 2,
-                          version: []
-//                          version:[]
-                      },
-                      {
-                          label: "o/p Signal Slot",
-                          slot:"op",
-                          allowedTypes: ['signal'],
-                          max: 3,
-                          version: []
-                      },
-                      {
-                          label: "ECU",
-                          slot:"ecu_list",
-                          allowedTypes: ['ecu'],
-                          max: 4,
-                          version: [
-                              {name: "HVAC Systems", type: "ecu"},
-                              {name: "DZATC", type: "ecu"},
-                              {name: "ETC2", type: "ecu"}
-                          ]
-//                          version:[]
-                      }                      
-                  ]
-                }                
-              };
 //              alert(JSON.stringify($scope.models.dropzones.B[0].version));
 
               $scope.$watch('models.dropzones', function(model) {
@@ -604,4 +780,4 @@
     </script>   
 </body>
 
-</html>                                            
+</html>

@@ -43,7 +43,7 @@
         <mapping class="com.ivn_1A.models.net_sign.ECU" />
         <mapping class="com.ivn_1A.models.net_sign.Signals" />
         <mapping class="com.ivn_1A.models.net_sign.SignalTags" />
-        <mapping class="com.ivn_1A.models.net_sign.SignalTags_Mapping" />
+        <!--<mapping class="com.ivn_1A.models.net_sign.SignalTags_Mapping" />-->
         <mapping class="com.ivn_1A.models.net_sign.IVN_Version" />
         <mapping class="com.ivn_1A.models.net_sign.IVN_Version_Group" />
         <mapping class="com.ivn_1A.models.task.Tasks" />

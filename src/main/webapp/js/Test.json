@@ -1,99 +1,238 @@
 {
-    "vehicledetail_list": [{
-            "modelname": "High_O_Gadget_2WDMT",
-            "vehver_id": 2,
-            "vmm_id": "10",
-            "vehicle_id": 1
+    "signals": [{
+            "id": 1,
+            "signal_name": "sg1",
+            "signal_alias": "sg1",
+            "signal_description": "signal1",
+            "signal_length": 1,
+            "signal_byteorder": "ss",
+            "signal_unit": "ss",
+            "signal_valuetype": "sign",
+            "signal_initvalue": 1,
+            "signal_factor": 1,
+            "signal_offset": 1,
+            "signal_minimum": 1,
+            "signal_maximum": 5,
+            "signal_valuetable": "valuetable_1",
+            "can_id_group": {
+                "id": 2,
+                "network_name": "can2",
+                "network_description": "can2",
+                "network_type": "can",
+                "modified_date": "Oct 14, 2019 4:09:51 PM",
+                "created_date": "Oct 14, 2019 4:09:51 PM",
+                "created_or_updated_by": {
+                    "id": 1,
+                    "username": "khan",
+                    "groups_id": {
+                        "group_name": "PDB Owner",
+                        "route_pages": "pdb_owner",
+                        "status": true,
+                        "id": 1,
+                        "is_superadmin": true,
+                        "modified_date": "Oct 14, 2019 4:05:38 PM",
+                        "created_date": "Oct 14, 2019 4:05:38 PM"
+                    }
+                },
+                "status": true
+            },
+            "lin_id_group": {
+                "id": 4,
+                "network_name": "lin2",
+                "network_description": "lin2",
+                "network_type": "lin",
+                "modified_date": "Oct 14, 2019 4:10:15 PM",
+                "created_date": "Oct 14, 2019 4:10:15 PM",
+                "created_or_updated_by": {
+                    "id": 1,
+                    "username": "khan",
+                    "groups_id": {
+                        "group_name": "PDB Owner",
+                        "route_pages": "pdb_owner",
+                        "status": true,
+                        "id": 1,
+                        "is_superadmin": true,
+                        "modified_date": "Oct 14, 2019 4:05:38 PM",
+                        "created_date": "Oct 14, 2019 4:05:38 PM"
+                    }
+                },
+                "status": true
+            },
+            "hw_id_group": {
+                "id": 6,
+                "network_name": "hw2",
+                "network_description": "hw2",
+                "network_type": "hardware",
+                "modified_date": "Oct 14, 2019 4:10:44 PM",
+                "created_date": "Oct 14, 2019 4:10:44 PM",
+                "created_or_updated_by": {
+                    "id": 1,
+                    "username": "khan",
+                    "groups_id": {
+                        "group_name": "PDB Owner",
+                        "route_pages": "pdb_owner",
+                        "status": true,
+                        "id": 1,
+                        "is_superadmin": true,
+                        "modified_date": "Oct 14, 2019 4:05:38 PM",
+                        "created_date": "Oct 14, 2019 4:05:38 PM"
+                    }
+                },
+                "status": true
+            },
+            "modified_date": "Oct 14, 2019 4:19:43 PM",
+            "created_date": "Oct 14, 2019 4:19:43 PM",
+            "created_or_updated_by": {
+                "id": 1,
+                "username": "khan",
+                "groups_id": {
+                    "group_name": "PDB Owner",
+                    "route_pages": "pdb_owner",
+                    "status": true,
+                    "id": 1,
+                    "is_superadmin": true,
+                    "modified_date": "Oct 14, 2019 4:05:38 PM",
+                    "created_date": "Oct 14, 2019 4:05:38 PM"
+                }
+            },
+            "status": true
         }, {
-            "modelname": "High_O_City_2WDAT",
-            "vehver_id": 2,
-            "vmm_id": "11",
-            "vehicle_id": 1
-        }, {
-            "modelname": "High_O_4Cast_4WDMT",
-            "vehver_id": 2,
-            "vmm_id": "12",
-            "vehicle_id": 1
-        }, {
-            "modelname": "High_O_4Cast_4WDAT",
-            "vehver_id": 2,
-            "vmm_id": "13",
-            "vehicle_id": 1
-        }, {
-            "modelname": "Base_Active_2WDMT",
-            "vehver_id": 2,
-            "vmm_id": "4",
-            "vehicle_id": 1
-        }, {
-            "modelname": "Mid_Machismo_2WDMT",
-            "vehver_id": 2,
-            "vmm_id": "5",
-            "vehicle_id": 1
-        }, {
-            "modelname": "Mid_O_4Cast_4WDMT",
-            "vehver_id": 2,
-            "vmm_id": "6",
-            "vehicle_id": 1
-        }, {
-            "modelname": "Mid_O_City_2WDAT",
-            "vehver_id": 2,
-            "vmm_id": "7",
-            "vehicle_id": 1
-        }, {
-            "modelname": "High_Pro_2WDMT",
-            "vehver_id": 2,
-            "vmm_id": "8",
-            "vehicle_id": 1
-        }, {
-            "modelname": "High_O_Delight_2WDMT",
-            "vehver_id": 2,
-            "vmm_id": "9",
-            "vehicle_id": 1
+            "id": 2,
+            "signal_name": "sg2",
+            "signal_alias": "sg2",
+            "signal_description": "signal2",
+            "signal_length": 1,
+            "signal_byteorder": "sd",
+            "signal_unit": "sd",
+            "signal_valuetype": "unsign",
+            "signal_initvalue": 1,
+            "signal_factor": 1,
+            "signal_offset": 1,
+            "signal_minimum": 1,
+            "signal_maximum": 5,
+            "signal_valuetable": "valuetable_2",
+            "can_id_group": {
+                "id": 1,
+                "network_name": "can1",
+                "network_description": "can1",
+                "network_type": "can",
+                "modified_date": "Oct 14, 2019 4:09:51 PM",
+                "created_date": "Oct 14, 2019 4:09:51 PM",
+                "created_or_updated_by": {
+                    "id": 1,
+                    "username": "khan",
+                    "groups_id": {
+                        "group_name": "PDB Owner",
+                        "route_pages": "pdb_owner",
+                        "status": true,
+                        "id": 1,
+                        "is_superadmin": true,
+                        "modified_date": "Oct 14, 2019 4:05:38 PM",
+                        "created_date": "Oct 14, 2019 4:05:38 PM"
+                    }
+                },
+                "status": true
+            },
+            "lin_id_group": {
+                "id": 3,
+                "network_name": "lin1",
+                "network_description": "lin1",
+                "network_type": "lin",
+                "modified_date": "Oct 14, 2019 4:10:15 PM",
+                "created_date": "Oct 14, 2019 4:10:15 PM",
+                "created_or_updated_by": {
+                    "id": 1,
+                    "username": "khan",
+                    "groups_id": {
+                        "group_name": "PDB Owner",
+                        "route_pages": "pdb_owner",
+                        "status": true,
+                        "id": 1,
+                        "is_superadmin": true,
+                        "modified_date": "Oct 14, 2019 4:05:38 PM",
+                        "created_date": "Oct 14, 2019 4:05:38 PM"
+                    }
+                },
+                "status": true
+            },
+            "hw_id_group": {
+                "id": 5,
+                "network_name": "hw1",
+                "network_description": "hw1",
+                "network_type": "hardware",
+                "modified_date": "Oct 14, 2019 4:10:44 PM",
+                "created_date": "Oct 14, 2019 4:10:44 PM",
+                "created_or_updated_by": {
+                    "id": 1,
+                    "username": "khan",
+                    "groups_id": {
+                        "group_name": "PDB Owner",
+                        "route_pages": "pdb_owner",
+                        "status": true,
+                        "id": 1,
+                        "is_superadmin": true,
+                        "modified_date": "Oct 14, 2019 4:05:38 PM",
+                        "created_date": "Oct 14, 2019 4:05:38 PM"
+                    }
+                },
+                "status": true
+            },
+            "modified_date": "Oct 14, 2019 4:20:39 PM",
+            "created_date": "Oct 14, 2019 4:20:39 PM",
+            "created_or_updated_by": {
+                "id": 1,
+                "username": "khan",
+                "groups_id": {
+                    "group_name": "PDB Owner",
+                    "route_pages": "pdb_owner",
+                    "status": true,
+                    "id": 1,
+                    "is_superadmin": true,
+                    "modified_date": "Oct 14, 2019 4:05:38 PM",
+                    "created_date": "Oct 14, 2019 4:05:38 PM"
+                }
+            },
+            "status": true
         }],
-    "featuredetail_list": [{
-            "fid": "10",
-            "featurename": "Carbon filter",
-            "pdbgroup_id": "25,31,37,43,49,55,61,67,73,79",
-            "domainname": "Filter",
-            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
-            "status": "y,y,y,y,y,y,y,y,y,y"
+    "ecu": [{
+            "id": 1,
+            "ecu_name": "ecu1",
+            "ecu_description": "ecu1",
+            "modified_date": "Oct 14, 2019 4:18:39 PM",
+            "created_date": "Oct 14, 2019 4:18:39 PM",
+            "created_or_updated_by": {
+                "id": 1,
+                "username": "khan",
+                "groups_id": {
+                    "group_name": "PDB Owner",
+                    "route_pages": "pdb_owner",
+                    "status": true,
+                    "id": 1,
+                    "is_superadmin": true,
+                    "modified_date": "Oct 14, 2019 4:05:38 PM",
+                    "created_date": "Oct 14, 2019 4:05:38 PM"
+                }
+            },
+            "status": true
         }, {
-            "fid": "11",
-            "featurename": "PM 2.5 Clean Air Certification",
-            "pdbgroup_id": "26,32,38,44,50,56,62,68,74,80",
-            "domainname": "PM 2.5 Clean Air Certification",
-            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
-            "status": "y,y,y,y,y,y,y,y,y,y"
-        }, {
-            "fid": "6",
-            "featurename": "Demister",
-            "pdbgroup_id": "21,27,33,39,45,51,57,63,69,75",
-            "domainname": "RR DEFOGGER",
-            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
-            "status": "y,y,y,y,y,y,y,y,y,y"
-        }, {
-            "fid": "7",
-            "featurename": "Internally Variable Displacement AC Compressor",
-            "pdbgroup_id": "22,28,34,40,46,52,58,64,70,76",
-            "domainname": "IVDC",
-            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
-            "status": "y,y,y,y,y,y,y,y,y,y"
-        }, {
-            "fid": "8",
-            "featurename": "Externaly variable compressor",
-            "pdbgroup_id": "23,29,35,41,47,53,59,65,71,77",
-            "domainname": "IVDC",
-            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
-            "status": "o,o,o,o,o,o,o,o,o,o"
-        }, {
-            "fid": "9",
-            "featurename": "Paper filter",
-            "pdbgroup_id": "24,30,36,42,48,54,60,66,72,78",
-            "domainname": "Filter",
-            "vmm_id": "8,12,5,9,13,6,10,7,11,4",
-            "status": "n,n,n,n,n,n,n,n,n,n"
-        }],
-    "pdbversion_status": [{
+            "id": 2,
+            "ecu_name": "ecu2",
+            "ecu_description": "ecu2",
+            "modified_date": "Oct 14, 2019 4:18:39 PM",
+            "created_date": "Oct 14, 2019 4:18:39 PM",
+            "created_or_updated_by": {
+                "id": 1,
+                "username": "khan",
+                "groups_id": {
+                    "group_name": "PDB Owner",
+                    "route_pages": "pdb_owner",
+                    "status": true,
+                    "id": 1,
+                    "is_superadmin": true,
+                    "modified_date": "Oct 14, 2019 4:05:38 PM",
+                    "created_date": "Oct 14, 2019 4:05:38 PM"
+                }
+            },
             "status": true
         }]
 }

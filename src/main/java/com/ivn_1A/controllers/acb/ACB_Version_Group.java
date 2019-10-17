@@ -126,7 +126,6 @@ public class ACB_Version_Group {
                             columns.put("pdb_id", tuple.get("pdb_id"));
                             columns.put("vehicle_id", tuple.get("vehicle_id"));
                             columns.put("modelname", tuple.get("modelname"));
-                            columns.put("touch", "No");
                             columns.put("vmm_id", tuple.get("pdb_id"));
                             return columns;
                         }).map((columns) -> {
@@ -150,6 +149,7 @@ public class ACB_Version_Group {
                             columns.put("featurename", tuple.get("featurename"));
                             columns.put("domainname", tuple.get("domainname"));
                             columns.put("status", tuple.get("status"));
+                            columns.put("touch", "No");
                             return columns;
                         }).map((columns) -> {
                             row2.add(columns);
@@ -181,35 +181,27 @@ public class ACB_Version_Group {
                         break;
                 }
             });
-//            tupleObjects.stream().map((tuple) -> {
-//                
-//                Map<String, Object> columns = new HashMap<>();
-//                System.err.println("WElcome");
-////                columns.put("fid", tuple.get("fid"));
-////                columns.put("featurename", tuple.get("fname"));
-////                columns.put("stt", tuple.get("stt"));
-////                columns.put("touch", "No");
-////                columns.put("vmm_id", tuple.get("mid"));
-////                columns.put("modelname", tuple.get("mname"));
-//
-//                columns.put("fid", tuple.getDomain_and_features_mapping_id().getFeature_id().getId());
-//                columns.put("featurename", tuple.getDomain_and_features_mapping_id().getFeature_id().getFeature_name());
-//                columns.put("stt", tuple.getAvailable_status());
-//                columns.put("touch", "No");
-//                columns.put("vmm_id", tuple.getVehiclemodel_id().getId());
-//                columns.put("modelname", tuple.getVehiclemodel_id().getModelname());
-//                return columns;
-//            }).map((columns) -> {
-//                result_data.add(columns);
-//                return columns;
-//            }).forEachOrdered((columns) -> {
-//                System.out.println("colums" + columns);
-//            });
             result_data_obj = new Gson().toJson(col);
             maps_string.put("success", "work is done");
 
         } catch (Exception e) {
             System.out.println("Error in \"ACB_Version_Group\" \'getFeaturesByPdb\' : " + e);
+            maps_string.put("error", "Some error occurred !!");
+        }
+        return "success";
+    }
+
+    public String getSignalsAndECU() {
+
+        try {
+
+            Map<String, Object> testMap = ACB_DB.getSignalsAndECU();
+
+            result_data_obj = new Gson().toJson(testMap);
+            System.out.println("result_data_obj : " + result_data_obj);
+            maps_string.put("success", "work is done");
+        } catch (Exception e) {
+            System.out.println("Error in \"ACB_Version_Group\" \'ACBVersionPage\' : " + e);
             maps_string.put("error", "Some error occurred !!");
         }
         return "success";

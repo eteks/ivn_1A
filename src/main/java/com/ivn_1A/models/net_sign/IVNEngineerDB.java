@@ -371,25 +371,6 @@ public class IVNEngineerDB {
         }
     }
 
-    //Insert Network Data
-    public static SignalTags_Mapping insertsignalTags_MappingData(SignalTags_Mapping signalTags_Mapping) {
-
-        try {
-            System.err.println("insertNetworkData");
-            Session session = HibernateUtil.getThreadLocalSession();
-            Transaction tx = session.beginTransaction();
-
-            session.save(signalTags_Mapping);
-
-            tx.commit();
-            session.clear();
-            return signalTags_Mapping;
-        } catch (Exception e) {
-            System.err.println("Error in \"IVNEngineerDB\" \'insertsignalTags_MappingData\' " + e);
-            return null;
-        }
-    }
-
     public static List<Tuple> LoadFeatureVersion(String filter) {
 
         try {
