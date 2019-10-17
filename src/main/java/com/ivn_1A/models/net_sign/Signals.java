@@ -7,13 +7,18 @@ package com.ivn_1A.models.net_sign;
 
 import com.ivn_1A.models.admin.User;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -44,9 +49,10 @@ public class Signals implements Serializable {
     private int signal_minimum;
     private int signal_maximum;
     private String signal_valuetable;
-    private Network can_id_group;
-    private Network lin_id_group;
-    private Network hw_id_group;
+    private Collection<Network> can_id_group = new ArrayList<>();
+    private Collection<Network> lin_id_group = new ArrayList<>();
+    private Collection<Network> hw_id_group = new ArrayList<>();
+    private Collection<SignalTags> signalTagses = new ArrayList<>();
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
@@ -55,7 +61,7 @@ public class Signals implements Serializable {
     public Signals() {
     }
 
-    public Signals(String signal_name, String signal_alias, String signal_description, int signal_length, String signal_byteorder, String signal_unit, String signal_valuetype, int signal_initvalue, double signal_factor, int signal_offset, int signal_minimum, int signal_maximum, String signal_valuetable, Network can_id_group, Network lin_id_group, Network hw_id_group, Date modified_date, Date created_date, User created_or_updated_by, boolean status) {
+    public Signals(String signal_name, String signal_alias, String signal_description, int signal_length, String signal_byteorder, String signal_unit, String signal_valuetype, int signal_initvalue, double signal_factor, int signal_offset, int signal_minimum, int signal_maximum, String signal_valuetable, Collection<Network> can_id_group, Collection<Network> lin_id_group, Collection<Network> hw_id_group, Collection<SignalTags> signalTagses, Date modified_date, Date created_date, User created_or_updated_by, boolean status) {
         this.signal_name = signal_name;
         this.signal_alias = signal_alias;
         this.signal_description = signal_description;
@@ -72,14 +78,13 @@ public class Signals implements Serializable {
         this.can_id_group = can_id_group;
         this.lin_id_group = lin_id_group;
         this.hw_id_group = hw_id_group;
+        this.signalTagses = signalTagses;
         this.modified_date = modified_date;
         this.created_date = created_date;
         this.created_or_updated_by = created_or_updated_by;
         this.status = status;
     }
 
-    
-        
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -208,35 +213,53 @@ public class Signals implements Serializable {
     public void setSignal_valuetable(String signal_valuetable) {
         this.signal_valuetable = signal_valuetable;
     }
-    
-    @OneToOne
-    @JoinColumn(name = "can_id_group", nullable = false)
-    public Network getCan_id_group() {
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "sig_can", joinColumns = {
+        @JoinColumn(name = "sig_id")}, inverseJoinColumns = {
+        @JoinColumn(name = "can_id")})
+    public Collection<Network> getCan_id_group() {
         return can_id_group;
     }
 
-    public void setCan_id_group(Network can_id_group) {
+    public void setCan_id_group(Collection<Network> can_id_group) {
         this.can_id_group = can_id_group;
     }
-    
-    @OneToOne
-    @JoinColumn(name = "lin_id_group", nullable = false)
-    public Network getLin_id_group() {
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "sig_lin", joinColumns = {
+        @JoinColumn(name = "sig_id")}, inverseJoinColumns = {
+        @JoinColumn(name = "lin_id")})
+    public Collection<Network> getLin_id_group() {
         return lin_id_group;
     }
 
-    public void setLin_id_group(Network lin_id_group) {
+    public void setLin_id_group(Collection<Network> lin_id_group) {
         this.lin_id_group = lin_id_group;
     }
-    
-    @OneToOne
-    @JoinColumn(name = "hw_id_group", nullable = false)
-    public Network getHw_id_group() {
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "sig_hw", joinColumns = {
+        @JoinColumn(name = "sig_id")}, inverseJoinColumns = {
+        @JoinColumn(name = "hw_id")})
+    public Collection<Network> getHw_id_group() {
         return hw_id_group;
     }
 
-    public void setHw_id_group(Network hw_id_group) {
+    public void setHw_id_group(Collection<Network> hw_id_group) {
         this.hw_id_group = hw_id_group;
+    }
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "sig_tag", joinColumns = {
+        @JoinColumn(name = "sig_id")}, inverseJoinColumns = {
+        @JoinColumn(name = "tag_id")})
+    public Collection<SignalTags> getSignalTagses() {
+        return signalTagses;
+    }
+
+    public void setSignalTagses(Collection<SignalTags> signalTagses) {
+        this.signalTagses = signalTagses;
     }
 
     @UpdateTimestamp
@@ -260,7 +283,7 @@ public class Signals implements Serializable {
     public void setCreated_date(Date created_date) {
         this.created_date = created_date;
     }
-    
+
     @OneToOne
     @JoinColumn(name = "created_or_updated_by", nullable = false)
     public User getCreated_or_updated_by() {
