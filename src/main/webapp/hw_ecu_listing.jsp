@@ -45,7 +45,7 @@
                                                          
                                                         <div class="col-lg-12  p-t-30">
                                                                 <div class="text-right">
-                                                                    <a class="feature_add_tip waves-effect waves-light btn modal-trigger btn-floating btn-large red" href="#modal-product-form" ng-click="showCreateForm()">Add</a>
+                                                                    <a class="waves-effect waves-light btn modal-trigger btn-floating btn-large red" href="#modal-product-form" ng-click="showCreateForm()">Add</a>
                                                                 </div>
                                                                 <!-- Nav tabs -->
                                                                 <ul class="nav nav-tabs  tabs" role="tablist">

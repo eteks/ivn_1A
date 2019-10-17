@@ -131,7 +131,7 @@
                                                        <i class="icofont icofont-ship-wheel text-c-red"></i>
                                                        Feature List
                                                    </a>&nbsp&nbsp&nbsp&nbsp
-                                                   <a class="feature_add_tip waves-effect waves-light btn modal-trigger btn-floating btn-large red text-pink" href="#modal-product-form" ng-click="showCreateForm()">Add Feature</a>
+                                                   <a class="waves-effect waves-light modal-trigger btn-floating btn-large red text-pink" href="#modal-product-form" ng-click="showCreateForm()">Add Feature</a>
                                                    &nbsp&nbsp&nbsp&nbsp
                                                    <a href="#" ng-click="hiddenDiv = !hiddenDiv" class="text-purple">Borrow Features</a>
                                                    <div class="col-xl-3" ng-show="hiddenDiv">    
@@ -209,7 +209,7 @@
                                                 </label>
 
                                                
-                                               <a class="feature_add_tip modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
+                                               <a class="modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
                                                <div id="modal-comment" class="modal">
                                                     <div class="modal-content text-left">
                                                         

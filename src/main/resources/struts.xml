@@ -275,6 +275,23 @@
             <!--<result name="session">index.jsp</result>--> 
             <result>acb_version_create.jsp</result>
         </action>
+        
+        <action name="sys_engg" class="com.ivn_1A.controllers.acb.ACB_Version_Group" method="ACBVersionPage">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>sys_engg.jsp</result>
+        </action>
+        <action name="sys_ecu" class="com.ivn_1A.controllers.acb.ACB_Version_Group" method="ACBVersionPage">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>sys_ecu.jsp</result>
+        </action>
+        <action name="sys_version" class="com.ivn_1A.controllers.acb.ACB_Version_Group" method="ACBVersionPage">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>sys_version.jsp</result>
+        </action>
+        <action name="sys_version_create" class="com.ivn_1A.controllers.acb.ACB_Version_Group" method="ACBVersionPage">
+            <!--<result name="session">index.jsp</result>--> 
+            <result>sys_version_create.jsp</result>
+        </action>
         <!--This is for testing--> 
         <action name="inserts" class="com.ivn_1A.controllers.repositories.TestInsert" method="execute">
             <result name="success">test.jsp</result>

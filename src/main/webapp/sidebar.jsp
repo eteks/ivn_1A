@@ -141,6 +141,13 @@
                                         ACB
                                     </s:a> 
                                  </li>
+                                 <li class="">
+                                    <s:url action="sys_engg" var="aURL" />
+                                    <s:a href="%{aURL}">   
+                                        <i class="icofont icofont-throne"></i>
+                                        System Owner
+                                    </s:a> 
+                                 </li>
                                  <!--{{groups}}-->
                                  <li ng-repeat="group in groups" data-groupid="{{group.id}}" ng-if="${sessionScope.user_groupid} == group.id || ${sessionScope.superadmin} == true" ng-class="{active : activeMenu === group.routepage}">
                                     <s:url action="{{group.route_pages}}" var="aURL"/>
