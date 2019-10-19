@@ -55,7 +55,7 @@ public class Pdbversion implements Serializable{
         this.created_date = created_date;
         this.created_or_updated_by = created_or_updated_by;
     }
-      
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -143,7 +143,7 @@ public class Pdbversion implements Serializable{
     public void setModified_date(Date modified_date) {
         this.modified_date = modified_date;
     }
-        
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = false)

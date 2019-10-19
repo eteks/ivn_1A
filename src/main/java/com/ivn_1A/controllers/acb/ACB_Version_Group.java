@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.persistence.Tuple;
 import javax.servlet.http.HttpSession;
 import org.apache.struts2.ServletActionContext;
+import org.json.simple.parser.JSONParser;
 
 /**
  *
@@ -203,6 +204,19 @@ public class ACB_Version_Group {
             maps_string.put("error", "Some error occurred !!");
         }
         return "success";
+    }
+
+    public String CreateACBVersion() {
+
+        try {
+
+            System.out.println("CreateACBVersion");
+            JSONParser parser = new JSONParser();
+            String jsondata = JSONConfigure.getAngularJSONFile();
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public Map<String, String> getMaps_string() {

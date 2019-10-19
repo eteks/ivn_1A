@@ -92,7 +92,7 @@
                                                                 </thead>
                                                                 <tr dir-paginate="record in features|orderBy:sortKey:reverse|filter:search|itemsPerPage:20">                                                                        
                                                                     <td class="ng-table-fixedcolumn">
-                                                                        <a class="modal-trigger" href="#modal-product-form" style="text-decoration:underline;" ng-click="assignstart(record.fid)" >
+                                                                        <a class="modal-trigger" href="#modal-product-form" style="text-decoration:underline;" ng-click="assignstart(record.fid, record.featurename)" >
                                                                             <span class="compresslength" style="display:block">{{record.featurename}}</span>
                                                                         </a>
                                                                         
@@ -164,13 +164,13 @@
                                                         </br>  
                                                       <div ng-repeat="net in person.nw" class="radio radio-matrial radio-danger radio-inline">    
                                                             <label>
-                                                                <input type="radio" ng-click="addnwsignal(net.id,person.id, i.vmm_id,list.slot)" name="modalmap_{{i.vmm_id}}" ng-model="modalmap_i.vmm_id" value="" required=""/>                
+                                                                <input type="radio" ng-click="addnwsignal(net.id,person.id, i.vmm_id,list.slot)" name="modalmap_{{person.name}}_{{i.vmm_id}}" ng-model="modalmap_i.vmm_id" value="" required=""/>                
                                                                 <i class="helper"></i>{{net.name}}
                                                             </label>
                                                       </div>
                                                 </li>
                                               </ul>
-                                              <input ng-if="list.slot == 'ecu_slot'" type="text" ng-model="" place-holder="Ecu feature name">                                              
+                                              <input ng-if="list.slot == 'ecu_slot'" type="text" ng-model="ecu_fea_name" place-holder="Ecu feature name">                                              
                                           </li>
                                           <li class="dndPlaceholder">
                                               Drop any <strong>{{list.allowedTypes.join(' or ')}}</strong> here
@@ -179,8 +179,8 @@
                               </div>                              
                             </div>
                              <div class="feat_prop_save text-center">
-                                <a href="#" ng-click="feature_result_cap()" class="btn btn-round btn-info">Save</a>
-                                <a href="#" ng-click="feature_result()" class="btn btn-round btn-success">Submit</a>
+                                <a href="#" ng-click="feature_result_cap(ecu_fea_name)" class="btn btn-round btn-info">Save</a>
+                                <a href="#" ng-click="feature_result(ecu_fea_name)" class="btn btn-round btn-success">Submit</a>
                               </div>
                            </script> 
 
@@ -589,35 +589,34 @@
             $scope.ipsignal = [];
             $scope.opsignal = [];
             
-            $scope.assignstart = function(a)
+            $scope.assignstart = function(a, b)
             {
-                $scope.fea.push({'fid':a});
+                $scope.fea.push({'fid':a, 'fname':b});
                 $('.modal-trigger').leanModal();
                 
             }
-            $scope.addnwsignal = function(nid,sid,mod,type)
-            {
+            $scope.addnwsignal = function(nid,sid,mod,type) {
 //                alert(mod);
                 if(type=='ip')
                 {                   
-                        const index = $scope.ipsignal.findIndex((e) => e.sid === sid);
-                        if (index === -1) 
+                    const index = $scope.ipsignal.findIndex((e) => e.sid === sid);
+                    if (index === -1) 
+                    {
+                        $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod});
+
+                    }
+                    else
+                    {
+                        if($scope.ipsignal[index].vmm_id == mod)
                         {
-                            $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod});
-                                
+                            $scope.ipsignal[index].nw = nid;
                         }
                         else
                         {
-                            if($scope.ipsignal[index].vmm_id == mod)
-                            {
-                                $scope.ipsignal[index].nw = nid;
-                            }
-                            else
-                            {
-                                 $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod});
-                            }
-                        }                        
-                        alert(JSON.stringify($scope.ipsignal));  
+                             $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod});
+                        }
+                    }                        
+                    alert(JSON.stringify($scope.ipsignal));  
                 }
                 if(type=='op')
                 {
@@ -642,16 +641,25 @@
                    alert(JSON.stringify($scope.opsignal));
                 }               
             }
-            
-            $scope.feature_result_cap = function()
+            localStorage.setItem('result', JSON.stringify($scope.result));
+            $scope.feature_result_cap = function(ef)
             {
-              $scope.result.push({'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal});
-              alert(JSON.stringify($scope.result));
+                let res = localStorage.getItem('result');
+                if (!res) { // check if an item is already registered
+                   res = []; // if not, we initiate an empty array
+                } else {
+                   res = JSON.parse(res); // else parse whatever is in
+                }
+                res.push({ 'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal, 'ecu_fea':ef});
+                alert(JSON.stringify(res)+"  "+ef);
+                localStorage.setItem('result', JSON.stringify(res));
+//                alert(JSON.stringify(JSON.parse(sessionStorage.result)));
+//              alert(JSON.stringify($scope.result));
 //                alert(JSON.stringify($scope.models.dropzones.B));
             }
             $scope.feature_result = function()
-            {
-                
+            {                
+                alert(JSON.stringify(JSON.parse(localStorage.result)));
             }
 //            $scope.modals = [
 //                        { vmm_id:'1',modelname: 'm1'},
@@ -718,9 +726,82 @@
 
 //              alert(JSON.stringify($scope.models.dropzones.B[0].version));
 
-              $scope.$watch('models.dropzones', function(model) {
-                $scope.modelAsJson = angular.toJson(model, true);
-              }, true);
+            $scope.$watch('models.dropzones', function(model) {
+              $scope.modelAsJson = angular.toJson(model, true);
+            }, true);
+              
+            $scope.createACBVersionAJAX = function (data) {
+                alert(JSON.stringify(data));
+                console.log(JSON.stringify(data));
+//                $http({
+//                    url : 'createacbversion',
+//                    method : "POST",
+//                    data : data,
+//                })
+//                .then(function (data, status, headers, config){  
+////                              alert(JSON.stringify(data));
+//                          alert(JSON.stringify(data.data.maps.status).slice(1, -1));
+//                          $window.open("acb_listing.action","_self"); //                alert(data.maps);
+////            //                Materialize.toast(data['maps']["status"], 4000);
+//                });
+            };
+            
+            $scope.createacbversion = function (event,mode) {           
+                var status = $scope.data.status;
+                if(status == undefined )
+                    status = false;
+                
+                if (!$scope.doSubmit) 
+                {
+                    return;
+                }
+                $scope.doSubmit = false;  
+                if($scope.data != undefined){
+                    var data = {};
+                    data['acbversion'] = $scope.data;
+                    data['acbdata_list'] = features_group;
+    //                data['acbdata_list'] = [{"fid":"3","ecu":"2","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"8","nt_type":"can","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"7","nt_type":"can","nt_id":"2","vmm_id":"1"},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"8","nt_type":"lin","nt_id":"1","vmm_id":2},{"pdbgroup_id":"7","nt_type":"hardware","nt_id":"1","vmm_id":1},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":3}]}]},{"fid":"1","ecu":"1","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"2","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"2","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]}]}];
+    //                data['acbdata_list'] = [{"fid":"1","ecu":"1","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":"3"},{"pdbgroup_id":"10","nt_type":"can","nt_id":"2","vmm_id":"1"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"2"}]},{"signal":"2","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":"3"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"2"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":3},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":1},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":2}]},{"signal":"2","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":3},{"pdbgroup_id":"10","nt_type":"can","nt_id":"2","vmm_id":1},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":2}]}]},{"fid":"3","ecu":"2","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"8","nt_type":"can","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"7","nt_type":"can","nt_id":"2","vmm_id":"1"},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"8","nt_type":"lin","nt_id":"1","vmm_id":2},{"pdbgroup_id":"7","nt_type":"hardware","nt_id":"1","vmm_id":1},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":3}]}]}];
+                    data['button_type'] = event;
+                    data['notification_to'] = notification_to+"";
+                    if($scope.features.length == features_group.length)
+                        data['features_fully_touchedstatus'] = true;
+                    else
+                        data['features_fully_touchedstatus'] = false;
+                    //console.log(data);
+                    list_count = Object.keys(features_group).length;
+                    if($scope.data.ivnversion != undefined && $scope.data.pdbversion != undefined && 
+                            $scope.data.vehicleversion != undefined && $scope.data.vehiclename != undefined){
+                        if(list_count > 0){                 
+                            if(status && event === "submit" && mode === 0){
+                                $(".notifyPopup").click();
+                            }else if(status && event === "submit" && mode === 1){
+                                $scope.createACBVersionAJAX(data)
+                            }else
+                                $scope.createACBVersionAJAX(data);
+                        }
+                        else{
+                            alert("Please create aleast one touched features");
+                        }   
+                    }
+                    else{
+                        alert("Please fill above all the dependent version of ACB");
+                    }
+                }
+                else{
+                        alert("Please fill above all the dependent version of ACB");
+                }
+            };
+            
+            $scope.getUniqueValuesOfKey = function(array, key){
+                return array.reduce(function(carry, item){
+                    if(item[key] && !~carry.indexOf(item[key])) carry.push(item[key]);
+                    return carry;
+                }, []);
+            };
+            $scope.focusCallback = function($event) {
+                version_type = $event.target.attributes.data.value;
+            };
         });
         app.filter('customSplitString', function() 
         {

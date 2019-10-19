@@ -48,5 +48,9 @@
         <mapping class="com.ivn_1A.models.net_sign.IVN_Version_Group" />
         <mapping class="com.ivn_1A.models.task.Tasks" />
         <mapping class="com.ivn_1A.models.task.Tasks_Group" />
+        <mapping class="com.ivn_1A.models.acb.ACB_Version" />
+        <mapping class="com.ivn_1A.models.acb.ACB_Version_Group_M" />
+        <mapping class="com.ivn_1A.models.acb.ACB_InputSignals" />
+        <mapping class="com.ivn_1A.models.acb.ACB_OutputSignals" />
     </session-factory>
 </hibernate-configuration>

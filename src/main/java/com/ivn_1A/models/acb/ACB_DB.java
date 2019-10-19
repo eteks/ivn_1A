@@ -146,4 +146,75 @@ public class ACB_DB {
             return null;
         }
     }
+
+    public static List<Tuple> LoadACBPreviousVehicleversionStatus(ACB_Version acb) {
+
+        try {
+
+            System.out.println("getFeaturesByPdbId");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<ACB_Version> acbRoot = criteriaQuery.from(ACB_Version.class);
+            criteriaQuery.multiselect(acbRoot.get("flag").alias("flag"), acbRoot.get("status").alias("status"))
+                    .where(criteriaBuilder.equal(acbRoot.get("id"), acb.getId()));
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \'ACB_DB\' \"LoadACBPreviousVehicleversionStatus\" : " + e);
+            return null;
+        }
+    }
+
+    public static List<Tuple> insertACBVersion(ACB_Version acb, String process, String sup, boolean isAcbsubversion) {
+
+        try {
+
+            float versionname = 0.0f;
+            String subversion_of = null;
+            float oldversionname = 0.0f;
+
+            System.out.println("insertACBVersion");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<ACB_Version> acbRoot = criteriaQuery.from(ACB_Version.class);
+            Tuple tuple = null;
+            if (process.equals("create")) {
+
+                criteriaQuery.multiselect(acbRoot.get("id").alias("id"), acbRoot.get("acb_versionname").alias("acb_versionname"))
+                        .where(criteriaBuilder.isNull(acbRoot.get("subversion_of"))).orderBy(criteriaBuilder.desc(acbRoot.get("acb_versionname")));
+                tuple = session.createQuery(criteriaQuery).getSingleResult();
+
+                if (tuple == null) {
+                    versionname = (float) 1.0;
+                } else {
+                    float acbversionname = Float.valueOf(tuple.get("acb_versionname").toString());
+                    if (sup.equals("yes")) {
+                        if (isAcbsubversion) {
+                            criteriaQuery.multiselect(acbRoot.get("id").alias("id"), acbRoot.get("acb_versionname").alias("acb_versionname"))
+                                    .where(criteriaBuilder.isNull(acbRoot.get("subversion_of"))).orderBy(criteriaBuilder.desc(acbRoot.get("acb_versionname")));
+                            tuple = session.createQuery(criteriaQuery).getSingleResult();
+                        }
+                    } else {
+                        versionname = (float) 1.0 + acbversionname;
+                    }
+                }
+            } else {
+            }
+
+            tx.commit();
+            session.clear();
+            return null;
+        } catch (Exception e) {
+            System.err.println("Error in \'ACB_DB\' \"insertACBVersion\" : " + e);
+            return null;
+        }
+    }
 }
