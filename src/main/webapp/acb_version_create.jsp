@@ -139,6 +139,7 @@
                                             <!-- Marketing End -->
             
             
+                                              <!--dnd-moved="list.version.splice($index, 1)"-->
             <div id="modal-product-form" class="modal acb_space_drop">
                 <!--drag and drop-->
                         <script type="text/ng-template" id="list.html">
@@ -153,7 +154,6 @@
                                           <li ng-repeat="person in list.version"
                                               dnd-draggable="person"                                             
                                               dnd-type="person.type"
-                                              dnd-moved="list.version.splice($index, 1)"
                                               dnd-disable-if="person.type == 'unknown'"                                              
                                               class="background-{{person.type}} {{list.slot}}"
                                               >
@@ -648,7 +648,10 @@
                 e_f = ecu+"_"+ef;
                 $scope.result.push({ 'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal, 'ecu':ecu, 'ecu_fea':e_f});
                 alert(JSON.stringify($scope.result));
-                $('#modal-product-form').closeModal();
+                $scope.models.dropzones.B[1].version=[];
+                $scope.models.dropzones.B[2].version=[];
+                $scope.models.dropzones.B[3].version=[];
+//                $('#modal-product-form').closeModal();
 //              alert(JSON.stringify($scope.result));
 //                alert(JSON.stringify($scope.models.dropzones.B));
             }
