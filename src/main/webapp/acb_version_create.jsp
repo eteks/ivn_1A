@@ -158,6 +158,7 @@
                                               class="background-{{person.type}} {{list.slot}}"
                                               >
                                               <a href="#" ng-click="hiddenDiv = !hiddenDiv">{{person.name}}</a>
+                                              <input type="hidden" ng-model="data.ecu" ng-init="data.ecu=person.name">
                                               <ul ng-if="person.type == 'signal'" ng-show="hiddenDiv">
                                                 <li ng-repeat="i in modals" class="form-radio">
                                                       {{i.modelname}}
@@ -170,17 +171,17 @@
                                                       </div>
                                                 </li>
                                               </ul>
-                                              <input ng-if="list.slot == 'ecu_slot'" type="text" ng-model="ecu_fea_name" place-holder="Ecu feature name">                                              
+                                              <input ng-if="list.slot == 'ecu_slot'" type="text" ng-model="data.ecu_fea_name" place-holder="Ecu feature name">                                              
                                           </li>
                                           <li class="dndPlaceholder">
                                               Drop any <strong>{{list.allowedTypes.join(' or ')}}</strong> here
                                           </li>
                                       </ul>                                      
-                              </div>                              
+                              </div>
                             </div>
                              <div class="feat_prop_save text-center">
-                                <a href="#" ng-click="feature_result_cap(ecu_fea_name)" class="btn btn-round btn-info">Save</a>
-                                <a href="#" ng-click="feature_result(ecu_fea_name)" class="btn btn-round btn-success">Submit</a>
+                                <a href="#" ng-click="feature_result_cap(data.ecu_fea_name, data.ecu)" class="btn btn-round btn-info">Save</a>
+                                <a href="#" ng-click="feature_result(data.ecu_fea_name, data.ecu)" class="btn btn-round btn-success">Submit</a>
                               </div>
                            </script> 
 
@@ -309,7 +310,7 @@
             $scope.features = [];
             var features_group = [];
             var version_type;
-            
+//            $scope.ecu_fea_name = "";
             result_data_obj = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
             $scope.array_result = result_data_obj;
             
@@ -641,25 +642,18 @@
                    alert(JSON.stringify($scope.opsignal));
                 }               
             }
-            localStorage.setItem('result', JSON.stringify($scope.result));
-            $scope.feature_result_cap = function(ef)
+            $scope.feature_result_cap = function(ef, ecu)
             {
-                let res = localStorage.getItem('result');
-                if (!res) { // check if an item is already registered
-                   res = []; // if not, we initiate an empty array
-                } else {
-                   res = JSON.parse(res); // else parse whatever is in
-                }
-                res.push({ 'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal, 'ecu_fea':ef});
-                alert(JSON.stringify(res)+"  "+ef);
-                localStorage.setItem('result', JSON.stringify(res));
-//                alert(JSON.stringify(JSON.parse(sessionStorage.result)));
+                alert(ef + " " + ecu);
+                e_f = ecu+"_"+ef;
+                $scope.result.push({ 'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal, 'ecu':ecu, 'ecu_fea':e_f});
+                alert(JSON.stringify($scope.result));
+                $('#modal-product-form').closeModal();
 //              alert(JSON.stringify($scope.result));
 //                alert(JSON.stringify($scope.models.dropzones.B));
             }
             $scope.feature_result = function()
-            {                
-                alert(JSON.stringify(JSON.parse(localStorage.result)));
+            {
             }
 //            $scope.modals = [
 //                        { vmm_id:'1',modelname: 'm1'},
