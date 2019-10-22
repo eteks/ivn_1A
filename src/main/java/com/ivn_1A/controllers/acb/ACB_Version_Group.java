@@ -7,12 +7,18 @@ package com.ivn_1A.controllers.acb;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.models.acb.ACB_DB;
+import com.ivn_1A.models.acb.ACB_Version;
 import com.ivn_1A.models.net_sign.IVNEngineerDB;
+import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.pdbowner.Pdbversion_group;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,11 +218,72 @@ public class ACB_Version_Group {
 
             System.out.println("CreateACBVersion");
             JSONParser parser = new JSONParser();
-            String jsondata = JSONConfigure.getAngularJSONFile();
-            return null;
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            boolean status = (boolean) false;
+            int acbversion_id = 0;
+            float version_name;
+            String previousversion_status = null;
+            String previousversion_flag = null;
+            String subversion = null;
+            boolean flag;
+            boolean is_acbsubversion = (boolean) false;
+
+            JsonNode acbversion = readValue.get("acbversion");
+            ArrayNode acbdata_list = (ArrayNode) readValue.get("acbdata_list");
+            String button_type = readValue.get("button_type").asText();
+            String notification_to = readValue.get("notification_to").asText();
+            boolean fully_touchedstatus = readValue.get("features_fully_touchedstatus").asBoolean();
+            if (button_type.equals("save")) {
+                flag = false;
+            } else {
+                flag = true;
+            }
+            System.out.println("before_if");
+            if (acbversion != null && acbversion.has("acbversion")) {
+                System.out.println("enter_if");
+                if (acbversion.get("acbsubversion") != null) {
+                    acbversion_id = acbversion.get("acbsubversion").asInt();
+                    is_acbsubversion = true;
+                } else {
+                    acbversion_id = acbversion.get("acbversion").asInt();
+                }
+            }
+            
+            if (acbversion != null && acbversion.has("status") && button_type.equals("submit")) {
+                status = acbversion.get("status").asBoolean();
+            }
+            
+            if (acbversion_id != 0) {
+                //Get the data of previous vehicle version by id
+                int acbver_id = acbversion_id;
+                ACB_Version acbver = new ACB_Version(acbver_id);
+                ACB_Version acbv = ACB_DB.loadACBPreviousVehicleversionStatus(acbver);
+                System.out.println("acb_previous_result");
+                previousversion_status = String.valueOf(acbv.isStatus());
+                previousversion_flag = String.valueOf(acbv.isFlag());
+            }
+            System.out.println(previousversion_status);
+            System.out.println(previousversion_flag);
+            System.out.println(button_type);
+            System.out.println(acbversion_id);
+            
+            if (previousversion_status.equals("false") && acbversion_id != 0) {
+                System.out.println("Ready to update");
+                System.out.println("if");
+                ACB_Version acbv = new ACB_Version(subversion, new Date(), new Date(), PDBOwnerDB.getUser(1), status, flag, acbversion_id, fully_touchedstatus);
+                System.out.println("acbversion_id" + acbversion_id);
+                List<Tuple> id_version = ACB_DB.insertACBVersion(acbv, "update", is_acbsubversion, "yes");
+            }
+            maps_object.put(jsonValues, readValue);
+            maps_string.put("success", "work is done");
         } catch (Exception e) {
-            return null;
+            System.out.println("Error in \"ACB_Version_Group\" \'CreateACBVersion\' : " + e);
+            maps_string.put("error", "Some error occurred !!");
         }
+        return "success";
     }
 
     public Map<String, String> getMaps_string() {

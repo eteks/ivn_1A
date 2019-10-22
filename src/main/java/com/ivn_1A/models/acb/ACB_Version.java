@@ -38,6 +38,13 @@ public class ACB_Version {
     private int subversion_of;
     private boolean features_fully_touchedstatus;
 
+    public ACB_Version() {
+    }
+
+    public ACB_Version(int id) {
+        this.id = id;
+    }
+
     public ACB_Version(String acb_versionname, Date modified_date, Date created_date, User created_or_updated_by, boolean status, boolean flag, int subversion_of, boolean features_fully_touchedstatus) {
         this.acb_versionname = acb_versionname;
         this.modified_date = modified_date;

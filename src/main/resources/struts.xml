@@ -163,6 +163,10 @@
             <result type="json" />
         </action>
         
+        <action name="createacbversion" class="com.ivn_1A.controllers.acb.ACB_Version_Group" method="CreateACBVersion">
+            <result type="json" />
+        </action>
+        
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">

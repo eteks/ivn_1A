@@ -134,13 +134,14 @@ public class TasksDB {
                     .set("version_id", tasks_Group.getVersion_id())
                     .set("version_name", tasks_Group.getVersion_name())
                     .set("completed_date", tasks_Group.getCompleted_date())
+                    .set("verfications", true)
                     .where(criteriaBuilder.equal(qRoot.get("id"), tasks_Group.getId()));
             // perform update
             int a = session.createQuery(criteriaUpdate).executeUpdate();
             tx.commit();
             session.clear();
             if (a > 0) {
-                System.out.println("Done " + a + "  " +tasks_Group.getCompleted_date());
+                System.out.println("Done " + a + "  " + tasks_Group.getCompleted_date());
                 return tasks_Group;
             } else {
                 return null;
@@ -198,7 +199,7 @@ public class TasksDB {
     }
 
     //Tasks_Group Data
-    public static List<Tasks_Group> getTasks(String from) {
+    public static List<Tasks_Group> getTasks(String sender, String receiver) {
 
         try {
             System.err.println("getTasks");
@@ -209,7 +210,11 @@ public class TasksDB {
             CriteriaQuery<Tasks_Group> criteriaQuery = criteriaBuilder.createQuery(Tasks_Group.class);
 
             Root<Tasks_Group> tgRoot = criteriaQuery.from(Tasks_Group.class);
-            criteriaQuery.where(criteriaBuilder.or(criteriaBuilder.equal(tgRoot.get("receiver_id"), from), criteriaBuilder.equal(tgRoot.get("sender_id"), from))).distinct(true);
+//            criteriaQuery.where(criteriaBuilder.equal(tgRoot.get("sender_id"), sender))
+//                    .orderBy(criteriaBuilder.desc(tgRoot.get("task_id").get("id")));
+            criteriaQuery.where(criteriaBuilder.or(criteriaBuilder.equal(tgRoot.get("receiver_id"), receiver),
+                    criteriaBuilder.equal(tgRoot.get("sender_id"), sender)))
+                    .orderBy(criteriaBuilder.desc(tgRoot.get("accepted_date")));
             TypedQuery<Tasks_Group> dfm_result = s.createQuery(criteriaQuery);
 
             tx.commit();
@@ -220,5 +225,36 @@ public class TasksDB {
             return null;
         }
     }
-
+//    public static Map<String, Object> getTasks(String sender, String receiver) {
+//
+//        try {
+//            System.err.println("getTasks");
+//            Session s = HibernateUtil.getThreadLocalSession();
+//            Transaction tx = s.beginTransaction();
+//
+//            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
+//            Map<String, Object> columns = new HashMap<>();
+//            CriteriaQuery<Tasks_Group> criteriaQuery = criteriaBuilder.createQuery(Tasks_Group.class);
+//            Root<Tasks_Group> tgRoot = criteriaQuery.from(Tasks_Group.class);
+//            criteriaQuery.where(criteriaBuilder.equal(tgRoot.get("sender_id"), sender), 
+//                    criteriaBuilder.equal(tgRoot.get("verfications"), true))
+//                    .orderBy(criteriaBuilder.desc(tgRoot.get("task_id").get("id")));
+//            columns.put("senders", s.createQuery(criteriaQuery).setMaxResults(1).getResultList());
+//
+//            
+//            CriteriaQuery<Tasks_Group> criteriaQuerys = criteriaBuilder.createQuery(Tasks_Group.class);
+//            Root<Tasks_Group> tgRoots = criteriaQuerys.from(Tasks_Group.class);
+//            criteriaQuerys.where(criteriaBuilder.or(criteriaBuilder.equal(tgRoots.get("receiver_id"), receiver),
+//                    criteriaBuilder.equal(tgRoots.get("sender_id"), sender)), criteriaBuilder.equal(tgRoots.get("verfications"), false))
+//                    .orderBy(criteriaBuilder.desc(tgRoots.get("task_id").get("id")));
+//            columns.put("receivers", s.createQuery(criteriaQuerys).setMaxResults(1).getResultList());
+//
+//            tx.commit();
+//            s.clear();
+//            return columns;
+//        } catch (Exception e) {
+//            System.err.println("Error in \"TasksDB\" \'getTasks\' : " + e);
+//            return null;
+//        }
+//    }
 }

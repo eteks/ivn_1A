@@ -122,23 +122,22 @@ public class NotificationController implements SessionAware {
             tempTuples.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
                 String vType = VersionType.fromId(Integer.parseInt(tuple.get("version_type_id").toString())).toString();
-                if (vType.equals("Pdbversion")) {
-
-                    columns.put("version_type", "create_pdb");
-
-                } else if (vType.equals("Legislationversion")) {
-
-                    columns.put("version_type", "legi_ver_create");
-
-                } else if (vType.equals("Safetyversion")) {
-
-                    columns.put("version_type", "safety_ver_create");
-
-                } else if (vType.equals("Featureversion")) {
-
-                    columns.put("version_type", "feature_version_create");
-                } else {
-                    columns.put("version_type", vType);
+                switch (vType) {
+                    case "Pdbversion":
+                        columns.put("version_type", "create_pdb");
+                        break;
+                    case "Legislationversion":
+                        columns.put("version_type", "legi_ver_create");
+                        break;
+                    case "Safetyversion":
+                        columns.put("version_type", "safety_ver_create");
+                        break;
+                    case "Featureversion":
+                        columns.put("version_type", "feature_version_create");
+                        break;
+                    default:
+                        columns.put("version_type", vType);
+                        break;
                 }
                 columns.put("version_id", tuple.get("version_id"));
                 return columns;

@@ -72,10 +72,8 @@ public class Network_Group {
             Map<String, Object> column = new HashMap<>();
 
             tupleObjects = IVNEngineerDB.LoadNetwork();
-            for (Tuple tupleObject : tupleObjects) {
-
+            tupleObjects.forEach((tupleObject) -> {
                 Map<String, Object> columns = new HashMap<>(), columns1 = new HashMap<>(), columns2 = new HashMap<>();
-
                 if (tupleObject.get("ntype").equals("can")) {
                     columns.put("cid", tupleObject.get("id"));
                     columns.put("listitem", tupleObject.get("listitem"));
@@ -89,7 +87,7 @@ public class Network_Group {
                     columns2.put("listitem", tupleObject.get("listitem"));
                     row2.add(columns2);
                 }
-            }
+            });
             column.put("can_list", row);
             column.put("lin_list", row1);
             column.put("hardware_list", row2);
@@ -98,26 +96,28 @@ public class Network_Group {
 
             List<Map<String, Object>> rows = new ArrayList<>();
             tupleObjects = IVNEngineerDB.LoadECU();
-            for (Tuple tupleObject : tupleObjects) {
-
+            tupleObjects.stream().map((tupleObject) -> {
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("eid", tupleObject.get("id"));
                 columns.put("listitem", tupleObject.get("listitem"));
                 columns.put("description", tupleObject.get("description"));
+                return columns;
+            }).forEachOrdered((columns) -> {
                 rows.add(columns);
-            }
+            });
             eculist_result_obj = new Gson().toJson(rows);
 
             List<Map<String, Object>> rows1 = new ArrayList<>();
             tupleObjects = IVNEngineerDB.LoadSignals();
-            for (Tuple tupleObject : tupleObjects) {
-
+            tupleObjects.stream().map((tupleObject) -> {
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("sid", tupleObject.get("id"));
                 columns.put("listitem", tupleObject.get("listitem"));
                 columns.put("description", tupleObject.get("description"));
+                return columns;
+            }).forEachOrdered((columns) -> {
                 rows1.add(columns);
-            }
+            });
             signallist_result_obj = new Gson().toJson(rows1);
         } catch (Exception e) {
             System.err.println("Error in \"Network_Group\" \'IVNVersionCreationPage\' " + e);

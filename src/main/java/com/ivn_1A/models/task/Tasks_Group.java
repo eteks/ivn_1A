@@ -41,11 +41,12 @@ public class Tasks_Group implements Serializable {
     private User created_or_updated_by;
     private String sender_id;
     private String receiver_id;
+    private boolean verfications;
 
     public Tasks_Group() {
     }
 
-    public Tasks_Group(Tasks task_id, int version_id, String version_name, boolean accepted_status, String accepted_by, Date accepted_date, boolean completed_status, String completed_by, Date completed_date, User created_or_updated_by, String sender_id, String receiver_id) {
+    public Tasks_Group(Tasks task_id, int version_id, String version_name, boolean accepted_status, String accepted_by, Date accepted_date, boolean completed_status, String completed_by, Date completed_date, User created_or_updated_by, String sender_id, String receiver_id, boolean verfications) {
         this.task_id = task_id;
         this.version_id = version_id;
         this.version_name = version_name;
@@ -58,6 +59,7 @@ public class Tasks_Group implements Serializable {
         this.created_or_updated_by = created_or_updated_by;
         this.sender_id = sender_id;
         this.receiver_id = receiver_id;
+        this.verfications = verfications;
     }
 
     @Id
@@ -185,22 +187,17 @@ public class Tasks_Group implements Serializable {
         this.receiver_id = receiver_id;
     }
 
+    public boolean isVerfications() {
+        return verfications;
+    }
+
+    public void setVerfications(boolean verfications) {
+        this.verfications = verfications;
+    }
+
     @Override
     public String toString() {
-        return "Tasks_Group{" +
-                "id=" + id +
-                ", task_id=" + task_id +
-                ", version_id=" + version_id +
-                ", version_name='" + version_name + '\'' +
-                ", accepted_status=" + accepted_status +
-                ", accepted_by='" + accepted_by + '\'' +
-                ", accepted_date=" + accepted_date +
-                ", completed_status=" + completed_status +
-                ", completed_by='" + completed_by + '\'' +
-                ", completed_date=" + completed_date +
-                ", created_or_updated_by=" + created_or_updated_by +
-                ", sender_id='" + sender_id + '\'' +
-                ", receiver_id='" + receiver_id + '\'' +
-                '}';
+        return "Tasks_Group{" + "id=" + id + ", task_id=" + task_id + ", version_id=" + version_id + ", version_name=" + version_name + ", accepted_status=" + accepted_status + ", accepted_by=" + accepted_by + ", accepted_date=" + accepted_date + ", completed_status=" + completed_status + ", completed_by=" + completed_by + ", completed_date=" + completed_date + ", created_or_updated_by=" + created_or_updated_by + ", sender_id=" + sender_id + ", receiver_id=" + receiver_id + ", verfications=" + verfications + '}';
     }
+    
 }

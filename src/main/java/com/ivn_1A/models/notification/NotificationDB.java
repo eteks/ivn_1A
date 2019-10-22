@@ -126,20 +126,6 @@ public class NotificationDB {
                     ).orderBy(criteriaBuilder.desc(notificationRoot.get("created_date")));
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
-//            typedQuery.getResultList().stream().map((tuple) -> {
-//                Map<String, Object> columns = new HashMap<>();
-//                columns.put("id", tuple.get("id"));
-//                columns.put("firstname", tuple.get("firstname"));
-//                columns.put("version_type_id", tuple.get("version_type_id"));
-//                columns.put("version_id", tuple.get("version_id"));
-//                columns.put("created_date", tuple.get("created_date"));
-//                return columns;
-//            }).map((columns) -> {
-//                notificationList.add(columns);
-//                return columns;
-//            }).forEachOrdered((columns) -> {
-//                System.out.println("colums___________" + columns);
-//            });
             tx.commit();
             session.clear();
 
