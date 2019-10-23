@@ -143,7 +143,7 @@
             $http({
                 url: 'getTasks',
                 method: "POST",
-                data: {"froms":"ACBversion"},
+//                data: {"sender":"IVN_Version", "receiver":"ACBversion"},
             }).then(function (response, status, headers, config){
                 if(response.data.maps_string.success){
                     // $window.alert(JSON.stringify(response.data.maps_object));

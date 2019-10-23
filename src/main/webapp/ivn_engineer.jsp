@@ -159,7 +159,7 @@
             $http({
                 url: 'getTasks',
                 method: "POST",
-                data: {"froms":"IVN_Version"},
+//                data: {"sender":"Featureversion", "receiver":"IVN_Version"},
             }).then(function (response, status, headers, config){
                 if(response.data.maps_string.success){
                     // $window.alert(JSON.stringify(response.data.maps_object));

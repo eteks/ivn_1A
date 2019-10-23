@@ -125,7 +125,7 @@
             $http({
                 url: 'getTasks',
                 method: "POST",
-                data: {"sender":"Safetyversion", "receiver":"Featureversion"},
+//                data: {"sender":"Safetyversion", "receiver":"Featureversion"},
             }).then(function (response, status, headers, config){
                 if(response.data.maps_string.success){
                     // $window.alert(JSON.stringify(response.data.maps_object));

@@ -190,82 +190,13 @@ public class TasksController {
 
         try {
 
-            String jsonValues = JSONConfigure.getAngularJSONFile();
-            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
-            String sender = readValue.get("sender").asText();
-            String receiver = readValue.get("receiver").asText();
-            System.out.println("Froms__________________________" + sender);
+//            String jsonValues = JSONConfigure.getAngularJSONFile();
+//            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+//            String sender = readValue.get("sender").asText();
+//            String receiver = readValue.get("receiver").asText();
+//            System.out.println("Froms__________________________" + sender);
             Map<String, Object> columns = new HashMap<>();
-//            TasksDB.getTasks(sender, receiver).forEach((k, v) -> {
-//                switch (k) {
-//                    case "senders":
-//                        ((List<Tasks_Group>) v).stream().map((tg) -> {
-//                            System.err.println("senders__________++++++++++++++++++++++++______________" + tg.getSender_id());
-//                            Map<String, Object> column = new HashMap<>();
-//                            column.put("name", tg.getVersion_name());
-//                            column.put("accepted_date", tg.getAccepted_date());
-//                            column.put("created_by", tg.getCreated_or_updated_by().getUsername());
-//                            column.put("accepted_by", tg.getCreated_or_updated_by().getUsername());
-//                            column.put("acceptance_status", tg.isAccepted_status());
-//                            column.put("completion_status", tg.isCompleted_status());
-//                            column.put("completion_date", tg.getCompleted_date());
-//                            column.put("task_id", tg.getTask_id().getId());
-//                            column.put("tg_id", tg.getId());
-//                            if (tg.getSender_id().equals(VersionType.Pdbversion.name())) {
-//                                columns.put("pdb", column);
-//                            } else if (tg.getSender_id().equals(VersionType.Legislationversion.name())) {
-//                                columns.put("legislation", column);
-//                            } else if (tg.getSender_id().equals(VersionType.Safetyversion.name())) {
-//                                columns.put("safety", column);
-//                            } else if (tg.getSender_id().equals(VersionType.Featureversion.name())) {
-//                                columns.put("feature", column);
-//                            } else if (tg.getSender_id().equals(VersionType.IVN_Version.name())) {
-//                                columns.put("ivn", column);
-//                            } else {
-//                                columns.put("none", "Empty");
-//                            }
-//                            return tg;
-//                        }).forEachOrdered((_item) -> {
-//                            list_object.add(columns);
-//                        });
-//                        break;
-//                    case "receivers":
-//                        ((List<Tasks_Group>) v).stream().map((tg) -> {
-//                            System.err.println("receivers__________++++++++++++++++++++++++______________" + tg.getReceiver_id());
-//                            Map<String, Object> column = new HashMap<>();
-//                            column.put("name", tg.getVersion_name());
-//                            column.put("accepted_date", tg.getAccepted_date());
-//                            column.put("created_by", tg.getCreated_or_updated_by().getUsername());
-//                            column.put("accepted_by", tg.getCreated_or_updated_by().getUsername());
-//                            column.put("acceptance_status", tg.isAccepted_status());
-//                            column.put("completion_status", tg.isCompleted_status());
-//                            column.put("completion_date", tg.getCompleted_date());
-//                            column.put("task_id", tg.getTask_id().getId());
-//                            column.put("tg_id", tg.getId());
-//                            if (tg.getReceiver_id().equals(VersionType.Pdbversion.name())) {
-//                                columns.put("pdb", column);
-//                            } else if (tg.getReceiver_id().equals(VersionType.Legislationversion.name())) {
-//                                columns.put("legislation", column);
-//                            } else if (tg.getReceiver_id().equals(VersionType.Safetyversion.name())) {
-//                                columns.put("safety", column);
-//                            } else if (tg.getReceiver_id().equals(VersionType.Featureversion.name())) {
-//                                columns.put("feature", column);
-//                            } else if (tg.getReceiver_id().equals(VersionType.IVN_Version.name())) {
-//                                columns.put("ivn", column);
-//                            } else {
-//                                columns.put("none", "Empty");
-//                            }
-//                            return tg;
-//                        }).forEachOrdered((_item) -> {
-//                            list_object.add(columns);
-//                        });
-//                        break;
-//                    default:
-//                        System.err.println("+++++++++++++++++++++++++++ Error");
-//                        break;
-//                }
-//            });
-            for (Tasks_Group tg : TasksDB.getTasks(sender, receiver)) {
+            for (Tasks_Group tg : TasksDB.getTasks()) {
 
                 System.err.println("__________++++++++++++++++++++++++______________" + tg.getSender_id());
                 Map<String, Object> column = new HashMap<>();

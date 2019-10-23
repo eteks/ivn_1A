@@ -148,7 +148,7 @@
             $http({
                 url: 'getTasks',
                 method: "POST",
-                data: {"sender":"Legislationversion", "receiver":"Safetyversion"},
+//                data: {"sender":"Legislationversion", "receiver":"Safetyversion"},
             }).then(function (response, status, headers, config){
                 if(response.data.maps_string.success){
                      $window.alert(JSON.stringify(response.data.maps_object.tasks));
