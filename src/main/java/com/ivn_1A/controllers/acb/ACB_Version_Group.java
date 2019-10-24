@@ -10,8 +10,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
+import com.ivn_1A.configs.VersionType;
+import com.ivn_1A.controllers.notification.NotificationController;
 import com.ivn_1A.models.acb.ACB_DB;
+import com.ivn_1A.models.acb.ACB_InputSignals;
+import com.ivn_1A.models.acb.ACB_OutputSignals;
 import com.ivn_1A.models.acb.ACB_Version;
+import com.ivn_1A.models.acb.ACB_Version_Group_M;
 import com.ivn_1A.models.net_sign.IVNEngineerDB;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.pdbowner.Pdbversion_group;
@@ -217,17 +222,14 @@ public class ACB_Version_Group {
         try {
 
             System.out.println("CreateACBVersion");
-            JSONParser parser = new JSONParser();
             String jsonValues = JSONConfigure.getAngularJSONFile();
             final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
             boolean status = (boolean) false;
             int acbversion_id = 0;
             float version_name;
-            String previousversion_status = null;
-            String previousversion_flag = null;
-            String subversion = null;
+            String previousversion_status = "0";
+            String previousversion_flag = "0";
+            String subversion = "0";
             boolean flag;
             boolean is_acbsubversion = (boolean) false;
 
@@ -236,11 +238,7 @@ public class ACB_Version_Group {
             String button_type = readValue.get("button_type").asText();
             String notification_to = readValue.get("notification_to").asText();
             boolean fully_touchedstatus = readValue.get("features_fully_touchedstatus").asBoolean();
-            if (button_type.equals("save")) {
-                flag = false;
-            } else {
-                flag = true;
-            }
+            flag = !button_type.equals("save");
             System.out.println("before_if");
             if (acbversion != null && acbversion.has("acbversion")) {
                 System.out.println("enter_if");
@@ -251,11 +249,11 @@ public class ACB_Version_Group {
                     acbversion_id = acbversion.get("acbversion").asInt();
                 }
             }
-            
+
             if (acbversion != null && acbversion.has("status") && button_type.equals("submit")) {
                 status = acbversion.get("status").asBoolean();
             }
-            
+
             if (acbversion_id != 0) {
                 //Get the data of previous vehicle version by id
                 int acbver_id = acbversion_id;
@@ -269,15 +267,131 @@ public class ACB_Version_Group {
             System.out.println(previousversion_flag);
             System.out.println(button_type);
             System.out.println(acbversion_id);
-            
+
             if (previousversion_status.equals("false") && acbversion_id != 0) {
                 System.out.println("Ready to update");
                 System.out.println("if");
-                ACB_Version acbv = new ACB_Version(subversion, new Date(), new Date(), PDBOwnerDB.getUser(1), status, flag, acbversion_id, fully_touchedstatus);
+                ACB_Version acbv = new ACB_Version(Float.valueOf(subversion), new Date(), new Date(), PDBOwnerDB.getUser(1), status, flag, acbversion_id, fully_touchedstatus);
                 System.out.println("acbversion_id" + acbversion_id);
-                List<Tuple> id_version = ACB_DB.insertACBVersion(acbv, "update", is_acbsubversion, "yes");
+                acbv = ACB_DB.insertACBVersion(acbv, "update", is_acbsubversion, "yes");
+                int acb_id = acbv.getId();
+                version_name = acbv.getAcb_versionname();
+                System.out.println("acb_id  " + acb_id);
+
+                for (JsonNode jsonNode : acbdata_list) {
+
+                    ArrayNode feature = (ArrayNode) jsonNode.get("feature");
+                    ArrayNode ipsignal = (ArrayNode) jsonNode.get("ipsignal");
+                    ArrayNode opsignal = (ArrayNode) jsonNode.get("opsignal");
+                    String ecu = jsonNode.get("ecu").asText();
+                    int eid = jsonNode.get("eid").asInt();
+                    String ecu_fea = jsonNode.get("ecu_fea").asText();
+
+                    int max = Math.max(Math.max(ipsignal.size(), opsignal.size()), feature.size());
+                    int featureId = 0;
+                    ACB_InputSignals acbis = null;
+                    ACB_OutputSignals acbos = null;
+                    for (int i = 0; i < max; i++) {
+
+                        if (feature.size() > i) {
+                            featureId = feature.get("fid").asInt();
+                        }
+                        if (ipsignal.size() > i) {
+                            acbis = (ACB_InputSignals) ACB_DB.insertACBSignal(new ACB_InputSignals(IVNEngineerDB.getSignalDataByID(ipsignal.get("sid").asInt()),
+                                    IVNEngineerDB.getNetworkById(ipsignal.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupByModelId(ipsignal.get("vmm_id").asInt())));
+
+                        }
+                        if (opsignal.size() > i) {
+                            acbos = (ACB_OutputSignals) ACB_DB.insertACBSignal(new ACB_OutputSignals(IVNEngineerDB.getSignalDataByID(ipsignal.get("sid").asInt()),
+                                    IVNEngineerDB.getNetworkById(ipsignal.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupByModelId(ipsignal.get("vmm_id").asInt())));
+                        }
+                    }
+                    System.out.println("ip_signals ### " + acbis.getInputSignalId().getSignal_name());
+                    System.out.println("op_signals $$$ " + acbos.getOutputSignalId().getSignal_name());
+
+                    ACB_Version_Group_M acbvgm = new ACB_Version_Group_M(acbv, IVNEngineerDB.getIVNVersionByIVN_ID(acbversion.get("vername").get("id").asInt()),
+                            PDBOwnerDB.getPdbversion(acbversion.get("pdbversion").get("pdbid").asInt()), PDBOwnerDB.getVehicle(acbversion.get("vehiclename").get("vid").asInt()),
+                            PDBOwnerDB.getDomain_and_Features_Mapping(acbversion.get("pdbversion").get("pdbid").asInt()), IVNEngineerDB.getECUById(acbversion.get("ecu_id").asInt()), fully_touchedstatus);
+                    acbvgm = ACB_DB.insertACBVersionGroup(acbvgm, "update", button_type);
+
+                    if (acbvgm != null && button_type.equals("save")) {
+                        maps_object.put("status", "New Temporary ACB Version Created Successfully");
+                    } else {
+                        System.out.println("previousversion_flag" + previousversion_flag);
+                        if (status) {
+                            new NotificationController().createNotification(VersionType.ACBversion.getVersionCode(), version_name, new Date().toString(), notification_to, acbv.getId());
+                        }
+                        maps_object.put("status", "New Permanent ACB Version Created Successfully");
+                    }
+                }
+                ACB_DB.deleteACBVersion_Group(acbversion_id, "update");
+
+            } else {
+
+                System.out.println("else");
+                if (previousversion_status.equals("true") && acbversion_id != 0) {
+                    subversion = "yes";
+                }
+                ACB_Version acbv = new ACB_Version(Float.valueOf(subversion), new Date(), new Date(), PDBOwnerDB.getUser(1), status, flag, acbversion_id, fully_touchedstatus);
+                System.out.println("acbversion_id" + acbversion_id);
+                acbv = ACB_DB.insertACBVersion(acbv, "update", is_acbsubversion, "yes");
+                int acb_id = acbv.getId();
+                version_name = acbv.getAcb_versionname();
+                System.out.println("acb_id  " + acb_id);
+                int a = 0;
+                for (JsonNode jsonNode : acbdata_list) {
+                    ArrayNode feature = (ArrayNode) jsonNode.get("feature");
+                    ArrayNode ipsignal = (ArrayNode) jsonNode.get("ipsignal");
+                    ArrayNode opsignal = (ArrayNode) jsonNode.get("opsignal");
+                    String ecu = jsonNode.get("ecu").asText();
+                    int eid = jsonNode.get("eid").asInt();
+                    String ecu_fea = jsonNode.get("ecu_fea").asText();
+
+                    int max = Math.max(Math.max(ipsignal.size(), opsignal.size()), feature.size());
+                    int featureId = 0;
+                    ACB_InputSignals acbis = null;
+                    ACB_OutputSignals acbos = null;
+                    for (int i = 0; i < max; i++) {
+
+                        if (feature.size() > i) {
+                            JsonNode fea = feature.get(i);
+                            featureId = fea.get("fid").asInt();
+                        }
+                        if (ipsignal.size() > i) {
+                            JsonNode ips = ipsignal.get(i);
+                            acbis = (ACB_InputSignals) ACB_DB.insertACBSignal(new ACB_InputSignals(IVNEngineerDB.getSignalDataByID(ips.get("sid").asInt()),
+                                    IVNEngineerDB.getNetworkById(ips.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupByModelId(ips.get("vmm_id").asInt())));
+
+                        }
+                        if (opsignal.size() > i) {
+                            JsonNode ops = opsignal.get(i);
+                            acbos = (ACB_OutputSignals) ACB_DB.insertACBSignal(new ACB_OutputSignals(IVNEngineerDB.getSignalDataByID(ops.get("sid").asInt()),
+                                    IVNEngineerDB.getNetworkById(ops.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupByModelId(ops.get("vmm_id").asInt())));
+                        }
+                    }
+                    System.out.println("ip_signals ### " + acbis.getInputSignalId().getSignal_name());
+                    System.out.println("op_signals $$$ " + acbos.getOutputSignalId().getSignal_name());
+
+                    ACB_Version_Group_M acbvgm = new ACB_Version_Group_M(acbv, IVNEngineerDB.getIVNVersionByIVN_ID(acbversion.get("vername").get("id").asInt()),
+                            PDBOwnerDB.getPdbversion(acbversion.get("pdbversion").get("pdbid").asInt()), PDBOwnerDB.getVehicle(acbversion.get("vehiclename").get("vid").asInt()),
+                            PDBOwnerDB.getDomain_and_Features_Mapping(acbversion.get("pdbversion").get("pdbid").asInt()), IVNEngineerDB.getECUById(acbversion.get("ecu_id").asInt()), fully_touchedstatus);
+                    acbvgm = ACB_DB.insertACBVersionGroup(acbvgm, "update", button_type);
+
+                    if (a++ == acbdata_list.size() - 1) {
+                        System.out.println("final loop");
+                        if (acbvgm != null && button_type.equals("save")) {
+                            System.out.println("subversion_value" + subversion);
+                            maps_object.put("status", "New Temporary ACB Version Created Successfully");
+                        } else {
+                            if (status) {
+                                new NotificationController().createNotification(VersionType.ACBversion.getVersionCode(), version_name, new Date().toString(), notification_to, acbv.getId());
+                            }
+                            maps_object.put("status", "New Permanent ACB Version Created Successfully");
+                        }
+                    }
+                }
             }
-            maps_object.put(jsonValues, readValue);
+//            maps_object.put(jsonValues, readValue);
             maps_string.put("success", "work is done");
         } catch (Exception e) {
             System.out.println("Error in \"ACB_Version_Group\" \'CreateACBVersion\' : " + e);

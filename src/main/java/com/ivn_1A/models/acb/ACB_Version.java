@@ -29,7 +29,7 @@ public class ACB_Version {
     
     
     private int id;
-    private String acb_versionname;
+    private float acb_versionname;
     private Date modified_date;
     private Date created_date;
     private User created_or_updated_by;
@@ -45,7 +45,7 @@ public class ACB_Version {
         this.id = id;
     }
 
-    public ACB_Version(String acb_versionname, Date modified_date, Date created_date, User created_or_updated_by, boolean status, boolean flag, int subversion_of, boolean features_fully_touchedstatus) {
+    public ACB_Version(float acb_versionname, Date modified_date, Date created_date, User created_or_updated_by, boolean status, boolean flag, int subversion_of, boolean features_fully_touchedstatus) {
         this.acb_versionname = acb_versionname;
         this.modified_date = modified_date;
         this.created_date = created_date;
@@ -68,11 +68,11 @@ public class ACB_Version {
     }
 
     @Column(name = "acb_versionname", nullable = false)
-    public String getAcb_versionname() {
+    public float getAcb_versionname() {
         return acb_versionname;
     }
 
-    public void setAcb_versionname(String acb_versionname) {
+    public void setAcb_versionname(float acb_versionname) {
         this.acb_versionname = acb_versionname;
     }
 

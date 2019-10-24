@@ -159,6 +159,7 @@
                                               >
                                               <a href="#" ng-click="hiddenDiv = !hiddenDiv">{{person.name}}</a>
                                               <input type="hidden" ng-model="data.ecu" ng-init="data.ecu=person.name">
+                                              <input type="hidden" ng-model="data.ecu_id" ng-init="data.ecu_id=person.id">
                                               <ul ng-if="person.type == 'signal'" ng-show="hiddenDiv">
                                                 <li ng-repeat="i in modals" class="form-radio">
                                                       {{i.modelname}}
@@ -181,8 +182,8 @@
                               </div>
                             </div>
                              <div class="feat_prop_save text-center">
-                                <a href="#" ng-click="feature_result_cap(data.ecu_fea_name, data.ecu)" class="btn btn-round btn-info">Save</a>
-                                <a href="#" ng-click="createacbversion('submit',1,'none')" class="btn btn-round btn-success">Submit</a>
+                                <a href="#" ng-click="feature_result_cap(data.ecu_fea_name, data.ecu, data.ecu_id)" class="btn btn-round btn-info">Save</a>
+                                <a href="#" ng-click="createacbversion('submit',0,'none')" class="btn btn-round btn-success">Submit</a>
                               </div>
                            </script> 
 
@@ -466,7 +467,7 @@
                     if (response.data.maps_string.success) {
                         
                         result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
-//                        alert("RES "+JSON.stringify(result_data));
+                        alert("RES "+JSON.stringify(result_data));
                         var vehicledetail_list = result_data.vehicledetail_list;
                         var featuredetail_list = result_data.featuredetail_list;
                         $scope.modals = vehicledetail_list;
@@ -643,12 +644,12 @@
                    alert(JSON.stringify($scope.opsignal));
                 }               
             }
-            $scope.feature_result_cap = function(ef, ecu)
+            $scope.feature_result_cap = function(ef, ecu, eid)
             {
 //                alert(ef + " " + ecu);
-                e_f = ecu+"_"+ef;
                 $scope.fea = $scope.fea.filter((obj, pos, arr) => { return arr.map(mapObj => mapObj.fname).indexOf(obj.fname) == pos; });
-                $scope.result.push({ 'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal, 'ecu':ecu, 'ecu_fea':e_f});
+                e_f = $scope.fea[0].fname+"_"+ecu+"_"+ef;
+                $scope.result.push({ 'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal, 'ecu':ecu, 'eid':eid, 'ecu_fea':e_f});
                 alert(JSON.stringify($scope.result));
                 $scope.models.dropzones.B[1].version=[];
                 $scope.models.dropzones.B[2].version=[];
@@ -740,7 +741,12 @@
                     data : data,
                 })
                 .then(function (response, status, headers, config){
-                          alert(JSON.stringify(response.data));
+                    
+                    if (response.data.maps_string.success) {
+                        alert(JSON.stringify(response.data.maps_string.success));
+                    } else {
+                        alert(JSON.stringify(response.data.maps_string.error));
+                    }
                 });
             };
             
@@ -779,8 +785,9 @@
                                     $(".notifyPopup").click();
                                 } else if (status && event === "submit" && mode === 1){
                                     $scope.createACBVersionAJAX(data)
-                                } else
+                                } else{
                                     $scope.createACBVersionAJAX(data);
+                                }
                             } else {
                                 alert("Please create aleast one touched features");
                             }   
@@ -791,7 +798,7 @@
                         alert("Please fill above all the dependent version of ACB");
                     }
                 } else {
-                                        
+                    alert("Else");
                     var data = {};
                     data['acbversion'] = $scope.data;
                     data['acbdata_list'] = $scope.result;
@@ -813,8 +820,9 @@
                                 $(".notifyPopup").click();
                             } else if (status && event === "submit" && mode === 1){
                                 $scope.createACBVersionAJAX(data)
-                            } else
+                            } else{
                                 $scope.createACBVersionAJAX(data);
+                            }
                         } else {
                             alert("Please create aleast one touched features");
                         }   
