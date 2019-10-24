@@ -13,7 +13,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
@@ -152,6 +151,7 @@ public class SafetyLegDB {
 
     //Pdbversion group Data
     public static List<Tuple> loadLegislationversion_groupByVehicleId(int id, String action) {
+        
         try {
             System.err.println("loadLegislationversion_groupByVehicleId");
             Session session = HibernateUtil.getThreadLocalSession();

@@ -201,12 +201,7 @@ public class Safety_and_Legislation {
             String button_type = readValue.get("button_type").asText();
             System.out.println("button_type" + button_type);
 //            String notification_to = (String) json.get("notification_to");
-
-            if (button_type.equals("save")) {
-                flag = false;
-            } else {
-                flag = true;
-            }
+            flag = !button_type.equals("save");
             if (legislation_value.has("status")) {
                 status = legislation_value.get("status").asBoolean();
             }
@@ -214,6 +209,7 @@ public class Safety_and_Legislation {
             if (legislation_value.has("legislationversion") && legislation_value.get("legislationversion").get("status").asBoolean() == false) {
                 System.out.println("Ready to update in same version");
             } else {
+                
                 System.out.println("Ready to create");
                 //Create PDB version               
 //                List<Pdbversion> version_data = PDBOwnerDB.GetVersionname();
@@ -311,6 +307,7 @@ public class Safety_and_Legislation {
     }
 
     public String CreateSafetyVersion() throws IOException {
+        
         NotificationController notificationController = new NotificationController();
         System.out.println("CreateSafetyVersion");
         final ObjectMapper mapper = new ObjectMapper();
@@ -442,6 +439,7 @@ public class Safety_and_Legislation {
     }
 
     public String LoadLegislationversionData() {
+        
         try {
             System.out.println("LoadLegislationversionData");
 
@@ -472,9 +470,10 @@ public class Safety_and_Legislation {
 //            String pdbvers_group_result = mapper.writeValueAsString(pdbversion_group_result);
             maps_object.put("legversion", legvers_group_result);
             System.out.println(legvers_group_result);
+            maps_string.put("success", "Work is Done");
         } catch (Exception e) {
-            maps_object.put("status", e);
-            System.out.println("Error : " + e);
+            System.err.println("Error in  \"Safety_and_Legislation\" \'LoadLegislationversionData\' : " + e);
+            maps_string.put("error", "Work isn't Done");
         }
         return "success";
     }
@@ -518,6 +517,7 @@ public class Safety_and_Legislation {
     }
     
     public String GetSafetyListing() {
+        
         System.out.println("GetSafetyListing");
         Querybuilder lc = new Querybuilder();
         try {

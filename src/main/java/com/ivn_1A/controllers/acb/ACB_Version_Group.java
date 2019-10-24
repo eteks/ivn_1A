@@ -20,8 +20,6 @@ import com.ivn_1A.models.acb.ACB_Version_Group_M;
 import com.ivn_1A.models.net_sign.IVNEngineerDB;
 import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.pdbowner.Pdbversion_group;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,7 +28,6 @@ import java.util.Map;
 import javax.persistence.Tuple;
 import javax.servlet.http.HttpSession;
 import org.apache.struts2.ServletActionContext;
-import org.json.simple.parser.JSONParser;
 
 /**
  *

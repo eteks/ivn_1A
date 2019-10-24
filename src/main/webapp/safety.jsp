@@ -151,7 +151,6 @@
 //                data: {"sender":"Legislationversion", "receiver":"Safetyversion"},
             }).then(function (response, status, headers, config){
                 if(response.data.maps_string.success){
-                     $window.alert(JSON.stringify(response.data.maps_object.tasks));
                     // $window.alert(JSON.stringify(response.data.maps_object.tasks));
                     // console.log(JSON.stringify(response.data.maps_object.tasks))
                     // $scope.task = response.data.list_object;

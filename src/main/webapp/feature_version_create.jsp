@@ -42,10 +42,9 @@
                                             <div class="col-md-12">
                                                 <div class="card">
                                                     <div class="card-block marketing-card p-t-0 text-center">
-                                                         <div class="row p-t-30">
-                                                            
+                                                         <div class="row p-t-30">                                                            
                                                             <div class="form-group col-md-3">
-                                                                <label for="vehicle"> Select Vehicle:</label>
+                                                                <label for="vehiclename"> Select Vehicle:</label>
                                                                 <select id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()" >
                                                                     <option value="">Select Vehicle</option>
                                                                     <s:iterator value="vehicleversion_result" var="data" >
@@ -53,8 +52,11 @@
                                                                     </s:iterator>
                                                                 </select>
                                                             </div>
-                                                            
-                                                            
+                                                            <div class="form-group col-md-3">
+                                                                <label for="feature">Previous Feature version :</label>
+                                                                <select id="feature" ng-model="data.featureversion" ng-options="arr as arr.name for arr in feaarray_result" disabled>
+                                                                </select>
+                                                            </div>
                                                         </div>   
                                                             
                                                         <!--drag and drop-->
@@ -139,7 +141,7 @@
                         <input type="checkbox" ng-model="data.status">
                         <span class="slider round"></span>
                      </label>
-                    <a class="modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" >Proceed</a>
+                    <a class="modal-trigger btn-floating btn-primary" ng-show="showProceed === true" style="padding:10px" href="#modal-comment" >Proceed</a>
                     <div id="modal-comment" class="modal">
                          <div class="modal-content text-left">
 
@@ -290,9 +292,23 @@
                     method : "POST",
                     data : {"vehicle_id":$scope.data.vehicle}
                 }).then(function (response, status, headers, config){
-                    $scope.models.dropzones.B[0].version = response.data.maps_object.pdb_results;
-                    $scope.models.dropzones.B[1].version = response.data.maps_object.saf_results;
-                    $scope.models.dropzones.B[2].version = response.data.maps_object.leg_results;
+                    
+                    if (response.data.maps_string.success) {
+                        
+                        alert(response.data.maps_string.success);
+                        $scope.models.dropzones.B[0].version = response.data.maps_object.pdb_results;
+                        $scope.models.dropzones.B[1].version = response.data.maps_object.saf_results;
+                        $scope.models.dropzones.B[2].version = response.data.maps_object.leg_results;
+                        
+                        if (response.data.maps_object.fea_results) {
+                            $scope.feaarray_result = response.data.maps_object.fea_results;
+                            $scope.create_type = true;
+                            $scope.data.featureversion = $scope.feaarray_result[0];
+                        }                        
+                    } else {
+                        alert(response.data.maps_string.error);
+                    }
+                    
                 });
             };
             
@@ -305,7 +321,7 @@
             {
 //                alert("createfeatureversion");
                 var status = $scope.data.status;
-                if(status == undefined )
+                if(status === undefined )
                     status = false;
                 if($scope.models.dropzones.B[3].version.length > 0){
                     if(status && event === "submit"){
@@ -320,8 +336,9 @@
             };
             
             $scope.createfeatureAjax = function (event){
+                
                 var status = $scope.data.status;
-                if(status == undefined || status == false)
+                if(status === undefined || status === false)
                     notification_to = undefined;
                 var data = {};
 //                $scope.data.vehicle_id = $scope.vehicleresults.vehicle_id;
@@ -341,31 +358,22 @@
 ////                                                 "removed_models":"m2,m4", "added_models":"m3", 
 ////                                                 "previous_version":"1.0", "current_version":"1.1"
 ////                                                };
-                      alert(response.data.maps_string.status);
-//                      var vercompare_res = response.data.maps_object.pdb_previous_data_result;
-//                      if(vercompare_res != undefined){
-//                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
-//                            alert(JSON.stringify($scope.vercompare_results));    
-//                      }
-//                      else{
-//                            alert("No any previous version found to compare");
-//                      }
-                    if(response.data.maps_string.status_code == "1") {
 
-                        var fea = JSON.parse(response.data.maps_string.feature.replace(/&quot;/g,'"'));
-                        fea["froms"] = "Feature";
-                        fea["t_id"] = $scope.t_id;
-                        fea["tg_id"] = $scope.tg_id;
-                        // if ($scope.t_id && $scope.tg_id) {
-                        //     leg["t_id"] = prompt("Enter the Task ID");
-                        //     leg["tg_id"] = prompt("Enter the Task Group ID");;
-                        // } else {
-                        //     leg["t_id"] = $scope.t_id;
-                        //     leg["tg_id"] = $scope.tg_id;
-                        // }
+                    if(response.data.maps_string.status_code === "1") {
+                        
+                        if(response.data.maps_object.fea_previous_data_result){
+                            $scope.vercompare_results = response.data.maps_object.fea_previous_data_result;
+                            alert(JSON.stringify($scope.vercompare_results));    
+                        }
+                        else{
+                            alert("No any previous version found to compare");
+                        }
+                        var fea = JSON.parse(response.data.maps_string.fea_version.replace(/&quot;/g,'"'));
+//                        alert(fea);
+                        fea['froms'] = "Feature";
+                        fea['t_id'] = $scope.t_id;
+                        fea['tg_id'] = $scope.tg_id;
                         alert("leg "+ JSON.stringify(fea));
-//                            alert("pdbv "+ JSON.stringify(pdbv) +" fro "+ JSON.stringify(pdbvg.froms));
-//                            console.log("pdbv "+ JSON.stringify(pdbv) +" pdbvg "+ JSON.stringify(pdbvg));
                         $http({
                             url: 'insertTasks',
                             method: "POST",
@@ -379,8 +387,11 @@
                             }
                         });
                         $window.open("safety_list.action","_self");
+                    } else {                        
+                        alert(response.data.maps_string.status);
                     }
                 });
+                
             };
 
             if($location.absUrl().includes("?")){

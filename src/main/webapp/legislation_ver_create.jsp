@@ -147,7 +147,7 @@
                         <span class="slider round"></span>
                      </label>
 
-                    <a class="modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
+                    <a class="modal-trigger btn-floating btn-primary" ng-show="showProceed === true" style="padding:10px" href="#modal-comment" ng-click="showCreateForm()">Proceed</a>
                     <div id="modal-comment" class="modal">
                          <div class="modal-content text-left">
 
@@ -315,36 +315,43 @@
                          }
                          $scope.data.pdbversion = $scope.array_result[0];
                          $scope.LoadVehicleModels();
-                         if($scope.data.pdbversion != undefined){
+                         if($scope.data.pdbversion !== undefined){
+                             
                             $http({
                                 url : 'loadlegislationversion_data',
                                 method : "POST",
                                 data : {"vehicle_id":$scope.data.vehicle, "action":ac}
                             }).then(function (response, status, headers, config){
-//                                alert("response");
+                                
+                                if (response.data.maps_string.success) {
+                                    
+                                    alert(response.data.maps_string.success);
 //                                alert(JSON.stringify(response.data.maps_object.legversion));
-                                $scope.legarray_result = [];
-                                $scope.status_value = "";
-                                var legLength = response.data.maps_object.legversion.length;
-                                if (legLength > 0) {
-                                    for(var i = 0; i < legLength; i++)
-                                    {
-                                         var data= response.data.maps_object.legversion[i];
-                 //                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
-                 //                        $window.alert($scope.data.pdbversion);
-                                         $scope.legarray_result.push({
-                                             "legid":data.lid,
-                                             "legversion_name":parseFloat(data.lversion).toFixed(1),
-                                             "status":data.status
-                                         });
-                                     }
-                                     $scope.data.legislationversion = $scope.legarray_result[0];
+                                    $scope.legarray_result = [];
+                                    $scope.status_value = "";
+                                    var legLength = response.data.maps_object.legversion.length;
+                                    if (legLength > 0) {
+                                        for(var i = 0; i < legLength; i++)
+                                        {
+                                             var data= response.data.maps_object.legversion[i];
+                     //                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
+                     //                        $window.alert($scope.data.pdbversion);
+                                             $scope.legarray_result.push({
+                                                 "legid":data.lid,
+                                                 "legversion_name":parseFloat(data.lversion).toFixed(1),
+                                                 "status":data.status
+                                             });
+                                         }
+                                         $scope.data.legislationversion = $scope.legarray_result[0];
+                                    } else {
+                                        alert("No active Legislation version found for this vehicle");
+                                    }
+                                    if($scope.data.legislationversion !== undefined)
+                                        $scope.create_type = true;
+                    //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                                 } else {
-                                    alert("No active Legislation version found for this vehicle");
+                                    alert(response.data.maps_string.error);
                                 }
-                                if($scope.data.legislationversion != undefined)
-                                    $scope.create_type = true;
-                //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
                             });
                         }   
                     } else {

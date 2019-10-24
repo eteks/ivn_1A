@@ -819,9 +819,9 @@
                             if(status && event === "submit" && mode === 0){
                                 $(".notifyPopup").click();
                             } else if (status && event === "submit" && mode === 1){
-                                $scope.createACBVersionAJAX(data)
+//                                $scope.createACBVersionAJAX(data);
                             } else{
-                                $scope.createACBVersionAJAX(data);
+//                                $scope.createACBVersionAJAX(data);
                             }
                         } else {
                             alert("Please create aleast one touched features");
