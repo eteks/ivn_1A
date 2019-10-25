@@ -600,21 +600,21 @@ public class Network_Group {
 
             System.err.println("GetIVNVersion_Listing");
             List<Map<String, Object>> row = new ArrayList<>();
-            List<IVN_Version_Group> iVN_Version_Groups = IVNEngineerDB.GetIVNVersion_Listing();
+            tupleObjects = IVNEngineerDB.GetIVNVersion_Listing();
 
-            iVN_Version_Groups.stream().map((iVN_Version_Group) -> {
+            tupleObjects.stream().map((tuple) -> {
 
                 Map<String, Object> columns = new HashMap<>();
-                columns.put("id", iVN_Version_Group.getIvnVersionId().getId());
-                columns.put("ivn_version", String.format("%.1f", iVN_Version_Group.getIvnVersionId().getIvn_version()));
-                columns.put("alias_version", iVN_Version_Group.getIvnVersionId().getVersion_name());
-                columns.put("vehicle", iVN_Version_Group.getIvnVersionId().getVehicleId().getVehiclename());
-                columns.put("fea_version", String.format("%.1f", iVN_Version_Group.getIvnVersionId().getFeatureVersionId().getFeature_versionname()));
-                columns.put("model", iVN_Version_Group.getIvnVersionId().getFeatureVersionId().getLegislationversion_id().getId());
-                columns.put("created_date", iVN_Version_Group.getIvnVersionId().getCreated_date());
-                columns.put("modified_date", iVN_Version_Group.getIvnVersionId().getModified_date());
-                columns.put("status", iVN_Version_Group.getIvnVersionId().isStatus());
-                columns.put("flag", iVN_Version_Group.getIvnVersionId().isFlag());
+                columns.put("id", tuple.get("id"));
+                columns.put("ivn_version", String.format("%.1f", tuple.get("ivn_version")));
+                columns.put("alias_version", tuple.get("alias_version"));
+                columns.put("vehicle", tuple.get("vehicle"));
+                columns.put("fea_version", String.format("%.1f", tuple.get("fea_version")));
+                columns.put("model", tuple.get("model"));
+                columns.put("created_date", tuple.get("created_date"));
+                columns.put("modified_date", tuple.get("modified_date"));
+                columns.put("status", tuple.get("status"));
+                columns.put("flag", tuple.get("flag"));
                 return columns;
             }).map((columns) -> {
 

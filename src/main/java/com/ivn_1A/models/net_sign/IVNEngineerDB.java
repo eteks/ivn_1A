@@ -504,26 +504,35 @@ public class IVNEngineerDB {
         }
     }
 
-    public static List<IVN_Version_Group> GetIVNVersion_Listing() {
+    public static List<Tuple> GetIVNVersion_Listing() {
         try {
 
             System.err.println("DB GetIVNVersion_Listing");
-
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
 
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<IVN_Version_Group> criteriaQuery = criteriaBuilder.createQuery(IVN_Version_Group.class);
-            Root<IVN_Version_Group> ivnRoot = criteriaQuery.from(IVN_Version_Group.class);
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<IVN_Version_Group> lvg = criteriaQuery.from(IVN_Version_Group.class);
+            lvg.join("ivnVersionId", JoinType.INNER);
+            lvg.join("signalsId", JoinType.INNER);
+            lvg.join("ecuId", JoinType.INNER);
 
-            criteriaQuery.distinct(true);
-
-            TypedQuery<IVN_Version_Group> dfm_result = session.createQuery(criteriaQuery);
+            criteriaQuery.multiselect(lvg.get("ivnVersionId").get("id").alias("id"), lvg.get("ivnVersionId").get("ivn_version").alias("ivn_version"),
+                    lvg.get("ivnVersionId").get("created_date").alias("created_date"), lvg.get("ivnVersionId").get("modified_date").alias("modified_date"),
+                    lvg.get("ivnVersionId").get("vehicleId").get("vehiclename").alias("vehicle"), 
+                    lvg.get("ivnVersionId").get("version_name").alias("alias_version"),
+                    lvg.get("ivnVersionId").get("featureVersionId").get("feature_versionname").alias("fea_version"),
+                    lvg.get("ivnVersionId").get("flag").alias("flag"), lvg.get("ivnVersionId").get("status").alias("status"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, lvg.get("signalsId").get("id")).alias("model"))
+                    .groupBy(lvg.get("ivnVersionId").get("created_date"))
+                    .orderBy(criteriaBuilder.desc(lvg.get("ivnVersionId").get("id")));
+            
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();
             session.clear();
-            return dfm_result.getResultList();
-
+            return typedQuery.getResultList();
         } catch (Exception e) {
             System.err.println("Error in \"IVNEngineerDB\" \'GetIVNVersion_Listing\' " + e);
             return null;

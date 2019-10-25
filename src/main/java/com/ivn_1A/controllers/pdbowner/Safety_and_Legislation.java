@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.Tuple;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -54,7 +53,7 @@ public class Safety_and_Legislation {
     private List<Map<String, Object>> result_data = new ArrayList<>();
 
     final ObjectMapper mapper = new ObjectMapper();
-    
+
     public String LegislationPage() {
 
         System.out.println("Entered");
@@ -66,30 +65,67 @@ public class Safety_and_Legislation {
             System.out.println("request" + request);
             System.out.println("id_value" + request.getParameter("id"));
             System.out.println("action_value" + request.getParameter("action"));
-            tupleObjects = SafetyLegDB.LoadLegislationversion_groupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
-            List<Map<String, Object>> saf_map_result = new ArrayList<>();
-            tupleObjects.stream().map((tuple) -> {
-                Map<String, Object> safetyMap = new HashMap<>();
-                safetyMap.put("qb_name", tuple.get("qb_name"));
-                safetyMap.put("qb_id", tuple.get("qb_id"));
-                safetyMap.put("pdbversion_id", tuple.get("pdb_versionid"));
-                safetyMap.put("pdbversion_name", tuple.get("pdb_versionname"));
-                safetyMap.put("modelname", tuple.get("modelname"));
-                safetyMap.put("model_id", tuple.get("model_id"));
-                safetyMap.put("vehiclename", tuple.get("vehiclename"));
-                safetyMap.put("vehicle_id", tuple.get("vehicle_id"));
-                safetyMap.put("legisversion_group_id", tuple.get("legisversion_group_id"));
-                safetyMap.put("leg_id", tuple.get("leg_id"));
-                safetyMap.put("leg", tuple.get("leg"));
-                safetyMap.put("status", tuple.get("status"));
-                safetyMap.put("available_status", tuple.get("available_status"));
-                safetyMap.put("flag", tuple.get("flag"));
-                return safetyMap;
-            }).forEachOrdered((safetyMap) -> {
-                saf_map_result.add(safetyMap);
+//            tupleObjects = SafetyLegDB.LoadLegislationversion_groupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
+//            List<Map<String, Object>> saf_map_result = new ArrayList<>();
+//            tupleObjects.stream().map((tuple) -> {
+//                Map<String, Object> safetyMap = new HashMap<>();
+//                safetyMap.put("qb_name", tuple.get("qb_name"));
+//                safetyMap.put("qb_id", tuple.get("qb_id"));
+//                safetyMap.put("pdbversion_id", tuple.get("pdb_versionid"));
+//                safetyMap.put("pdbversion_name", tuple.get("pdb_versionname"));
+//                safetyMap.put("modelname", tuple.get("modelname"));
+//                safetyMap.put("model_id", tuple.get("model_id"));
+//                safetyMap.put("vehiclename", tuple.get("vehiclename"));
+//                safetyMap.put("vehicle_id", tuple.get("vehicle_id"));
+//                safetyMap.put("legisversion_group_id", tuple.get("legisversion_group_id"));
+//                safetyMap.put("leg_id", tuple.get("leg_id"));
+//                safetyMap.put("leg", tuple.get("leg"));
+//                safetyMap.put("status", tuple.get("status"));
+//                safetyMap.put("available_status", tuple.get("available_status"));
+//                safetyMap.put("flag", tuple.get("flag"));
+//                return safetyMap;
+//            }).forEachOrdered((safetyMap) -> {
+//                saf_map_result.add(safetyMap);
+//            });
+//            result_data_obj = new Gson().toJson(saf_map_result);
+
+            Map<String, Object> maps = SafetyLegDB.LoadSafetyVersionGroupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
+            maps.forEach((t, u) -> {
+                switch (t) {
+                    case "safety":
+                        ((List<Tuple>) u).stream().map((tuple) -> {
+                            Map<String, Object> safetyMap = new HashMap<>();
+                            safetyMap.put("pdb_id", tuple.get("pdb_id"));
+                            safetyMap.put("veh_id", tuple.get("veh_id"));
+                            safetyMap.put("created_date", tuple.get("created_date"));
+                            safetyMap.put("modified_date", tuple.get("modified_date"));
+                            safetyMap.put("modelname", tuple.get("modelname"));
+                            safetyMap.put("id", tuple.get("id"));
+                            return safetyMap;
+                        }).forEachOrdered((safetyMap) -> {
+                            result_data.add(safetyMap);
+                        });
+                        break;
+                    case "qb":
+                        ((List<Tuple>) u).stream().map((tuple) -> {
+                            Map<String, Object> safetyMap = new HashMap<>();
+                            safetyMap.put("id", tuple.get("id"));
+                            safetyMap.put("qb_id", tuple.get("qb_id"));
+                            safetyMap.put("available_status", tuple.get("available_status"));
+                            safetyMap.put("qb_name", tuple.get("qb_name"));
+                            safetyMap.put("querybuilder_type", tuple.get("qb_type"));
+                            safetyMap.put("id", tuple.get("id"));
+                            return safetyMap;
+                        }).forEachOrdered((safetyMap) -> {
+                            result_data.add(safetyMap);
+                        });
+                        break;
+                    default:
+                        break;
+                }
             });
-            result_data_obj = new Gson().toJson(saf_map_result);
-            System.err.println("result_data_obj " + result_data_obj);
+            result_data_obj = new Gson().toJson(result_data);
+            System.err.println("result_data_obj=== " + result_data_obj);
         } catch (Exception e) {
             System.err.println("Error in \"Safety_and_Legislation\" \'LegislationPage\' : " + e);
         }
@@ -179,7 +215,7 @@ public class Safety_and_Legislation {
     }
 
     public String CreateLegislationVersion() throws IOException {
-        
+
         NotificationController notificationController = new NotificationController();
         System.out.println("CreateLegislationVersion");
         final ObjectMapper mapper = new ObjectMapper();
@@ -209,7 +245,7 @@ public class Safety_and_Legislation {
             if (legislation_value.has("legislationversion") && legislation_value.get("legislationversion").get("status").asBoolean() == false) {
                 System.out.println("Ready to update in same version");
             } else {
-                
+
                 System.out.println("Ready to create");
                 //Create PDB version               
 //                List<Pdbversion> version_data = PDBOwnerDB.GetVersionname();
@@ -286,7 +322,7 @@ public class Safety_and_Legislation {
 
                     maps_object.put("leg_previous_data_result", leg_previous_data_result);
                 }
-                
+
                 maps_string.put("leg_version", mapper.writeValueAsString(curleg_id));
                 maps_string.put("leg_version_group", mapper.writeValueAsString(legislationversion_groups));
                 if (button_type.equals("save")) {
@@ -307,7 +343,7 @@ public class Safety_and_Legislation {
     }
 
     public String CreateSafetyVersion() throws IOException {
-        
+
         NotificationController notificationController = new NotificationController();
         System.out.println("CreateSafetyVersion");
         final ObjectMapper mapper = new ObjectMapper();
@@ -418,7 +454,7 @@ public class Safety_and_Legislation {
 
                     maps_object.put("saf_previous_data_result", saf_previous_data_result);
                 }
-                
+
                 maps_string.put("saf_version", mapper.writeValueAsString(cursaf_id));
                 maps_string.put("saf_version_group", mapper.writeValueAsString(Safetyversion_group));
                 if (button_type.equals("save")) {
@@ -439,7 +475,7 @@ public class Safety_and_Legislation {
     }
 
     public String LoadLegislationversionData() {
-        
+
         try {
             System.out.println("LoadLegislationversionData");
 
@@ -477,7 +513,7 @@ public class Safety_and_Legislation {
         }
         return "success";
     }
-    
+
     public String LoadSafetyversionData() {
         try {
             System.out.println("LoadSafetyversionData");
@@ -515,9 +551,9 @@ public class Safety_and_Legislation {
         }
         return "success";
     }
-    
+
     public String GetSafetyListing() {
-        
+
         System.out.println("GetSafetyListing");
         Querybuilder lc = new Querybuilder();
         try {
@@ -543,7 +579,7 @@ public class Safety_and_Legislation {
             result_data_obj = new Gson().toJson(result_data);
 //            vehmod_map_result_obj = new Gson().toJson(vehmod_map_result);
 //                vehmod_map_result_obj =  Gson().toJSON(vehmod_map_result);
-            System.out.println("oject" + result_data_obj);
+            System.out.println("oject======" + result_data_obj);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             maps_object.put("status", "Some error occurred !!");
@@ -630,7 +666,7 @@ public class Safety_and_Legislation {
         }
         return "success";
     }
-    
+
     public String GetLegislationListing() {
         System.out.println("GetLegislationListing");
         Querybuilder lc = new Querybuilder();
@@ -642,7 +678,7 @@ public class Safety_and_Legislation {
                 columns.put("leg", String.format("%.1f", legislationversion_group.get("leg")));
                 columns.put("created_date", legislationversion_group.get("created_date"));
                 columns.put("modified_date", legislationversion_group.get("modified_date"));
-                maps_object.put("model", StringUtils.join(legislationversion_group.get("modelname"), ","));
+                columns.put("model", legislationversion_group.get("modelname"));
                 columns.put("vehicle", legislationversion_group.get("vehiclename"));
                 columns.put("version", String.format("%.1f", legislationversion_group.get("pdb_versionname")));
                 columns.put("status", legislationversion_group.get("status"));
@@ -685,7 +721,7 @@ public class Safety_and_Legislation {
 //            System.out.println("Result"+vehmod_map_result);
         return "success";
     }
-    
+
     public String GetLegislationCombinationListingPage() {
         System.out.println("GetLegislationCombinationListingPage controller");
 //        Querybuilder lc = new Querybuilder();
@@ -718,7 +754,7 @@ public class Safety_and_Legislation {
 //            System.out.println("Result"+vehmod_map_result);
         return "success";
     }
-    
+
     public String GetLegislationCombinationListing() {
         System.out.println("GetLegislationCombinationListing controller");
         Querybuilder lc = new Querybuilder();
@@ -751,7 +787,7 @@ public class Safety_and_Legislation {
 //            System.out.println("Result"+vehmod_map_result);
         return "success";
     }
-    
+
     public String CreateSafComb() {
 
         try {
@@ -828,7 +864,7 @@ public class Safety_and_Legislation {
         }
         return "success";
     }
-    
+
     public String GetSafetyCombinationListingPage() {
         System.out.println("GetSaftyCombinationListing");
 //        try {
@@ -863,7 +899,7 @@ public class Safety_and_Legislation {
 //        }
         return "success";
     }
-    
+
     public String GetSafetyCombinationListing() {
         System.out.println("GetSaftyCombinationListing");
         try {
@@ -896,7 +932,7 @@ public class Safety_and_Legislation {
         }
         return "success";
     }
-    
+
     public Map<String, Object> getMaps_object() {
         return maps_object;
     }
@@ -944,6 +980,5 @@ public class Safety_and_Legislation {
     public void setResult_data(List<Map<String, Object>> result_data) {
         this.result_data = result_data;
     }
-    
-    
+
 }

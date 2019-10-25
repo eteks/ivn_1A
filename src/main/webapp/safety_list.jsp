@@ -57,8 +57,8 @@
                                                                     <th ng-click="sort('version')" class="">Safety Version</th>
                                                                     <th ng-click="sort('vehicle')" class="">Vehicle Details</th>
                                                                     <th ng-click="sort('vehicle')" class="">PDB Details</th>
-                                                                        <th ng-click="sort('status')" class="text-center">Status</th>
-                                                                        <th ng-click="sort('status')" class="text-center">Version Type</th>
+                                                                    <th ng-click="sort('status')" class="text-center">Status</th>
+                                                                    <th ng-click="sort('status')" class="text-center">Version Type</th>
                                                                     <th ng-click="sort('vehicle')" class="">Created Date</th>
                                                                     <th ng-click="sort('vehicle')" class="">Modified Date</th>
                                                                     <th ng-click="sort('action')" class="text-center">Action</th>
@@ -161,7 +161,13 @@
         {
 
             this.data = [];
-            $scope.safety = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+            if ("<s:property value="result_data_obj"/>") {
+                
+                $scope.safety = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                alert(JSON.stringify($scope.safety));
+            } else {
+                alert("Data Loading Error");
+            }
 //               alert(JSON.stringify($scope.safety));
 //              $scope.safety = [{"flag":true,"saf_id":1,"model":"a1,a2,a3","created_date":"Sep 19, 2019 4:27:38 PM","modified_date":"Sep 19, 2019 4:27:38 PM","version":"1.0","saf":"1.0","vehicle":"audi","status":true}]; 
           

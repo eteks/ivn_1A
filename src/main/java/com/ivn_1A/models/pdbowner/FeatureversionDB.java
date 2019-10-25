@@ -178,13 +178,24 @@ public class FeatureversionDB {
 
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
-            Root<Featureversion> lVGRoot = criteriaQuery.from(Featureversion.class);
-//            criteriaQuery.distinct(true);
-            criteriaQuery.distinct(true).multiselect(lVGRoot.get("feature_versionname").alias("feature_versionname"), lVGRoot.get("vehicle_id").get("vehiclename").alias("vehiclename"),
-                    lVGRoot.get("created_date").alias("created_date"), lVGRoot.get("modified_date").alias("modified_date"), lVGRoot.get("pdbversion_id").get("id").alias("pdbid"),
-                    lVGRoot.get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), lVGRoot.get("legislationversion_id").get("legislation_versionname").alias("legislation_versionname"),
-                    lVGRoot.get("flag").alias("flag"), lVGRoot.get("status").alias("status"), lVGRoot.get("safetyversion_id").get("safety_versionname").alias("safety_versionname"))
-                    .orderBy(criteriaBuilder.desc(lVGRoot.get("id")));
+            Root<Featureversion> fvg = criteriaQuery.from(Featureversion.class);
+            fvg.join("vehicle_id", JoinType.INNER);
+            fvg.join("pdbversion_id", JoinType.INNER);
+            fvg.join("safetyversion_id", JoinType.INNER);
+            fvg.join("legislationversion_id", JoinType.INNER);
+
+            criteriaQuery.multiselect(fvg.get("id").alias("fea_id"), fvg.get("feature_versionname").alias("feature_versionname"),
+                    fvg.get("created_date").alias("created_date"), 
+                    fvg.get("modified_date").alias("modified_date"),
+                    fvg.get("pdbversion_id").get("pdb_versionname").alias("pdb_versionname"), 
+                    fvg.get("pdbversion_id").get("id").alias("pdbid"), 
+                    fvg.get("legislationversion_id").get("legislation_versionname").alias("legislation_versionname"), 
+                    fvg.get("safetyversion_id").get("safety_versionname").alias("safety_versionname"), 
+                    fvg.get("vehicle_id").get("vehiclename").alias("vehiclename"),
+                    fvg.get("flag").alias("flag"), fvg.get("status").alias("status"))
+                    .groupBy(fvg.get("created_date"))
+                    .orderBy(criteriaBuilder.desc(fvg.get("id")));
+            
             TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();

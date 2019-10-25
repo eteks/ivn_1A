@@ -190,89 +190,20 @@
 //                        { feature_version: '2.0', vehicle: 'Xuv',combine:'PDB_2.0,safety_2.0,legislation_2.0', status: 'Inactive'},
 //                        { feature_version: '3.0', vehicle: 'Scorpio',combine:'PDB_3.0,safety_3.0,legislation_3.0', status: 'Active'}
 //                    ];
-             $scope.records = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-             alert(JSON.stringify($scope.records));
-//            alert("<s:property value="result_data_obj"/>");
-//            var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"')); 
-////            $window.alert(JSON.stringify(data));
-////            data.pdb_version=parseFloat(data.pdb_version).toFixed(1);
-//            $scope.records = data;
-//            $scope.compare_records = []; 
-//            //console.log(data);
-//            angular.forEach(data, function (value, key) {
-//                if(key==0){
-//                    $scope.compare_records.push({"id":value.id,"versionname":value.pdb_version,
-//                    "vehicledetails":[{"vehiclename":value.vehicle,"vehicleversion":value.veh_version,"modelname":value.model}],
-//                    "status":value.status,"flag":value.flag});
-//                }
-//                else{                                
-//                    var res = $scope.compare_records.filter(function(i,j)
-//                    {
-//                        return i.id == value.id;
-//                    });
-//                    $scope.compare_records.push({"id":value.id,"versionname":value.pdb_version,
-//                    "vehicledetails":[{"vehiclename":value.vehicle,"vehicleversion":value.veh_version,"modelname":value.model}],
-//                    "status":value.status,"flag":value.flag});
-//                }
-//                console.log($scope.compare_records);
-//            }); 
-//                  
-//            $scope.compare_1 = [];
-//            $scope.compare_2 = [];
-//            $scope.comp_1 = function(item) 
-//            {
-//                $scope.compare_1.push(item);
-//            }
-//            $scope.comp_2 = function(item) 
-//            {
-//                $scope.compare_2.push(item);
-//            }
-//            
-//            $scope.sort = function(keyname)
-//            {
-//                $scope.sortKey = keyname;   //set the sortKey to the param passed
-//                $scope.reverse = !$scope.reverse; //if true make it false and vice versa
-//            }
-//            
-//            $scope.View_and_edit = function(event){
-////                alert("view_and_edit");
-////                alert(event.target.id);
-//                var id = event.target.attributes['data-id'].value;
-////                $window.alert(id.toString());
-//                var name = event.target.name;
-////                alert(id);
-////                alert(name);
-////                $http.get("vehicle_add.action", {
-////                    params: { "id": id }
-////                });
-//                $window.open("create_pdb.action?id="+id+"&action="+name,"_self"); //  
-//            }
-//            
-//            $scope.delete = function(event){
-////                alert("view_and_edit");
-////                alert(event.target.id);
-//                var id = event.target.attributes['data-id'].value;
-//                var data = {id : id};
-//                $http({
-//                url : 'deletepdbversion',
-//                method : "POST",
-//                data : data
-//                })
-//                .then(function (data, status, headers, config){
-//                     if(data.data.dlStatus.status === 1){
-//                         alert("PDB Version Deleted Succesfully");
-//                         $window.location.reload();
-//                    }else{
-//                        alert("Error while deleting PDB Version");
-//                    }
-//            });
-//            }           
+            
+            if ("<s:property value="result_data_obj"/>") {
+                
+                $scope.records = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                alert(JSON.stringify($scope.records));
+            } else {
+                alert("Data Loading Error");
+            }
         });
         app.filter('customSplitString', function() 
         {
             return function(input) 
             {
-                if(input !=undefined){
+                if(input){
                     var arr = input.split(',');
                     return arr;
                 }                
