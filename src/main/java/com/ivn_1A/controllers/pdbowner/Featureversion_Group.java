@@ -20,6 +20,7 @@ import com.ivn_1A.models.pdbowner.Pdbversion;
 import com.ivn_1A.models.pdbowner.SafetyLegDB;
 import com.ivn_1A.models.pdbowner.Safetyversion;
 import com.ivn_1A.models.pdbowner.Vehicle;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,23 +28,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Tuple;
+import javax.servlet.http.HttpServletRequest;
+
+import com.opensymphony.xwork2.ActionContext;
+import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- *
  * @author ets-poc
  */
 public class Featureversion_Group {
 
     private Map<String, String> maps_string = new HashMap<>();
     private Map<String, Object> maps_object = new HashMap<>();
-//    Session session = HibernateUtil.getThreadLocalSession();
+    //    Session session = HibernateUtil.getThreadLocalSession();
     private List<Vehicle> vehicleversion_result;
     private List<Tuple> tuple_result = new ArrayList<>();
     private List<Map<String, Object>> result_data = new ArrayList<>();
     Gson gson = new Gson();
     private String result_data_obj;
+    private HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
 
     public String FeatureversionPage() {
 
@@ -51,40 +56,65 @@ public class Featureversion_Group {
         System.out.println("FeatureversionPage");
 
 //        This will execute if url contains parameter(id and action-edit, view)
-//        try {
-//            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
-//            System.out.println("request" + request);
-//            System.out.println("id_value" + request.getParameter("id"));
-//            System.out.println("action_value" + request.getParameter("action"));
-//            List<Pdbversion_group> pdbversion_group_List = PDBOwnerDB.LoadPDBPreviousVehicleversionData(Integer.parseInt(request.getParameter("id")));
-//            List<Map<String, Object>> pdb_map_result = new ArrayList<>();
-//            pdbversion_group_List.stream().map((pdbversion_group) -> {
-//                Map<String, Object> vehicleMap = new HashMap<>();
-//                System.out.println("vehver_id"+pdbversion_group.getPdbversion_id().getVehicle_id().getId());
-////                vehicleMap.put("vehver_id", pdbversion_group.getVehicle_id().getId());
-////                vehicleMap.put("vehiclename", pdbversion_group.getVehicle_id().getVehiclename());
-//                vehicleMap.put("vehver_id", pdbversion_group.getPdbversion_id().getVehicle_id().getId());
-//                System.out.println("vehiclename"+pdbversion_group.getPdbversion_id().getVehicle_id().getVehiclename());
-//                vehicleMap.put("vehiclename", pdbversion_group.getPdbversion_id().getVehicle_id().getVehiclename());
-//                System.out.println("modelname"+pdbversion_group.getVehiclemodel_id().getModelname());
-//                vehicleMap.put("modelname", pdbversion_group.getVehiclemodel_id().getModelname());
-//                System.out.println("pdbversion_group_id"+pdbversion_group.getId());
-//                vehicleMap.put("pdbversion_group_id", pdbversion_group.getId());
-//                System.out.println("pdbversion_id"+pdbversion_group.getPdbversion_id().getId());
-//                vehicleMap.put("pdbversion_id", pdbversion_group.getPdbversion_id().getId());
-//                System.out.println("pdbversion_name"+pdbversion_group.getPdbversion_id().getPdb_versionname());
-//                vehicleMap.put("pdbversion_name", pdbversion_group.getPdbversion_id().getPdb_versionname());
-//                System.out.println("status"+pdbversion_group.getPdbversion_id().getStatus());
-//                vehicleMap.put("status", pdbversion_group.getPdbversion_id().getStatus());
-//                return vehicleMap;
-//            }).forEachOrdered((vehicleMap) -> {
-//                pdb_map_result.add(vehicleMap);
-//            });
-//            result_data_obj = new Gson().toJson(pdb_map_result);
-//            System.err.println("result_data_obj " + result_data_obj);
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        }
+        try {
+            System.out.println("request" + request);
+            System.out.println("id_value" + request.getParameter("id"));
+            System.out.println("action_value" + request.getParameter("action"));
+            List<Featureversion> featureversionList = FeatureversionDB.loadFeatureversionData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
+            featureversionList.stream().map((featureversion) -> {
+
+                System.out.println("featureversion " + featureversion.getId());
+                if (featureversion.getPdbversion_id() != null) {
+                    JSONArray pdb_results = new JSONArray();
+                    JSONObject pdb_result = new JSONObject();
+                    System.out.println("featureversion.getPdbversion_id().getId() " + featureversion.getPdbversion_id().getId());
+                    pdb_result.put("id", featureversion.getPdbversion_id().getId());
+                    pdb_result.put("name", "PDB " + featureversion.getPdbversion_id().getPdb_versionname());
+                    pdb_result.put("type", "pdb");
+                    pdb_results.add(pdb_result);
+                    maps_object.put("pdb_results", pdb_results);
+                }
+                if (featureversion.getLegislationversion_id() != null) {
+                    JSONArray leg_results = new JSONArray();
+                    JSONObject leg_result = new JSONObject();
+                    System.out.println("featureversion.getLegislationversion_id().getId() " + featureversion.getLegislationversion_id().getId());
+                    leg_result.put("id", featureversion.getLegislationversion_id().getId());
+                    leg_result.put("name", "Legislation " + featureversion.getLegislationversion_id().getLegislation_versionname());
+                    leg_result.put("type", "legislation");
+                    leg_results.add(leg_result);
+                    maps_object.put("leg_results", leg_results);
+                }
+                if (featureversion.getSafetyversion_id() != null) {
+                    JSONArray saf_results = new JSONArray();
+                    JSONObject saf_result = new JSONObject();
+                    System.out.println("featureversion.getSafetyversion_id().getId() " + featureversion.getSafetyversion_id().getId());
+                    saf_result.put("id", featureversion.getSafetyversion_id().getId());
+                    saf_result.put("name", "Safety " + featureversion.getSafetyversion_id().getSafety_versionname());
+                    saf_result.put("type", "safety");
+                    saf_results.add(saf_result);
+                    maps_object.put("saf_results", saf_results);
+                }
+                if (featureversion != null) {
+
+                    JSONArray fea_results = new JSONArray();
+                    JSONObject fea_result = new JSONObject();
+                    System.out.println("featureversion.getId() " + featureversion.getId());
+                    fea_result.put("id", featureversion.getId());
+                    fea_result.put("name", String.format("%.1f", featureversion.getFeature_versionname()));
+                    fea_result.put("type", "feature");
+                    fea_result.put("status", featureversion.getStatus());
+                    fea_results.add(fea_result);
+                    maps_object.put("fea_results", fea_results);
+                }
+                return maps_object;
+            }).forEachOrdered((maps_object) -> {
+                System.out.println(maps_object);
+            });
+            maps_string.put("success", "Work is Done");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            maps_string.put("error", "Some error occurred !!");
+        }
         try {
             vehicleversion_result = PDBOwnerDB.loadVehicleVersion();
 
@@ -234,7 +264,7 @@ public class Featureversion_Group {
                 version_data.setModified_date(new Date());
                 version_data.setCreated_or_updated_by(PDBOwnerDB.getUser(1));
                 Featureversion curfea_id = FeatureversionDB.insertFeatureVersion(version_data);
-                    
+
                 //we can use this code to find comparision of previous id and current id
                 if (prevfea_id != 0) {
                     Map<String, Object> leg_previous_data = FeatureversionDB.GetFeaPreviousVersion_LegSafPdb(prevfea_id, curfea_id.getId());
@@ -252,7 +282,7 @@ public class Featureversion_Group {
 
                     maps_object.put("fea_previous_data_result", fea_previous_data_result);
                 }
-                
+
                 maps_string.put("fea_version", mapper.writeValueAsString(curfea_id));
                 if (button_type.equals("save")) {
                     maps_string.put("status", "New Temporary Feature Version Created Successfully");
@@ -279,6 +309,7 @@ public class Featureversion_Group {
             tuple_result = FeatureversionDB.GetFeatureversionListing();
             tuple_result.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
+                columns.put("id", tuple.get("fea_id"));
                 columns.put("feature_versionname", String.format("%.1f", tuple.get("feature_versionname")));
                 columns.put("vehiclename", tuple.get("vehiclename"));
                 columns.put("created_date", tuple.get("created_date"));

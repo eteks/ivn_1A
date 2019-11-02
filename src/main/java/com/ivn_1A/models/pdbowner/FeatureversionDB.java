@@ -50,6 +50,41 @@ public class FeatureversionDB {
         return pdb;
     }
 
+    public static List<Featureversion> loadFeatureversionData(int feature_version_id, String actionString) {
+        try {
+
+            System.out.println("loadFeatureversionData");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Featureversion> criteriaQuery = criteriaBuilder.createQuery(Featureversion.class);
+            Root<Featureversion> fvg = criteriaQuery.from(Featureversion.class);
+            fvg.join("vehicle_id", JoinType.INNER);
+            fvg.join("pdbversion_id", JoinType.INNER);
+            fvg.join("safetyversion_id", JoinType.INNER);
+            fvg.join("legislationversion_id", JoinType.INNER);
+
+            if (actionString.equals("view")) {
+                criteriaQuery.where(criteriaBuilder.equal(fvg.get("id"), feature_version_id),
+                        criteriaBuilder.equal(fvg.get("status"), true),
+                        criteriaBuilder.equal(fvg.get("flag"), true));
+            } else {
+                criteriaQuery.where(criteriaBuilder.equal(fvg.get("id"), feature_version_id));
+            }
+            criteriaQuery.groupBy(fvg.get("created_date"));
+            criteriaQuery.orderBy(criteriaBuilder.desc(fvg.get("id")));
+            TypedQuery<Featureversion> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error in \"loadFeatureversionData\" : " + e);
+            return null;
+        }
+    }
+
     public static Legislationversion GetLegversionByVehicleId(int vehicle_id) {
 
         Session s = HibernateUtil.getThreadLocalSession();

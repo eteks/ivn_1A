@@ -1,25 +1,58 @@
-[{
-        "pdb": {
-            "tg_id": 1,
-            "name": "PDB version 1.0",
-            "completion_status": true,
-            "accepted_date": "Oct 17, 2019 2:53:25 PM",
-            "accepted_by": "khan",
-            "completion_date": "Oct 17, 2019 2:53:25 PM",
-            "task_id": 1,
-            "created_by": "khan",
-            "acceptance_status": true
-        }
-    }, {
-        "pdb": {
-            "tg_id": 1,
-            "name": "PDB version 1.0",
-            "completion_status": true,
-            "accepted_date": "Oct 17, 2019 2:53:25 PM",
-            "accepted_by": "khan",
-            "completion_date": "Oct 17, 2019 2:53:25 PM",
-            "task_id": 1,
-            "created_by": "khan",
-            "acceptance_status": true
-        }
-    }]
+{
+  "qb": [
+    {
+      "qb_name": "car",
+      "available_status": "o",
+      "querybuilder_type": "legislation",
+      "id": 6,
+      "qb_id": 1
+    },
+    {
+      "qb_name": "car",
+      "available_status": "o",
+      "querybuilder_type": "legislation",
+      "id": 5,
+      "qb_id": 1
+    },
+    {
+      "qb_name": "car",
+      "available_status": "n",
+      "querybuilder_type": "legislation",
+      "id": 4,
+      "qb_id": 1
+    }
+  ],
+  "legislation": [
+    {
+      "pdb_id": 2,
+      "modelname": "s3",
+      "veh_id": 2,
+      "created_date": "Oct 22, 2019 1:20:04 PM",
+      "id": 6,
+      "modified_date": "Oct 22, 2019 1:20:04 PM"
+    },
+    {
+      "pdb_id": 2,
+      "modelname": "s2",
+      "veh_id": 2,
+      "created_date": "Oct 22, 2019 1:20:04 PM",
+      "id": 5,
+      "modified_date": "Oct 22, 2019 1:20:04 PM"
+    },
+    {
+      "pdb_id": 2,
+      "modelname": "s1",
+      "veh_id": 2,
+      "created_date": "Oct 22, 2019 1:20:04 PM",
+      "id": 4,
+      "modified_date": "Oct 22, 2019 1:20:04 PM"
+    }
+  ],
+  "pdb": [
+    {
+      "flag": true,
+      "pdb_versionname": 1,
+      "status": true
+    }
+  ]
+}

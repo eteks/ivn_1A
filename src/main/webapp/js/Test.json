@@ -1,69 +1,92 @@
 {
-    "acbversion": {
-        "featureversion": {
-            "id": 3,
-            "versionname": "3.0",
-            "status": true,
-            "$$hashKey": "object:10"
-        },
-        "vehiclename": {
-            "vid": 1,
-            "vname": "XUV500",
-            "status": true,
-            "flag": true,
-            "$$hashKey": "object:57"
-        },
-        "pdbversion": {
-            "pdbid": 1,
-            "pdbversionname": "1.0",
-            "status": true,
-            "flag": true,
-            "$$hashKey": "object:58"
-        },
-        "vername": {
-            "ivn_version": "1.2",
-            "id": 3
-        },
-        "ecu": "e1",
-        "ecu_id": 1,
-        "ecu_fea_name": ""
+  "vehicledetail_list": [
+    {
+      "vehicle_model_mapping_id": "17",
+      "modelname": "x1",
+      "vehver_id": 4,
+      "vehicle_id": 2
     },
-    "acbdata_list": [{
-            "feature": [{
-                    "fid": 1,
-                    "fname": "f1"
-                }],
-            "ipsignal": [{
-                    "sid": 1,
-                    "nw": 2,
-                    "vmm_id": 1
-                }, {
-                    "sid": 1,
-                    "nw": 2,
-                    "vmm_id": 2
-                }, {
-                    "sid": 1,
-                    "nw": 2,
-                    "vmm_id": 3
-                }],
-            "opsignal": [{
-                    "sid": 1,
-                    "nw": 3,
-                    "vmm_id": 1
-                }, {
-                    "sid": 1,
-                    "nw": 3,
-                    "vmm_id": 2
-                }, {
-                    "sid": 1,
-                    "nw": 3,
-                    "vmm_id": 3
-                }],
-            "ecu": "e1",
-            "eid": 1,
-            "ecu_fea": "f1_e1_gfdgdf"
-        }],
-    "button_type": "submit",
-    "notification_to": "undefined",
-    "features_fully_touchedstatus": false
+    {
+      "vehicle_model_mapping_id": "18",
+      "modelname": "x2",
+      "vehver_id": 4,
+      "vehicle_id": 2
+    },
+    {
+      "vehicle_model_mapping_id": "19",
+      "modelname": "x3",
+      "vehver_id": 4,
+      "vehicle_id": 2
+    }
+  ],
+  "featuredetail_list": [
+    {
+      "fid": "1",
+      "featurename": "FRT MNL A/C ON",
+      "domainname": "AIR CONDITIONER",
+      "vmm_id": "17",
+      "status": "o"
+    },
+    {
+      "fid": "2",
+      "featurename": "FRT AUTO A/C ON (DUAL ZONE)",
+      "domainname": "AIR CONDITIONER",
+      "vmm_id": "17",
+      "status": "o"
+    },
+    {
+      "fid": "3",
+      "featurename": "Demist Vents on IP",
+      "domainname": "AIR CONDITIONER",
+      "vmm_id": "17",
+      "status": "o"
+    },
+    {
+      "fid": "1",
+      "featurename": "FRT MNL A/C ON",
+      "domainname": "AIR CONDITIONER",
+      "vmm_id": "18",
+      "status": "n"
+    },
+    {
+      "fid": "2",
+      "featurename": "FRT AUTO A/C ON (DUAL ZONE)",
+      "domainname": "AIR CONDITIONER",
+      "vmm_id": "18",
+      "status": "n"
+    },
+    {
+      "fid": "3",
+      "featurename": "Demist Vents on IP",
+      "domainname": "AIR CONDITIONER",
+      "vmm_id": "18",
+      "status": "n"
+    },
+    {
+      "fid": "1",
+      "featurename": "FRT MNL A/C ON",
+      "domainname": "AIR CONDITIONER",
+      "vmm_id": "19",
+      "status": "y"
+    },
+    {
+      "fid": "2",
+      "featurename": "FRT AUTO A/C ON (DUAL ZONE)",
+      "domainname": "AIR CONDITIONER",
+      "vmm_id": "19",
+      "status": "y"
+    },
+    {
+      "fid": "3",
+      "featurename": "Demist Vents on IP",
+      "domainname": "AIR CONDITIONER",
+      "vmm_id": "19",
+      "status": "y"
+    }
+  ],
+  "pdbversion_status": [
+    {
+      "status": true
+    }
+  ]
 }

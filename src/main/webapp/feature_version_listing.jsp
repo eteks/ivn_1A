@@ -198,6 +198,33 @@
             } else {
                 alert("Data Loading Error");
             }
+
+            $scope.View_and_edit = function(event){
+                var id = event.target.attributes['data-id'].value;
+                var name = event.target.name;
+                alert(id+"  "+name);
+                $window.open("feature_version_create.action?id="+id+"&action="+name,"_self"); //
+            }
+
+            $scope.delete = function(event){
+//                alert("view_and_edit");
+//                alert(event.target.id);
+                var id = event.target.attributes['data-id'].value;
+                var data = {id : id};
+                $http({
+                    url : 'deletepdbversion',
+                    method : "POST",
+                    data : data
+                })
+                    .then(function (data, status, headers, config){
+                        if(data.data.dlStatus.status === 1){
+                            alert("PDB Version Deleted Succesfully");
+                            $window.location.reload();
+                        }else{
+                            alert("Error while deleting PDB Version");
+                        }
+                    });
+            }
         });
         app.filter('customSplitString', function() 
         {

@@ -51,80 +51,70 @@ public class Safety_and_Legislation {
     private String result_data_obj;
     private List<Tuple> tuple_result = new ArrayList<>();
     private List<Map<String, Object>> result_data = new ArrayList<>();
-
+    private HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
     final ObjectMapper mapper = new ObjectMapper();
 
     public String LegislationPage() {
 
         System.out.println("Entered");
         System.out.println("LegislationPage");
-
 //        This will execute if url contains parameter(id and action-edit, view)
         try {
-            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
             System.out.println("request" + request);
             System.out.println("id_value" + request.getParameter("id"));
             System.out.println("action_value" + request.getParameter("action"));
-//            tupleObjects = SafetyLegDB.LoadLegislationversion_groupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
-//            List<Map<String, Object>> saf_map_result = new ArrayList<>();
-//            tupleObjects.stream().map((tuple) -> {
-//                Map<String, Object> safetyMap = new HashMap<>();
-//                safetyMap.put("qb_name", tuple.get("qb_name"));
-//                safetyMap.put("qb_id", tuple.get("qb_id"));
-//                safetyMap.put("pdbversion_id", tuple.get("pdb_versionid"));
-//                safetyMap.put("pdbversion_name", tuple.get("pdb_versionname"));
-//                safetyMap.put("modelname", tuple.get("modelname"));
-//                safetyMap.put("model_id", tuple.get("model_id"));
-//                safetyMap.put("vehiclename", tuple.get("vehiclename"));
-//                safetyMap.put("vehicle_id", tuple.get("vehicle_id"));
-//                safetyMap.put("legisversion_group_id", tuple.get("legisversion_group_id"));
-//                safetyMap.put("leg_id", tuple.get("leg_id"));
-//                safetyMap.put("leg", tuple.get("leg"));
-//                safetyMap.put("status", tuple.get("status"));
-//                safetyMap.put("available_status", tuple.get("available_status"));
-//                safetyMap.put("flag", tuple.get("flag"));
-//                return safetyMap;
-//            }).forEachOrdered((safetyMap) -> {
-//                saf_map_result.add(safetyMap);
-//            });
-//            result_data_obj = new Gson().toJson(saf_map_result);
-
-            Map<String, Object> maps = SafetyLegDB.LoadSafetyVersionGroupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
+            Map<String, Object> data_val = new HashMap<>();
+            List<Map<String, Object>> legislationList = new ArrayList<>(), qbList = new ArrayList<>(), pdbList = new ArrayList<>();
+            Map<String, Object> maps = SafetyLegDB.LoadLegislationVersionGroupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
             maps.forEach((t, u) -> {
                 switch (t) {
-                    case "safety":
+                    case "legislation":
                         ((List<Tuple>) u).stream().map((tuple) -> {
-                            Map<String, Object> safetyMap = new HashMap<>();
-                            safetyMap.put("pdb_id", tuple.get("pdb_id"));
-                            safetyMap.put("veh_id", tuple.get("veh_id"));
-                            safetyMap.put("created_date", tuple.get("created_date"));
-                            safetyMap.put("modified_date", tuple.get("modified_date"));
-                            safetyMap.put("modelname", tuple.get("modelname"));
-                            safetyMap.put("id", tuple.get("id"));
-                            return safetyMap;
-                        }).forEachOrdered((safetyMap) -> {
-                            result_data.add(safetyMap);
+                            Map<String, Object> legislationMap = new HashMap<>();
+                            legislationMap.put("pdb_id", tuple.get("pdb_id"));
+                            legislationMap.put("veh_id", tuple.get("veh_id"));
+                            legislationMap.put("created_date", tuple.get("created_date"));
+                            legislationMap.put("modified_date", tuple.get("modified_date"));
+                            legislationMap.put("modelname", tuple.get("modelname"));
+                            legislationMap.put("id", tuple.get("id"));
+                            return legislationMap;
+                        }).forEachOrdered((legislationMap) -> {
+                            legislationList.add(legislationMap);
                         });
                         break;
                     case "qb":
                         ((List<Tuple>) u).stream().map((tuple) -> {
-                            Map<String, Object> safetyMap = new HashMap<>();
-                            safetyMap.put("id", tuple.get("id"));
-                            safetyMap.put("qb_id", tuple.get("qb_id"));
-                            safetyMap.put("available_status", tuple.get("available_status"));
-                            safetyMap.put("qb_name", tuple.get("qb_name"));
-                            safetyMap.put("querybuilder_type", tuple.get("qb_type"));
-                            safetyMap.put("id", tuple.get("id"));
-                            return safetyMap;
-                        }).forEachOrdered((safetyMap) -> {
-                            result_data.add(safetyMap);
+                            Map<String, Object> qbMap = new HashMap<>();
+                            qbMap.put("id", tuple.get("id"));
+                            qbMap.put("qb_id", tuple.get("qb_id"));
+                            qbMap.put("available_status", tuple.get("available_status"));
+                            qbMap.put("qb_name", tuple.get("qb_name"));
+                            qbMap.put("querybuilder_type", tuple.get("qb_type"));
+                            qbMap.put("id", tuple.get("id"));
+                            return qbMap;
+                        }).forEachOrdered((qbMap) -> {
+                            qbList.add(qbMap);
+                        });
+                        break;
+                    case "pdb":
+                        ((List<Tuple>) u).stream().map((tuple) -> {
+                            Map<String, Object> pdbMap = new HashMap<>();
+                            pdbMap.put("pdb_versionname", tuple.get("pdb_versionname"));
+                            pdbMap.put("status", tuple.get("status"));
+                            pdbMap.put("flag", tuple.get("flag"));
+                            return pdbMap;
+                        }).forEachOrdered((pdbMap) -> {
+                            pdbList.add(pdbMap);
                         });
                         break;
                     default:
                         break;
                 }
             });
-            result_data_obj = new Gson().toJson(result_data);
+            data_val.put("legislation", legislationList);
+            data_val.put("qb", qbList);
+            data_val.put("pdb", pdbList);
+            result_data_obj = new Gson().toJson(data_val);
             System.err.println("result_data_obj=== " + result_data_obj);
         } catch (Exception e) {
             System.err.println("Error in \"Safety_and_Legislation\" \'LegislationPage\' : " + e);
@@ -156,39 +146,67 @@ public class Safety_and_Legislation {
 
         System.out.println("Entered");
         System.out.println("SafetyPage");
-
         //This will execute if url contains parameter(id and action-edit, view)
         try {
-            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
             System.out.println("request" + request);
             System.out.println("id_value" + request.getParameter("id"));
             System.out.println("action_value" + request.getParameter("action"));
-            tupleObjects = SafetyLegDB.LoadSafetyversion_groupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
-            List<Map<String, Object>> saf_map_result = new ArrayList<>();
-            tupleObjects.stream().map((tuple) -> {
-                Map<String, Object> safetyMap = new HashMap<>();
-                safetyMap.put("qb_name", tuple.get("qb_name"));
-                safetyMap.put("qb_id", tuple.get("qb_id"));
-                safetyMap.put("pdbversion_id", tuple.get("pdb_versionid"));
-                safetyMap.put("pdbversion_name", tuple.get("pdb_versionname"));
-                safetyMap.put("modelname", tuple.get("modelname"));
-                safetyMap.put("model_id", tuple.get("model_id"));
-                safetyMap.put("vehiclename", tuple.get("vehiclename"));
-                safetyMap.put("vehicle_id", tuple.get("vehicle_id"));
-                safetyMap.put("safetyversion_group_id", tuple.get("safetyversion_group_id"));
-                safetyMap.put("saf_id", tuple.get("saf_id"));
-                safetyMap.put("saf", tuple.get("saf"));
-                safetyMap.put("status", tuple.get("status"));
-                safetyMap.put("available_status", tuple.get("available_status"));
-                safetyMap.put("flag", tuple.get("flag"));
-                return safetyMap;
-            }).forEachOrdered((safetyMap) -> {
-                saf_map_result.add(safetyMap);
+            Map<String, Object> data_val = new HashMap<>();
+            List<Map<String, Object>> safetyList = new ArrayList<>(), qbList = new ArrayList<>(), pdbList = new ArrayList<>();
+            Map<String, Object> maps = SafetyLegDB.LoadSafetyVersionGroupData(Integer.parseInt(request.getParameter("id")), request.getParameter("action"));
+            maps.forEach((t, u) -> {
+                switch (t) {
+                    case "safety":
+                        ((List<Tuple>) u).stream().map((tuple) -> {
+                            Map<String, Object> safetyMap = new HashMap<>();
+                            safetyMap.put("pdb_id", tuple.get("pdb_id"));
+                            safetyMap.put("veh_id", tuple.get("veh_id"));
+                            safetyMap.put("created_date", tuple.get("created_date"));
+                            safetyMap.put("modified_date", tuple.get("modified_date"));
+                            safetyMap.put("modelname", tuple.get("modelname"));
+                            safetyMap.put("id", tuple.get("id"));
+                            return safetyMap;
+                        }).forEachOrdered((safetyMap) -> {
+                            safetyList.add(safetyMap);
+                        });
+                        break;
+                    case "qb":
+                        ((List<Tuple>) u).stream().map((tuple) -> {
+                            Map<String, Object> qbMap = new HashMap<>();
+                            qbMap.put("id", tuple.get("id"));
+                            qbMap.put("qb_id", tuple.get("qb_id"));
+                            qbMap.put("available_status", tuple.get("available_status"));
+                            qbMap.put("qb_name", tuple.get("qb_name"));
+                            qbMap.put("querybuilder_type", tuple.get("qb_type"));
+                            qbMap.put("id", tuple.get("id"));
+                            return qbMap;
+                        }).forEachOrdered((qbMap) -> {
+                            qbList.add(qbMap);
+                        });
+                        break;
+                    case "pdb":
+                        ((List<Tuple>) u).stream().map((tuple) -> {
+                            Map<String, Object> pdbMap = new HashMap<>();
+                            pdbMap.put("pdb_versionname", tuple.get("pdb_versionname"));
+                            pdbMap.put("status", tuple.get("status"));
+                            pdbMap.put("flag", tuple.get("flag"));
+                            return pdbMap;
+                        }).forEachOrdered((pdbMap) -> {
+                            pdbList.add(pdbMap);
+                        });
+                        break;
+                    default:
+                        break;
+                }
             });
-            result_data_obj = new Gson().toJson(saf_map_result);
-            System.err.println("result_data_obj " + result_data_obj);
+            data_val.put("safety", safetyList);
+            data_val.put("qb", qbList);
+            data_val.put("pdb", pdbList);
+            result_data_obj = new Gson().toJson(data_val);
+            System.err.println("result_data_obj=== " + result_data_obj);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            maps_string.put("status", "Some error occurred !!");
         }
         try {
             List<Querybuilder> safcomb_list = SafetyLegDB.LoadCombinationList("safety");
