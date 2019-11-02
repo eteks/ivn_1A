@@ -410,17 +410,29 @@
                     $scope.data.pdbversion = params_array[0].id;
                     var action = params_array[1].action;
                     var maps_object = {};
-                    if ("<s:property value="maps_object"/>") {
+                    if ("<s:property value="result_data_obj"/>") {
 
-                        maps_object = "<s:property value="maps_object"/>";
-                        alert("fasdfjksaf  "+maps_object);
-                        // $scope.models.dropzones.B[0].version = maps_object.pdb_results;
-                        // $scope.models.dropzones.B[1].version = maps_object.saf_results;
-                        // $scope.models.dropzones.B[2].version = maps_object.leg_results;
-                        // $scope.data.status = maps_object.fea_results[0].status;
-                        // $scope.feaarray_result = maps_object.fea_results;
-                        // $scope.create_type = true;
-                        // $scope.data.featureversion = $scope.feaarray_result[0];
+                        maps_object = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                        alert("fasdfjksaf  "+JSON.stringify(maps_object));
+                        for (var item in maps_object) {
+                            
+                            if (maps_object[item].type === "vehicle") {
+                                
+                                var a = [maps_object[item]];
+                                $scope.data.vehicle = a[0];
+                                alert(JSON.stringify(a));
+                            }
+                            if (maps_object[item].type === "feature") {
+                                
+                                $scope.data.status = maps_object[item].status;
+                                $scope.feaarray_result = [maps_object[item]];
+                                $scope.create_type = true;
+                                $scope.data.featureversion = $scope.feaarray_result[0];
+                                alert(JSON.stringify($scope.feaarray_result));
+                            }
+                        }
+                        maps_object = maps_object.filter(m => m['type'] !== "vehicle");
+                        $scope.models.dropzones.B[3].version = maps_object.filter(m => m['type'] !== "feature");
                     } else
                         alert("Data not Found");
 

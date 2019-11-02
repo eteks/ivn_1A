@@ -753,4 +753,31 @@ public class IVNEngineerDB {
             return null;
         }
     }
+    
+    
+    public static Map<String, Object> loadIVNVersionGroupData(int ivn_version_id, String actionString) {
+        
+        try {
+            
+            System.out.println("LoadSafetyversion_groupData");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            Map<String, Object> msp = new HashMap<>();
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            
+            Root<IVN_Version_Group> ivnRoot = criteriaQuery.from(IVN_Version_Group.class);
+            ivnRoot.join("ivnVersionId", JoinType.INNER);
+            ivnRoot.join("signalsId", JoinType.INNER);
+            ivnRoot.join("ecuId", JoinType.INNER);
+            
+            tx.commit();
+            session.clear();
+            return msp;
+        } catch (Exception e) {
+            System.err.println("Error in \"loadIVNVersionGroupData\" : " + e.getMessage());
+            return null;
+        }
+    }
 }

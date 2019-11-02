@@ -13,8 +13,6 @@ import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.configs.VersionType;
 import com.ivn_1A.controllers.notification.NotificationController;
 import com.ivn_1A.models.net_sign.ECU;
-import com.ivn_1A.models.pdbowner.FeatureversionDB;
-import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.net_sign.IVNEngineerDB;
 import static com.ivn_1A.models.net_sign.IVNEngineerDB.getSignalTagsByName;
 import com.ivn_1A.models.net_sign.IVN_Version;
@@ -22,6 +20,8 @@ import com.ivn_1A.models.net_sign.IVN_Version_Group;
 import com.ivn_1A.models.net_sign.Network;
 import com.ivn_1A.models.net_sign.SignalTags;
 import com.ivn_1A.models.net_sign.Signals;
+import com.ivn_1A.models.pdbowner.FeatureversionDB;
+import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Tuple;
-
 import org.json.simple.JSONObject;
 
 /**
@@ -49,6 +48,15 @@ public class Network_Group {
 
     public String IVNVersionCreationPage() {
 
+        
+        try {
+            
+            
+            maps_string.put("success", "Data Fatched");
+        } catch (Exception e) {
+            System.err.println("Error in \"Network_Group\" \'IVNVersionCreationPage\' try1 " + e);
+            maps_string.put("error", "Error Data loading");
+        }
         try {
 
             List<Map<String, Object>> raw = new ArrayList<>();
@@ -119,8 +127,10 @@ public class Network_Group {
                 rows1.add(columns);
             });
             signallist_result_obj = new Gson().toJson(rows1);
+            maps_string.put("success", "Data Fetched");
         } catch (Exception e) {
-            System.err.println("Error in \"Network_Group\" \'IVNVersionCreationPage\' " + e);
+            System.err.println("Error in \"Network_Group\" \'IVNVersionCreationPage\' try2 " + e);
+            maps_string.put("error", "Error Data loading");
         }
         return "success";
     }

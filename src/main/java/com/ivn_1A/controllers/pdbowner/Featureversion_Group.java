@@ -65,51 +65,53 @@ public class Featureversion_Group {
 
                 System.out.println("featureversion " + featureversion.getId());
                 if (featureversion.getPdbversion_id() != null) {
-                    JSONArray pdb_results = new JSONArray();
-                    JSONObject pdb_result = new JSONObject();
+                    
+                    Map<String, Object> pdb_result = new HashMap<>();
                     System.out.println("featureversion.getPdbversion_id().getId() " + featureversion.getPdbversion_id().getId());
                     pdb_result.put("id", featureversion.getPdbversion_id().getId());
                     pdb_result.put("name", "PDB " + featureversion.getPdbversion_id().getPdb_versionname());
                     pdb_result.put("type", "pdb");
-                    pdb_results.add(pdb_result);
-                    maps_object.put("pdb_results", pdb_results);
+                    result_data.add(pdb_result);
                 }
                 if (featureversion.getLegislationversion_id() != null) {
-                    JSONArray leg_results = new JSONArray();
-                    JSONObject leg_result = new JSONObject();
+                    
+                    Map<String, Object> leg_result = new HashMap<>();
                     System.out.println("featureversion.getLegislationversion_id().getId() " + featureversion.getLegislationversion_id().getId());
                     leg_result.put("id", featureversion.getLegislationversion_id().getId());
                     leg_result.put("name", "Legislation " + featureversion.getLegislationversion_id().getLegislation_versionname());
                     leg_result.put("type", "legislation");
-                    leg_results.add(leg_result);
-                    maps_object.put("leg_results", leg_results);
+                    result_data.add(leg_result);
                 }
                 if (featureversion.getSafetyversion_id() != null) {
-                    JSONArray saf_results = new JSONArray();
-                    JSONObject saf_result = new JSONObject();
+                    
+                    Map<String, Object> saf_result = new HashMap<>();
                     System.out.println("featureversion.getSafetyversion_id().getId() " + featureversion.getSafetyversion_id().getId());
                     saf_result.put("id", featureversion.getSafetyversion_id().getId());
                     saf_result.put("name", "Safety " + featureversion.getSafetyversion_id().getSafety_versionname());
                     saf_result.put("type", "safety");
-                    saf_results.add(saf_result);
-                    maps_object.put("saf_results", saf_results);
+                    result_data.add(saf_result);
                 }
                 if (featureversion != null) {
 
-                    JSONArray fea_results = new JSONArray();
-                    JSONObject fea_result = new JSONObject();
+                    Map<String, Object> fea_result = new HashMap<>();
                     System.out.println("featureversion.getId() " + featureversion.getId());
                     fea_result.put("id", featureversion.getId());
                     fea_result.put("name", String.format("%.1f", featureversion.getFeature_versionname()));
                     fea_result.put("type", "feature");
                     fea_result.put("status", featureversion.getStatus());
-                    fea_results.add(fea_result);
-                    maps_object.put("fea_results", fea_results);
+                    result_data.add(fea_result);
+                    
+                    Map<String, Object> veh_result = new HashMap<>();
+                    veh_result.put("id", featureversion.getVehicle_id().getId());
+                    veh_result.put("name", featureversion.getVehicle_id().getVehiclename());
+                    veh_result.put("type", "vehicle");
+                    result_data.add(veh_result);
                 }
-                return maps_object;
-            }).forEachOrdered((maps_object) -> {
-                System.out.println(maps_object);
+                return result_data;
+            }).forEachOrdered((result_data) -> {
+                System.out.println(result_data);
             });
+            result_data_obj = new Gson().toJson(result_data);
             maps_string.put("success", "Work is Done");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
