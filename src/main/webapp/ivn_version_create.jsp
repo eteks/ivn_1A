@@ -1,6 +1,5 @@
 <%@include file="header.jsp" %>
 <%@include file="sidebar.jsp" %>
-
                     <div class="pcoded-content" ng-controller="RecordCtrl1 as Demo">
                         <div class="pcoded-inner-content">
                             <div class="main-body">
@@ -113,7 +112,7 @@
                                                                                     <h3 class="card-title accordion-title">
                                                                                     <a class="accordion-msg" data-toggle="collapse"
                                                                                        data-parent="#accordion" href="#collapse{{s.sid}}"
-                                                                                       aria-expanded="true" aria-controls="collapse{{s.sid}}">
+                                                                                       aria-expanded="true" aria-controls="collapse{{s.sid}}" ng-click="ah(s)">
                                                                                         {{s.listitem}}
                                                                                     </a>
                                                                                     <a href="#" ng-click="removeSignalRow(s.sid)" class="removeSignalRow"><i class="icofont icofont-ui-close text-c-red"></i></a>    
@@ -484,7 +483,10 @@
                 $scope.sortKey = keyname;   //set the sortKey to the param passed
                 $scope.reverse = !$scope.reverse; //if true make it false and vice versa
             }
-            
+            $scope.ah = function(s)
+            {
+                alert("kjjfsdajf    "+JSON.stringify(s));
+            }
             $scope.add_signal_tab = function(sid)
             {
 		var index = -1;		
@@ -512,7 +514,6 @@
                 }
                 $scope.list.signal.push(comArr[index].sid);
                 $scope.signal_list.splice( index, 1 );
-//                alert(JSON.stringify($scope.list));
             };
             
             $scope.removeSignalRow = function(sid)
@@ -835,93 +836,31 @@
                 }
             };
             
-            if($location.absUrl().includes("?")){
-          var params_array = [];
-          var absUrl = $location.absUrl().split("?")[1].split("&");
-          for(i=0;i<absUrl.length;i++){
-              var key_test = absUrl[i].split("=")[0];
-              var value = absUrl[i].split("=")[1];
-//                    alert(key_test);
-//                    alert(value);
-              params_array.push({[key_test]:value});
-          }
-
-        if (params_array[0].id && params_array[1].action) {
-            $scope.data.pdbversion = params_array[0].id;
-            var action = params_array[1].action;
-
-//                var result_data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-
-            var safetydetail_list = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-            $window.alert("result_data_obj  "+JSON.stringify(safetydetail_list));
-//                $scope.data.new_vehicle="select_vehicle";
-            $scope.truefalse = true;
-            $scope.data.status = safetydetail_list[0].status;
-            $scope.data.vehicle = safetydetail_list[0].vehicle_id.toString();
-            $scope.LoadPreviousVersion();
-            $scope.safety = safetydetail_list;
-
-
-//                var vehicledetail_list = result_data.vehicledetail_list;
-//                $scope.data.status = result_data.pdbversion_status[0].status;
-//
-//                $scope.data.vehicleversion = vehicledetail_list[0].vehver_id.toString();
-//                $scope.LoadSelectedVehicleVersionData();
-//                $scope.data.vehiclename = vehicledetail_list[0].vehicle_id.toString();
-//                $scope.records = vehicledetail_list;
-//                    alert(JSON.stringify($scope.records));
-
-//                var featuredetail_list = result_data.featuredetail_list;
-//                for(var i=0; i<featuredetail_list.length; i++)
-//                {
-//                    if($scope.features.length === 0)
-//                    {
-//                        $scope.add_feature_tab(featuredetail_list[i].fid);
-////                            $scope.features.push({fid:featuredetail_list[i].fid,fea:featuredetail_list[i].featurename,domain:featuredetail_list[i].domainname,status:featuredetail_list[i].status});
-//                    }
-//                    else
-//                    {
-//                        var temp=0;
-//                        for(var j=0; j<$scope.features.length; j++)
-//                        {
-//                            if($scope.features[j].fid === featuredetail_list[i].fid)
-//                            {
-//                                temp=1;
-//                            }
-//                        }
-//                        if(temp==0)
-//                        {
-//                            $scope.add_feature_tab(featuredetail_list[i].fid);
-//                        }
-//                    }
-//
-//                    $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].model_id,featuredetail_list[i].status);
-////                        alert(JSON.stringify($scope.list));
-//                }
-            angular.element(function () {
-                var result = document.getElementsByClassName("radio_button");
-//                        alert(JSON.stringify(result));
-                alert(JSON.stringify($scope.list));
-                angular.forEach(result, function(value) {
-                    var result_name = value.getAttribute("name").substring(1).split("_");
-//                        alert(JSON.stringify(result_name));
-                    var fid = result_name[0];
-                    var model_id = result_name[1];
-                    var status = value.getAttribute("value");
-                    angular.forEach($scope.list, function(item) {
-                        alert(item.qb_id+" "+item.model_id+" "+item.status);
-                        if(item.qb_id === fid && item.model_id === model_id && item.status === status)
-                            value.setAttribute("checked","checked");
-                    });
-                });
-            });
-            if(action === "view"){
-                $scope.showProceed =false;
-                $scope.showSave =false;
-                $scope.showSubmit =false;
-            } else if(action === "edit"){
-                $scope.showProceed =true;
+        if($location.absUrl().includes("?")){
+            
+            var params_array = [];
+            var absUrl = $location.absUrl().split("?")[1].split("&");
+            for(i=0;i<absUrl.length;i++){
+                var key_test = absUrl[i].split("=")[0];
+                var value = absUrl[i].split("=")[1];
+  //                    alert(key_test);
+  //                    alert(value);
+                params_array.push({[key_test]:value});
             }
+
+            if (params_array[0].id && params_array[1].action) {
+                $scope.data.pdbversion = params_array[0].id;
+                var action = params_array[1].action;
+
+    //                var result_data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                
+                if(action === "view"){
+                    $scope.showProceed =false;
+                    $scope.showSave =false;
+                    $scope.showSubmit =false;
+                } else if(action === "edit"){
+                    $scope.showProceed =true;
+                }
             } else {
                 $scope.t_id = params_array[0].t_id;
                 $scope.tg_id = params_array[1].tg_id;
@@ -1002,7 +941,7 @@
                 else{
                    alert("Please upload CSV file for import");
                 }
-            };
+            };            
          }]);
 
     $(document).ready(function(){

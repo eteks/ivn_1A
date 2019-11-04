@@ -47,6 +47,13 @@ public class ACB_Version_Group_M implements Serializable {
     private ECU ecuId;
     private boolean touchedStatus;
 
+    public ACB_Version_Group_M() {
+    }
+
+    public ACB_Version_Group_M(int id) {
+        this.id = id;
+    }
+
     public ACB_Version_Group_M(ACB_Version acbVersionId, IVN_Version ivnVersionId, Pdbversion pdbVersionId, Vehicle vehicleId, Domain_and_Features_Mapping domainAndFeaturesMapping, ECU ecuId, boolean touchedStatus) {
         this.acbVersionId = acbVersionId;
         this.ivnVersionId = ivnVersionId;

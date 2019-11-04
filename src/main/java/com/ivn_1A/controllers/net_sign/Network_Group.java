@@ -13,8 +13,6 @@ import com.ivn_1A.configs.JSONConfigure;
 import com.ivn_1A.configs.VersionType;
 import com.ivn_1A.controllers.notification.NotificationController;
 import com.ivn_1A.models.net_sign.ECU;
-import com.ivn_1A.models.pdbowner.FeatureversionDB;
-import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import com.ivn_1A.models.net_sign.IVNEngineerDB;
 import static com.ivn_1A.models.net_sign.IVNEngineerDB.getSignalTagsByName;
 import com.ivn_1A.models.net_sign.IVN_Version;
@@ -22,6 +20,8 @@ import com.ivn_1A.models.net_sign.IVN_Version_Group;
 import com.ivn_1A.models.net_sign.Network;
 import com.ivn_1A.models.net_sign.SignalTags;
 import com.ivn_1A.models.net_sign.Signals;
+import com.ivn_1A.models.pdbowner.FeatureversionDB;
+import com.ivn_1A.models.pdbowner.PDBOwnerDB;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Tuple;
-
 import org.json.simple.JSONObject;
 
 /**
@@ -49,6 +48,15 @@ public class Network_Group {
 
     public String IVNVersionCreationPage() {
 
+        
+        try {
+            
+            
+            maps_string.put("success", "Data Fatched");
+        } catch (Exception e) {
+            System.err.println("Error in \"Network_Group\" \'IVNVersionCreationPage\' try1 " + e);
+            maps_string.put("error", "Error Data loading");
+        }
         try {
 
             List<Map<String, Object>> raw = new ArrayList<>();
@@ -72,10 +80,8 @@ public class Network_Group {
             Map<String, Object> column = new HashMap<>();
 
             tupleObjects = IVNEngineerDB.LoadNetwork();
-            for (Tuple tupleObject : tupleObjects) {
-
+            tupleObjects.forEach((tupleObject) -> {
                 Map<String, Object> columns = new HashMap<>(), columns1 = new HashMap<>(), columns2 = new HashMap<>();
-
                 if (tupleObject.get("ntype").equals("can")) {
                     columns.put("cid", tupleObject.get("id"));
                     columns.put("listitem", tupleObject.get("listitem"));
@@ -89,7 +95,7 @@ public class Network_Group {
                     columns2.put("listitem", tupleObject.get("listitem"));
                     row2.add(columns2);
                 }
-            }
+            });
             column.put("can_list", row);
             column.put("lin_list", row1);
             column.put("hardware_list", row2);
@@ -98,29 +104,33 @@ public class Network_Group {
 
             List<Map<String, Object>> rows = new ArrayList<>();
             tupleObjects = IVNEngineerDB.LoadECU();
-            for (Tuple tupleObject : tupleObjects) {
-
+            tupleObjects.stream().map((tupleObject) -> {
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("eid", tupleObject.get("id"));
                 columns.put("listitem", tupleObject.get("listitem"));
                 columns.put("description", tupleObject.get("description"));
+                return columns;
+            }).forEachOrdered((columns) -> {
                 rows.add(columns);
-            }
+            });
             eculist_result_obj = new Gson().toJson(rows);
 
             List<Map<String, Object>> rows1 = new ArrayList<>();
             tupleObjects = IVNEngineerDB.LoadSignals();
-            for (Tuple tupleObject : tupleObjects) {
-
+            tupleObjects.stream().map((tupleObject) -> {
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("sid", tupleObject.get("id"));
                 columns.put("listitem", tupleObject.get("listitem"));
                 columns.put("description", tupleObject.get("description"));
+                return columns;
+            }).forEachOrdered((columns) -> {
                 rows1.add(columns);
-            }
+            });
             signallist_result_obj = new Gson().toJson(rows1);
+            maps_string.put("success", "Data Fetched");
         } catch (Exception e) {
-            System.err.println("Error in \"Network_Group\" \'IVNVersionCreationPage\' " + e);
+            System.err.println("Error in \"Network_Group\" \'IVNVersionCreationPage\' try2 " + e);
+            maps_string.put("error", "Error Data loading");
         }
         return "success";
     }
@@ -600,21 +610,21 @@ public class Network_Group {
 
             System.err.println("GetIVNVersion_Listing");
             List<Map<String, Object>> row = new ArrayList<>();
-            List<IVN_Version_Group> iVN_Version_Groups = IVNEngineerDB.GetIVNVersion_Listing();
+            tupleObjects = IVNEngineerDB.GetIVNVersion_Listing();
 
-            iVN_Version_Groups.stream().map((iVN_Version_Group) -> {
+            tupleObjects.stream().map((tuple) -> {
 
                 Map<String, Object> columns = new HashMap<>();
-                columns.put("id", iVN_Version_Group.getIvnVersionId().getId());
-                columns.put("ivn_version", String.format("%.1f", iVN_Version_Group.getIvnVersionId().getIvn_version()));
-                columns.put("alias_version", iVN_Version_Group.getIvnVersionId().getVersion_name());
-                columns.put("vehicle", iVN_Version_Group.getIvnVersionId().getVehicleId().getVehiclename());
-                columns.put("fea_version", String.format("%.1f", iVN_Version_Group.getIvnVersionId().getFeatureVersionId().getFeature_versionname()));
-                columns.put("model", iVN_Version_Group.getIvnVersionId().getFeatureVersionId().getLegislationversion_id().getId());
-                columns.put("created_date", iVN_Version_Group.getIvnVersionId().getCreated_date());
-                columns.put("modified_date", iVN_Version_Group.getIvnVersionId().getModified_date());
-                columns.put("status", iVN_Version_Group.getIvnVersionId().isStatus());
-                columns.put("flag", iVN_Version_Group.getIvnVersionId().isFlag());
+                columns.put("id", tuple.get("id"));
+                columns.put("ivn_version", String.format("%.1f", tuple.get("ivn_version")));
+                columns.put("alias_version", tuple.get("alias_version"));
+                columns.put("vehicle", tuple.get("vehicle"));
+                columns.put("fea_version", String.format("%.1f", tuple.get("fea_version")));
+                columns.put("model", tuple.get("model"));
+                columns.put("created_date", tuple.get("created_date"));
+                columns.put("modified_date", tuple.get("modified_date"));
+                columns.put("status", tuple.get("status"));
+                columns.put("flag", tuple.get("flag"));
                 return columns;
             }).map((columns) -> {
 

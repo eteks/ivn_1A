@@ -173,6 +173,7 @@
                                               >
                                               <a href="#" ng-click="hiddenDiv = !hiddenDiv">{{person.name}}</a>
                                               <input type="hidden" ng-model="data.ecu" ng-init="data.ecu=person.name">
+                                              <input type="hidden" ng-model="data.ecu_id" ng-init="data.ecu_id=person.id">
                                               <ul ng-if="person.type == 'signal'" ng-show="hiddenDiv">
                                                 <li ng-repeat="i in modals" class="form-radio" ng-init="pdb = fea_result[0].pdbgroup_id">
                                                       {{i.modelname}}
@@ -194,8 +195,8 @@
                               </div>
                             </div>
                              <div class="feat_prop_save text-center">
-                                <a href="#" ng-click="feature_result_cap(data.ecu_fea_name, data.ecu)" class="btn btn-round btn-info">Save</a>
-                                <a href="#" ng-click="feature_result(data.ecu_fea_name, data.ecu)" class="btn btn-round btn-success">Submit</a>
+                                <a href="#" ng-click="feature_result_cap(data.ecu_fea_name, data.ecu, data.ecu_id)" class="btn btn-round btn-info">Save</a>
+                                <a href="#" ng-click="createacbversion('submit',0,'none')" class="btn btn-round btn-success">Submit</a>
                               </div>
                            </script> 
 
@@ -293,8 +294,8 @@
                     <span class="slider round"></span>
                  </label>
                 
-                <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createacbversion('save',0)" name="save">Save</button>
-                <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createacbversion('submit',1)" name="submit">Submit</button>
+                <button ng-show="showSave == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createacbversion('save',0,'acb')" name="save">Save</button>
+                <button ng-show="showSubmit == true" type="submit" class="btn btn-primary" ng-mousedown='doSubmit=true' ng-click="createacbversion('submit',1,'acb')" name="submit">Submit</button>
                 
             </div>  
             
@@ -479,7 +480,7 @@
                     if (response.data.maps_string.success) {
                         
                         result_data = JSON.parse(response.data.result_data_obj.replace(/&quot;/g,'"'));
-//                        alert("RES "+JSON.stringify(result_data));
+                        alert("RES "+JSON.stringify(result_data));
                         var vehicledetail_list = result_data.vehicledetail_list;
                         var featuredetail_list = result_data.featuredetail_list;
                         $scope.modals = vehicledetail_list;
@@ -665,14 +666,17 @@
                    alert(JSON.stringify($scope.opsignal));
                 }               
             }
-            $scope.feature_result_cap = function(ef, ecu)
-            {   
-                e_f = ef+"_"+ecu;
-                $scope.result.push({ 'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal, 'ecu':ecu, 'ecu_fea':e_f});
+            $scope.feature_result_cap = function(ef, ecu, eid)
+            {
+//                alert(ef + " " + ecu);
+                $scope.fea = $scope.fea.filter((obj, pos, arr) => { return arr.map(mapObj => mapObj.fname).indexOf(obj.fname) == pos; });
+                e_f = $scope.fea[0].fname+"_"+ecu+"_"+ef;
+                $scope.result.push({ 'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal, 'ecu':ecu, 'eid':eid, 'ecu_fea':e_f});
                 alert(JSON.stringify($scope.result));
                 $scope.models.dropzones.B[1].version=[];
                 $scope.models.dropzones.B[2].version=[];
                 $scope.models.dropzones.B[3].version=[];
+                $scope.data.ecu_fea_name = "";
 //                $('#modal-product-form').closeModal();
 //              alert(JSON.stringify($scope.result));
 //                alert(JSON.stringify($scope.models.dropzones.B));
@@ -750,65 +754,103 @@
             }, true);
               
             $scope.createACBVersionAJAX = function (data) {
-                alert(JSON.stringify(data));
+                
+//                alert(JSON.stringify(data));
                 console.log(JSON.stringify(data));
-//                $http({
-//                    url : 'createacbversion',
-//                    method : "POST",
-//                    data : data,
-//                })
-//                .then(function (data, status, headers, config){  
-////                              alert(JSON.stringify(data));
-//                          alert(JSON.stringify(data.data.maps.status).slice(1, -1));
-//                          $window.open("acb_listing.action","_self"); //                alert(data.maps);
-////            //                Materialize.toast(data['maps']["status"], 4000);
-//                });
+                $http({
+                    url : 'createacbversion',
+                    method : "POST",
+                    data : data,
+                })
+                .then(function (response, status, headers, config){
+                    
+                    if (response.data.maps_string.success) {
+                        alert(JSON.stringify(response.data.maps_string.success));
+                    } else {
+                        alert(JSON.stringify(response.data.maps_string.error));
+                    }
+                });
             };
             
-            $scope.createacbversion = function (event,mode) {           
-                var status = $scope.data.status;
-                if(status == undefined )
-                    status = false;
-                
-                if (!$scope.doSubmit) 
-                {
-                    return;
-                }
-                $scope.doSubmit = false;  
-                if($scope.data != undefined){
+            $scope.createacbversion = function (event,mode,fro) {
+                alert('QWRWWTRETYUUI');
+                if (fro==='acb') {
+                    var status = $scope.data.status;
+                    if(status == undefined)
+                        status = false;
+
+                    if (!$scope.doSubmit) 
+                    {
+                        return;
+                    }
+                    $scope.doSubmit = false;
+                    alert($scope.data.status);
+                    if($scope.data != undefined){
+                        var data = {};
+                        data['acbversion'] = $scope.data;
+                        data['acbdata_list'] = $scope.result;
+        //                data['acbdata_list'] = [{"fid":"3","ecu":"2","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"8","nt_type":"can","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"7","nt_type":"can","nt_id":"2","vmm_id":"1"},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"8","nt_type":"lin","nt_id":"1","vmm_id":2},{"pdbgroup_id":"7","nt_type":"hardware","nt_id":"1","vmm_id":1},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":3}]}]},{"fid":"1","ecu":"1","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"2","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"2","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]}]}];
+        //                data['acbdata_list'] = [{"fid":"1","ecu":"1","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":"3"},{"pdbgroup_id":"10","nt_type":"can","nt_id":"2","vmm_id":"1"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"2"}]},{"signal":"2","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":"3"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"2"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":3},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":1},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":2}]},{"signal":"2","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":3},{"pdbgroup_id":"10","nt_type":"can","nt_id":"2","vmm_id":1},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":2}]}]},{"fid":"3","ecu":"2","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"8","nt_type":"can","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"7","nt_type":"can","nt_id":"2","vmm_id":"1"},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"8","nt_type":"lin","nt_id":"1","vmm_id":2},{"pdbgroup_id":"7","nt_type":"hardware","nt_id":"1","vmm_id":1},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":3}]}]}];
+                        data['button_type'] = event;
+                        data['notification_to'] = notification_to+"";
+                        window.alert(JSON.stringify(data));
+                        if($scope.features.length == $scope.result.length)
+                            data['features_fully_touchedstatus'] = true;
+                        else
+                            data['features_fully_touchedstatus'] = false;
+                        //console.log(data);
+                        list_count = Object.keys($scope.result).length;
+                        if($scope.data.vername != undefined && $scope.data.pdbversion != undefined && 
+                                $scope.data.vehiclename != undefined && $scope.data.featureversion != undefined){
+                            if(list_count > 0){                 
+                                if(status && event === "submit" && mode === 0){
+                                    $(".notifyPopup").click();
+                                } else if (status && event === "submit" && mode === 1){
+                                    $scope.createACBVersionAJAX(data)
+                                } else{
+                                    $scope.createACBVersionAJAX(data);
+                                }
+                            } else {
+                                alert("Please create aleast one touched features");
+                            }   
+                        } else {
+                            alert("Please fill above all the dependent version of ACB");
+                        }
+                    } else {
+                        alert("Please fill above all the dependent version of ACB");
+                    }
+                } else {
+                    alert("Else");
                     var data = {};
                     data['acbversion'] = $scope.data;
-                    data['acbdata_list'] = features_group;
+                    data['acbdata_list'] = $scope.result;
     //                data['acbdata_list'] = [{"fid":"3","ecu":"2","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"8","nt_type":"can","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"7","nt_type":"can","nt_id":"2","vmm_id":"1"},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"8","nt_type":"lin","nt_id":"1","vmm_id":2},{"pdbgroup_id":"7","nt_type":"hardware","nt_id":"1","vmm_id":1},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":3}]}]},{"fid":"1","ecu":"1","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"2","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"2","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"3"}]}]}];
     //                data['acbdata_list'] = [{"fid":"1","ecu":"1","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":"3"},{"pdbgroup_id":"10","nt_type":"can","nt_id":"2","vmm_id":"1"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"2"}]},{"signal":"2","signal_type":"input","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":"3"},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":"1"},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":"2"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"lin","nt_id":"1","vmm_id":3},{"pdbgroup_id":"10","nt_type":"hardware","nt_id":"1","vmm_id":1},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":2}]},{"signal":"2","signal_type":"output","group_data":[{"pdbgroup_id":"12","nt_type":"can","nt_id":"1","vmm_id":3},{"pdbgroup_id":"10","nt_type":"can","nt_id":"2","vmm_id":1},{"pdbgroup_id":"11","nt_type":"can","nt_id":"1","vmm_id":2}]}]},{"fid":"3","ecu":"2","cloned_data":[{"signal":"1","signal_type":"input","group_data":[{"pdbgroup_id":"8","nt_type":"can","nt_id":"1","vmm_id":"2"},{"pdbgroup_id":"7","nt_type":"can","nt_id":"2","vmm_id":"1"},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":"3"}]},{"signal":"1","signal_type":"output","group_data":[{"pdbgroup_id":"8","nt_type":"lin","nt_id":"1","vmm_id":2},{"pdbgroup_id":"7","nt_type":"hardware","nt_id":"1","vmm_id":1},{"pdbgroup_id":"9","nt_type":"can","nt_id":"1","vmm_id":3}]}]}];
                     data['button_type'] = event;
                     data['notification_to'] = notification_to+"";
-                    if($scope.features.length == features_group.length)
+                    if($scope.features.length == $scope.result.length)
                         data['features_fully_touchedstatus'] = true;
                     else
                         data['features_fully_touchedstatus'] = false;
+                    window.alert(JSON.stringify(data));
                     //console.log(data);
-                    list_count = Object.keys(features_group).length;
-                    if($scope.data.ivnversion != undefined && $scope.data.pdbversion != undefined && 
-                            $scope.data.vehicleversion != undefined && $scope.data.vehiclename != undefined){
+                    list_count = Object.keys($scope.result).length;
+                    if($scope.data.vername != undefined && $scope.data.pdbversion != undefined && 
+                            $scope.data.vehiclename != undefined && $scope.data.featureversion != undefined){
                         if(list_count > 0){                 
                             if(status && event === "submit" && mode === 0){
                                 $(".notifyPopup").click();
-                            }else if(status && event === "submit" && mode === 1){
-                                $scope.createACBVersionAJAX(data)
-                            }else
-                                $scope.createACBVersionAJAX(data);
-                        }
-                        else{
+                            } else if (status && event === "submit" && mode === 1){
+//                                $scope.createACBVersionAJAX(data);
+                            } else{
+//                                $scope.createACBVersionAJAX(data);
+                            }
+                        } else {
                             alert("Please create aleast one touched features");
                         }   
-                    }
-                    else{
+                    } else {
                         alert("Please fill above all the dependent version of ACB");
                     }
-                }
-                else{
-                        alert("Please fill above all the dependent version of ACB");
                 }
             };
             

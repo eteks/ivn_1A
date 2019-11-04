@@ -1,6 +1,58 @@
-[{
-        "fid": 1,
-        "domain": "car",
-        "fea": "f1",
-        "$$hashKey": "object:108"
-    }]
+{
+  "qb": [
+    {
+      "qb_name": "car",
+      "available_status": "o",
+      "querybuilder_type": "legislation",
+      "id": 6,
+      "qb_id": 1
+    },
+    {
+      "qb_name": "car",
+      "available_status": "o",
+      "querybuilder_type": "legislation",
+      "id": 5,
+      "qb_id": 1
+    },
+    {
+      "qb_name": "car",
+      "available_status": "n",
+      "querybuilder_type": "legislation",
+      "id": 4,
+      "qb_id": 1
+    }
+  ],
+  "legislation": [
+    {
+      "pdb_id": 2,
+      "modelname": "s3",
+      "veh_id": 2,
+      "created_date": "Oct 22, 2019 1:20:04 PM",
+      "id": 6,
+      "modified_date": "Oct 22, 2019 1:20:04 PM"
+    },
+    {
+      "pdb_id": 2,
+      "modelname": "s2",
+      "veh_id": 2,
+      "created_date": "Oct 22, 2019 1:20:04 PM",
+      "id": 5,
+      "modified_date": "Oct 22, 2019 1:20:04 PM"
+    },
+    {
+      "pdb_id": 2,
+      "modelname": "s1",
+      "veh_id": 2,
+      "created_date": "Oct 22, 2019 1:20:04 PM",
+      "id": 4,
+      "modified_date": "Oct 22, 2019 1:20:04 PM"
+    }
+  ],
+  "pdb": [
+    {
+      "flag": true,
+      "pdb_versionname": 1,
+      "status": true
+    }
+  ]
+}

@@ -159,7 +159,7 @@
             $http({
                 url: 'getTasks',
                 method: "POST",
-                data: {"froms":"IVN_Version"},
+//                data: {"sender":"Featureversion", "receiver":"IVN_Version"},
             }).then(function (response, status, headers, config){
                 if(response.data.maps_string.success){
                     // $window.alert(JSON.stringify(response.data.maps_object));
@@ -170,7 +170,8 @@
                     $window.alert(JSON.stringify($scope.task));
                     //                            $window.document.getElementById('model').focus();
                 } else {
-                    $window.alert(JSON.stringify(response.data.maps_string));
+//                    $window.alert(response.data.maps_string.error);
+                    console.log(response.data.maps_string.error);
                 }
             });
 //$scope.task = 
@@ -259,6 +260,7 @@
                 }).then(function (response, status, headers, config){
 
                     if(response.data.maps_object.success){
+                        $scope.task = Object.assign($scope.task, response.data.maps_object.tasks);
                         $window.alert(response.data.maps_object.success);
                         var vals = JSON.parse(response.data.maps_object.vals.replace(/&quot;/g,'"'));
                         $window.open("ivn_version_create.action?t_id="+vals.task_id.id+"&tg_id="+vals.id, "_self");
@@ -286,6 +288,7 @@
                 }).then(function (response, status, headers, config){
 
                     if(response.data.maps_object.success){
+                        $scope.task = Object.assign($scope.task, response.data.maps_object.tasks);
                         $window.alert(response.data.maps_object.success);
                         var vals = JSON.parse(response.data.maps_object.vals.replace(/&quot;/g,'"'));
                         $window.open("ivn_version_create.action?t_id="+vals.task_id.id+"&tg_id="+vals.id, "_self");

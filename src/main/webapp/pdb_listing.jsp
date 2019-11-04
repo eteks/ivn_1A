@@ -196,11 +196,17 @@
 //                        { pdb_version: '6.0',veh_version: '1.0', vehicle: 'XUV',model:'m4,m5,m7', status: 'Active'}
 //                    ];
 //            alert("<s:property value="result_data_obj"/>");
-            var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"')); 
+            if ("<s:property value="result_data_obj"/>") {
+                
+                var data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                alert(JSON.stringify(data));
+            } else {
+                alert("Data Loading Error");
+            }
 //            $window.alert(JSON.stringify(data));
 //            data.pdb_version=parseFloat(data.pdb_version).toFixed(1);
             $scope.records = data;
-            $scope.compare_records = []; 
+            $scope.compare_records = [];
             //console.log(data);
             angular.forEach(data, function (value, key) {
                 if(key==0){
@@ -269,7 +275,7 @@
                         alert("Error while deleting PDB Version");
                     }
             });
-            }           
+            }
         });
         app.filter('customSplitString', function() 
         {

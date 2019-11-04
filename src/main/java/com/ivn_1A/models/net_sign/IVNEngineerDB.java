@@ -412,7 +412,7 @@ public class IVNEngineerDB {
             CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
             Root<Featureversion> fvRoot = criteriaQuery.from(Featureversion.class);
 
-            criteriaQuery.multiselect(fvRoot.get("id").alias("id"), fvRoot.get("pdbversion_id").get("id").alias("pdbid"), 
+            criteriaQuery.multiselect(fvRoot.get("id").alias("id"), fvRoot.get("pdbversion_id").get("id").alias("pdbid"),
                     fvRoot.get("pdbversion_id").get("pdb_versionname").alias("pdbversionname"),
                     fvRoot.get("vehicle_id").get("id").alias("vid"), fvRoot.get("vehicle_id").get("vehiclename").alias("vname"), fvRoot.get("status").alias("status"),
                     fvRoot.get("flag").alias("flag")).distinct(true)
@@ -472,6 +472,22 @@ public class IVNEngineerDB {
         }
     }
 
+    public static IVN_Version getIVNVersionByIVN_ID(int id) {
+        try {
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            IVN_Version ivnv = (IVN_Version) session.get(IVN_Version.class, id);
+
+            tx.commit();
+            session.clear();
+            return ivnv;
+        } catch (Exception e) {
+            System.err.println("Error in \"IVNEngineerDB\" \'getIVNVersionByIVN_ID\' " + e);
+            return null;
+        }
+    }
+
     public static IVN_Version_Group insertIVNVersionGroup(IVN_Version_Group iVN_Version_Group) {
 
         try {
@@ -488,26 +504,35 @@ public class IVNEngineerDB {
         }
     }
 
-    public static List<IVN_Version_Group> GetIVNVersion_Listing() {
+    public static List<Tuple> GetIVNVersion_Listing() {
         try {
 
             System.err.println("DB GetIVNVersion_Listing");
-
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
 
             final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<IVN_Version_Group> criteriaQuery = criteriaBuilder.createQuery(IVN_Version_Group.class);
-            Root<IVN_Version_Group> ivnRoot = criteriaQuery.from(IVN_Version_Group.class);
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<IVN_Version_Group> lvg = criteriaQuery.from(IVN_Version_Group.class);
+            lvg.join("ivnVersionId", JoinType.INNER);
+            lvg.join("signalsId", JoinType.INNER);
+            lvg.join("ecuId", JoinType.INNER);
 
-            criteriaQuery.distinct(true);
-
-            TypedQuery<IVN_Version_Group> dfm_result = session.createQuery(criteriaQuery);
+            criteriaQuery.multiselect(lvg.get("ivnVersionId").get("id").alias("id"), lvg.get("ivnVersionId").get("ivn_version").alias("ivn_version"),
+                    lvg.get("ivnVersionId").get("created_date").alias("created_date"), lvg.get("ivnVersionId").get("modified_date").alias("modified_date"),
+                    lvg.get("ivnVersionId").get("vehicleId").get("vehiclename").alias("vehicle"), 
+                    lvg.get("ivnVersionId").get("version_name").alias("alias_version"),
+                    lvg.get("ivnVersionId").get("featureVersionId").get("feature_versionname").alias("fea_version"),
+                    lvg.get("ivnVersionId").get("flag").alias("flag"), lvg.get("ivnVersionId").get("status").alias("status"),
+                    criteriaBuilder.function("group_concat_Distinct", String.class, lvg.get("signalsId").get("id")).alias("model"))
+                    .groupBy(lvg.get("ivnVersionId").get("created_date"))
+                    .orderBy(criteriaBuilder.desc(lvg.get("ivnVersionId").get("id")));
+            
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
 
             tx.commit();
             session.clear();
-            return dfm_result.getResultList();
-
+            return typedQuery.getResultList();
         } catch (Exception e) {
             System.err.println("Error in \"IVNEngineerDB\" \'GetIVNVersion_Listing\' " + e);
             return null;
@@ -679,7 +704,7 @@ public class IVNEngineerDB {
     }
 
     public static List<IVN_Version_Group> GetComparedECUs(int prevpdb_id, int curpdb_id, String network_type) {
-        
+
         try {
             Session s = HibernateUtil.getThreadLocalSession();
             Transaction tx = s.beginTransaction();
@@ -725,6 +750,33 @@ public class IVNEngineerDB {
             return feature_results.getResultList();
         } catch (Exception e) {
             System.err.println("Error in \"GetComparedECUs\" : " + e.getMessage());
+            return null;
+        }
+    }
+    
+    
+    public static Map<String, Object> loadIVNVersionGroupData(int ivn_version_id, String actionString) {
+        
+        try {
+            
+            System.out.println("LoadSafetyversion_groupData");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            Map<String, Object> msp = new HashMap<>();
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            
+            Root<IVN_Version_Group> ivnRoot = criteriaQuery.from(IVN_Version_Group.class);
+            ivnRoot.join("ivnVersionId", JoinType.INNER);
+            ivnRoot.join("signalsId", JoinType.INNER);
+            ivnRoot.join("ecuId", JoinType.INNER);
+            
+            tx.commit();
+            session.clear();
+            return msp;
+        } catch (Exception e) {
+            System.err.println("Error in \"loadIVNVersionGroupData\" : " + e.getMessage());
             return null;
         }
     }

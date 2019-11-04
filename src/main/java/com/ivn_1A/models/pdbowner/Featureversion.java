@@ -31,6 +31,8 @@ public class Featureversion implements Serializable {
 
     private int id;
     private float feature_versionname;
+    private float feature_reference_version;
+    private String version_type;
     private String feature_manual_comment;
     private Vehicle vehicle_id;
     private Pdbversion pdbversion_id;
@@ -60,6 +62,24 @@ public class Featureversion implements Serializable {
 
     public void setFeature_versionname(float feature_versionname) {
         this.feature_versionname = feature_versionname;
+    }
+
+    @Column(name = "feature_reference_version", nullable = false, columnDefinition = "Float(10,1)")
+    public float getFeature_reference_version() {
+        return feature_reference_version;
+    }
+
+    public void setFeature_reference_version(float feature_reference_version) {
+        this.feature_reference_version = feature_reference_version;
+    }
+
+    @Column(name = "version_type", nullable = false, length =50)
+    public String getVersion_type() {
+        return version_type;
+    }
+
+    public void setVersion_type(String version_type) {
+        this.version_type = version_type;
     }
 
     @Column(name = "feature_manual_comment", nullable = false, columnDefinition = "Text")

@@ -5,9 +5,6 @@
  */
 package com.ivn_1A.models.pdbowner;
 
-import com.ivn_1A.models.pdbowner.*;
-import com.ivn_1A.models.pdbowner.Legislationversion;
-import com.ivn_1A.models.pdbowner.Querybuilder;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;

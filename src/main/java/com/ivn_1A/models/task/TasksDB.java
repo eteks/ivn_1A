@@ -134,13 +134,14 @@ public class TasksDB {
                     .set("version_id", tasks_Group.getVersion_id())
                     .set("version_name", tasks_Group.getVersion_name())
                     .set("completed_date", tasks_Group.getCompleted_date())
+                    .set("verfications", true)
                     .where(criteriaBuilder.equal(qRoot.get("id"), tasks_Group.getId()));
             // perform update
             int a = session.createQuery(criteriaUpdate).executeUpdate();
             tx.commit();
             session.clear();
             if (a > 0) {
-                System.out.println("Done " + a + "  " +tasks_Group.getCompleted_date());
+                System.out.println("Done " + a + "  " + tasks_Group.getCompleted_date());
                 return tasks_Group;
             } else {
                 return null;
@@ -198,7 +199,7 @@ public class TasksDB {
     }
 
     //Tasks_Group Data
-    public static List<Tasks_Group> getTasks(String from) {
+    public static List<Tasks_Group> getTasks() {
 
         try {
             System.err.println("getTasks");
@@ -206,12 +207,17 @@ public class TasksDB {
             Transaction tx = s.beginTransaction();
 
             final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
-            CriteriaQuery<Tasks_Group> criteriaQuery = criteriaBuilder.createQuery(Tasks_Group.class);
-
-            Root<Tasks_Group> tgRoot = criteriaQuery.from(Tasks_Group.class);
-            criteriaQuery.where(criteriaBuilder.or(criteriaBuilder.equal(tgRoot.get("receiver_id"), from), criteriaBuilder.equal(tgRoot.get("sender_id"), from))).distinct(true);
-            TypedQuery<Tasks_Group> dfm_result = s.createQuery(criteriaQuery);
-
+            
+            CriteriaQuery<Tasks> criteriaQuery = criteriaBuilder.createQuery(Tasks.class);
+            Root<Tasks> tRoot = criteriaQuery.from(Tasks.class);            
+            criteriaQuery.select(tRoot.get("id")).orderBy(criteriaBuilder.desc(tRoot.get("created_date")));
+            List<Tasks> list = s.createQuery(criteriaQuery).setMaxResults(1).getResultList();
+            
+            CriteriaQuery<Tasks_Group> criteriaQuerys = criteriaBuilder.createQuery(Tasks_Group.class);
+            Root<Tasks_Group> tgRoot = criteriaQuerys.from(Tasks_Group.class);
+            criteriaQuerys.where(criteriaBuilder.in(tgRoot.get("task_id").get("id")).value(list));
+            TypedQuery<Tasks_Group> dfm_result = s.createQuery(criteriaQuerys);
+            
             tx.commit();
             s.clear();
             return dfm_result.getResultList();
@@ -220,5 +226,4 @@ public class TasksDB {
             return null;
         }
     }
-
 }

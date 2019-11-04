@@ -56,8 +56,8 @@
                                                                     <th ng-click="sort('version')" class="">Legislation Version</th>
                                                                     <th ng-click="sort('vehicle')" class="">Vehicle Details</th>
                                                                     <th ng-click="sort('vehicle')" class="">PDB Details</th>
-                                                                        <th ng-click="sort('status')" class="text-center">Status</th>
-                                                                        <th ng-click="sort('status')" class="text-center">Version Type</th>
+                                                                    <th ng-click="sort('status')" class="text-center">Status</th>
+                                                                    <th ng-click="sort('status')" class="text-center">Version Type</th>
                                                                     <th ng-click="sort('vehicle')" class="">Created Date</th>
                                                                     <th ng-click="sort('vehicle')" class="">Modified Date</th>
                                                                     <th ng-click="sort('action')" class="text-center">Action</th>
@@ -157,11 +157,16 @@
         app.controller('RecordCtrl1',function($scope, $http, $window, $location, $element, $rootScope)
         {
             
-               this.data = [];
+            this.data = [];
 //              $scope.legislation = [{"leg":"1.0","model":"v1,v2","version":"1.0","vehicle":"Xuv"},
-//                                    {"leg":"2.0","model":"v1,v2","version":"2.0","vehicle":"Scorpio"}]; 
-              $scope.legislation = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"')); 
-//          alert(JSON.stringify($scope.legislation));
+//                                    {"leg":"2.0","model":"v1,v2","version":"2.0","vehicle":"Scorpio"}];
+            if ("<s:property value="result_data_obj"/>") {
+                
+                $scope.legislation = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"')); 
+                alert(JSON.stringify($scope.legislation));
+            } else {
+                alert("Data Loading Error");
+            }
             $scope.getAllDomain_and_Features = function(){
 //                alert("getall");
                 $http.get("features_listing.action").then(function(response, data, status, headers, config){

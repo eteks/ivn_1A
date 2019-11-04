@@ -6,8 +6,6 @@
 package com.ivn_1A.models.pdbowner;
 
 import com.ivn_1A.models.admin.User;
-import com.ivn_1A.models.pdbowner.Pdbversion;
-import com.ivn_1A.models.pdbowner.Vehicle;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;

@@ -29,13 +29,11 @@ public class ACB_InputSignals implements Serializable {
     private int id;
     private Signals inputSignalId;
     private Network inputNetwordId;
-    private String networkType;
     private Pdbversion_group pdbversionGroupId;
 
-    public ACB_InputSignals(Signals inputSignalId, Network inputNetwordId, String networkType, Pdbversion_group pdbversionGroupId) {
+    public ACB_InputSignals(Signals inputSignalId, Network inputNetwordId, Pdbversion_group pdbversionGroupId) {
         this.inputSignalId = inputSignalId;
         this.inputNetwordId = inputNetwordId;
-        this.networkType = networkType;
         this.pdbversionGroupId = pdbversionGroupId;
     }
 
@@ -70,15 +68,6 @@ public class ACB_InputSignals implements Serializable {
         this.inputNetwordId = inputNetwordId;
     }
 
-    @Column(name = "networkType", nullable = false)
-    public String getNetworkType() {
-        return networkType;
-    }
-
-    public void setNetworkType(String networkType) {
-        this.networkType = networkType;
-    }
-
     @OneToOne
     @JoinColumn(name = "pdbversionGroupId", nullable = false)
     public Pdbversion_group getPdbversionGroupId() {
@@ -91,8 +80,7 @@ public class ACB_InputSignals implements Serializable {
 
     @Override
     public String toString() {
-        return "ACB_InputSignals{" + "id=" + id + ", inputSignalId=" + inputSignalId + ", inputNetwordId=" + inputNetwordId + ", networkType=" + networkType + ", pdbversionGroupId=" + pdbversionGroupId + '}';
+        return "ACB_InputSignals{" + "id=" + id + ", inputSignalId=" + inputSignalId + ", inputNetwordId=" + inputNetwordId + ", pdbversionGroupId=" + pdbversionGroupId + '}';
     }
-    
     
 }

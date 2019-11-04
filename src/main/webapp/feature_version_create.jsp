@@ -42,10 +42,9 @@
                                             <div class="col-md-12">
                                                 <div class="card">
                                                     <div class="card-block marketing-card p-t-0 text-center">
-                                                         <div class="row p-t-30">
-                                                            
+                                                         <div class="row p-t-30">                                                            
                                                             <div class="form-group col-md-3">
-                                                                <label for="vehicle"> Select Vehicle:</label>
+                                                                <label for="vehiclename"> Select Vehicle:</label>
                                                                 <select id="vehiclename" ng-model="data.vehicle" ng-change="LoadPreviousVersion()" >
                                                                     <option value="">Select Vehicle</option>
                                                                     <s:iterator value="vehicleversion_result" var="data" >
@@ -53,8 +52,11 @@
                                                                     </s:iterator>
                                                                 </select>
                                                             </div>
-                                                            
-                                                            
+                                                            <div class="form-group col-md-3">
+                                                                <label for="feature">Previous Feature version :</label>
+                                                                <select id="feature" ng-model="data.featureversion" ng-options="arr as arr.name for arr in feaarray_result" disabled>
+                                                                </select>
+                                                            </div>
                                                         </div>   
                                                             
                                                         <!--drag and drop-->
@@ -139,7 +141,7 @@
                         <input type="checkbox" ng-model="data.status">
                         <span class="slider round"></span>
                      </label>
-                    <a class="modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" >Proceed</a>
+                    <a class="modal-trigger btn-floating btn-primary" ng-show="showProceed === true" style="padding:10px" href="#modal-comment" >Proceed</a>
                     <div id="modal-comment" class="modal">
                          <div class="modal-content text-left">
 
@@ -290,9 +292,23 @@
                     method : "POST",
                     data : {"vehicle_id":$scope.data.vehicle}
                 }).then(function (response, status, headers, config){
-                    $scope.models.dropzones.B[0].version = response.data.maps_object.pdb_results;
-                    $scope.models.dropzones.B[1].version = response.data.maps_object.saf_results;
-                    $scope.models.dropzones.B[2].version = response.data.maps_object.leg_results;
+                    
+                    if (response.data.maps_string.success) {
+                        
+                        alert(response.data.maps_string.success);
+                        $scope.models.dropzones.B[0].version = response.data.maps_object.pdb_results;
+                        $scope.models.dropzones.B[1].version = response.data.maps_object.saf_results;
+                        $scope.models.dropzones.B[2].version = response.data.maps_object.leg_results;
+                        
+                        if (response.data.maps_object.fea_results) {
+                            $scope.feaarray_result = response.data.maps_object.fea_results;
+                            $scope.create_type = true;
+                            $scope.data.featureversion = $scope.feaarray_result[0];
+                        }                        
+                    } else {
+                        alert(response.data.maps_string.error);
+                    }
+                    
                 });
             };
             
@@ -305,7 +321,7 @@
             {
 //                alert("createfeatureversion");
                 var status = $scope.data.status;
-                if(status == undefined )
+                if(status === undefined )
                     status = false;
                 if($scope.models.dropzones.B[3].version.length > 0){
                     if(status && event === "submit"){
@@ -320,8 +336,9 @@
             };
             
             $scope.createfeatureAjax = function (event){
+                
                 var status = $scope.data.status;
-                if(status == undefined || status == false)
+                if(status === undefined || status === false)
                     notification_to = undefined;
                 var data = {};
 //                $scope.data.vehicle_id = $scope.vehicleresults.vehicle_id;
@@ -341,31 +358,22 @@
 ////                                                 "removed_models":"m2,m4", "added_models":"m3", 
 ////                                                 "previous_version":"1.0", "current_version":"1.1"
 ////                                                };
-                      alert(response.data.maps_string.status);
-//                      var vercompare_res = response.data.maps_object.pdb_previous_data_result;
-//                      if(vercompare_res != undefined){
-//                            $scope.vercompare_results = response.data.maps_object.pdb_previous_data_result;
-//                            alert(JSON.stringify($scope.vercompare_results));    
-//                      }
-//                      else{
-//                            alert("No any previous version found to compare");
-//                      }
-                    if(response.data.maps_string.status_code == "1") {
 
-                        var fea = JSON.parse(response.data.maps_string.feature.replace(/&quot;/g,'"'));
-                        fea["froms"] = "Feature";
-                        fea["t_id"] = $scope.t_id;
-                        fea["tg_id"] = $scope.tg_id;
-                        // if ($scope.t_id && $scope.tg_id) {
-                        //     leg["t_id"] = prompt("Enter the Task ID");
-                        //     leg["tg_id"] = prompt("Enter the Task Group ID");;
-                        // } else {
-                        //     leg["t_id"] = $scope.t_id;
-                        //     leg["tg_id"] = $scope.tg_id;
-                        // }
+                    if(response.data.maps_string.status_code === "1") {
+                        
+                        if(response.data.maps_object.fea_previous_data_result){
+                            $scope.vercompare_results = response.data.maps_object.fea_previous_data_result;
+                            alert(JSON.stringify($scope.vercompare_results));    
+                        }
+                        else{
+                            alert("No any previous version found to compare");
+                        }
+                        var fea = JSON.parse(response.data.maps_string.fea_version.replace(/&quot;/g,'"'));
+//                        alert(fea);
+                        fea['froms'] = "Feature";
+                        fea['t_id'] = $scope.t_id;
+                        fea['tg_id'] = $scope.tg_id;
                         alert("leg "+ JSON.stringify(fea));
-//                            alert("pdbv "+ JSON.stringify(pdbv) +" fro "+ JSON.stringify(pdbvg.froms));
-//                            console.log("pdbv "+ JSON.stringify(pdbv) +" pdbvg "+ JSON.stringify(pdbvg));
                         $http({
                             url: 'insertTasks',
                             method: "POST",
@@ -379,11 +387,15 @@
                             }
                         });
                         $window.open("safety_list.action","_self");
+                    } else {                        
+                        alert(response.data.maps_string.status);
                     }
                 });
+                
             };
 
-            if($location.absUrl().includes("?")){
+            if($location.absUrl().includes("?")) {
+
                 var params_array = [];
                 var absUrl = $location.absUrl().split("?")[1].split("&");
                 for(i=0;i<absUrl.length;i++){
@@ -397,72 +409,33 @@
                 if (params_array[0].id && params_array[1].action) {
                     $scope.data.pdbversion = params_array[0].id;
                     var action = params_array[1].action;
+                    var maps_object = {};
+                    if ("<s:property value="result_data_obj"/>") {
 
-//                var result_data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                        maps_object = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
+                        alert("fasdfjksaf  "+JSON.stringify(maps_object));
+                        for (var item in maps_object) {
+                            
+                            if (maps_object[item].type === "vehicle") {
+                                
+                                var a = [maps_object[item]];
+                                $scope.data.vehicle = a[0];
+                                alert(JSON.stringify(a));
+                            }
+                            if (maps_object[item].type === "feature") {
+                                
+                                $scope.data.status = maps_object[item].status;
+                                $scope.feaarray_result = [maps_object[item]];
+                                $scope.create_type = true;
+                                $scope.data.featureversion = $scope.feaarray_result[0];
+                                alert(JSON.stringify($scope.feaarray_result));
+                            }
+                        }
+                        maps_object = maps_object.filter(m => m['type'] !== "vehicle");
+                        $scope.models.dropzones.B[3].version = maps_object.filter(m => m['type'] !== "feature");
+                    } else
+                        alert("Data not Found");
 
-                    var safetydetail_list = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-                    $window.alert("result_data_obj  "+JSON.stringify(safetydetail_list));
-//                $scope.data.new_vehicle="select_vehicle";
-                    $scope.truefalse = true;
-                    $scope.data.status = safetydetail_list[0].status;
-                    $scope.data.vehicle = safetydetail_list[0].vehicle_id.toString();
-                    $scope.LoadPreviousVersion();
-                    $scope.safety = safetydetail_list;
-
-
-//                var vehicledetail_list = result_data.vehicledetail_list;
-//                $scope.data.status = result_data.pdbversion_status[0].status;
-//
-//                $scope.data.vehicleversion = vehicledetail_list[0].vehver_id.toString();
-//                $scope.LoadSelectedVehicleVersionData();
-//                $scope.data.vehiclename = vehicledetail_list[0].vehicle_id.toString();
-//                $scope.records = vehicledetail_list;
-//                    alert(JSON.stringify($scope.records));
-
-//                var featuredetail_list = result_data.featuredetail_list;
-//                for(var i=0; i<featuredetail_list.length; i++)
-//                {
-//                    if($scope.features.length === 0)
-//                    {
-//                        $scope.add_feature_tab(featuredetail_list[i].fid);
-////                            $scope.features.push({fid:featuredetail_list[i].fid,fea:featuredetail_list[i].featurename,domain:featuredetail_list[i].domainname,status:featuredetail_list[i].status});
-//                    }
-//                    else
-//                    {
-//                        var temp=0;
-//                        for(var j=0; j<$scope.features.length; j++)
-//                        {
-//                            if($scope.features[j].fid === featuredetail_list[i].fid)
-//                            {
-//                                temp=1;
-//                            }
-//                        }
-//                        if(temp==0)
-//                        {
-//                            $scope.add_feature_tab(featuredetail_list[i].fid);
-//                        }
-//                    }
-//
-//                    $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].model_id,featuredetail_list[i].status);
-////                        alert(JSON.stringify($scope.list));
-//                }
-                    angular.element(function () {
-                        var result = document.getElementsByClassName("radio_button");
-//                        alert(JSON.stringify(result));
-                        alert(JSON.stringify($scope.list));
-                        angular.forEach(result, function(value) {
-                            var result_name = value.getAttribute("name").substring(1).split("_");
-//                        alert(JSON.stringify(result_name));
-                            var fid = result_name[0];
-                            var model_id = result_name[1];
-                            var status = value.getAttribute("value");
-                            angular.forEach($scope.list, function(item) {
-                                alert(item.qb_id+" "+item.model_id+" "+item.status);
-                                if(item.qb_id === fid && item.model_id === model_id && item.status === status)
-                                    value.setAttribute("checked","checked");
-                            });
-                        });
-                    });
                     if(action === "view"){
                         $scope.showProceed =false;
                         $scope.showSave =false;
