@@ -31,8 +31,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-
+                                    </div>                                                            
                                     <div class="page-body">
                                         <div class="row">       
                                             <!-- Marketing Start -->
@@ -78,11 +77,11 @@
                                                             </div>                                -->         
                                                         </div>   
                                                         <div class="col-lg-12">
-                                                            <div class="ng-table-scrollcontainer">
+                                                            <div class="">
                                                             <table st-table="rowCollection" class="table table-striped">
                                                                 <thead>
                                                                     <tr>   
-                                                                        <th class="ng-table-fixedcolumn">Features</th>
+                                                                        <th class="">Features</th>
                                                                         <th class="text-center" ng-repeat="i in modals">
                                                                             {{i.modelname}}
                                                                         </th>
@@ -90,8 +89,9 @@
                                                                         <th class="">ECU</th>
                                                                     </tr>
                                                                 </thead>
+                                                                <!--ng-table-fixedcolumn-->
                                                                 <tr dir-paginate="record in features|orderBy:sortKey:reverse|filter:search|itemsPerPage:20">                                                                        
-                                                                    <td class="ng-table-fixedcolumn">
+                                                                    <td class="">
                                                                         <a class="modal-trigger" href="#modal-product-form" style="text-decoration:underline;" ng-click="assignstart(record.fid, record.featurename)" >
                                                                             <span class="compresslength" style="display:block">{{record.featurename}}</span>
                                                                         </a>
@@ -116,6 +116,19 @@
                                                                     </td>
                                                                     <td class="">
                                                                         <span ng-if="record.ecu">{{record.ecu}}</span>
+                                                                        <a class="mytooltip p-l-10 p-r-10 blink" href="javascript:void(0)"> 
+                                                                                <i class="icofont icofont-hand-drawn-up"></i>
+                                                                                <span class="tooltip-content5">
+                                                                                    <span class="tooltip-text3">
+                                                                                        <span class="tooltip-inner2">
+                                                                                            <h3>Models:</h3>
+                                                                                            <ul class="model-list">
+                                                                                                <li ng-repeat="mod in (record.model | customSplitString)"><i class="icofont icofont-hand-right"></i> {{mod}}</li>
+                                                                                            </ul>
+                                                                                        </span>
+                                                                                    </span>
+                                                                                </span>
+                                                                            </a>
                                                                     </td>
                                                                 </tr>
                                                                 <tbody>
@@ -154,24 +167,25 @@
                                           <li ng-repeat="person in list.version"
                                               dnd-draggable="person"                                             
                                               dnd-type="person.type"
-                                              dnd-disable-if="person.type == 'unknown'"                                              
+                                              dnd-disable-if="person.type == 'unknown'"
+                                              dnd-disable-if="person.id == person.id"
                                               class="background-{{person.type}} {{list.slot}}"
                                               >
                                               <a href="#" ng-click="hiddenDiv = !hiddenDiv">{{person.name}}</a>
                                               <input type="hidden" ng-model="data.ecu" ng-init="data.ecu=person.name">
                                               <ul ng-if="person.type == 'signal'" ng-show="hiddenDiv">
-                                                <li ng-repeat="i in modals" class="form-radio">
+                                                <li ng-repeat="i in modals" class="form-radio" ng-init="pdb = fea_result[0].pdbgroup_id">
                                                       {{i.modelname}}
-                                                        </br>  
+                                                        </br>                                                        
                                                       <div ng-repeat="net in person.nw" class="radio radio-matrial radio-danger radio-inline">    
                                                             <label>
-                                                                <input type="radio" ng-click="addnwsignal(net.id,person.id, i.vmm_id,list.slot)" name="modalmap_{{person.name}}_{{i.vmm_id}}" ng-model="modalmap_i.vmm_id" value="" required=""/>                
+                                                                <input type="radio" ng-click="addnwsignal(net.id,person.id, i.vmm_id,list.slot,pdb[$parent.$index])" name="modalmap_{{person.name}}_{{list.slot}}_{{i.vmm_id}}" ng-model="modalmap_i.vmm_id" value="" required=""/>                
                                                                 <i class="helper"></i>{{net.name}}
                                                             </label>
                                                       </div>
                                                 </li>
-                                              </ul>
-                                              <input ng-if="list.slot == 'ecu_slot'" type="text" ng-model="data.ecu_fea_name" place-holder="Ecu feature name">                                              
+                                              </ul></br>
+                                              <input ng-if="list.slot == 'ecu_slot'" type="text" ng-model="data.ecu_fea_name" placeholder="Ecu feature name">                                              
                                           </li>
                                           <li class="dndPlaceholder">
                                               Drop any <strong>{{list.allowedTypes.join(' or ')}}</strong> here
@@ -470,6 +484,7 @@
                         var featuredetail_list = result_data.featuredetail_list;
                         $scope.modals = vehicledetail_list;
                         $scope.features = featuredetail_list;
+//                        alert(JSON.stringify($scope.modals));
                         $scope.features.filter(function(v,i){
                             $scope.features[i].pdbgroup_id = $scope.features[i].pdbgroup_id.split(",");
                         });
@@ -592,18 +607,26 @@
             
             $scope.assignstart = function(a, b)
             {
-                $scope.fea.push({'fid':a, 'fname':b});
-                $('.modal-trigger').leanModal();
-                
+//                $scope.fea_result = $scope.features.filter(obj => {
+//                    return obj.fid === a
+//                  });
+                $scope.fea_result = $scope.features.filter(e => e.fid === a);
+                const index = $scope.fea.findIndex((e) => e.fid === fid);
+                if (index === -1) 
+                {
+                    $scope.fea.push({'fid':a, 'fname':b});
+                } 
+                $('.modal-trigger').leanModal();                
             }
-            $scope.addnwsignal = function(nid,sid,mod,type) {
-//                alert(mod);
+            $scope.addnwsignal = function(nid,sid,mod,type,pdbgp) 
+            {
+//                alert(pdbgp);
                 if(type=='ip')
                 {                   
                     const index = $scope.ipsignal.findIndex((e) => e.sid === sid);
                     if (index === -1) 
                     {
-                        $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod});
+                        $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod,pdbgp_id:pdbgp});
 
                     }
                     else
@@ -614,7 +637,7 @@
                         }
                         else
                         {
-                             $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod});
+                             $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod,pdbgp_id:pdbgp});
                         }
                     }                        
                     alert(JSON.stringify($scope.ipsignal));  
@@ -624,7 +647,7 @@
                     const index = $scope.opsignal.findIndex((e) => e.sid === sid);
                      if (index === -1) 
                      {
-                         $scope.opsignal.push({sid:sid,nw:nid,vmm_id:mod});
+                         $scope.opsignal.push({sid:sid,nw:nid,vmm_id:mod,pdbgp_id:pdbgp});
 
                      }
                      else
@@ -635,7 +658,7 @@
                          }
                          else
                          {
-                              $scope.opsignal.push({sid:sid,nw:nid,vmm_id:mod});
+                              $scope.opsignal.push({sid:sid,nw:nid,vmm_id:mod,pdbgp_id:pdbgp});
                          }
                      }
 //                     $("li.op > ul").addClass("ng-hide");
@@ -643,9 +666,8 @@
                 }               
             }
             $scope.feature_result_cap = function(ef, ecu)
-            {
-                alert(ef + " " + ecu);
-                e_f = ecu+"_"+ef;
+            {   
+                e_f = ef+"_"+ecu;
                 $scope.result.push({ 'feature':$scope.fea,'ipsignal':$scope.ipsignal,'opsignal':$scope.opsignal, 'ecu':ecu, 'ecu_fea':e_f});
                 alert(JSON.stringify($scope.result));
                 $scope.models.dropzones.B[1].version=[];
