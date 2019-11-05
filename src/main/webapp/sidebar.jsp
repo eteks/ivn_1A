@@ -149,7 +149,7 @@
                                     </s:a> 
                                  </li>
                                  <!--{{groups}}-->
-                                 <li ng-repeat="group in groups" data-groupid="{{group.id}}" ng-if="${sessionScope.user_groupid} == group.id || ${sessionScope.superadmin} == true" ng-class="{active : activeMenu === group.routepage}">
+                                 <li ng-repeat="group in groups" data-groupid="{{group.id}}" ng-if="${sessionScope.user_groupid} == group.id || ${sessionScope.superadmin} == true" ng-class="{active : activeMenu == group.routepage}">
                                     <s:url action="{{group.route_pages}}" var="aURL"/>
                                     <s:a href="%{aURL}" ng-click="setActive(group.id)"> 
                                         <i class="icofont icofont-star-shape"></i> {{group.group_name}}

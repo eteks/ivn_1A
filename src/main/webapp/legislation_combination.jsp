@@ -119,10 +119,10 @@
                                                     </a>    
                                                 </td>
                                                 <td class="text-center">                           
-                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status === true">Active
+                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status == true">Active
                                                     </button>
 
-                                                    <button class="btn btn-default btn-bg-c-yellow btn-outline-default btn-round btn-action" ng-if="record.status === false">Inactive
+                                                    <button class="btn btn-default btn-bg-c-yellow btn-outline-default btn-round btn-action" ng-if="record.status == false">Inactive
                                                     </button>
                                                 </td>
 <!--                                                <td class="text-center">
@@ -133,10 +133,10 @@
                                                 <td class="text-center">{{record.created_date}}</td>
                                                 <td class="text-center">{{record.modified_date}}</td>
                                                 <td class="text-center"> 
-                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round modal-trigger" data-ng-click="view_and_edit('edit', record.combination, record.leg)" id="edit_or_view" name="edit" ng-if="record.status === false" data-target="modal-product-form">Edit</button>
-                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round modal-trigger" data-ng-click="view_and_edit('view', record.combination, record.leg)" id="edit_or_view" name="view" ng-if="record.status === true" data-target="modal-product-form">view</button>
-<!--                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round modal-trigger" id="edit_or_view" name="edit" ng-click="view_and_edit()" ng-if="record.status === false" data-target="modal-product-form">Edit</button>
-                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round modal-trigger" id="edit_or_view" name="view" ng-click="view_and_edit()" ng-if="record.status === true" data-target="modal-product-form">view</button>
+                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round modal-trigger" data-ng-click="view_and_edit('edit', record.combination, record.leg)" id="edit_or_view" name="edit" ng-if="record.status == false" data-target="modal-product-form">Edit</button>
+                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round modal-trigger" data-ng-click="view_and_edit('view', record.combination, record.leg)" id="edit_or_view" name="view" ng-if="record.status == true" data-target="modal-product-form">view</button>
+<!--                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round modal-trigger" id="edit_or_view" name="edit" ng-click="view_and_edit()" ng-if="record.status == false" data-target="modal-product-form">Edit</button>
+                                                    <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round modal-trigger" id="edit_or_view" name="view" ng-click="view_and_edit()" ng-if="record.status == true" data-target="modal-product-form">view</button>
                                                     <button class="btn btn-success set-sql" data-target="import_export" id="btn-set1">Set rules from SQL</button>
                                                     <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-target="import_export" id="btn-set1">Set rules from SQL</button>-->
                                                 </td>
@@ -241,7 +241,7 @@
 
                                 function computed(group, forWhat) {
                                     if (!group) return "";
-                                    if (forWhat === "output") {
+                                    if (forWhat == "output") {
                                         for (var str = "(", i = 0; i < group.rules.length; i++) {
                                             i > 0 && (str += " <strong>" + group.operator + "</strong> ");
                                             str += group.rules[i].group ?
@@ -249,7 +249,7 @@
                                                 group.rules[i].field.name+"="+group.rules[i].field.id + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
                                         }
                                         return str + ")";
-                                    } else if (forWhat === "listing") {
+                                    } else if (forWhat == "listing") {
                                         for (var str = "(", i = 0; i < group.rules.length; i++) {
                                             i > 0 && (str += " " + group.operator + " ");
                                             str += group.rules[i].group ?
@@ -290,12 +290,12 @@
                                     result['sql'] = $scope.filter;
 //                                    result['sql'] = $scope.output;
 
-                                    if(result['ctype'] === "safety")
+                                    if(result['ctype'] == "safety")
                                         url_link = "createsafety_comb";
                                     else
                                         url_link = "createlegislation_comb";
 
-                                    if($scope.button_status === "edit")
+                                    if($scope.button_status == "edit")
                                         result['cid'] = $scope.combid;
 
                                     result['qb_status'] = true;
@@ -320,7 +320,7 @@
                             }
                             $scope.view_and_edit = function(element, combination, leg) {
 //                                var btnName = element.name;
-                                if (element === "view") {
+                                if (element == "view") {
                                     $scope.combname = leg;
 //                                    for (var i = 0, max = combination.group.rules.length; i < max; i++) {
 //                                        if (combination.group.rules[i].group) {

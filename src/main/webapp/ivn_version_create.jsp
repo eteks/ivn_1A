@@ -217,7 +217,7 @@
                                          </a>
                                     </p>
                             </div>
-                            <div class="signal_attr row" ng-if="data.network === 'signals'">              
+                            <div class="signal_attr row" ng-if="data.network == 'signals'">              
                                 
                                 <div class="form-group col-lg-6">
                                     <!--<label for="name">Feature</label>-->
@@ -494,13 +494,13 @@
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
 //                    alert(sid+" and "+comArr[i].sid);
-                    if( comArr[i].sid === sid ) 
+                    if( comArr[i].sid == sid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
 			alert( "Something gone wrong" );
 		}
@@ -522,13 +522,13 @@
 		var comArr = eval( $scope.signal );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].sid === sid ) 
+                    if( comArr[i].sid == sid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
 			alert( "Something gone wrong" );
 		} 
@@ -544,13 +544,13 @@
 		var comArr = eval( $scope.ecu_list );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].eid === eid ) 
+                    if( comArr[i].eid == eid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
 			alert( "Something gone wrong" );
 		}
@@ -575,13 +575,13 @@
 		var comArr = eval( $scope.ecu);
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].eid === eid ) 
+                    if( comArr[i].eid == eid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
 			alert( "Something gone wrong" );
 		}
@@ -824,7 +824,7 @@
                          && $scope.list.signal != undefined && $scope.list.ecu != undefined) {
                      
                     if($scope.list.signal.length > 0 && $scope.list.ecu.length > 0) {
-                        if(status && event === "submit")
+                        if(status && event == "submit")
                             $(".notifyPopup").click();
                         else
                             $scope.createIVNVersionAjax(event);
@@ -854,11 +854,11 @@
 
     //                var result_data = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
                 
-                if(action === "view"){
+                if(action == "view"){
                     $scope.showProceed =false;
                     $scope.showSave =false;
                     $scope.showSubmit =false;
-                } else if(action === "edit"){
+                } else if(action == "edit"){
                     $scope.showProceed =true;
                 }
             } else {
@@ -896,9 +896,9 @@
                }).then(function success(response) {
                         $(".loader-block").hide();
                         alert("Successfully Imported");
-                        if(mode === 0)
+                        if(mode == 0)
                             $window.open("ivn_signals.action","_self");
-                        else if(mode ===1)
+                        else if(mode ==1)
                             $window.open("ivn_version_listing.action","_self");
                     }, function error(response) {
                         $(".loader-block").hide();

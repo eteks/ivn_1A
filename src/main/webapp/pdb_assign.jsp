@@ -286,13 +286,13 @@
 		var comArr = eval( $scope.features_list );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].fid === fid ) 
+                    if( comArr[i].fid == fid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
 			alert( "Something gone wrong" );
 		}
@@ -306,13 +306,13 @@
 		var comArr = eval( $scope.features );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].fid === fid ) 
+                    if( comArr[i].fid == fid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
 			alert( "Something gone wrong" );
 		}
@@ -429,7 +429,7 @@
                 }
             }
             /*$scope.checkNotify = function (event){
-            if($scope.data.status && event === "submit"){
+            if($scope.data.status && event == "submit"){
                 if($scope.list.length > 0){
                     $(".notifyPopup").click();
                 }else{
@@ -478,8 +478,8 @@
 //                alert(JSON.stringify($scope.list));
                 
                 if($scope.list.length > 0){
-                    if($scope.list.length === $scope.records.length * $scope.features.length){
-                        if(status && event === "submit"){
+                    if($scope.list.length == $scope.records.length * $scope.features.length){
+                        if(status && event == "submit"){
                             $(".notifyPopup").click();
                         }else
                             $scope.createpdbAjax(event);
@@ -494,7 +494,7 @@
             $scope.radiovalue = function(dfm_id,vmm_id,status)
             {		
 //                alert("enter");
-                if($scope.list.length === 0)
+                if($scope.list.length == 0)
                 {
                     $scope.list.push({vmm_id:vmm_id,dfm_id:dfm_id,status:status});
                 }
@@ -503,7 +503,7 @@
                     var temp=0;
                     for(var i=0; i<$scope.list.length; i++)
                     {
-                        if(($scope.list[i].vmm_id === vmm_id) && ($scope.list[i].dfm_id === dfm_id))
+                        if(($scope.list[i].vmm_id == vmm_id) && ($scope.list[i].dfm_id == dfm_id))
                         {
                             $scope.list[i].status=status;
                             temp=1;
@@ -541,7 +541,7 @@
 //                  alert(JSON.stringify(response.data.pdb_map_result,null,4));
                     var result_data = response.data.pdb_map_result;
                     var vehicledetail_list = result_data.vehicledetail_list;
-                    if(data === "edit"){
+                    if(data == "edit"){
                         $scope.data.status = result_data.pdbversion_status[0].status;
                         $scope.data.vehicleversion = vehicledetail_list[0].vehver_id.toString();
                         $scope.LoadSelectedVehicleVersionData();
@@ -558,7 +558,7 @@
                     var featuredetail_list = result_data.featuredetail_list;
                     for(var i=0; i<featuredetail_list.length; i++)
                     {
-                        if($scope.features.length === 0)
+                        if($scope.features.length == 0)
                         {
                             $scope.add_feature_tab(featuredetail_list[i].fid);
 //                            $scope.features.push({fid:featuredetail_list[i].fid,fea:featuredetail_list[i].featurename,domain:featuredetail_list[i].domainname,status:featuredetail_list[i].status});
@@ -568,7 +568,7 @@
                             var temp=0;
                             for(var j=0; j<$scope.features.length; j++)
                             {
-                                if($scope.features[j].fid === featuredetail_list[i].fid)
+                                if($scope.features[j].fid == featuredetail_list[i].fid)
                                 {
                                     temp=1;
                                 }   
@@ -578,11 +578,11 @@
                                 $scope.add_feature_tab(featuredetail_list[i].fid);
                             }
                         }
-                        if(data === "edit")
+                        if(data == "edit")
                             $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].vmm_id,featuredetail_list[i].status);
 //                        alert(JSON.stringify($scope.list));  
                     }
-                    if(data === "edit"){
+                    if(data == "edit"){
                         angular.element(function () {
                             var result = document.getElementsByClassName("radio_button");
                             angular.forEach(result, function(value) {
@@ -625,7 +625,7 @@
                 var featuredetail_list = result_data.featuredetail_list;
                 for(var i=0; i<featuredetail_list.length; i++)
                 {
-                    if($scope.features.length === 0)
+                    if($scope.features.length == 0)
                     {
                         $scope.add_feature_tab(featuredetail_list[i].fid);
 //                            $scope.features.push({fid:featuredetail_list[i].fid,fea:featuredetail_list[i].featurename,domain:featuredetail_list[i].domainname,status:featuredetail_list[i].status});
@@ -635,7 +635,7 @@
                         var temp=0;
                         for(var j=0; j<$scope.features.length; j++)
                         {
-                            if($scope.features[j].fid === featuredetail_list[i].fid)
+                            if($scope.features[j].fid == featuredetail_list[i].fid)
                             {
                                 temp=1;
                             }   

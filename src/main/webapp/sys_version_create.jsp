@@ -366,7 +366,7 @@
 		var comArr = eval( $scope.ecu_list );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].eid === eid ) 
+                    if( comArr[i].eid == eid ) 
                     {
                         index = i;
                         break;
@@ -383,7 +383,7 @@
             };
             $scope.radiovalue = function(dfm_id,variant_id,status)
             {		
-                if($scope.list.length === 0)
+                if($scope.list.length == 0)
                 {
                     $scope.list.push({"dfm_id":dfm_id,"variant_id":variant_id,"status":status});
                 }
@@ -392,7 +392,7 @@
                     var temp=0;
                     for(var i=0; i<$scope.list.length; i++)
                     {
-                        if(($scope.list[i].dfm_id === dfm_id) && ($scope.list[i].variant_id === variant_id))
+                        if(($scope.list[i].dfm_id == dfm_id) && ($scope.list[i].variant_id == variant_id))
                         {
                             $scope.list[i].status=status;
                             temp=1;
@@ -543,19 +543,19 @@
                 var comArr = eval( $scope.signal_list );
                 for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].sid === sid ) 
+                    if( comArr[i].sid == sid ) 
                     {
                         index = i;
                         break;
                     }
                 }
-                if( index === -1 ) 
+                if( index == -1 ) 
                 {
                         alert( "Something gone wrong" );
                 }
                 if(sip == 0)
                 {
-                    if($scope.sigi.length === 0 )
+                    if($scope.sigi.length == 0 )
                     {
 //                        alert(comArr[index]);
                         $scope.sigi.push({sid:comArr[index].sid,pri:pri,listitem:comArr[index].listitem,description:comArr[index].description});
@@ -566,7 +566,7 @@
                       $scope.sigi.filter(function(s,i)
                       {
 
-                            if(s.pri === pri)
+                            if(s.pri == pri)
                             {
 
                                 perc= i;
@@ -589,7 +589,7 @@
                 }
                 else
                 {
-                    if($scope.sigo.length === 0 )
+                    if($scope.sigo.length == 0 )
                     {
                         $scope.sigo.push({sid:comArr[index].sid,pri:pri,listitem:comArr[index].listitem,description:comArr[index].description});
                     }
@@ -599,7 +599,7 @@
                       $scope.sigo.filter(function(s,i)
                       {
 
-                            if(s.pri === pri)
+                            if(s.pri == pri)
                             {
 
                                 perc= i;
@@ -624,7 +624,7 @@
             };
         
             /*$scope.checkNotify = function (event){
-                if($scope.data.status && event === "submit"){
+                if($scope.data.status && event == "submit"){
                     if($scope.this_variant != undefined){
                         var model_and_variant_length = $scope.features.length * $scope.this_variant['variant_id'].split(",").length;
                     }
@@ -683,7 +683,7 @@
                         && $scope.data.ecu != undefined){
                     if($scope.list.length > 0 && $scope.list.length == model_and_variant_length){
     //                    alert("proceed");
-                        if(status && event === "submit"){
+                        if(status && event == "submit"){
                             $(".notifyPopup").click();
                         }else
                             $scope.createsystemversionAJAX(event);
@@ -911,7 +911,7 @@
         $scope.createpdbdatalist = function(vmm_id,status)
         {		
 //            alert("createpdbdatalist");
-            if($scope.pdbdata_list.length === 0)
+            if($scope.pdbdata_list.length == 0)
             {
                 $scope.pdbdata_list.push({vmm_id:vmm_id,status:status});
             }
@@ -920,7 +920,7 @@
                 var temp=0;
                 for(var i=0; i<$scope.pdbdata_list.length; i++)
                 {
-                    if($scope.pdbdata_list[i].vmm_id === vmm_id)
+                    if($scope.pdbdata_list[i].vmm_id == vmm_id)
                     {
                         $scope.pdbdata_list[i].status=status;
                         temp=1;

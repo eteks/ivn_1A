@@ -141,7 +141,7 @@
                         <input type="checkbox" ng-model="data.status">
                         <span class="slider round"></span>
                      </label>
-                    <a class="modal-trigger btn-floating btn-primary" ng-show="showProceed === true" style="padding:10px" href="#modal-comment" >Proceed</a>
+                    <a class="modal-trigger btn-floating btn-primary" ng-show="showProceed == true" style="padding:10px" href="#modal-comment" >Proceed</a>
                     <div id="modal-comment" class="modal">
                          <div class="modal-content text-left">
 
@@ -321,10 +321,10 @@
             {
 //                alert("createfeatureversion");
                 var status = $scope.data.status;
-                if(status === undefined )
+                if(status == undefined )
                     status = false;
                 if($scope.models.dropzones.B[3].version.length > 0){
-                    if(status && event === "submit"){
+                    if(status && event == "submit"){
                         $(".notifyPopup").click();
                     } else {
                         $scope.createfeatureAjax(event);
@@ -338,7 +338,7 @@
             $scope.createfeatureAjax = function (event){
                 
                 var status = $scope.data.status;
-                if(status === undefined || status === false)
+                if(status == undefined || status == false)
                     notification_to = undefined;
                 var data = {};
 //                $scope.data.vehicle_id = $scope.vehicleresults.vehicle_id;
@@ -359,7 +359,7 @@
 ////                                                 "previous_version":"1.0", "current_version":"1.1"
 ////                                                };
 
-                    if(response.data.maps_string.status_code === "1") {
+                    if(response.data.maps_string.status_code == "1") {
                         
                         if(response.data.maps_object.fea_previous_data_result){
                             $scope.vercompare_results = response.data.maps_object.fea_previous_data_result;
@@ -413,22 +413,22 @@
                     if ("<s:property value="result_data_obj"/>") {
 
                         maps_object = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-                        alert("fasdfjksaf  "+JSON.stringify(maps_object));
+//                        alert("fasdfjksaf  "+JSON.stringify(maps_object));
                         for (var item in maps_object) {
                             
-                            if (maps_object[item].type === "vehicle") {
+                            if (maps_object[item].type == "vehicle") {
                                 
                                 var a = [maps_object[item]];
-                                $scope.data.vehicle = a[0];
-                                alert(JSON.stringify(a));
+                                $scope.data.vehicle = a[0].id.toString();
+//                                alert(JSON.stringify(a));
                             }
-                            if (maps_object[item].type === "feature") {
+                            if (maps_object[item].type == "feature") {
                                 
                                 $scope.data.status = maps_object[item].status;
                                 $scope.feaarray_result = [maps_object[item]];
                                 $scope.create_type = true;
                                 $scope.data.featureversion = $scope.feaarray_result[0];
-                                alert(JSON.stringify($scope.feaarray_result));
+//                                alert(JSON.stringify($scope.feaarray_result));
                             }
                         }
                         maps_object = maps_object.filter(m => m['type'] !== "vehicle");
@@ -436,11 +436,11 @@
                     } else
                         alert("Data not Found");
 
-                    if(action === "view"){
+                    if(action == "view"){
                         $scope.showProceed =false;
                         $scope.showSave =false;
                         $scope.showSubmit =false;
-                    } else if(action === "edit"){
+                    } else if(action == "edit"){
                         $scope.showProceed =true;
                     }
                 } else {

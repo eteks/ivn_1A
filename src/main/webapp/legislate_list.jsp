@@ -99,14 +99,14 @@
                                                                                 
                                                                         </td>
                                                                         <td class="text-center"> 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status === true">Active
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status == true">Active
                                                                             </button>
-                                                                            <button class="btn btn-default btn-bg-c-yellow btn-outline-default btn-round btn-action" ng-if="record.status === false">Inactive
+                                                                            <button class="btn btn-default btn-bg-c-yellow btn-outline-default btn-round btn-action" ng-if="record.status == false">Inactive
                                                                             </button>
                                                                         </td>                                                                        
                                                                         <td class="text-center">                                                                             
-                                                                            <span ng-if="record.flag === false">Temporary</span>
-                                                                            <span ng-if="record.flag === true">Permanent</span>
+                                                                            <span ng-if="record.flag == false">Temporary</span>
+                                                                            <span ng-if="record.flag == true">Permanent</span>
                                                                         </td>
                                                                         <td class="">
                                                                            
@@ -120,11 +120,11 @@
                                                                         </td>
                                                                         <td class="text-center"> 
 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.leg_id}}" ng-click="View_and_edit($event)" name="edit" ng-if="record.flag === false || record.status === false">Edit</button>
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.leg_id}}" ng-click="View_and_edit($event)" name="edit" ng-if="record.flag == false || record.status == false">Edit</button>
 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-id="{{record.leg_id}}" ng-click="View_and_edit($event)" name="view" ng-if="record.status === true && record.flag === true">view</button>
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-id="{{record.leg_id}}" ng-click="View_and_edit($event)" name="view" ng-if="record.status == true && record.flag == true">view</button>
 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.leg_id}}" ng-click="delete($event)" name="delete" ng-if="record.delBut === 1">Delete</button>
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.leg_id}}" ng-click="delete($event)" name="delete" ng-if="record.delBut == 1">Delete</button>
                                                                         </td>
 <!--                                                                        <td class="text-center">
                                                                            
@@ -208,7 +208,7 @@
                 data : data
                 })
                 .then(function (data, status, headers, config){
-                     if(data.data.dlStatus.status === 1){
+                     if(data.data.dlStatus.status == 1){
                          alert("PDB Version Deleted Succesfully");
                          $window.location.reload();
                     }else{
@@ -224,13 +224,13 @@
 		var comArr = eval( $scope.features );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].fid === fid ) 
+                    if( comArr[i].fid == fid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
 			alert( "Something gone wrong" );
 		}
@@ -246,12 +246,12 @@
             $scope.radiovalue = function(fid,stat)
             {	
                 
-                if(stat === 'y')
+                if(stat == 'y')
                 {
                     variable="yes";
                     
                 }
-                else if(stat === 'n')
+                else if(stat == 'n')
                 {
                     variable="no";
                     
@@ -264,7 +264,7 @@
                 $scope[variable].push(fid);
                 
 //                 $scope.legislation.push({fid:vmm_id,dfm_id:dfm_id,status:status});
-//                if($scope.legislation.length === 0)
+//                if($scope.legislation.length == 0)
 //                {
 //                    
 //                }
@@ -273,7 +273,7 @@
 //                    var temp=0;
 //                    for(var i=0; i<$scope.list.length; i++)
 //                    {
-//                        if(($scope.list[i].vmm_id === vmm_id) && ($scope.list[i].dfm_id === dfm_id))
+//                        if(($scope.list[i].vmm_id == vmm_id) && ($scope.list[i].dfm_id == dfm_id))
 //                        {
 //                            $scope.list[i].status=status;
 //                            temp=1;
@@ -302,13 +302,13 @@
 		var comArr = eval( $scope.features );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].fid === fid ) 
+                    if( comArr[i].fid == fid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
 			alert( "Something gone wrong" );
 		}                

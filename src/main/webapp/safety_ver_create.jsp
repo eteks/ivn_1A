@@ -354,13 +354,13 @@
             var comArr = eval( $scope.safety );
             for( var i = 0; i < comArr.length; i++ ) 
             {
-                if( comArr[i].qb_id === qb_id ) 
+                if( comArr[i].qb_id == qb_id ) 
                 {
                     index = i;
                     break;
                 }
             }
-            if( index === -1 ) 
+            if( index == -1 ) 
             {
                     alert( "Something gone wrong" );
             }
@@ -386,7 +386,7 @@
         $scope.radiovalue = function(qb_id,model_id,status)
         {		
 //                alert("enter");
-            if($scope.list.length === 0)
+            if($scope.list.length == 0)
             {
                 $scope.list.push({model_id:model_id,qb_id:qb_id,status:status});
             }
@@ -395,7 +395,7 @@
                 var temp=0;
                 for(var i=0; i<$scope.list.length; i++)
                 {
-                    if(($scope.list[i].model_id === model_id) && ($scope.list[i].qb_id === qb_id))
+                    if(($scope.list[i].model_id == model_id) && ($scope.list[i].qb_id == qb_id))
                     {
                         $scope.list[i].status=status;
                         temp=1;
@@ -500,8 +500,8 @@
 //            alert($scope.records.length * $scope.features.length);
         if($scope.list.length > 0){
 
-            if($scope.list.length === $scope.records.length * $scope.safety.length){
-                if(status && event === "submit")
+            if($scope.list.length == $scope.records.length * $scope.safety.length){
+                if(status && event == "submit")
                     $(".notifyPopup").click();
                 else
                     $scope.createsafetyAjax(event);
@@ -519,12 +519,12 @@
             var comArr = eval( $scope.features_list );
             alert("comArr "+JSON.stringify(comArr));
             for( var i = 0; i < comArr.length; i++ ) {
-                if( comArr[i].qb_id === fid ) {
+                if( comArr[i].qb_id == fid ) {
                     index = i;
                     break;
                 }
             }
-            if( index === -1 )
+            if( index == -1 )
                 alert( "Something gone wrong" );
             $scope.safety.push({qb_id:comArr[index].qb_id,qb_name:comArr[index].qb_name,id: comArr[index].id});
             $scope.features_list.splice(index, 1);
@@ -535,13 +535,13 @@
             var comArr = eval( $scope.safety );
             for( var i = 0; i < comArr.length; i++ )
             {
-                if( comArr[i].id === qb_id )
+                if( comArr[i].id == qb_id )
                 {
                     index = i;
                     break;
                 }
             }
-            if( index === -1 )
+            if( index == -1 )
                 alert( "Something gone wrong" );
         //                $scope.legislation_list.push({fid:comArr[index].fid,domain:comArr[index].domain,fea: comArr[index].fea})
             $scope.safety.splice( index, 1 );
@@ -571,7 +571,7 @@
                 $window.alert(JSON.stringify(safetydetail_list)+" -- "+JSON.stringify($scope.safety));
                 $scope.data.new_vehicle="select_vehicle";
                 $scope.truefalse = true;
-                $scope.data.status = safetydetail_list.pdb[0].status;
+                $scope.data.status = safetydetail_list.pdb[0].pdb_status;
                 $scope.data.vehicle = safetydetail_list.safety[0].veh_id.toString();
                 $scope.LoadPreviousVersion();
                 // $scope.records = safetydetail_list.qb.concat(safetydetail_list.safety);
@@ -581,16 +581,16 @@
                 // $window.alert(JSON.stringify($scope.records));
                 for(var i=0; i<rec.length; i++) {
                     // alert(rec.length);
-                    if($scope.safety.length === 0) {
+                    if($scope.safety.length == 0) {
                         $scope.add_feature_tab(rec[i].qb_id);
                     } else {
                         var temp=0;
                         for(var j=0; j<$scope.safety.length; j++) {
-                            if($scope.safety[j].qb_id === rec[i].qb_id) {
+                            if($scope.safety[j].qb_id == rec[i].qb_id) {
                                 temp=1;
                             }
                         }
-                        if(temp==0) {
+                        if(temp == 0) {
                             $scope.add_feature_tab(rec[i].qb_id);
                         }
                     }
@@ -611,16 +611,16 @@
                     var model_id = result_name[1];
                     var status = value.getAttribute("value");
                     angular.forEach($scope.list, function(item) {
-                        if(item.qb_id === fid && item.model_id === model_id && item.status === status)
+                        if(item.qb_id == fid && item.model_id == model_id && item.status == status)
                             value.setAttribute("checked","checked");
                     });
                 });
             });
-            if(action === "view"){
+            if(action == "view"){
                 $scope.showProceed =false;
                 $scope.showSave =false;
                 $scope.showSubmit =false;
-            } else if(action === "edit"){
+            } else if(action == "edit"){
                 $scope.showProceed =true;
             }
         } else {

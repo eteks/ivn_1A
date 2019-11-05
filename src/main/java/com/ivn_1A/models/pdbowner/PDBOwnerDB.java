@@ -884,4 +884,21 @@ public class PDBOwnerDB {
             return null;
         }
     }
+    
+    public static Pdbversion_group getPdbversionGroupById(int id) {
+        try {
+            System.err.println("getPdbversionGroupById");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction transaction = session.beginTransaction();
+
+            Pdbversion_group pdbversion_group = session.get(Pdbversion_group.class, id);
+            
+            transaction.commit();
+            session.clear();
+            return pdbversion_group;
+        } catch (Exception e) {
+            System.err.println("Error in \"getPdbversionGroupById\" : " + e);
+            return null;
+        }
+    }
 }

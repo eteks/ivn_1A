@@ -609,11 +609,11 @@
             $scope.assignstart = function(a, b)
             {
 //                $scope.fea_result = $scope.features.filter(obj => {
-//                    return obj.fid === a
+//                    return obj.fid == a
 //                  });
-                $scope.fea_result = $scope.features.filter(e => e.fid === a);
-                const index = $scope.fea.findIndex((e) => e.fid === fid);
-                if (index === -1) 
+                $scope.fea_result = $scope.features.filter(e => e.fid == a);
+                const index = $scope.fea.findIndex((e) => e.fid == fid);
+                if (index == -1) 
                 {
                     $scope.fea.push({'fid':a, 'fname':b});
                 } 
@@ -624,8 +624,8 @@
 //                alert(pdbgp);
                 if(type=='ip')
                 {                   
-                    const index = $scope.ipsignal.findIndex((e) => e.sid === sid);
-                    if (index === -1) 
+                    const index = $scope.ipsignal.findIndex((e) => e.sid == sid);
+                    if (index == -1) 
                     {
                         $scope.ipsignal.push({sid:sid,nw:nid,vmm_id:mod,pdbgp_id:pdbgp});
 
@@ -645,8 +645,8 @@
                 }
                 if(type=='op')
                 {
-                    const index = $scope.opsignal.findIndex((e) => e.sid === sid);
-                     if (index === -1) 
+                    const index = $scope.opsignal.findIndex((e) => e.sid == sid);
+                     if (index == -1) 
                      {
                          $scope.opsignal.push({sid:sid,nw:nid,vmm_id:mod,pdbgp_id:pdbgp});
 
@@ -665,7 +665,8 @@
 //                     $("li.op > ul").addClass("ng-hide");
                    alert(JSON.stringify($scope.opsignal));
                 }               
-            }
+            };
+            
             $scope.feature_result_cap = function(ef, ecu, eid)
             {
 //                alert(ef + " " + ecu);
@@ -680,7 +681,8 @@
 //                $('#modal-product-form').closeModal();
 //              alert(JSON.stringify($scope.result));
 //                alert(JSON.stringify($scope.models.dropzones.B));
-            }
+            };
+            
             $scope.feature_result = function()
             {
             }
@@ -774,7 +776,7 @@
             
             $scope.createacbversion = function (event,mode,fro) {
                 alert('QWRWWTRETYUUI');
-                if (fro==='acb') {
+                if (fro=='acb') {
                     var status = $scope.data.status;
                     if(status == undefined)
                         status = false;
@@ -803,9 +805,9 @@
                         if($scope.data.vername != undefined && $scope.data.pdbversion != undefined && 
                                 $scope.data.vehiclename != undefined && $scope.data.featureversion != undefined){
                             if(list_count > 0){                 
-                                if(status && event === "submit" && mode === 0){
+                                if(status && event == "submit" && mode == 0){
                                     $(".notifyPopup").click();
-                                } else if (status && event === "submit" && mode === 1){
+                                } else if (status && event == "submit" && mode == 1){
                                     $scope.createACBVersionAJAX(data)
                                 } else{
                                     $scope.createACBVersionAJAX(data);
@@ -838,12 +840,12 @@
                     if($scope.data.vername != undefined && $scope.data.pdbversion != undefined && 
                             $scope.data.vehiclename != undefined && $scope.data.featureversion != undefined){
                         if(list_count > 0){                 
-                            if(status && event === "submit" && mode === 0){
+                            if(status && event == "submit" && mode == 0){
                                 $(".notifyPopup").click();
-                            } else if (status && event === "submit" && mode === 1){
-//                                $scope.createACBVersionAJAX(data);
+                            } else if (status && event == "submit" && mode == 1){
+                                $scope.createACBVersionAJAX(data);
                             } else{
-//                                $scope.createACBVersionAJAX(data);
+                                $scope.createACBVersionAJAX(data);
                             }
                         } else {
                             alert("Please create aleast one touched features");

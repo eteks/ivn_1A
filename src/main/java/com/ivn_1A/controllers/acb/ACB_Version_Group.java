@@ -10,8 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.Gson;
 import com.ivn_1A.configs.JSONConfigure;
-import com.ivn_1A.configs.VersionType;
-import com.ivn_1A.controllers.notification.NotificationController;
 import com.ivn_1A.models.acb.ACB_DB;
 import com.ivn_1A.models.acb.ACB_InputSignals;
 import com.ivn_1A.models.acb.ACB_OutputSignals;
@@ -295,12 +293,12 @@ public class ACB_Version_Group {
                         }
                         if (ipsignal.size() > i) {
                             acbis = (ACB_InputSignals) ACB_DB.insertACBSignal(new ACB_InputSignals(IVNEngineerDB.getSignalDataByID(ipsignal.get("sid").asInt()),
-                                    IVNEngineerDB.getNetworkById(ipsignal.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupByModelId(ipsignal.get("vmm_id").asInt())));
+                                    IVNEngineerDB.getNetworkById(ipsignal.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupById(ipsignal.get("pdbgp_id").asInt())));
 
                         }
                         if (opsignal.size() > i) {
                             acbos = (ACB_OutputSignals) ACB_DB.insertACBSignal(new ACB_OutputSignals(IVNEngineerDB.getSignalDataByID(ipsignal.get("sid").asInt()),
-                                    IVNEngineerDB.getNetworkById(ipsignal.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupByModelId(ipsignal.get("vmm_id").asInt())));
+                                    IVNEngineerDB.getNetworkById(ipsignal.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupById(ipsignal.get("pdbgp_id").asInt())));
                         }
                     }
                     System.out.println("ip_signals ### " + acbis.getInputSignalId().getSignal_name());
@@ -316,7 +314,7 @@ public class ACB_Version_Group {
                     } else {
                         System.out.println("previousversion_flag" + previousversion_flag);
                         if (status) {
-                            new NotificationController().createNotification(VersionType.ACBversion.getVersionCode(), version_name, new Date().toString(), notification_to, acbv.getId());
+//                            new NotificationController().createNotification(VersionType.ACBversion.getVersionCode(), version_name, new Date().toString(), notification_to, acbv.getId());
                         }
                         maps_object.put("status", "New Permanent ACB Version Created Successfully");
                     }
@@ -356,14 +354,16 @@ public class ACB_Version_Group {
                         }
                         if (ipsignal.size() > i) {
                             JsonNode ips = ipsignal.get(i);
+                            System.out.println("@#$%^&*()   " + ips.get("sid").asInt() + "@#$%^&*()   " + ips.get("nw").asInt() + "@#$%^&*()   " + ips.get("pdbgp_id").asInt());
                             acbis = (ACB_InputSignals) ACB_DB.insertACBSignal(new ACB_InputSignals(IVNEngineerDB.getSignalDataByID(ips.get("sid").asInt()),
-                                    IVNEngineerDB.getNetworkById(ips.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupByModelId(ips.get("vmm_id").asInt())));
+                                    IVNEngineerDB.getNetworkById(ips.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupById(ips.get("pdbgp_id").asInt())));
 
                         }
                         if (opsignal.size() > i) {
                             JsonNode ops = opsignal.get(i);
+                            System.out.println("@#$%^&*()   " + ops.get("sid").asInt() + "@#$%^&*()   " + ops.get("nw").asInt() + "@#$%^&*()   " + ops.get("pdbgp_id").asInt());
                             acbos = (ACB_OutputSignals) ACB_DB.insertACBSignal(new ACB_OutputSignals(IVNEngineerDB.getSignalDataByID(ops.get("sid").asInt()),
-                                    IVNEngineerDB.getNetworkById(ops.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupByModelId(ops.get("vmm_id").asInt())));
+                                    IVNEngineerDB.getNetworkById(ops.get("nw").asInt()), PDBOwnerDB.getPdbversionGroupById(ops.get("pdbgp_id").asInt())));
                         }
                     }
                     System.out.println("ip_signals ### " + acbis.getInputSignalId().getSignal_name());
@@ -372,19 +372,23 @@ public class ACB_Version_Group {
                     ACB_Version_Group_M acbvgm = new ACB_Version_Group_M(acbv, IVNEngineerDB.getIVNVersionByIVN_ID(acbversion.get("vername").get("id").asInt()),
                             PDBOwnerDB.getPdbversion(acbversion.get("pdbversion").get("pdbid").asInt()), PDBOwnerDB.getVehicle(acbversion.get("vehiclename").get("vid").asInt()),
                             PDBOwnerDB.getDomain_and_Features_Mapping(acbversion.get("pdbversion").get("pdbid").asInt()), IVNEngineerDB.getECUById(acbversion.get("ecu_id").asInt()), fully_touchedstatus);
-                    acbvgm = ACB_DB.insertACBVersionGroup(acbvgm, "update", button_type);
-
-                    if (a++ == acbdata_list.size() - 1) {
-                        System.out.println("final loop");
-                        if (acbvgm != null && button_type.equals("save")) {
-                            System.out.println("subversion_value" + subversion);
-                            maps_object.put("status", "New Temporary ACB Version Created Successfully");
-                        } else {
-                            if (status) {
-                                new NotificationController().createNotification(VersionType.ACBversion.getVersionCode(), version_name, new Date().toString(), notification_to, acbv.getId());
+                    acbvgm = ACB_DB.insertACBVersionGroup(acbvgm, "create", button_type);
+                    if (acbvgm != null) {
+                        
+                        if (a++ == acbdata_list.size() - 1) {
+                            System.out.println("final loop");
+                            if (button_type.equals("save")) {
+                                System.out.println("subversion_value" + subversion);
+                                maps_object.put("status", "New Temporary ACB Version Created Successfully");
+                            } else {
+                                if (status) {
+//                                new NotificationController().createNotification(VersionType.ACBversion.getVersionCode(), version_name, new Date().toString(), notification_to, acbv.getId());
+                                }
+                                maps_object.put("status", "New Permanent ACB Version Created Successfully");
                             }
-                            maps_object.put("status", "New Permanent ACB Version Created Successfully");
                         }
+                    } else {
+                        System.out.println("ACB_Version_Group_M not inserted");
                     }
                 }
             }

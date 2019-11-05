@@ -342,6 +342,8 @@ public class ACB_DB {
                     for (ACB_InputSignals acbin : acb_in) {
                         obj = acbin;
                     }
+                } else {
+
                     session.save(aCB_InputSignals);
                     obj = aCB_InputSignals;
                 }
@@ -353,8 +355,8 @@ public class ACB_DB {
                 CriteriaQuery<ACB_OutputSignals> criteriaQuery = criteriaBuilder.createQuery(ACB_OutputSignals.class);
                 Root<ACB_OutputSignals> acbRoot = criteriaQuery.from(ACB_OutputSignals.class);
                 criteriaQuery.where(criteriaBuilder.equal(acbRoot.get("id"), aCB_OutputSignals.getId()),
-                        criteriaBuilder.equal(acbRoot.get("inputSignalId").get("id"), aCB_OutputSignals.getOutputSignalId().getId()),
-                        criteriaBuilder.equal(acbRoot.get("inputNetwordId").get("id"), aCB_OutputSignals.getOutputNetwordId().getId()),
+                        criteriaBuilder.equal(acbRoot.get("outputSignalId").get("id"), aCB_OutputSignals.getOutputSignalId().getId()),
+                        criteriaBuilder.equal(acbRoot.get("outputNetwordId").get("id"), aCB_OutputSignals.getOutputNetwordId().getId()),
                         criteriaBuilder.equal(acbRoot.get("pdbversionGroupId").get("id"), aCB_OutputSignals.getPdbversionGroupId().getId()));
                 List<ACB_OutputSignals> acb_out = session.createQuery(criteriaQuery).getResultList();
 
@@ -363,6 +365,8 @@ public class ACB_DB {
                     for (ACB_OutputSignals acbout : acb_out) {
                         obj = acbout;
                     }
+                } else {
+
                     session.save(aCB_OutputSignals);
                     obj = aCB_OutputSignals;
                 }
@@ -373,14 +377,14 @@ public class ACB_DB {
             return obj;
         } catch (Exception e) {
             System.err.println("Error in \'ACB_DB\' \"insertACBSignal\" : " + e);
-            return 0;
+            return null;
         }
     }
 
     public static ACB_Version_Group_M insertACBVersionGroup(ACB_Version_Group_M acbvgm, String process, String button_type) {
 
         try {
-
+            System.out.println("insertACBVersionGroup");
             int resultSet_count = 0;
             Session session = HibernateUtil.getThreadLocalSession();
             Transaction tx = session.beginTransaction();
@@ -388,6 +392,7 @@ public class ACB_DB {
             if (process.equals("update")) {
 
                 System.out.println("update_if");
+                System.out.println("updating ACBVersionGroup");
                 final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 
                 CriteriaQuery<ACB_Version_Group_M> criteriaQuery = criteriaBuilder.createQuery(ACB_Version_Group_M.class);
@@ -422,6 +427,7 @@ public class ACB_DB {
 
             if (resultSet_count == 0) {
 
+                System.out.println("inserting ACBVersionGroup");
                 session.save(acbvgm);
                 if (button_type.equals("other")) {
                     tx.commit();

@@ -84,14 +84,14 @@
                                                                                     </span>
                                                                                 </span>
                                                                             </a>
-                                                                            <span ng-if="record.variants === undefined">Not Present</span>
+                                                                            <span ng-if="record.variants == undefined">Not Present</span>
                                                                         </td>
                                                                         <td class="text-center"> 
                                                                             
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status === true">Active
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status == true">Active
                                                                             </button>
 
-                                                                            <button class="btn btn-default btn-bg-c-yellow btn-outline-default btn-round btn-action" ng-if="record.status === false">Inactive
+                                                                            <button class="btn btn-default btn-bg-c-yellow btn-outline-default btn-round btn-action" ng-if="record.status == false">Inactive
                                                                             </button>
 
                                                                         </td>
@@ -99,7 +99,7 @@
                                                                         
                                                                         <td class="text-center"> 
                                                                             <a class="feature_add_tip waves-effect waves-light btn modal-trigger btn-floating btn-large red" href="#modal-product-form" ng-click="showCreateForm(record.eid)" ng-if="record.variants != undefined">Edit</a>
-                                                                            <a class="feature_add_tip waves-effect waves-light btn modal-trigger btn-floating btn-large red" href="#modal-product-form" ng-click="showCreateForm(record.eid)" ng-if="record.variants === undefined">Create</a>
+                                                                            <a class="feature_add_tip waves-effect waves-light btn modal-trigger btn-floating btn-large red" href="#modal-product-form" ng-click="showCreateForm(record.eid)" ng-if="record.variants == undefined">Create</a>
                                                                         </td>
                                                                     </tr>
 

@@ -154,7 +154,7 @@
                                         <i class="icofont icofont-alarm"></i>
                                         <span class="badge bg-c-green" ng-if="count !== 0">{{count}}</span>
                                     </a>
-                                    <ul class="show-notification" ng-if="addlist.length === 0">
+                                    <ul class="show-notification" ng-if="addlist.length == 0">
                                         <li>
                                             <h6>No Notifications</h6>
                                         </li>
@@ -166,7 +166,7 @@
                                         </li>
                                         <ul>
                                             <div  ng-repeat="x in addlist">
-                                                <li data-id="{{x.id}}" ng-click="view(x.id)" ng-if="x.status === false" style="cursor: pointer;background-color: #845f5f45;">
+                                                <li data-id="{{x.id}}" ng-click="view(x.id)" ng-if="x.status == false" style="cursor: pointer;background-color: #845f5f45;">
                                                     <div class="media">
                                                         <img class="d-flex align-self-center img-radius" src="images/avatar-4.jpg" alt="Generic placeholder image">
                                                         <div class="media-body">
@@ -176,7 +176,7 @@
                                                         </div>
                                                     </div>
                                                 </li>
-                                                <li data-id="{{x.id}}" ng-click="view(x.id)" ng-if="x.status === true" style="cursor: pointer;">
+                                                <li data-id="{{x.id}}" ng-click="view(x.id)" ng-if="x.status == true" style="cursor: pointer;">
                                                     <div class="media">
                                                         <img class="d-flex align-self-center img-radius" src="images/avatar-4.jpg" alt="Generic placeholder image">
                                                         <div class="media-body">

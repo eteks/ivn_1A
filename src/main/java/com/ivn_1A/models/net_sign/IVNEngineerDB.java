@@ -87,19 +87,14 @@ public class IVNEngineerDB {
     public static Network getNetworkById(int id) {
         try {
             System.err.println("getNetworkById");
-            Session s = HibernateUtil.getThreadLocalSession();
-            Transaction tx = s.beginTransaction();
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction transaction = session.beginTransaction();
 
-            final CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
-            CriteriaQuery<Network> criteriaQuery = criteriaBuilder.createQuery(Network.class);
-
-            Root<Network> networkRoot = criteriaQuery.from(Network.class);
-            criteriaQuery.where(criteriaBuilder.equal(networkRoot.get("id"), id));
-            TypedQuery<Network> dfm_result = s.createQuery(criteriaQuery);
-
-            tx.commit();
-            s.clear();
-            return dfm_result.getSingleResult();
+            Network network = session.get(Network.class, id);
+            
+            transaction.commit();
+            session.clear();
+            return network;
         } catch (Exception e) {
             System.err.println("Error in \"IVNEngineerDB\" \'getNetworkById\' " + e);
             return null;
@@ -349,22 +344,13 @@ public class IVNEngineerDB {
         try {
             System.err.println("getSignalDataByID");
             Session session = HibernateUtil.getThreadLocalSession();
-            Transaction tx = session.beginTransaction();
+            Transaction transaction = session.beginTransaction();
 
-            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<Signals> criteriaQuery = criteriaBuilder.createQuery(Signals.class);
-
-            Root<Signals> signalRoot = criteriaQuery.from(Signals.class);
-//            signalRoot.join("can_id_group", JoinType.INNER).on(criteriaBuilder.greaterThan(
-//                    criteriaBuilder.function("find_in_set", Integer.class, signalRoot.get("can_id_group").get("id")
-//                    ), 0));
-//            signalRoot.join("vehiclemodel_id", JoinType.INNER);
-            criteriaQuery.where(criteriaBuilder.equal(signalRoot.get("id"), id));
-            TypedQuery<Signals> dfm_result = session.createQuery(criteriaQuery);
-
-            tx.commit();
+            Signals signals = session.get(Signals.class, id);
+            
+            transaction.commit();
             session.clear();
-            return dfm_result.getSingleResult();
+            return signals;
         } catch (Exception e) {
             System.err.println("Error in \"IVNEngineerDB\" \'getSignalDataByID\' " + e);
             return null;

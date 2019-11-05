@@ -101,14 +101,14 @@
                                                                                 
                                                                         </td>
                                                                         <td class="text-center"> 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status === true">Active
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-default btn-round btn-action" ng-if="record.status == true">Active
                                                                             </button>
-                                                                            <button class="btn btn-default btn-bg-c-yellow btn-outline-default btn-round btn-action" ng-if="record.status === false">Inactive
+                                                                            <button class="btn btn-default btn-bg-c-yellow btn-outline-default btn-round btn-action" ng-if="record.status == false">Inactive
                                                                             </button>
                                                                         </td>                                                                        
                                                                         <td class="text-center">                                                                             
-                                                                            <span ng-if="record.flag === false">Temporary</span>
-                                                                            <span ng-if="record.flag === true">Permanent</span>
+                                                                            <span ng-if="record.flag == false">Temporary</span>
+                                                                            <span ng-if="record.flag == true">Permanent</span>
                                                                         </td>
                                                                         <td class="">
                                                                            
@@ -122,11 +122,11 @@
                                                                         </td>
                                                                         <td class="text-center"> 
 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.saf_id}}" ng-click="View_and_edit($event)" name="edit" ng-if="record.flag === false || record.status === false">Edit</button>
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.saf_id}}" ng-click="View_and_edit($event)" name="edit" ng-if="record.flag == false || record.status == false">Edit</button>
 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-id="{{record.saf_id}}" ng-click="View_and_edit($event)" name="view" ng-if="record.status === true && record.flag === true">view</button>
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-danger btn-round" data-id="{{record.saf_id}}" ng-click="View_and_edit($event)" name="view" ng-if="record.status == true && record.flag == true">view</button>
 
-                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.saf_id}}" ng-click="delete($event)" name="delete" ng-if="record.delBut === 1">Delete</button>
+                                                                            <button class="btn btn-default btn-bg-c-blue btn-outline-primary btn-round" data-id="{{record.saf_id}}" ng-click="delete($event)" name="delete" ng-if="record.delBut == 1">Delete</button>
                                                                         </td>
 <!--                                                                        <td class="text-center">
                                                                            
@@ -194,7 +194,7 @@
                 data : data
                 })
                 .then(function (data, status, headers, config){
-                     if(data.data.dlStatus.status === 1){
+                     if(data.data.dlStatus.status == 1){
                          alert("PDB Version Deleted Succesfully");
                          $window.location.reload();
                     }else{

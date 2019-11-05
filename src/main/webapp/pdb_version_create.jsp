@@ -579,8 +579,8 @@
 //            alert($scope.list.length);
 //            alert($scope.records.length * $scope.features.length);
             if($scope.list.length > 0){
-                if($scope.list.length === $scope.records.length * $scope.features.length){
-                    if(status && event === "submit"){
+                if($scope.list.length == $scope.records.length * $scope.features.length){
+                    if(status && event == "submit"){
                         $(".notifyPopup").click();
                     } else {
                         $scope.createpdbAjax(event);
@@ -606,13 +606,13 @@
 		var comArr = eval( $scope.features_list );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].fid === fid ) 
+                    if( comArr[i].fid == fid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
 			alert( "Something gone wrong" );
 		}
@@ -626,13 +626,13 @@
 		var comArr = eval( $scope.features );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].fid === fid ) 
+                    if( comArr[i].fid == fid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
                     alert( "Something gone wrong" );
 		}
@@ -751,7 +751,7 @@
                     }).then(function (response, status, headers, config){
                         
                         console.log(JSON.stringify(response.data.maps_string.status));
-                        if (response.data.maps_string.res === "success") {
+                        if (response.data.maps_string.res == "success") {
                             
                             $http({
                             url : 'createfeature_and_domain',
@@ -772,7 +772,7 @@
                            $scope.domain="";
                            $scope.Demo.data=[];
                            
-                        } else if (response.data.maps_string.res === "failed") {
+                        } else if (response.data.maps_string.res == "failed") {
                             
                             var c = $window.confirm(response.data.maps_string.status +". Do you want to update?");
                             if (c) {
@@ -806,7 +806,7 @@
                 }
             }
             /*$scope.checkNotify = function (event){
-            if($scope.data.status && event === "submit"){
+            if($scope.data.status && event == "submit"){
                 if($scope.list.length > 0){
                     $(".notifyPopup").click();
                 }else{
@@ -819,7 +819,7 @@
             $scope.radiovalue = function(dfm_id,model_id,status)
             {		
 //                alert("enter");
-                if($scope.list.length === 0)
+                if($scope.list.length == 0)
                 {
                     $scope.list.push({model_id:model_id,dfm_id:dfm_id,status:status});
                 }
@@ -828,7 +828,7 @@
                     var temp=0;
                     for(var i=0; i<$scope.list.length; i++)
                     {
-                        if(($scope.list[i].model_id === model_id) && ($scope.list[i].dfm_id === dfm_id))
+                        if(($scope.list[i].model_id == model_id) && ($scope.list[i].dfm_id == dfm_id))
                         {
                             $scope.list[i].status=status;
                             temp=1;
@@ -867,7 +867,7 @@
 //                  alert(JSON.stringify(response.data.pdb_map_result,null,4));
 //                    var result_data = response.data.pdb_map_result;
 //                    var vehicledetail_list = result_data.vehicledetail_list;
-//                    if(data === "edit"){
+//                    if(data == "edit"){
 //                        $scope.data.status = result_data.pdbversion_status[0].status;
 //                        $scope.data.vehicleversion = vehicledetail_list[0].vehver_id.toString();
 //                        $scope.LoadSelectedVehicleVersionData();
@@ -889,7 +889,7 @@
 //                    alert(JSON.stringify(featuredetail_list));
                     for(var i=0; i<featuredetail_list.length; i++)
                     {
-                        if($scope.features.length === 0)
+                        if($scope.features.length == 0)
                         {
                             $scope.add_feature_tab(featuredetail_list[i].fid);
 //                            $scope.features.push({fid:featuredetail_list[i].fid,fea:featuredetail_list[i].featurename,domain:featuredetail_list[i].domainname,status:featuredetail_list[i].status});
@@ -899,7 +899,7 @@
                             var temp=0;
                             for(var j=0; j<$scope.features.length; j++)
                             {
-                                if($scope.features[j].fid === featuredetail_list[i].fid)
+                                if($scope.features[j].fid == featuredetail_list[i].fid)
                                 {
                                     temp=1;
                                 }   
@@ -909,12 +909,12 @@
                                 $scope.add_feature_tab(featuredetail_list[i].fid);
                             }
                         }
-//                        if(data === "edit")
+//                        if(data == "edit")
                             $scope.radiovalue(featuredetail_list[i].fid,featuredetail_list[i].model_id,featuredetail_list[i].status);
 //                        alert(JSON.stringify($scope.list));  
                     }
 //                    alert(JSON.stringify($scope.list));  
-//                    if(data === "edit"){
+//                    if(data == "edit"){
                         angular.element(function () {
                             var result = document.getElementsByClassName("radio_button");
                             angular.forEach(result, function(value) {
@@ -1073,7 +1073,7 @@
                 });
             };
             
-            if($location.absUrl().includes("?")){
+            if($location.absUrl().includes("?")) {
                 var params_array = [];
                 var absUrl = $location.absUrl().split("?")[1].split("&");
                 for(i=0;i<absUrl.length;i++){
@@ -1110,7 +1110,7 @@
 //                var featuredetail_list = result_data.featuredetail_list;
 //                for(var i=0; i<featuredetail_list.length; i++)
 //                {
-//                    if($scope.features.length === 0)
+//                    if($scope.features.length == 0)
 //                    {
 //                        $scope.add_feature_tab(featuredetail_list[i].fid);
 ////                            $scope.features.push({fid:featuredetail_list[i].fid,fea:featuredetail_list[i].featurename,domain:featuredetail_list[i].domainname,status:featuredetail_list[i].status});
@@ -1120,7 +1120,7 @@
 //                        var temp=0;
 //                        for(var j=0; j<$scope.features.length; j++)
 //                        {
-//                            if($scope.features[j].fid === featuredetail_list[i].fid)
+//                            if($scope.features[j].fid == featuredetail_list[i].fid)
 //                            {
 //                                temp=1;
 //                            }   

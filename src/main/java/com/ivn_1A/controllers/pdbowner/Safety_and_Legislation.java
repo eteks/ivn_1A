@@ -49,7 +49,7 @@ public class Safety_and_Legislation {
     private List<Tuple> tupleObjects = new ArrayList<>();
     Gson gson = new Gson();
     private String result_data_obj;
-    private List<Tuple> tuple_result = new ArrayList<>();
+//    private List<Tuple> tuple_result = new ArrayList<>();
     private List<Map<String, Object>> result_data = new ArrayList<>();
     private HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
     final ObjectMapper mapper = new ObjectMapper();
@@ -75,8 +75,11 @@ public class Safety_and_Legislation {
                             legislationMap.put("veh_id", tuple.get("veh_id"));
                             legislationMap.put("created_date", tuple.get("created_date"));
                             legislationMap.put("modified_date", tuple.get("modified_date"));
-                            legislationMap.put("modelname", tuple.get("modelname"));
+                            legislationMap.put("model_id", tuple.get("modelname"));
                             legislationMap.put("id", tuple.get("id"));
+                            legislationMap.put("lid", tuple.get("lid"));
+                            legislationMap.put("lver", tuple.get("lver"));
+                            legislationMap.put("stt", tuple.get("stt"));
                             return legislationMap;
                         }).forEachOrdered((legislationMap) -> {
                             legislationList.add(legislationMap);
@@ -87,7 +90,7 @@ public class Safety_and_Legislation {
                             Map<String, Object> qbMap = new HashMap<>();
                             qbMap.put("id", tuple.get("id"));
                             qbMap.put("qb_id", tuple.get("qb_id"));
-                            qbMap.put("available_status", tuple.get("available_status"));
+                            qbMap.put("status", tuple.get("available_status"));
                             qbMap.put("qb_name", tuple.get("qb_name"));
                             qbMap.put("querybuilder_type", tuple.get("qb_type"));
                             qbMap.put("id", tuple.get("id"));
@@ -100,7 +103,7 @@ public class Safety_and_Legislation {
                         ((List<Tuple>) u).stream().map((tuple) -> {
                             Map<String, Object> pdbMap = new HashMap<>();
                             pdbMap.put("pdb_versionname", tuple.get("pdb_versionname"));
-                            pdbMap.put("status", tuple.get("status"));
+                            pdbMap.put("pdb_status", tuple.get("status"));
                             pdbMap.put("flag", tuple.get("flag"));
                             return pdbMap;
                         }).forEachOrdered((pdbMap) -> {
@@ -163,7 +166,7 @@ public class Safety_and_Legislation {
                             safetyMap.put("veh_id", tuple.get("veh_id"));
                             safetyMap.put("created_date", tuple.get("created_date"));
                             safetyMap.put("modified_date", tuple.get("modified_date"));
-                            safetyMap.put("modelname", tuple.get("modelname"));
+                            safetyMap.put("model_id", tuple.get("modelname"));
                             safetyMap.put("id", tuple.get("id"));
                             return safetyMap;
                         }).forEachOrdered((safetyMap) -> {
@@ -175,7 +178,7 @@ public class Safety_and_Legislation {
                             Map<String, Object> qbMap = new HashMap<>();
                             qbMap.put("id", tuple.get("id"));
                             qbMap.put("qb_id", tuple.get("qb_id"));
-                            qbMap.put("available_status", tuple.get("available_status"));
+                            qbMap.put("status", tuple.get("available_status"));
                             qbMap.put("qb_name", tuple.get("qb_name"));
                             qbMap.put("querybuilder_type", tuple.get("qb_type"));
                             qbMap.put("id", tuple.get("id"));
@@ -188,7 +191,7 @@ public class Safety_and_Legislation {
                         ((List<Tuple>) u).stream().map((tuple) -> {
                             Map<String, Object> pdbMap = new HashMap<>();
                             pdbMap.put("pdb_versionname", tuple.get("pdb_versionname"));
-                            pdbMap.put("status", tuple.get("status"));
+                            pdbMap.put("pdb_status", tuple.get("status"));
                             pdbMap.put("flag", tuple.get("flag"));
                             return pdbMap;
                         }).forEachOrdered((pdbMap) -> {
@@ -575,8 +578,8 @@ public class Safety_and_Legislation {
         System.out.println("GetSafetyListing");
         Querybuilder lc = new Querybuilder();
         try {
-            tuple_result = SafetyLegDB.GetSafetyListing();
-            tuple_result.stream().map((safetyversion_group) -> {
+            tupleObjects = SafetyLegDB.GetSafetyListing();
+            tupleObjects.stream().map((safetyversion_group) -> {
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("saf_id", safetyversion_group.get("saf_id"));
                 columns.put("saf", String.format("%.1f", safetyversion_group.get("saf")));
@@ -634,8 +637,8 @@ public class Safety_and_Legislation {
                 //Get the data of previous vehicle version by id
                 long c_id = comb_id;
                 Querybuilder lc = new Querybuilder(c_id);
-                tuple_result = SafetyLegDB.LoadPreviousLegislationCombinationData(lc);
-                tuple_result.stream().map((tuple) -> {
+                tupleObjects = SafetyLegDB.LoadPreviousLegislationCombinationData(lc);
+                tupleObjects.stream().map((tuple) -> {
                     Map<String, Object> columns = new HashMap<>();
                     columns.put("querybuilder_name", tuple.get("querybuilder_name"));
                     columns.put("querybuilder_type", tuple.get("querybuilder_type"));
@@ -649,7 +652,7 @@ public class Safety_and_Legislation {
                     System.out.println("colums" + columns);
                 });
                 System.out.println("legcomb_result" + result_data);
-                previousversion_status = String.valueOf(tuple_result.get(0).get("querybuilder_status"));
+                previousversion_status = String.valueOf(tupleObjects.get(0).get("querybuilder_status"));
                 System.out.println("previousversion_status" + previousversion_status);
 
             } else if (previousversion_status.equals("false") && comb_id != 0) {
@@ -777,8 +780,8 @@ public class Safety_and_Legislation {
         System.out.println("GetLegislationCombinationListing controller");
         Querybuilder lc = new Querybuilder();
         try {
-            tuple_result = SafetyLegDB.GetLegislationCombinationListing();
-            tuple_result.stream().map((tuple) -> {
+            tupleObjects = SafetyLegDB.GetLegislationCombinationListing();
+            tupleObjects.stream().map((tuple) -> {
                 Map<String, Object> columns = new HashMap<>();
                 columns.put("leg_id", tuple.get("leg_id"));
                 columns.put("leg", tuple.get("leg"));
@@ -832,8 +835,8 @@ public class Safety_and_Legislation {
                 //Get the data of previous vehicle version by id
                 long c_id = comb_id;
                 Querybuilder lc = new Querybuilder(c_id);
-                tuple_result = SafetyLegDB.LoadPreviousSafetyCombinationData(lc);
-                tuple_result.stream().map((tuple) -> {
+                tupleObjects = SafetyLegDB.LoadPreviousSafetyCombinationData(lc);
+                tupleObjects.stream().map((tuple) -> {
                     Map<String, Object> columns = new HashMap<>();
                     columns.put("querybuilder_name", tuple.get("querybuilder_name"));
                     columns.put("querybuilder_type", tuple.get("querybuilder_type"));
@@ -847,7 +850,7 @@ public class Safety_and_Legislation {
                     System.out.println("colums" + columns);
                 });
                 System.out.println("safcomb_result" + result_data);
-                previousversion_status = String.valueOf(tuple_result.get(0).get("querybuilder_status"));
+                previousversion_status = String.valueOf(tupleObjects.get(0).get("querybuilder_status"));
                 System.out.println("previousversion_status" + previousversion_status);
 
             } else if (previousversion_status.equals("false") && comb_id != 0) {
@@ -921,8 +924,8 @@ public class Safety_and_Legislation {
     public String GetSafetyCombinationListing() {
         System.out.println("GetSaftyCombinationListing");
         try {
-            tuple_result = SafetyLegDB.GetSafetyCombinationListing();
-            tuple_result.stream().map((tuple) -> {
+            tupleObjects = SafetyLegDB.GetSafetyCombinationListing();
+            tupleObjects.stream().map((tuple) -> {
                 try {
                     Map<String, Object> columns = new HashMap<>();
                     columns.put("saf_id", tuple.get("saf_id"));
@@ -947,6 +950,45 @@ public class Safety_and_Legislation {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             maps.put("status", "Some error occurred !!");
+        }
+        return "success";
+    }
+
+    public String LoadLegversionData() {
+
+        try {
+
+            System.out.println("LoadLegversionData");
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            int vehicle_id = readValue.get("vehicle_id").asInt();
+            String action = readValue.get("action").asText();
+            System.out.println(vehicle_id + "$$$$$$$$$$$$$$$$$$$$$$$$" + action);
+
+            tupleObjects = SafetyLegDB.loadLegVersionByVehicleId(vehicle_id, action);
+            tupleObjects.stream().map((tuple) -> {
+                
+                System.err.println("*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*****************" + tuple.get("pdbId") + " " + tuple.get("pdbVersion"));
+                Map<String, Object> fr = new HashMap<>();
+                fr.put("lid", tuple.get("lid"));
+                fr.put("legVersion", tuple.get("legVersion"));
+                fr.put("status", tuple.get("status"));
+                fr.put("pdbid", tuple.get("pdbId"));
+                fr.put("pdbVersion", tuple.get("pdbVersion"));
+                fr.put("pdbStatus", tuple.get("pdbStatus"));
+                return fr;
+            }).map((fr) -> {
+                result_data.add(fr);
+                return fr;
+            }).forEachOrdered((fr) -> {
+                System.out.println("JSON ARRAY : " + fr);
+            });
+            maps_object.put("legversion", result_data);
+            System.out.println("result_data     "+result_data);
+            maps_string.put("success", "Work is done");
+        } catch (Exception e) {
+            System.out.println("Error in \"LoadLegversionData\" : " + e);
+            maps_string.put("status", "Some error occurred !!");
         }
         return "success";
     }

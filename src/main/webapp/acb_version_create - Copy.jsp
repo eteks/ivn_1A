@@ -494,13 +494,13 @@
                     var comArr = eval($scope.features);
                     for( var i = 0; i < comArr.length; i++ ) 
                     {
-                        if( comArr[i].fid === fid ) 
+                        if( comArr[i].fid == fid ) 
                         {
                             index = i;
                             break;
                         }
                     }
-                    if( index === -1 ) 
+                    if( index == -1 ) 
                     {
                             alert( "Something gone wrong" );
                     }
@@ -518,7 +518,7 @@
 //                    var temp=0;
 //                    for(var j=0; j<$scope.list.length; j++)
 //                    {
-//                        if($scope.list[j].fid === comArr[index].fid)
+//                        if($scope.list[j].fid == comArr[index].fid)
 //                        {
 //                            temp=1;
 //                        }   
@@ -642,19 +642,19 @@
 		var comArr = eval( $scope.signal_list );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].sid === sid ) 
+                    if( comArr[i].sid == sid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
 			alert( "Something gone wrong" );
 		}
                 if(sip == 0)
                 {
-                    if($scope.sigi.length === 0 )
+                    if($scope.sigi.length == 0 )
                     {
                         $scope.sigi.push({sid:comArr[index].sid,pri:pri,listitem:comArr[index].listitem,description:comArr[index].description});
                     }
@@ -664,7 +664,7 @@
                       $scope.sigi.filter(function(s,i)
                       {
                             
-                            if(s.pri === pri)
+                            if(s.pri == pri)
                             {
                                 
                                 perc= i;
@@ -691,7 +691,7 @@
                 }
                 else
                 {
-                    if($scope.sigo.length === 0 )
+                    if($scope.sigo.length == 0 )
                     {
                         $scope.sigo.push({sid:comArr[index].sid,pri:pri,listitem:comArr[index].listitem,description:comArr[index].description});
                     }
@@ -701,7 +701,7 @@
                       $scope.sigo.filter(function(s,i)
                       {
                             
-                            if(s.pri === pri)
+                            if(s.pri == pri)
                             {
                                 
                                 perc= i;
@@ -751,7 +751,7 @@
                   var comArr = eval( $scope.features );
                   for(var i = 0; i < comArr.length; i++) 
                   {
-                       if( comArr[i].fid === fid ) 
+                       if( comArr[i].fid == fid ) 
                        {
                            comArr[i].touch = 'Yes'
                            $scope.features[i].ecu=$scope.ecu_tin.listitem;
@@ -856,13 +856,13 @@
 //		var comArr = eval( $scope.ecu_list );
 //		for( var i = 0; i < comArr.length; i++ ) 
 //                {
-//                    if( comArr[i].eid === eid ) 
+//                    if( comArr[i].eid == eid ) 
 //                    {
 //                        index = i;
 //                        break;
 //                    }
 //		}
-//		if( index === -1 ) 
+//		if( index == -1 ) 
 //                {
 //			alert( "Something gone wrong" );
 //		}
@@ -881,13 +881,13 @@
 //		var comArr = eval( $scope.ecu);
 //		for( var i = 0; i < comArr.length; i++ ) 
 //                {
-//                    if( comArr[i].eid === eid ) 
+//                    if( comArr[i].eid == eid ) 
 //                    {
 //                        index = i;
 //                        break;
 //                    }
 //		}
-//		if( index === -1 ) 
+//		if( index == -1 ) 
 //                {
 //			alert( "Something gone wrong" );
 //		}
@@ -931,7 +931,7 @@
             
             $scope.radiovalue = function(vmm_id,dfm_id,status)
             {	
-                if($scope.list.length === 0)
+                if($scope.list.length == 0)
                 {
                     $scope.list.push({vmm_id:vmm_id,dfm_id:dfm_id,status:status});
                 }
@@ -940,7 +940,7 @@
                     var temp=0;
                     for(var i=0; i<$scope.list.length; i++)
                     {
-                        if(($scope.list[i].vmm_id === vmm_id) && ($scope.list[i].dfm_id === dfm_id))
+                        if(($scope.list[i].vmm_id == vmm_id) && ($scope.list[i].dfm_id == dfm_id))
                         {
                             $scope.list[i].status=status;
                             temp=1;
@@ -1047,7 +1047,7 @@
             }
             
             /*$scope.checkNotify = function (event){
-                if($scope.data.status && event === "submit"){
+                if($scope.data.status && event == "submit"){
                     list_count = Object.keys(features_group).length;
                     if($scope.data.ivnversion != undefined && $scope.data.pdbversion != undefined && 
                             $scope.data.vehicleversion != undefined && $scope.data.vehiclename != undefined){
@@ -1105,9 +1105,9 @@
                     if($scope.data.ivnversion != undefined && $scope.data.pdbversion != undefined && 
                             $scope.data.vehicleversion != undefined && $scope.data.vehiclename != undefined){
                         if(list_count > 0){                 
-                            if(status && event === "submit" && mode === 0){
+                            if(status && event == "submit" && mode == 0){
                                 $(".notifyPopup").click();
-                            }else if(status && event === "submit" && mode === 1){
+                            }else if(status && event == "submit" && mode == 1){
                                 $scope.createACBVersionAJAX(data)
                             }else
                                 $scope.createACBVersionAJAX(data);
@@ -1350,7 +1350,7 @@
             }
             $scope.remove_signal_tab = function(stype,index_value)
             {	
-                if(stype==="input"){
+                if(stype=="input"){
                     $scope.Demo.data1.splice(index_value,1);
                     $scope.my.ip_signal.splice(index_value,1);
                 }

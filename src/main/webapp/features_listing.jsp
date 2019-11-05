@@ -184,13 +184,13 @@
 		var comArr = eval( $scope.features );
 		for( var i = 0; i < comArr.length; i++ ) 
                 {
-                    if( comArr[i].fid === fid ) 
+                    if( comArr[i].fid == fid ) 
                     {
                         index = i;
                         break;
                     }
 		}
-		if( index === -1 ) 
+		if( index == -1 ) 
                 {
 			alert( "Something gone wrong" );
 		}                
