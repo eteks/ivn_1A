@@ -968,7 +968,6 @@ public class Safety_and_Legislation {
             tupleObjects = SafetyLegDB.loadLegVersionByVehicleId(vehicle_id, action);
             tupleObjects.stream().map((tuple) -> {
                 
-                System.err.println("*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*****************" + tuple.get("pdbId") + " " + tuple.get("pdbVersion"));
                 Map<String, Object> fr = new HashMap<>();
                 fr.put("lid", tuple.get("lid"));
                 fr.put("legVersion", tuple.get("legVersion"));
@@ -988,7 +987,45 @@ public class Safety_and_Legislation {
             maps_string.put("success", "Work is done");
         } catch (Exception e) {
             System.out.println("Error in \"LoadLegversionData\" : " + e);
-            maps_string.put("status", "Some error occurred !!");
+            maps_string.put("error", "Some error occurred !!");
+        }
+        return "success";
+    }
+
+    public String LoadSafetyData() {
+
+        try {
+
+            System.out.println("LoadSafetyData");
+            String jsonValues = JSONConfigure.getAngularJSONFile();
+            final JsonNode readValue = mapper.readValue(jsonValues, JsonNode.class);
+            int vehicle_id = readValue.get("vehicle_id").asInt();
+            String action = readValue.get("action").asText();
+            System.out.println(vehicle_id + "$$$$$$$$$$$$$$$$$$$$$$$$" + action);
+
+            tupleObjects = SafetyLegDB.loadSafVersionByVehicleId(vehicle_id, action);
+            tupleObjects.stream().map((tuple) -> {
+                
+                Map<String, Object> fr = new HashMap<>();
+                fr.put("sid", tuple.get("sid"));
+                fr.put("safVersion", tuple.get("safVersion"));
+                fr.put("status", tuple.get("status"));
+                fr.put("pdbid", tuple.get("pdbId"));
+                fr.put("pdbVersion", tuple.get("pdbVersion"));
+                fr.put("pdbStatus", tuple.get("pdbStatus"));
+                return fr;
+            }).map((fr) -> {
+                result_data.add(fr);
+                return fr;
+            }).forEachOrdered((fr) -> {
+                System.out.println("JSON ARRAY : " + fr);
+            });
+            maps_object.put("safversion", result_data);
+            System.out.println("result_data     "+result_data);
+            maps_string.put("success", "Work is done");
+        } catch (Exception e) {
+            System.out.println("Error in \"LoadSafetyData\" : " + e);
+            maps_string.put("error", "Some error occurred !!");
         }
         return "success";
     }

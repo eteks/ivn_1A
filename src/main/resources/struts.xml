@@ -171,6 +171,10 @@
             <result type="json" />
         </action>
 
+        <action name="loadsafversion_data" class="com.ivn_1A.controllers.pdbowner.Safety_and_Legislation" method="LoadSafetyData">
+            <result type="json" />
+        </action>
+
     </package>
     
     <package name="struts" extends="struts-default" namespace="/">

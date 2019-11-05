@@ -264,71 +264,59 @@
             var ac = action ? action : "none";
             $scope.truefalse = true;
             $scope.data.pdbversion = "";
-//                $scope.Demo.dt.vehiclename = "";
-//                $scope.Demo.dt.modelname = "";
 //                $window.alert(ac);
             $http({
-                url : 'loadpdbversion_data',
+                url : 'loadsafversion_data',
                 method : "POST",
                 data : {"vehicle_id":$scope.data.vehicle, "action":ac}
             }).then(function (response, status, headers, config){
-//                    alert(JSON.stringify(response.data.maps_object.pdbversion));
-                $scope.array_result = [];
-                $scope.status_value = "";
-                var pdbLength = response.data.maps_object.pdbversion.length;
-                if (pdbLength > 0) {
-                    for(var i = 0; i < pdbLength; i++)
-                    {
-                         var data= response.data.maps_object.pdbversion[i];
- //                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
- //                        $window.alert($scope.data.pdbversion);
-                         $scope.array_result.push({
-                             "pdbid":data.pid,
-                             "pdbversion_name":parseFloat(data.pversion).toFixed(1),
-                             "status":data.status
-                         });
-                     }
-                     $scope.data.pdbversion = $scope.array_result[0];
-                     $scope.LoadVehicleModels();
-                     if($scope.data.pdbversion !== undefined){
-                        $http({
-                            url : 'loadsafetyversion_data',
-                            method : "POST",
-                            data : {"vehicle_id":$scope.data.vehicle, "action":ac}
-                        }).then(function (response, status, headers, config){
-//                                alert("response");
-//                                alert(JSON.stringify(response.data.maps_object.legversion));
-                            $scope.safarray_result = [];
-                            $scope.status_value = "";
-                            var safLength = response.data.maps_object.safversion.length;
-                            if (safLength > 0) {
-                                for(var i = 0; i < safLength; i++)
-                                {
-                                     var data= response.data.maps_object.safversion[i];
-             //                        $scope.data.pdbversion = response.data.maps_object.pdbversion[0].pversion;
-             //                        $window.alert($scope.data.pdbversion);
-                                     $scope.safarray_result.push({
-                                         "safid":data.sid,
-                                         "safversion_name":parseFloat(data.sversion).toFixed(1),
-                                         "status":data.status
-                                     });
-                                 }
-//                                 alert(JSON.stringify($scope.safarray_result));
-                                 $scope.data.safetyversion = $scope.safarray_result[0];
-                            } else {
-                                alert("No active Safety version found for this vehicle");
+
+                if (response.data.maps_string.success) {
+
+                    $scope.array_result = [];
+                    $scope.safarray_result = [];
+                    $scope.status_value = "";
+                    var legLength = response.data.maps_object.safversion.length;
+                    if (legLength) {
+                        for(var i = 0; i < legLength; i++)
+                        {
+                            var data= response.data.maps_object.safversion[i];
+                            $scope.array_result.push({
+                                "pdbid":data.pdbid,
+                                "pdbversion_name":parseFloat(data.pdbVersion).toFixed(1),
+                                "status":data.pdbStatus
+                            });
+                           $scope.safarray_result.push({
+                               "safid":data.sid,
+                               "safversion_name":parseFloat(data.safVersion).toFixed(1),
+                               "status":data.status
+                           });
+                        }
+                        $scope.data.pdbversion = $scope.array_result[0];
+                        $scope.data.safetyversion = $scope.safarray_result[0];
+                        if($scope.data.safetyversion !== undefined)
+                           $scope.create_type = true;
+
+                        if($location.absUrl().includes("?")){
+                            var saf_id = $location.absUrl().split("?")[1].split("&")[0].split("=")[1];
+                            for (var i = 0; i < $scope.safarray_result.length; i++){
+                                if ($scope.safarray_result[i].safid == saf_id) {
+                                    $scope.data.safetyversion = $scope.safarray_result[i];
+                                }
                             }
-                            if($scope.data.safetyversion != undefined)
-                                $scope.create_type = true;
-            //                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
-                        });
-                    }   
+                        } else {
+                            $scope.data.safetyversion = $scope.array_result[0];
+                            $scope.LoadVehicleModels();
+                        }
+                    } else {
+                        alert("No active PDB version found for this vehicle");
+                    }
                 } else {
-                    alert("No active PDB version found for this vehicle");
+                    alert(response.data.maps_string.error);
                 }
-//                $scope.Demo.data = [{"vehiclename":"sasdsa","modelname":["dfsd","jhkjk","hkkjhk","kljk"],"versionname":"4.0","status":false}];
             });
         };
+            
         //load vehicle and model name
         $scope.LoadVehicleModels= function()
         {
@@ -560,49 +548,24 @@
             }
 
         if (params_array[0].id && params_array[1].action) {
-            $scope.data.pdbversion = params_array[0].id;
+            $scope.data.safety = params_array[0].id;
             var action = params_array[1].action;
 
             var safetydetail_list = {};
             if ("<s:property value="result_data_obj"/>") {
 
                 safetydetail_list = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-
-                $window.alert(JSON.stringify(safetydetail_list)+" -- "+JSON.stringify($scope.safety));
                 $scope.data.new_vehicle="select_vehicle";
                 $scope.truefalse = true;
                 $scope.data.status = safetydetail_list.pdb[0].pdb_status;
                 $scope.data.vehicle = safetydetail_list.safety[0].veh_id.toString();
                 $scope.LoadPreviousVersion();
-                // $scope.records = safetydetail_list.qb.concat(safetydetail_list.safety);
                 $scope.records = safetydetail_list.qb.map(x => Object.assign(x, safetydetail_list.safety.find(y => y.id == x.id)));
-                var rec = safetydetail_list.qb.map(x => Object.assign(x, safetydetail_list.safety.find(y => y.id == x.id)));
-                // console.log(JSON.stringify($scope.records));
-                // $window.alert(JSON.stringify($scope.records));
-                for(var i=0; i<rec.length; i++) {
-                    // alert(rec.length);
-                    if($scope.safety.length == 0) {
-                        $scope.add_feature_tab(rec[i].qb_id);
-                    } else {
-                        var temp=0;
-                        for(var j=0; j<$scope.safety.length; j++) {
-                            if($scope.safety[j].qb_id == rec[i].qb_id) {
-                                temp=1;
-                            }
-                        }
-                        if(temp == 0) {
-                            $scope.add_feature_tab(rec[i].qb_id);
-                        }
-                    }
-                    if (rec[i]) {
-                        // alert(JSON.stringify($scope.records[i]));
-
-                        $scope.radiovalue(rec[i].qb_id, rec[i].modelname, rec[i].available_status);
-                    }
-                }
-            } else
+                $scope.list = safetydetail_list.qb.map(x => Object.assign(x, safetydetail_list.safety.find(y => y.id == x.id)));
+//                    $window.alert("records  "+JSON.stringify($scope.records));
+            } else {
                 alert("Data not loading");
-            alert("$scope.list "+JSON.stringify($scope.list));
+            }
             angular.element(function () {
                 var result = document.getElementsByClassName("radio_button");
                 angular.forEach(result, function(value) {
@@ -611,8 +574,10 @@
                     var model_id = result_name[1];
                     var status = value.getAttribute("value");
                     angular.forEach($scope.list, function(item) {
-                        if(item.qb_id == fid && item.model_id == model_id && item.status == status)
+                        if(item.qb_id == fid && item.model_id == model_id && item.status == status) {
                             value.setAttribute("checked","checked");
+                            console.log(item.model_id);
+                        }
                     });
                 });
             });

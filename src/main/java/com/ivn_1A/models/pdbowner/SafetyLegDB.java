@@ -747,4 +747,39 @@ public class SafetyLegDB {
             return null;
         }
     }
+    
+    public static List<Tuple> loadSafVersionByVehicleId(int id, String action) {
+        try {
+            System.err.println("loadSafVersionByVehicleId");
+            Session session = HibernateUtil.getThreadLocalSession();
+            Transaction tx = session.beginTransaction();
+
+            final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
+            Root<Safetyversion> legVersion = criteriaQuery.from(Safetyversion.class);
+            legVersion.join("vehicle_id", JoinType.INNER);
+            legVersion.join("pdbversion_id", JoinType.INNER);
+            legVersion.join("created_or_updated_by", JoinType.INNER);
+
+            criteriaQuery.multiselect(legVersion.get("id").alias("sid"), legVersion.get("safety_versionname").alias("safVersion"),
+                    legVersion.get("status").alias("status"), legVersion.get("pdbversion_id").get("id").alias("pdbId"), 
+                    legVersion.get("pdbversion_id").get("pdb_versionname").alias("pdbVersion"), 
+                    legVersion.get("pdbversion_id").get("status").alias("pdbStatus"));
+            if (action.equals("edit")) {
+                criteriaQuery.where(criteriaBuilder.equal(legVersion.get("vehicle_id").get("id"), id));
+            } else {
+                criteriaQuery.where(criteriaBuilder.equal(legVersion.get("status"), true), criteriaBuilder.equal(legVersion.get("flag"), true),
+                        criteriaBuilder.equal(legVersion.get("vehicle_id").get("id"), id));
+            }
+            criteriaQuery.orderBy(criteriaBuilder.desc(legVersion.get("safety_versionname")));
+            TypedQuery<Tuple> typedQuery = session.createQuery(criteriaQuery);
+
+            tx.commit();
+            session.clear();
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            System.err.println("Error \"loadSafVersionByVehicleId\" : " + e);
+            return null;
+        }
+    }
 }

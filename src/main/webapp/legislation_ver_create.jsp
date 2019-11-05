@@ -294,7 +294,6 @@
                     data : {"vehicle_id":$scope.data.vehicle, "action":ac}
                 }).then(function (response, status, headers, config){
                     
-//                    alert(JSON.stringify(response.data));
                     if (response.data.maps_string.success) {
                         
                         $scope.array_result = [];
@@ -316,12 +315,8 @@
                                    "status":data.status
                                });
                             }
-                            alert(JSON.stringify($scope.legarray_result));
                             $scope.data.pdbversion = $scope.array_result[0];
-//                            $scope.LoadVehicleModels();
-                            alert("$scope.data.pdbversion " + JSON.stringify($scope.array_result[0]));
                             $scope.data.legislationversion = $scope.legarray_result[0];
-                            alert("$scope.data.legislationversion " + JSON.stringify($scope.legarray_result[0]));
                             if($scope.data.legislationversion !== undefined)
                                $scope.create_type = true;
                            
@@ -334,6 +329,7 @@
                                 }
                             } else {
                                 $scope.data.legislationversion = $scope.array_result[0];
+                                $scope.LoadVehicleModels();
                             }
                         } else {
                             alert("No active PDB version found for this vehicle");
@@ -548,58 +544,26 @@
                 if ("<s:property value="result_data_obj"/>") {
 
                     legisdetail_list = JSON.parse("<s:property value="result_data_obj"/>".replace(/&quot;/g,'"'));
-//                    $window.alert(JSON.stringify(legisdetail_list)+" -- "+JSON.stringify($scope.legislation));
                     $scope.data.new_vehicle="select_vehicle";
                     $scope.truefalse = true;
                     $scope.data.status = legisdetail_list.pdb[0].pdb_status;
                     $scope.data.vehicle = legisdetail_list.legislation[0].veh_id.toString();
-                    $scope.data.pdbversion = [{"pdbid":legisdetail_list.legislation[0].pdb_id,"pdbversion_name":legisdetail_list.pdb[0].pdb_versionname,"status":legisdetail_list.pdb[0].pdb_status}][0];
-                    $scope.data.legislationversion = [{"legid":legisdetail_list.legislation[0].lid,"legversion_name":legisdetail_list.legislation[0].lver,"status":legisdetail_list.legislation[0].stt}][0];
-                    $window.alert(JSON.stringify($scope.data.pdbversion)+" "+JSON.stringify($scope.data.legislationversion));
-//                    $scope.LoadPreviousVersion();
+                    $scope.LoadPreviousVersion();
                     $scope.records = legisdetail_list.qb.map(x => Object.assign(x, legisdetail_list.legislation.find(y => y.id == x.id)));
-//                    $window.alert("records  "+JSON.stringify($scope.records));
                     $scope.list = legisdetail_list.qb.map(x => Object.assign(x, legisdetail_list.legislation.find(y => y.id == x.id)));
-//                    var rec = legisdetail_list.qb.map(x => Object.assign(x, legisdetail_list.legislation.find(y => y.id == x.id)));
-//                    // console.log(JSON.stringify($scope.records));
-//                    // $window.alert(JSON.stringify($scope.records));
-//                   for(var i=0; i<rec.length; i++) {
-//                       // alert(rec.length);
-//                       if($scope.legislation.length == 0) {
-//                           $scope.add_feature_tab(rec[i].qb_id);
-//                       } else {
-//                           var temp=0;
-//                           for(var j=0; j<$scope.legislation.length; j++) {
-//                               if($scope.legislation[j].qb_id == rec[i].qb_id) {
-//                                   temp=1;
-//                               }
-//                           }
-//                           if(temp==0) {
-//                               $scope.add_feature_tab(rec[i].qb_id);
-//                           }
-//                       }
-//                       if (rec[i]) {
-//                           // alert(JSON.stringify($scope.records[i]));
-//
-//                           $scope.radiovalue(rec[i].qb_id, rec[i].modelname, rec[i].available_status);
-//                       }
-//                   }
+//                    $window.alert("records  "+JSON.stringify($scope.records));
                 } else {
                     alert("Data not loading");
                 }
-//                alert("$scope.list "+JSON.stringify($scope.list));
                 angular.element(function () {
                     var result = document.getElementsByClassName("radio_button");
                     angular.forEach(result, function(value) {
                         var result_name = value.getAttribute("name").substring(1).split("_");
-                        // alert(JSON.stringify(result_name));
                         var fid = result_name[0];
                         var model_id = result_name[1];
                         var status = value.getAttribute("value");
-                               // alert(fid+" "+model_id+" "+status);
                         angular.forEach($scope.list, function(item) {
                             if(item.qb_id == fid && item.model_id == model_id && item.status == status) {
-//                                   alert(item.qb_id+" : "+fid+" "+item.model_id+" : "+model_id+" "+item.status+" : "+status);
                                 value.setAttribute("checked","checked");
                                 console.log(item.model_id);
                             }
